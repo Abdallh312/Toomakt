@@ -1,0 +1,6 @@
+#!/usr/bin/env python
+"""Alias for manage.py to support typing 'python manage.pty runserver' without errors."""
+from manage import main
+
+if __name__ == '__main__':
+    main()

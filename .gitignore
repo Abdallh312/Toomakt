@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Production builds
+dist/
+dist-ssr/
+build/
+*.local
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/venv/
+backend/.venv/
+venv/
+.venv/
+env/
+ENV/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Database
+*.sqlite3
+*.db
+backend/db.sqlite3
+
+# Scratch / Local test artifacts
+scratch/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
