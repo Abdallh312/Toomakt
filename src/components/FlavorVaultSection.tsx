@@ -4,6 +4,7 @@ import { FLAVOR_VAULT_PRODUCTS, HERO_PRODUCT } from '../data/toomaktData';
 import { Product, ProductCategory } from '../types';
 import { useCart } from '../context/CartContext';
 import { api } from '../services/api';
+import { navigateTo } from '../utils/navigation';
 
 interface FlavorVaultSectionProps {
   onSelectProduct: (p: Product) => void;
@@ -100,7 +101,7 @@ export const FlavorVaultSection: React.FC<FlavorVaultSectionProps> = ({ onSelect
     if (onShopAll) {
       onShopAll();
     } else {
-      window.location.hash = '#shop';
+      navigateTo('shop');
     }
   };
 

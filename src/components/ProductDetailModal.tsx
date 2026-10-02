@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
+import { navigateTo } from '../utils/navigation';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -59,7 +60,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     if (onNavigateView) {
       onNavigateView('checkout');
     } else {
-      window.location.hash = '#checkout';
+      navigateTo('checkout');
     }
   };
 

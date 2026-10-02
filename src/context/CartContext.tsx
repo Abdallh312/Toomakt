@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CartItem, Product, BundleItem } from '../types';
+import { navigateTo } from '../utils/navigation';
 
 export interface ToastData {
   id?: string;
@@ -131,7 +132,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             'Order Limit: 5 Packs Max',
             'Retail customers can order up to 5 packs per item. Need bulk quantities?',
             'Wholesale Quotes',
-            () => { window.location.hash = '#wholesale'; }
+            () => { navigateTo('wholesale'); }
           );
           return prev.map(item =>
             item.product.id === product.id
@@ -192,7 +193,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 '5 Packs Maximum Limit',
                 'Maximum retail limit reached for this item.',
                 'Wholesale Quotes',
-                () => { window.location.hash = '#wholesale'; }
+                () => { navigateTo('wholesale'); }
               );
               return { ...item, quantity: 5 };
             }

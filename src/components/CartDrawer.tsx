@@ -3,6 +3,7 @@ import { X, Trash2, Plus, Minus, ShoppingBag, Check, ShieldCheck, Leaf } from 'l
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
+import { navigateTo } from '../utils/navigation';
 
 interface CartDrawerProps {
   onOrderSuccess?: (order: any) => void;
@@ -50,7 +51,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
     if (onNavigateView) {
       onNavigateView('checkout');
     } else {
-      window.location.hash = '#checkout';
+      navigateTo('checkout');
     }
   };
 

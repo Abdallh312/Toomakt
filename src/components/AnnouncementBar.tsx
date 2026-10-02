@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { navigateTo } from '../utils/navigation';
 
 interface AnnouncementBarProps {
   onNavigateView?: (view: string) => void;
@@ -96,7 +97,7 @@ export const AnnouncementBar: React.FC<AnnouncementBarProps> = ({ onNavigateView
     if (onNavigateView) {
       onNavigateView(target);
     } else {
-      window.location.hash = `#${target}`;
+      navigateTo(target);
     }
   };
 

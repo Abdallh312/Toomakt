@@ -27,6 +27,7 @@ import { AdminLoginView } from './components/admin/AdminLoginView';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { Product } from './types';
 import { initSeoAndTracking } from './services/seoTracking';
+import { getCleanRoute, navigateTo } from './utils/navigation';
 
 export const AppContent: React.FC = () => {
   const [currentView, setCurrentView] = useState<string>('home');
@@ -50,13 +51,10 @@ export const AppContent: React.FC = () => {
     return !!(localStorage.getItem('toomakt_admin_token') || sessionStorage.getItem('toomakt_admin_token'));
   };
 
-  // Synchronize view with URL hash or path (e.g. #products, #shop, #about, #contact, #alerts, #checkout)
+  // Synchronize view with clean URL path without '#'
   useEffect(() => {
     const handleRoute = () => {
-      const rawHash = window.location.hash.replace('#', '');
-      const cleanHash = rawHash.startsWith('/') ? rawHash.slice(1) : rawHash;
-      const rawPath = window.location.pathname.replace(/^\/|\/$/g, '');
-      const route = cleanHash || rawPath;
+      const route = getCleanRoute();
 
       const knownViews = [
         'checkout',
@@ -81,7 +79,7 @@ export const AppContent: React.FC = () => {
         if (checkAdminAuth()) {
           setCurrentView('admin');
         } else {
-          window.location.hash = '#admin/login';
+          navigateTo('admin/login', { replace: true });
           setCurrentView('admin/login');
         }
       } else if (route === 'products' || route === 'shop') {
@@ -100,11 +98,10 @@ export const AppContent: React.FC = () => {
         setCurrentView('404');
       }
     };
+
     handleRoute();
-    window.addEventListener('hashchange', handleRoute);
     window.addEventListener('popstate', handleRoute);
     return () => {
-      window.removeEventListener('hashchange', handleRoute);
       window.removeEventListener('popstate', handleRoute);
     };
   }, []);
@@ -119,22 +116,21 @@ export const AppContent: React.FC = () => {
     if (target === 'admin') {
       if (checkAdminAuth()) {
         setCurrentView('admin');
-        window.location.hash = '#admin';
+        navigateTo('admin');
       } else {
         setCurrentView('admin/login');
-        window.location.hash = '#admin/login';
+        navigateTo('admin/login');
       }
     } else {
       setCurrentView(target);
-      window.location.hash = target === 'home' ? '' : `#${target}`;
+      navigateTo(target === 'home' ? '' : target);
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNavigateSection = (id: string) => {
     if (currentView !== 'home') {
       setCurrentView('home');
-      window.location.hash = '';
+      navigateTo('');
       setTimeout(() => {
         const el = document.getElementById(id);
         if (el) el.scrollIntoView({ behavior: 'smooth' });

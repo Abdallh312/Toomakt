@@ -289,16 +289,19 @@ export const ProductLinesSection: React.FC<ProductLinesSectionProps> = ({
                       <ArrowIcon className="w-3.5 h-3.5" />
                     </motion.button>
                   ) : (
-                    <motion.a
+                    <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 18 }}
-                      href="#store-content"
+                      onClick={() => {
+                        const el = document.getElementById('store-content');
+                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                      }}
                       className="bg-[#FAF5EE] hover:bg-[#2B170E] text-[#2B170E] hover:text-white border border-[#E0D2C2] text-xs font-bold px-4 py-2.5 rounded-full transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
                     >
                       <span>{isRtl ? 'تفاصيل الخدمة' : 'Learn More'}</span>
                       <ArrowIcon className="w-3.5 h-3.5" />
-                    </motion.a>
+                    </motion.button>
                   )}
                 </div>
               </motion.div>

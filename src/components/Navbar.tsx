@@ -10,6 +10,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
+import { navigateTo } from '../utils/navigation';
 
 interface NavbarProps {
   onNavigateSection?: (id: string) => void;
@@ -63,7 +64,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     if (onNavigateView) {
       onNavigateView('shop');
     } else {
-      window.location.hash = '#shop';
+      navigateTo('shop');
     }
     // Also dispatch custom event for shop view to filter products immediately
     window.dispatchEvent(new CustomEvent('toomakt:search', { detail: query }));

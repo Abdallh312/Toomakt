@@ -14,6 +14,7 @@ import {
   X
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { navigateTo } from '../utils/navigation';
 
 interface AlertConfig {
   enabled: boolean;
@@ -187,7 +188,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
         <div className="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-[#E8E2D7]">
           <div className="flex items-center gap-2 text-xs font-mono text-[#736B63] uppercase tracking-wider">
             <button
-              onClick={() => onBackToStore ? onBackToStore() : (window.location.hash = '')}
+              onClick={() => onBackToStore ? onBackToStore() : navigateTo('')}
               className="hover:text-[#1A1A1A] transition-colors cursor-pointer"
             >
               TOOMAKT
@@ -197,7 +198,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
           </div>
 
           <button
-            onClick={() => onBackToStore ? onBackToStore() : (window.location.hash = '')}
+            onClick={() => onBackToStore ? onBackToStore() : navigateTo('')}
             className="text-xs font-medium text-[#736B63] hover:text-[#1A1A1A] underline underline-offset-4 cursor-pointer"
           >
             ← Return to Store
