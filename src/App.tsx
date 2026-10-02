@@ -26,6 +26,7 @@ import { AlertManagerView } from './components/AlertManagerView';
 import { AdminLoginView } from './components/admin/AdminLoginView';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { Product } from './types';
+import { initSeoAndTracking } from './services/seoTracking';
 
 export const AppContent: React.FC = () => {
   const [currentView, setCurrentView] = useState<string>('home');
@@ -38,6 +39,12 @@ export const AppContent: React.FC = () => {
       return null;
     }
   });
+
+  // Initialize SEO and tracking pixels
+  useEffect(() => {
+    const cleanup = initSeoAndTracking();
+    return cleanup;
+  }, []);
 
   const checkAdminAuth = () => {
     return !!(localStorage.getItem('toomakt_admin_token') || sessionStorage.getItem('toomakt_admin_token'));
