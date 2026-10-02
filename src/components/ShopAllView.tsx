@@ -22,6 +22,17 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc'>('featured');
 
+  React.useEffect(() => {
+    const handleSearchEvent = (e: any) => {
+      if (e && e.detail !== undefined) {
+        setSearchQuery(e.detail);
+        setSelectedCategory('all');
+      }
+    };
+    window.addEventListener('toomakt:search', handleSearchEvent);
+    return () => window.removeEventListener('toomakt:search', handleSearchEvent);
+  }, []);
+
   const filteredProducts = PRODUCTS.filter(p => {
     // Category match
     if (selectedCategory !== 'all') {

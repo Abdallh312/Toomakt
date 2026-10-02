@@ -162,7 +162,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView }) => {
             </ul>
           </div>
 
-          {/* Col 4: Atelier & Admin */}
+          {/* Col 4: Atelier */}
           <div>
             <h4 className="font-semibold text-xs tracking-wider uppercase text-[#FAF7F2] mb-4">
               {isRtl ? 'المقر' : 'ATELIER'}
@@ -171,14 +171,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView }) => {
               {isRtl ? 'القاهرة · جمهورية مصر العربية' : 'Cairo, Egypt'}<br />
               <span className="text-[11px] text-[#FAF7F2]/50">WhatsApp: +20 101 686 9608</span>
             </p>
-            <div>
-              <a
-                href="#admin/login"
-                className="text-[11px] text-[#FAF7F2]/40 hover:text-[#FAF7F2] transition-colors"
-              >
-                {isRtl ? 'بوابة إدارة المتجر' : 'Admin Portal →'}
-              </a>
-            </div>
           </div>
         </div>
 

@@ -1,41 +1,148 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface AnnouncementBarProps {
   onNavigateView?: (view: string) => void;
 }
 
+interface AlertConfig {
+  enabled: boolean;
+  enPrefix: string;
+  enMain: string;
+  enCta: string;
+  arPrefix: string;
+  arMain: string;
+  arCta: string;
+  ctaTarget: string;
+  bgColor: string;
+  textColor: string;
+  accentColor: string;
+}
+
+const DEFAULT_CONFIG: AlertConfig = {
+  enabled: true,
+  enPrefix: 'THE FRUIT TOFFEE UNIVERSE IS OPEN',
+  enMain: 'FREE SHIPPING OVER EGP 2,000',
+  enCta: 'Shop',
+  arPrefix: 'عالم التوفي بالفاكهة الطبيعية مفتوح الآن',
+  arMain: 'شحن مجاني للطلبات أكثر من 2,000 ج.م',
+  arCta: 'تسوق',
+  ctaTarget: 'shop',
+  bgColor: '#3C1322',
+  textColor: '#FAF7F2',
+  accentColor: '#FFD147'
+};
+
 export const AnnouncementBar: React.FC<AnnouncementBarProps> = ({ onNavigateView }) => {
   const { isRtl } = useLanguage();
+  const [dismissed, setDismissed] = useState(() => {
+    try {
+      return sessionStorage.getItem('toomakt_alert_dismissed') === 'true';
+    } catch {
+      return false;
+    }
+  });
 
-  const handleShopClick = (e: React.MouseEvent) => {
+  const [alertConfig, setAlertConfig] = useState<AlertConfig>(() => {
+    try {
+      const saved = localStorage.getItem('toomakt_alert_config');
+      return saved ? { ...DEFAULT_CONFIG, ...JSON.parse(saved) } : DEFAULT_CONFIG;
+    } catch {
+      return DEFAULT_CONFIG;
+    }
+  });
+
+  useEffect(() => {
+    // Listen for custom alert updates from alert manager
+    const handleUpdate = (e?: any) => {
+      try {
+        if (e && e.detail) {
+          setAlertConfig(prev => ({ ...prev, ...e.detail }));
+        } else {
+          const saved = localStorage.getItem('toomakt_alert_config');
+          if (saved) {
+            setAlertConfig(prev => ({ ...prev, ...JSON.parse(saved) }));
+          }
+        }
+      } catch {}
+    };
+
+    const handleResetDismiss = () => {
+      setDismissed(false);
+    };
+
+    window.addEventListener('storage', handleUpdate);
+    window.addEventListener('toomakt:alert-updated', handleUpdate);
+    window.addEventListener('toomakt:alert-reset-dismiss', handleResetDismiss);
+
+    return () => {
+      window.removeEventListener('storage', handleUpdate);
+      window.removeEventListener('toomakt:alert-updated', handleUpdate);
+      window.removeEventListener('toomakt:alert-reset-dismiss', handleResetDismiss);
+    };
+  }, []);
+
+  const handleDismiss = () => {
+    setDismissed(true);
+    try {
+      sessionStorage.setItem('toomakt_alert_dismissed', 'true');
+    } catch {}
+  };
+
+  const handleCtaClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    const target = alertConfig.ctaTarget || 'shop';
     if (onNavigateView) {
-      onNavigateView('shop');
+      onNavigateView(target);
     } else {
-      window.location.hash = '#shop';
+      window.location.hash = `#${target}`;
     }
   };
 
+  if (dismissed || !alertConfig.enabled) return null;
+
   return (
-    <div className="bg-[#3C1322] text-[#FAF7F2] text-xs py-2.5 px-4 overflow-hidden relative z-50 select-none border-b border-[#4D1B2D]">
-      <div className="max-w-7xl mx-auto flex items-center justify-center text-center">
-        <div className="flex items-center justify-center gap-2 sm:gap-3 text-[11px] sm:text-xs font-medium tracking-wide">
-          <span>
-            {isRtl ? 'عالم التوفي بالفاكهة الطبيعية مفتوح الآن' : 'THE FRUIT TOFFEE UNIVERSE IS OPEN'}
+    <div
+      style={{
+        backgroundColor: alertConfig.bgColor || '#3C1322',
+        color: alertConfig.textColor || '#FAF7F2'
+      }}
+      className="text-xs py-2 px-3 sm:px-4 overflow-hidden relative z-50 select-none border-b border-black/15 transition-colors duration-300"
+    >
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        
+        {/* Spacer for symmetry */}
+        <div className="w-5 hidden sm:block" />
+
+        {/* Centered Announcement Message */}
+        <div className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2.5 text-[11px] sm:text-xs font-medium tracking-wide text-center">
+          <span className="hidden md:inline opacity-90">
+            {isRtl ? alertConfig.arPrefix : alertConfig.enPrefix}
           </span>
-          <span className="opacity-60">·</span>
+          <span className="hidden md:inline opacity-40">·</span>
           <span>
-            {isRtl ? 'شحن مجاني للطلبات أكثر من 2,000 ج.م' : 'FREE SHIPPING OVER EGP 2,000'}
+            {isRtl ? alertConfig.arMain : alertConfig.enMain}
           </span>
-          <span className="opacity-60">|</span>
+          <span className="opacity-40">|</span>
           <button
-            onClick={handleShopClick}
-            className="underline underline-offset-4 hover:text-[#FFD147] transition-colors font-semibold"
+            onClick={handleCtaClick}
+            style={{ color: alertConfig.accentColor || '#FFD147' }}
+            className="underline underline-offset-4 hover:opacity-80 transition-opacity font-semibold cursor-pointer"
           >
-            {isRtl ? 'تسوق الآن' : 'Shop'}
+            {isRtl ? alertConfig.arCta : alertConfig.enCta}
           </button>
         </div>
+
+        {/* Dismiss Button */}
+        <button
+          onClick={handleDismiss}
+          className="p-1 rounded-full text-current opacity-70 hover:opacity-100 hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+          title={isRtl ? 'إغلاق الإشعار' : 'Dismiss alert'}
+          aria-label="Dismiss alert"
+        >
+          <X className="w-3.5 h-3.5" />
+        </button>
       </div>
     </div>
   );

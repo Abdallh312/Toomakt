@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { CartProvider, useCart } from './context/CartContext';
+import { CartProvider } from './context/CartContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { ToastNotification } from './components/ToastNotification';
 import { AnnouncementBar } from './components/AnnouncementBar';
 import { Navbar } from './components/Navbar';
 import { SmoothScroll } from './components/SmoothScroll';
 import { HeroSection } from './components/HeroSection';
 import { BrandMissionSection } from './components/BrandMissionSection';
-import { FeaturedProductsSection } from './components/FeaturedProductsSection';
+import { BrandFlavorShowcaseSection } from './components/BrandFlavorShowcaseSection';
 import { BrandStorySection } from './components/BrandStorySection';
 import { ReviewsSection } from './components/ReviewsSection';
+import { BrandInvitationSection } from './components/BrandInvitationSection';
 import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
 import { ProductDetailModal } from './components/ProductDetailModal';
-import { SearchModal } from './components/SearchModal';
-import { WishlistModal } from './components/WishlistModal';
 import { ShopAllView } from './components/ShopAllView';
 import { TrackOrderView } from './components/TrackOrderView';
 import { CMSPageView } from './components/CMSPageView';
@@ -24,16 +22,14 @@ import { NotFoundPage } from './components/NotFoundPage';
 import { CheckoutView } from './components/CheckoutView';
 import { OrderSuccessView } from './components/OrderSuccessView';
 import { WholesaleView } from './components/WholesaleView';
+import { AlertManagerView } from './components/AlertManagerView';
 import { AdminLoginView } from './components/admin/AdminLoginView';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { Product } from './types';
 
 export const AppContent: React.FC = () => {
-  const { toastNotification, dismissToast } = useCart();
   const [currentView, setCurrentView] = useState<string>('home');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [lastOrder, setLastOrder] = useState<any | null>(() => {
     try {
       const saved = localStorage.getItem('toomakt_last_order');
@@ -47,7 +43,7 @@ export const AppContent: React.FC = () => {
     return !!(localStorage.getItem('toomakt_admin_token') || sessionStorage.getItem('toomakt_admin_token'));
   };
 
-  // Synchronize view with URL hash or path (e.g. #admin, #checkout, #shop, /notfound)
+  // Synchronize view with URL hash or path (e.g. #products, #shop, #about, #contact, #alerts, #checkout)
   useEffect(() => {
     const handleRoute = () => {
       const rawHash = window.location.hash.replace('#', '');
@@ -59,12 +55,17 @@ export const AppContent: React.FC = () => {
         'checkout',
         'order-success',
         'wholesale',
+        'contact',
         'shop',
+        'products',
         'track',
         'our-story',
+        'about',
         'ingredients',
         'faq',
-        'shipping'
+        'shipping',
+        'alerts',
+        'announcements'
       ];
 
       if (route === 'admin/login') {
@@ -76,6 +77,14 @@ export const AppContent: React.FC = () => {
           window.location.hash = '#admin/login';
           setCurrentView('admin/login');
         }
+      } else if (route === 'products' || route === 'shop') {
+        setCurrentView('shop');
+      } else if (route === 'about' || route === 'our-story') {
+        setCurrentView('our-story');
+      } else if (route === 'contact' || route === 'wholesale') {
+        setCurrentView('wholesale');
+      } else if (route === 'alerts' || route === 'announcements') {
+        setCurrentView('alerts');
       } else if (knownViews.includes(route)) {
         setCurrentView(route);
       } else if (!route || route === 'home') {
@@ -94,7 +103,13 @@ export const AppContent: React.FC = () => {
   }, []);
 
   const handleNavigateView = (view: string) => {
-    if (view === 'admin') {
+    let target = view;
+    if (view === 'products') target = 'shop';
+    if (view === 'about') target = 'our-story';
+    if (view === 'contact') target = 'wholesale';
+    if (view === 'announcements') target = 'alerts';
+
+    if (target === 'admin') {
       if (checkAdminAuth()) {
         setCurrentView('admin');
         window.location.hash = '#admin';
@@ -103,8 +118,8 @@ export const AppContent: React.FC = () => {
         window.location.hash = '#admin/login';
       }
     } else {
-      setCurrentView(view);
-      window.location.hash = view === 'home' ? '' : `#${view}`;
+      setCurrentView(target);
+      window.location.hash = target === 'home' ? '' : `#${target}`;
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -160,21 +175,81 @@ export const AppContent: React.FC = () => {
       {/* 1. Global Announcement Header Bar */}
       <AnnouncementBar onNavigateView={handleNavigateView} />
 
-      {/* 2. Brand Sticky Navbar */}
+      {/* 2. Brand Sticky Navbar (Redesigned, Professional, Inline Search, No Wishlist) */}
       <Navbar
-        onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenWishlist={() => setIsWishlistOpen(true)}
         onNavigateSection={handleNavigateSection}
         onNavigateView={handleNavigateView}
         currentView={currentView}
+        onSearchQuery={(q) => {
+          handleNavigateView('shop');
+          window.dispatchEvent(new CustomEvent('toomakt:search', { detail: q }));
+        }}
       />
 
       {/* 3. Main Dynamic Content Switcher */}
-      <main className="flex-1">
-        {currentView === 'shop' && (
-          <ShopAllView onSelectProduct={(p) => setSelectedProduct(p)} />
+      <main className="flex-1 w-full">
+        {/* PAGE 1: DEDICATED BRAND INTRODUCTION LANDING PAGE */}
+        {currentView === 'home' && (
+          <div id="brand-landing" className="relative w-full">
+            {/* Brand Hero Introduction */}
+            <HeroSection
+              onShopNow={() => handleNavigateView('shop')}
+              onExploreProcess={() => handleNavigateSection('our-approach')}
+            />
+
+            {/* Our Approach (3 Numbered Craft Pillars) */}
+            <BrandMissionSection onNavigateStory={() => handleNavigateView('our-story')} />
+
+            {/* Tasting Palette: 4 Flavor Family Showcase with CTA to Products Page */}
+            <BrandFlavorShowcaseSection
+              onExploreProducts={() => handleNavigateView('shop')}
+            />
+
+            {/* Atelier Process & The Toomakt Ritual with Autoplaying Video */}
+            <BrandStorySection onReadMore={() => handleNavigateView('our-story')} />
+
+            {/* Verified Client Feedback & Social Proof */}
+            <ReviewsSection />
+
+            {/* Closing Brand Invitation & Direct Shop CTA */}
+            <BrandInvitationSection
+              onShopProducts={() => handleNavigateView('shop')}
+              onContactWholesale={() => handleNavigateView('wholesale')}
+            />
+          </div>
         )}
 
+        {/* PAGE 2: SEPARATE DEDICATED PRODUCTS EXPERIENCE */}
+        {(currentView === 'shop' || currentView === 'products') && (
+          <ShopAllView
+            onSelectProduct={(p) => setSelectedProduct(p)}
+            onNavigateHome={() => handleNavigateView('home')}
+          />
+        )}
+
+        {/* PAGE 3: ABOUT / CRAFT & INGREDIENTS */}
+        {['our-story', 'about', 'ingredients', 'faq', 'shipping'].includes(currentView) && (
+          <CMSPageView
+            slug={currentView === 'about' ? 'our-story' : currentView}
+            onBackHome={() => handleNavigateView('home')}
+            onNavigateView={handleNavigateView}
+          />
+        )}
+
+        {/* PAGE 4: CONTACT / WHOLESALE & CORPORATE GIFTING */}
+        {(currentView === 'wholesale' || currentView === 'contact') && (
+          <WholesaleView onNavigateView={handleNavigateView} />
+        )}
+
+        {/* PAGE 5: DEDICATED ALERT SYSTEM MANAGEMENT PAGE */}
+        {(currentView === 'alerts' || currentView === 'announcements') && (
+          <AlertManagerView
+            onBackToStore={() => handleNavigateView('home')}
+            onNavigateView={handleNavigateView}
+          />
+        )}
+
+        {/* UTILITY VIEWS: CHECKOUT, ORDER SUCCESS, TRACKING */}
         {currentView === 'checkout' && (
           <CheckoutView
             onOrderSuccess={(ord) => {
@@ -195,20 +270,8 @@ export const AppContent: React.FC = () => {
           />
         )}
 
-        {currentView === 'wholesale' && (
-          <WholesaleView onNavigateView={handleNavigateView} />
-        )}
-
         {currentView === 'track' && (
           <TrackOrderView />
-        )}
-
-        {['our-story', 'ingredients', 'faq', 'shipping'].includes(currentView) && (
-          <CMSPageView
-            slug={currentView}
-            onBackHome={() => handleNavigateView('home')}
-            onNavigateView={handleNavigateView}
-          />
         )}
 
         {currentView === '404' && (
@@ -216,33 +279,8 @@ export const AppContent: React.FC = () => {
             onNavigateHome={() => handleNavigateView('home')}
             onNavigateShop={() => handleNavigateView('shop')}
             onNavigateTrack={() => handleNavigateView('track')}
-            onOpenSearch={() => setIsSearchOpen(true)}
+            onOpenSearch={() => handleNavigateView('shop')}
           />
-        )}
-
-        {currentView === 'home' && (
-          <div id="store-content" className="relative">
-            {/* Hero Section (Figma Frame 1) */}
-            <HeroSection
-              onShopNow={() => handleNavigateView('shop')}
-              onExploreProcess={() => handleNavigateSection('our-approach')}
-            />
-
-            {/* Our Approach (3 Pillars) */}
-            <BrandMissionSection onNavigateStory={() => handleNavigateView('our-story')} />
-
-            {/* The Collection (6 signature items & categories) */}
-            <FeaturedProductsSection
-              onSelectProduct={(p) => setSelectedProduct(p)}
-              onViewAll={() => handleNavigateView('shop')}
-            />
-
-            {/* Story & Toomakt Ritual */}
-            <BrandStorySection onReadMore={() => handleNavigateView('our-story')} />
-
-            {/* Verified Client Reviews */}
-            <ReviewsSection />
-          </div>
         )}
       </main>
 
@@ -252,30 +290,16 @@ export const AppContent: React.FC = () => {
       {/* Slide-over Tasting Bag / Cart Drawer */}
       <CartDrawer onNavigateView={handleNavigateView} />
 
-      {/* Modals */}
+      {/* Modals: Product Detail Modal ONLY (No Wishlist, No Search Modal Window) */}
       <ProductDetailModal
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}
         onNavigateView={handleNavigateView}
       />
 
-      <SearchModal
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        onSelectProduct={(p) => setSelectedProduct(p)}
-      />
-
-      <WishlistModal
-        isOpen={isWishlistOpen}
-        onClose={() => setIsWishlistOpen(false)}
-      />
-
-      {/* Global Toast Notification */}
-      <ToastNotification toast={toastNotification} onClose={dismissToast} />
-
       {/* Floating Animated WhatsApp Concierge Button */}
       <motion.a
-        href="https://wa.me/201000000000?text=Hello%20toomakt%20Atelier!%20I%20have%20an%20inquiry."
+        href="https://wa.me/201016869608?text=Hello%20toomakt%20Atelier!%20I%20have%20an%20inquiry."
         target="_blank"
         rel="noopener noreferrer"
         whileHover={{ scale: 1.05 }}

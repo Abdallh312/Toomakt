@@ -27,7 +27,8 @@ import {
   Mail,
   Zap,
   Globe,
-  Bot
+  Bot,
+  Bell
 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api';
@@ -702,6 +703,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                 className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-semibold transition flex items-center gap-3 ${activeTab === 'messages' ? 'bg-[#C26715] text-white shadow-md' : 'text-amber-100/70 hover:bg-amber-950/40 hover:text-white'}`}
               >
                 <MessageSquare className="w-4 h-4 text-amber-400" /> <span>Customer Inquiries</span>
+              </button>
+              <button
+                onClick={() => { window.location.hash = '#alerts'; }}
+                className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-semibold transition flex items-center gap-3 text-amber-100/70 hover:bg-amber-950/40 hover:text-white cursor-pointer"
+              >
+                <Bell className="w-4 h-4 text-amber-400" /> <span>Alert & Announcement Bar</span>
               </button>
             </nav>
           </div>

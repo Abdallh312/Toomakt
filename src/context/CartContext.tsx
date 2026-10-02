@@ -139,13 +139,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
               : item
           );
         }
-        showToast(
-          'success',
-          'Added to Tasting Bag',
-          `${existing.product.name} (+${quantity} Pack)`,
-          'View Bag',
-          () => setIsCartOpen(true)
-        );
+        // No intrusive toast popup on add
         return prev.map(item =>
           item.product.id === product.id
             ? { ...item, quantity: nextQty }
@@ -158,13 +152,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (quantity > 5) {
         limitReached = true;
         setCartLimitNotice(`Order limit: Maximum 5 packs per item.`);
-        showToast(
-          'warning',
-          'Order Limit: 5 Packs Max',
-          'Retail customers can order up to 5 packs per item.',
-          'Wholesale Quotes',
-          () => { window.location.hash = '#wholesale'; }
-        );
       }
 
       const newProduct = {
@@ -180,14 +167,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addedProductTitle = newProduct.name;
       addedProductPieces = newProduct.pieces_per_pack;
 
-      showToast(
-        'success',
-        'Added to Tasting Bag',
-        `${newProduct.name} (${safeQty} Pack • ${newProduct.pieces_per_pack * safeQty} Pieces)`,
-        'View Bag',
-        () => setIsCartOpen(true)
-      );
-
+      // No intrusive toast popup on add
       return [...prev, { product: newProduct, quantity: safeQty }];
     });
 

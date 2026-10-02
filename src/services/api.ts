@@ -1365,6 +1365,23 @@ export const api = {
     return true;
   },
 
+  async submitWholesaleInquiry(data: any): Promise<any> {
+    const messages = await this.getContactMessages();
+    const newMsg = {
+      id: String(Date.now()),
+      name: data.contact_name || data.name || 'Valued Client',
+      email: data.email,
+      phone: data.phone,
+      subject: `Bespoke Inquiry: ${data.company_name || 'Private Client'} (${data.governorate || 'Cairo'})`,
+      message: data.message || '',
+      volume: data.estimated_monthly_volume || '',
+      status: 'unread',
+      created_at: new Date().toISOString()
+    };
+    localStorage.setItem('toomakt_contact_messages', JSON.stringify([newMsg, ...messages]));
+    return { success: true };
+  },
+
   async getContactMessages(): Promise<any[]> {
     const saved = localStorage.getItem('toomakt_contact_messages');
     if (saved) {
