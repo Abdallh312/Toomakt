@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag, Truck, ArrowRight, Check, Sparkles } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, Check, ShieldCheck, Leaf } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -27,6 +27,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
 
   const [promoInput, setPromoInput] = useState('');
   const [promoError, setPromoError] = useState(false);
+  const [orderNote, setOrderNote] = useState('');
 
   if (!isCartOpen) return null;
 
@@ -43,238 +44,268 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
 
   const handleProceedCheckout = () => {
     setIsCartOpen(false);
+    if (orderNote.trim()) {
+      localStorage.setItem('toomakt_order_note', orderNote.trim());
+    }
     if (onNavigateView) {
       onNavigateView('checkout');
+    } else {
+      window.location.hash = '#checkout';
     }
   };
 
-  const handleShopTasteLab = () => {
-    setIsCartOpen(false);
-    if (onNavigateView) {
-      onNavigateView('shop');
-    }
-  };
-
+  const shippingCost = amountToFreeShipping <= 0 ? 0 : 65;
+  const grandTotal = Math.max(0, subtotal - discountAmount + shippingCost);
   const shippingPercent = Math.min(
     100,
     Math.round(((freeShippingThreshold - amountToFreeShipping) / freeShippingThreshold) * 100)
   );
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden select-none">
-      {/* Backdrop */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={() => setIsCartOpen(false)}
-        className="absolute inset-0 bg-[#1F1127]/60 backdrop-blur-xs transition-opacity"
-      />
-
-      <div className={`fixed inset-y-0 ${isRtl ? 'left-0' : 'right-0'} max-w-full flex pl-10`}>
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 overflow-hidden flex justify-end">
+        {/* Backdrop */}
         <motion.div
-          initial={{ x: isRtl ? -400 : 400 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setIsCartOpen(false)}
+          className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
+        />
+
+        {/* Drawer Window */}
+        <motion.div
+          initial={{ x: isRtl ? -480 : 480 }}
           animate={{ x: 0 }}
-          exit={{ x: isRtl ? -400 : 400 }}
-          transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-          className="w-screen max-w-md bg-[#FFFDF5] border-l-2 border-[#1F1127] shadow-neo-xl flex flex-col justify-between overflow-hidden"
+          exit={{ x: isRtl ? -480 : 480 }}
+          transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+          className="relative w-full max-w-lg bg-[#FAF7F2] text-[#1A1A1A] h-full shadow-2xl flex flex-col z-10 border-l border-[#E8E2D7] overflow-hidden"
         >
-          {/* Header (Figma Frame 2) */}
-          <div className="p-6 border-b-2 border-[#1F1127] bg-[#F5EFE6] flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {/* Orange Square with Shopping Bag Motif */}
-              <div className="w-10 h-10 rounded-xl bg-[#FF5E2B] border-2 border-[#1F1127] shadow-neo-sm flex items-center justify-center text-white">
-                <ShoppingBag className="w-5 h-5" />
-              </div>
-              <div>
-                <span className="font-display font-black text-sm sm:text-base uppercase tracking-tight text-[#1F1127] block">
-                  {isRtl ? 'حقيبتك مليئة بالإمكانيات' : 'YOUR BAG IS FULL OF POSSIBILITY'}
-                </span>
-                <span className="text-[10px] font-mono font-bold text-[#1F1127]/70 uppercase">
-                  {items.length} {items.length === 1 ? 'ITEM' : 'ITEMS'} IN FORECAST
-                </span>
-              </div>
+          {/* Header */}
+          <div className="p-6 border-b border-[#E8E2D7] flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <h2 className="font-serif text-2xl font-normal text-[#1A1A1A]">
+                {isRtl ? 'حقيبة التسوق' : 'Your bag'}
+              </h2>
+              <span className="text-xs text-[#736B63] font-mono">
+                ({items.reduce((s, i) => s + i.quantity, 0)} {items.reduce((s, i) => s + i.quantity, 0) === 1 ? 'item' : 'items'})
+              </span>
             </div>
 
-            {/* Close Button */}
             <button
-              type="button"
               onClick={() => setIsCartOpen(false)}
-              className="w-8 h-8 rounded-full border-2 border-[#1F1127] bg-[#FFE842] hover:bg-[#FF5E2B] hover:text-white flex items-center justify-center transition-colors cursor-pointer shadow-neo-sm"
-              title="Close Cart"
+              className="p-2 text-[#736B63] hover:text-[#1A1A1A] hover:bg-[#F4EFEA] rounded-full transition-colors cursor-pointer"
+              aria-label="Close"
             >
-              <X className="w-4 h-4 text-[#1F1127]" />
+              <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Free Shipping Progress Meter */}
-          <div className="px-6 py-3.5 bg-[#FFFDF5] border-b-2 border-[#1F1127]">
-            <div className="flex items-center justify-between text-xs font-bold text-[#1F1127] mb-1.5">
-              <span className="flex items-center gap-1.5">
-                <Truck className="w-3.5 h-3.5 text-[#FF5E2B]" />
-                {amountToFreeShipping > 0 ? (
-                  <span>
-                    Add <strong className="font-mono text-[#FF5E2B]">{amountToFreeShipping.toFixed(0)} EGP</strong> for FREE delivery!
+          <div className="bg-[#F4EFEA] px-6 py-3 border-b border-[#E8E2D7]">
+            <div className="flex items-center justify-between text-xs mb-1.5 font-medium">
+              <span>
+                {amountToFreeShipping <= 0 ? (
+                  <span className="text-[#3C1322] font-semibold">
+                    {isRtl ? '🎉 مبروك! حصلت على شحن مجاني' : '🎉 You unlocked free shipping!'}
                   </span>
                 ) : (
-                  <span className="text-[#C4E86E] font-black bg-[#1F1127] px-2 py-0.5 rounded">
-                    🎉 YOU UNLOCKED FREE SHIPPING!
+                  <span>
+                    {isRtl
+                      ? `أضف EGP ${amountToFreeShipping.toFixed(0)} للحصول على شحن مجاني`
+                      : `Add EGP ${amountToFreeShipping.toFixed(0)} for free shipping`}
                   </span>
                 )}
               </span>
-              <span className="text-[10px] font-mono font-bold text-[#1F1127]/70">
-                2,500 EGP
+              <span className="text-[#736B63] font-mono">
+                {shippingPercent}%
               </span>
             </div>
-
-            {/* Progress Bar with Weather Colors */}
-            <div className="w-full h-3 rounded-full border-2 border-[#1F1127] bg-[#F5EFE6] overflow-hidden p-0.5">
+            <div className="w-full bg-[#E8E2D7] h-1.5 rounded-full overflow-hidden">
               <div
-                className="h-full rounded-full bg-[#FF5E2B] transition-all duration-500"
+                className="bg-[#3C1322] h-full transition-all duration-500 rounded-full"
                 style={{ width: `${shippingPercent}%` }}
               />
             </div>
           </div>
 
-          {/* Cart Body */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          {/* Cart Items List */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-5">
             {items.length === 0 ? (
-              /* Empty State (Figma Frame 2) */
-              <div className="h-full flex flex-col items-center justify-center text-center py-12">
-                <div className="w-20 h-20 rounded-full border-3 border-[#1F1127] bg-[#FFE842] shadow-neo flex items-center justify-center mb-6">
-                  <ShoppingBag className="w-9 h-9 text-[#1F1127]" />
-                </div>
-                <h3 className="font-display text-xl font-black text-[#1F1127] uppercase mb-2">
-                  {isRtl ? 'حقيبتك فارغة الآن' : 'Your bag is empty'}
+              <div className="h-full flex flex-col items-center justify-center text-center py-16">
+                <ShoppingBag className="w-12 h-12 text-[#9B938A] mb-4 stroke-1" />
+                <h3 className="font-serif text-xl font-normal text-[#1A1A1A] mb-2">
+                  {isRtl ? 'حقيبتك فارغة' : 'Your bag is empty'}
                 </h3>
-                <p className="text-xs sm:text-sm font-bold text-[#1F1127]/75 max-w-xs mb-8">
+                <p className="text-sm text-[#736B63] max-w-xs mb-6 font-light">
                   {isRtl
-                    ? 'لم يتم إضافة أي قطع بعد. اختر أول قضمة طرية زبدية من معمل النكهات.'
-                    : 'No items have been added yet. Pick your first bright, buttery bite in the Taste Lab.'}
+                    ? 'استكشف تشكيلتنا الحرفية من الفواكه والزبدة الأوروبية.'
+                    : 'Explore our collection of slowly crafted fruit toffee in small batches.'}
                 </p>
                 <button
-                  type="button"
-                  onClick={handleShopTasteLab}
-                  className="btn-neo bg-[#FF5E2B] text-white px-8 py-3.5 text-xs font-black uppercase tracking-wider hover:bg-[#ff480e] shadow-neo cursor-pointer"
+                  onClick={() => {
+                    setIsCartOpen(false);
+                    if (onNavigateView) onNavigateView('shop');
+                  }}
+                  className="btn-primary"
                 >
-                  {isRtl ? 'تسوق معمل النكهات' : 'SHOP THE TASTE LAB'}
+                  {isRtl ? 'تصفح المجموعة' : 'Explore collection'}
                 </button>
               </div>
             ) : (
-              /* Item Rows */
-              items.map((item) => (
+              items.map(item => (
                 <div
                   key={item.product.id}
-                  className="p-4 rounded-xl border-2 border-[#1F1127] bg-[#F5EFE6] shadow-neo-sm flex items-center gap-4"
+                  className="bg-white border border-[#E8E2D7] rounded-xl p-4 flex gap-4 items-center justify-between"
                 >
-                  {/* Thumbnail */}
-                  <div className="w-16 h-16 rounded-lg border-2 border-[#1F1127] bg-[#FFFDF5] p-1 flex items-center justify-center shrink-0 overflow-hidden">
+                  <div className="flex items-center gap-3">
                     <img
-                      src={item.product.image || '/images/canister.jpg'}
+                      src={item.product.image || '/images/products/mango_sunbeam.jpg'}
                       alt={item.product.name}
-                      className="w-full h-full object-contain"
+                      className="w-16 h-16 object-cover rounded-lg border border-[#E8E2D7] bg-[#FAF7F2] shrink-0"
                     />
-                  </div>
+                    <div>
+                      <h4 className="font-serif text-base font-normal text-[#1A1A1A] line-clamp-1">
+                        {item.product.name}
+                      </h4>
+                      <span className="text-xs text-[#736B63] block mt-0.5">
+                        {item.product.weight || '250g Pouch'} · EGP {item.product.price}
+                      </span>
 
-                  {/* Details */}
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-display font-black text-sm uppercase text-[#1F1127] truncate">
-                      {item.product.name}
-                    </h4>
-                    <span className="font-mono font-bold text-xs text-[#FF5E2B] block">
-                      {item.product.price} EGP
-                    </span>
-
-                    {/* Quantity controls */}
-                    <div className="flex items-center gap-2 mt-2">
-                      <div className="flex items-center border-2 border-[#1F1127] rounded-full bg-white shadow-neo-sm">
+                      {/* Quantity Stepper */}
+                      <div className="flex items-center gap-2 mt-2">
                         <button
-                          type="button"
-                          onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                          className="w-6 h-6 flex items-center justify-center hover:bg-[#FFE842] rounded-l-full cursor-pointer text-[#1F1127]"
+                          onClick={() => updateQuantity(item.product.id, -1)}
+                          className="w-6 h-6 rounded-md border border-[#E8E2D7] hover:border-[#1A1A1A] flex items-center justify-center text-xs transition-colors"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
-                        <span className="w-7 text-center font-mono font-black text-xs text-[#1F1127]">
+                        <span className="font-mono text-xs font-medium w-4 text-center">
                           {item.quantity}
                         </span>
                         <button
-                          type="button"
-                          onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                          className="w-6 h-6 flex items-center justify-center hover:bg-[#FFE842] rounded-r-full cursor-pointer text-[#1F1127]"
+                          onClick={() => updateQuantity(item.product.id, 1)}
+                          className="w-6 h-6 rounded-md border border-[#E8E2D7] hover:border-[#1A1A1A] flex items-center justify-center text-xs transition-colors"
                         >
                           <Plus className="w-3 h-3" />
                         </button>
                       </div>
-
-                      <button
-                        type="button"
-                        onClick={() => removeFromCart(item.product.id)}
-                        className="text-[#1F1127]/60 hover:text-[#FF5E2B] p-1 cursor-pointer transition-colors"
-                        title="Remove"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
                     </div>
                   </div>
 
-                  {/* Item Total */}
-                  <span className="font-mono font-black text-sm text-[#1F1127] shrink-0">
-                    {(Number(item.product.price) * item.quantity).toFixed(0)} EGP
-                  </span>
+                  <div className="text-right rtl:text-left flex flex-col items-end justify-between self-stretch">
+                    <button
+                      onClick={() => removeFromCart(item.product.id)}
+                      className="text-[#9B938A] hover:text-[#C84B5B] transition-colors p-1"
+                      title="Remove"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                    <span className="font-medium text-sm text-[#1A1A1A]">
+                      EGP {(item.product.price * item.quantity).toLocaleString()}
+                    </span>
+                  </div>
                 </div>
               ))
             )}
+
+            {/* Order Note */}
+            {items.length > 0 && (
+              <div className="pt-2">
+                <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-2">
+                  {isRtl ? 'ملاحظة خاصة بالطلب' : 'Add a note to your order'}
+                </label>
+                <textarea
+                  value={orderNote}
+                  onChange={(e) => setOrderNote(e.target.value)}
+                  placeholder={isRtl ? 'تعليمات خاصة بالتغليف أو التوصيل...' : 'Special gift instructions or delivery requests...'}
+                  rows={2}
+                  className="w-full text-xs p-3 rounded-xl border border-[#E8E2D7] bg-white focus:outline-none focus:border-[#1A1A1A] transition-colors resize-none placeholder:text-[#9B938A]"
+                />
+              </div>
+            )}
           </div>
 
-          {/* Footer & Checkout Action (Figma Frame 2) */}
+          {/* Footer & Checkout Summary */}
           {items.length > 0 && (
-            <div className="p-6 border-t-2 border-[#1F1127] bg-[#F5EFE6] space-y-4">
-              {/* Promo Code Input */}
+            <div className="p-6 border-t border-[#E8E2D7] bg-[#F4EFEA]/60 space-y-4">
+              {/* Promo Code Form */}
               <form onSubmit={handleApplyPromo} className="flex gap-2">
                 <input
                   type="text"
                   value={promoInput}
-                  onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
-                  placeholder="PROMO CODE (e.g. JOY10)"
-                  className="flex-1 py-2 px-3 rounded-full border-2 border-[#1F1127] bg-white text-xs font-mono font-bold text-[#1F1127] uppercase focus:outline-none"
+                  onChange={(e) => setPromoInput(e.target.value)}
+                  placeholder={isRtl ? 'كود الخصم (مثل TOOMAKT10)' : 'Promo code (e.g. TOOMAKT10)'}
+                  className="flex-1 text-xs px-3.5 py-2.5 bg-white border border-[#E8E2D7] rounded-full focus:outline-none focus:border-[#1A1A1A] uppercase tracking-wider"
                 />
                 <button
                   type="submit"
-                  className="btn-neo bg-[#FFE842] text-[#1F1127] px-4 py-2 text-xs font-black uppercase hover:bg-black hover:text-white cursor-pointer"
+                  className="px-4 py-2 bg-[#1A1A1A] hover:bg-[#3C1322] text-[#FAF7F2] rounded-full text-xs font-medium transition-colors"
                 >
-                  APPLY
+                  {isRtl ? 'تطبيق' : 'Apply'}
                 </button>
               </form>
-
+              {promoError && (
+                <p className="text-[11px] text-[#C84B5B]">
+                  {isRtl ? 'كود غير صحيح' : 'Invalid promo code. Try TOOMAKT10'}
+                </p>
+              )}
               {promoApplied && (
-                <div className="text-[11px] font-bold text-[#2E7D32] flex items-center gap-1">
+                <p className="text-[11px] text-[#88C057] flex items-center gap-1 font-medium">
                   <Check className="w-3.5 h-3.5" />
-                  <span>Promo code applied! (-{discountAmount.toFixed(0)} EGP)</span>
-                </div>
+                  {isRtl ? 'تم تطبيق الخصم بنجاح!' : 'Promo applied successfully!'}
+                </p>
               )}
 
-              {/* Subtotal Row */}
-              <div className="flex items-center justify-between text-sm font-bold text-[#1F1127]">
-                <span className="uppercase tracking-wider">Subtotal:</span>
-                <span className="font-display font-black text-xl text-[#1F1127]">
-                  {subtotal.toFixed(0)} EGP
-                </span>
+              {/* Subtotal, Shipping, Total */}
+              <div className="space-y-1.5 text-xs text-[#736B63] pt-2">
+                <div className="flex justify-between">
+                  <span>{isRtl ? 'المجموع الفرعي' : 'Subtotal'}</span>
+                  <span className="font-mono text-[#1A1A1A]">EGP {subtotal.toLocaleString()}</span>
+                </div>
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-[#88C057]">
+                    <span>{isRtl ? 'الخصم' : 'Discount'}</span>
+                    <span className="font-mono">-EGP {discountAmount.toLocaleString()}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span>{isRtl ? 'الشحن' : 'Shipping'}</span>
+                  <span className="font-mono text-[#1A1A1A]">
+                    {shippingCost === 0 ? (isRtl ? 'مجاني' : 'FREE') : `EGP ${shippingCost}`}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm font-semibold text-[#1A1A1A] pt-2 border-t border-[#E8E2D7]">
+                  <span>{isRtl ? 'الإجمالي التقديري' : 'Estimated Total'}</span>
+                  <span className="font-mono">EGP {grandTotal.toLocaleString()}</span>
+                </div>
               </div>
 
               {/* Checkout CTA */}
               <button
-                type="button"
                 onClick={handleProceedCheckout}
-                className="btn-neo w-full bg-[#FF5E2B] text-white py-4 text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-[#ff480e] shadow-neo cursor-pointer"
+                className="w-full btn-primary py-3 text-sm font-medium tracking-wide flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>PROCEED TO CHECKOUT</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>{isRtl ? 'المتابعة إلى إتمام الطلب' : 'Continue to checkout'}</span>
               </button>
+
+              {/* Trust badges */}
+              <div className="flex items-center justify-center gap-4 text-[10px] text-[#736B63] pt-1">
+                <div className="flex items-center gap-1">
+                  <Leaf className="w-3.5 h-3.5 text-[#88C057]" />
+                  <span>{isRtl ? 'تغليف قابل للتدوير' : 'Recyclable packaging'}</span>
+                </div>
+                <span>·</span>
+                <div className="flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#3C1322]" />
+                  <span>{isRtl ? 'دفع آمن بالاستلام أو إنستاباي' : 'Cash or InstaPay'}</span>
+                </div>
+              </div>
             </div>
           )}
+
         </motion.div>
       </div>
-    </div>
+    </AnimatePresence>
   );
 };

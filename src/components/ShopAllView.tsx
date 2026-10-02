@@ -1,251 +1,211 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, Plus, Check, Eye, Sun, ArrowRight } from 'lucide-react';
+import { Search, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FLAVOR_VAULT_PRODUCTS } from '../data/toomaktData';
+import { PRODUCTS, CATEGORIES } from '../data/toomaktData';
 import { Product } from '../types';
-import { useCart } from '../context/CartContext';
+import { ProductCard } from './ProductCard';
 import { useLanguage } from '../context/LanguageContext';
-import { CustomBoxBuilderSection } from './CustomBoxBuilderSection';
 
 interface ShopAllViewProps {
   onSelectProduct: (p: Product) => void;
   initialCategory?: string;
+  onNavigateHome?: () => void;
 }
 
-export const ShopAllView: React.FC<ShopAllViewProps> = ({ onSelectProduct }) => {
-  const { addToCart } = useCart();
+export const ShopAllView: React.FC<ShopAllViewProps> = ({
+  onSelectProduct,
+  initialCategory = 'all',
+  onNavigateHome
+}) => {
   const { isRtl } = useLanguage();
-  const [selectedTag, setSelectedTag] = useState<string>('ALL');
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [justAddedId, setJustAddedId] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc'>('featured');
 
-  const filterTags = ['ALL', 'CHEWY', 'BRIGHT', 'BUTTERY', 'GIFTABLY'];
+  const filteredProducts = PRODUCTS.filter(p => {
+    // Category match
+    if (selectedCategory !== 'all') {
+      const cat = (p.category || '').toLowerCase();
+      if (cat !== selectedCategory && !cat.includes(selectedCategory)) {
+        return false;
+      }
+    }
 
-  const allProducts = FLAVOR_VAULT_PRODUCTS;
-
-  const filteredProducts = allProducts.filter(p => {
     // Search query match
     if (searchQuery.trim() !== '') {
       const q = searchQuery.toLowerCase();
       const match =
         p.name.toLowerCase().includes(q) ||
         p.tagline.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
         p.fruitNotes.some(n => n.toLowerCase().includes(q));
       if (!match) return false;
     }
 
-    // Tag match
-    if (selectedTag === 'ALL') return true;
-    if (selectedTag === 'CHEWY') return p.category === 'chewy' || (p.tags && p.tags.includes('CHEWY'));
-    if (selectedTag === 'BRIGHT') return p.category === 'bright' || (p.tags && p.tags.includes('BRIGHT'));
-    if (selectedTag === 'BUTTERY') return p.category === 'buttery' || (p.tags && p.tags.includes('BUTTERY'));
-    if (selectedTag === 'GIFTABLY') return p.category === 'giftably' || (p.tags && p.tags.includes('GIFTABLY'));
-
     return true;
+  }).sort((a, b) => {
+    if (sortBy === 'price-asc') return a.price - b.price;
+    if (sortBy === 'price-desc') return b.price - a.price;
+    return 0; // 'featured' keep original order
   });
 
-  const handleQuickAdd = (p: Product, e: React.MouseEvent) => {
-    e.stopPropagation();
-    addToCart(p, 1);
-    setJustAddedId(p.id);
-    setTimeout(() => setJustAddedId(null), 1500);
-  };
-
   return (
-    <div className="bg-[#F5EFE6] text-[#1F1127] min-h-screen">
+    <div className="bg-[#FAF7F2] text-[#1A1A1A] min-h-screen">
       
-      {/* Header with Weather Graphic (Figma Frame 4) */}
-      <section className="relative pt-12 sm:pt-16 pb-12 px-4 sm:px-6 lg:px-8 border-b-2 border-[#1F1127] overflow-hidden bg-[#F5EFE6]">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8">
-          
-          {/* Left Text */}
-          <div className="max-w-xl text-center lg:text-left">
-            <span className="badge-neo bg-[#FFE842] text-[#1F1127] mb-3">
-              {isRtl ? 'معمل النكهات / الكتالوج الكامل' : 'TOOMAKT / TASTE LAB'}
-            </span>
-            <h1 className="font-display text-4xl sm:text-6xl font-black text-[#1F1127] tracking-tight uppercase leading-[0.98] mb-4">
-              {isRtl ? (
-                <>تسوق منظومة <br /><span className="text-[#FF5E2B]">الطقس بأكملها.</span></>
-              ) : (
-                <>SHOP THE WHOLE <br /><span className="text-[#FF5E2B]">WEATHER SYSTEM.</span></>
-              )}
-            </h1>
-            <p className="text-base sm:text-lg font-bold text-[#1F1127]/80">
-              {isRtl
-                ? 'كل قضمة مشرقة وزبدية في مكان واحد. اختر توقعاتك لليوم.'
-                : 'Every bright, buttery bite in one place. Pick your forecast.'}
-            </p>
+      {/* Editorial Header (Figma Frame 4) */}
+      <section className="pt-10 pb-12 px-4 sm:px-6 lg:px-8 border-b border-[#E8E2D7] bg-[#FAF7F2]">
+        <div className="max-w-7xl mx-auto">
+          {/* Breadcrumbs */}
+          <div className="flex items-center gap-2 text-xs font-mono text-[#736B63] uppercase tracking-wider mb-4">
+            <button
+              onClick={onNavigateHome}
+              className="hover:text-[#1A1A1A] transition-colors cursor-pointer"
+            >
+              TOOMAKT
+            </button>
+            <span>/</span>
+            <span className="text-[#1A1A1A] font-semibold">COLLECTION</span>
           </div>
 
-          {/* Right Header Graphic (Sun Dial + Flavor Spheres) */}
-          <div className="relative w-64 sm:w-80 h-44 sm:h-56 flex items-center justify-center shrink-0">
-            {/* Sun Dial */}
-            <div className="w-32 h-32 rounded-full bg-[#FFE842] border-3 border-[#1F1127] shadow-neo flex flex-col items-center justify-center text-center p-2">
-              <Sun className="w-8 h-8 text-[#FF5E2B] animate-spin" style={{ animationDuration: '20s' }} />
-              <span className="text-[10px] font-black uppercase text-[#1F1127] mt-1">100% JOY</span>
-            </div>
-
-            {/* Overlapping Floating Weather Bubbles */}
-            <div className="absolute top-2 right-4 w-18 h-18 rounded-full bg-[#FF4D8D] border-2 border-[#1F1127] shadow-neo-sm flex items-center justify-center text-white text-[9px] font-black uppercase text-center p-1 animate-float">
-              BERRY
-            </div>
-            <div className="absolute bottom-2 left-4 w-20 h-20 rounded-full bg-[#C4E86E] border-2 border-[#1F1127] shadow-neo-sm flex items-center justify-center text-[#1F1127] text-[10px] font-black uppercase text-center p-1 animate-float-reverse">
-              CITRUS
-            </div>
-            <div className="absolute -bottom-2 right-8 w-16 h-16 rounded-full bg-[#4AD4DA] border-2 border-[#1F1127] shadow-neo-sm flex items-center justify-center text-[#1F1127] text-[9px] font-black uppercase text-center p-1">
-              TROPIC
-            </div>
-          </div>
-
+          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-normal text-[#1A1A1A] tracking-tight mb-3">
+            {isRtl ? 'المجموعة الحرفية' : 'The collection'}
+          </h1>
+          <p className="text-base sm:text-lg text-[#736B63] font-light max-w-xl">
+            {isRtl
+              ? 'حلوى التوفي بالفواكه الطبيعية، مصنوعة يدوياً في دفعات صغيرة.'
+              : 'Fruit-led toffee, made in small batches.'}
+          </p>
         </div>
       </section>
 
-      {/* Filter & Search Bar Strip (Figma Frame 4) */}
-      <section className="py-6 px-4 sm:px-6 lg:px-8 border-b-2 border-[#1F1127] bg-[#FFFDF5] sticky top-[62px] z-30 shadow-neo-sm">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      {/* Filter & Controls Bar */}
+      <section className="sticky top-16 z-30 bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#E8E2D7] py-4 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           
-          {/* Filter Pills */}
-          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-            {filterTags.map((tag) => {
-              const isSelected = selectedTag === tag;
+          {/* Category Pills */}
+          <div className="flex flex-wrap items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+            {CATEGORIES.map(cat => {
+              const isActive = selectedCategory === cat.id;
               return (
                 <button
-                  key={tag}
-                  type="button"
-                  onClick={() => setSelectedTag(tag)}
-                  className={`px-4 py-1.5 rounded-full border-2 border-[#1F1127] text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
-                    isSelected
-                      ? 'bg-[#1F1127] text-[#FFE842] shadow-neo-sm'
-                      : 'bg-[#F5EFE6] text-[#1F1127] hover:bg-[#FFE842]'
-                  }`}
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`category-pill cursor-pointer ${isActive ? 'active' : ''}`}
                 >
-                  {tag}
+                  {isRtl ? cat.arabicName : cat.name}
                 </button>
               );
             })}
           </div>
 
-          {/* Search Input */}
-          <div className="relative w-full md:w-72">
-            <div className="flex items-center gap-2 bg-[#F5EFE6] rounded-full border-2 border-[#1F1127] px-3.5 py-1.5 shadow-neo-sm">
-              <Search className="w-4 h-4 text-[#1F1127] shrink-0" />
+          {/* Search & Sort Controls */}
+          <div className="flex items-center gap-3">
+            {/* Search Input */}
+            <div className="relative flex-1 sm:w-56">
+              <Search className="w-3.5 h-3.5 text-[#736B63] absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search flavors..."
-                className="w-full bg-transparent text-xs font-bold text-[#1F1127] placeholder-[#1F1127]/60 focus:outline-none"
+                placeholder={isRtl ? 'تصفية...' : 'Filter collection...'}
+                className="w-full text-xs pl-8 pr-3 rtl:pl-3 rtl:pr-8 py-2 rounded-full border border-[#E8E2D7] bg-white focus:outline-none focus:border-[#1A1A1A] transition-colors"
               />
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="relative shrink-0">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                aria-label={isRtl ? 'ترتيب المنتجات' : 'Sort products'}
+                className="text-xs px-3.5 py-2 rounded-full border border-[#E8E2D7] bg-white text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A] transition-colors cursor-pointer"
+              >
+                <option value="featured">{isRtl ? 'المميز أولاً' : 'Featured'}</option>
+                <option value="price-asc">{isRtl ? 'السعر: من الأقل للأعلى' : 'Price: Low to High'}</option>
+                <option value="price-desc">{isRtl ? 'السعر: من الأعلى للأقل' : 'Price: High to Low'}</option>
+              </select>
             </div>
           </div>
 
         </div>
       </section>
 
-      {/* 9-Item Neo-Brutalist Grid (Figma Frame 4) */}
-      <section className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {filteredProducts.map((product, index) => {
-            const isJustAdded = justAddedId === product.id;
-            const isDarkCard = product.cardBgColor === '#1F1127';
+      {/* Catalog Grid */}
+      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          
+          <div className="mb-6 flex justify-between items-center text-xs text-[#736B63]">
+            <span>
+              {isRtl
+                ? `عرض ${filteredProducts.length} من إجمالي ${PRODUCTS.length} منتجات`
+                : `Showing ${filteredProducts.length} of ${PRODUCTS.length} items`}
+            </span>
+          </div>
 
-            return (
-              <motion.div
-                key={product.id}
-                whileHover={{ y: -6 }}
-                transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                onClick={() => onSelectProduct(product)}
-                className={`group rounded-2xl border-2 border-[#1F1127] shadow-neo hover:shadow-neo-lg transition-all p-6 flex flex-col justify-between cursor-pointer select-none overflow-hidden min-h-[380px] ${
-                  isDarkCard ? 'text-white' : 'text-[#1F1127]'
-                }`}
-                style={{ backgroundColor: product.cardBgColor || '#FFE842' }}
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-20 bg-white rounded-2xl border border-[#E8E2D7] p-8">
+              <h3 className="font-serif text-xl mb-2 text-[#1A1A1A]">
+                {isRtl ? 'لا توجد منتجات مطابقة' : 'No items match your filter'}
+              </h3>
+              <p className="text-xs text-[#736B63] mb-6 font-light">
+                {isRtl ? 'حاول تغيير معايير البحث أو تصفح كل النكهات' : 'Try resetting your search query or selecting All.'}
+              </p>
+              <button
+                onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
+                className="btn-primary text-xs"
               >
-                {/* Header Tag / Badge */}
-                <div className="flex items-center justify-between mb-4">
-                  <span
-                    className={`badge-neo text-[10px] px-2.5 py-0.5 ${
-                      isDarkCard ? 'bg-[#FFE842] text-[#1F1127]' : 'bg-[#1F1127] text-white'
-                    }`}
+                {isRtl ? 'إعادة ضبط الفلاتر' : 'Reset filters'}
+              </button>
+            </div>
+          ) : (
+            <motion.div
+              layout
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+            >
+              <AnimatePresence>
+                {filteredProducts.map(product => (
+                  <motion.div
+                    key={product.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3 }}
                   >
-                    {product.badge || `0${index + 1}`}
-                  </span>
-                  <span className="text-[11px] font-mono font-bold opacity-80">
-                    45S CHEW
-                  </span>
-                </div>
+                    <ProductCard
+                      product={product}
+                      onSelectProduct={onSelectProduct}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          )}
 
-                {/* Candy Stage Graphic */}
-                <div className="relative aspect-4/3 rounded-xl border-2 border-[#1F1127] bg-[#FFFDF5] p-4 flex items-center justify-center overflow-hidden mb-6 shadow-neo-sm group-hover:scale-102 transition-transform">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-contain filter drop-shadow group-hover:rotate-2 transition-transform"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-[#1F1127]/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="badge-neo bg-[#FFFDF5] text-[#1F1127] text-[10px]">
-                      <Eye className="w-3 h-3 mr-1" />
-                      QUICK VIEW
-                    </span>
-                  </div>
-                </div>
+          {/* Bottom Help Toolbar (Frame 4) */}
+          <div className="mt-20 p-8 rounded-2xl border border-[#E8E2D7] bg-[#F4EFEA] text-center max-w-2xl mx-auto">
+            <h4 className="font-serif text-xl text-[#1A1A1A] mb-2 font-normal">
+              {isRtl ? 'هل تحتاج إلى مساعدة في الاختيار؟' : 'Need help choosing?'}
+            </h4>
+            <p className="text-xs sm:text-sm text-[#736B63] font-light mb-4">
+              {isRtl
+                ? 'قارن بين النكهات أو استشر خبير الحلويات لتنسيق هدية خاصة.'
+                : 'Compare fruit profiles or speak with our confectionery concierge for curated corporate or wedding gifts.'}
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <button
+                onClick={() => {
+                  window.open('https://wa.me/201016869608', '_blank');
+                }}
+                className="btn-secondary text-xs font-medium"
+              >
+                {isRtl ? 'تواصل عبر واتساب ←' : 'Concierge on WhatsApp →'}
+              </button>
+            </div>
+          </div>
 
-                {/* Name & Tagline */}
-                <div>
-                  <h3
-                    className={`font-display text-xl sm:text-2xl font-black uppercase leading-tight line-clamp-1 ${
-                      isDarkCard ? 'text-white' : 'text-[#1F1127]'
-                    }`}
-                  >
-                    {product.name}
-                  </h3>
-                  <p
-                    className={`text-xs sm:text-sm font-bold mt-1 line-clamp-1 ${
-                      isDarkCard ? 'text-white/80' : 'text-[#1F1127]/80'
-                    }`}
-                  >
-                    {product.tagline}
-                  </p>
-                </div>
-
-                {/* Price & Add Action Row */}
-                <div className="pt-4 mt-4 border-t-2 border-[#1F1127] flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider opacity-70 block">
-                      PRICE
-                    </span>
-                    <span
-                      className={`font-display font-black text-lg ${
-                        isDarkCard ? 'text-[#FFE842]' : 'text-[#1F1127]'
-                      }`}
-                    >
-                      {product.price} EGP
-                    </span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={(e) => handleQuickAdd(product, e)}
-                    className={`w-10 h-10 rounded-full border-2 border-[#1F1127] flex items-center justify-center transition-all cursor-pointer ${
-                      isJustAdded
-                        ? 'bg-[#C4E86E] text-[#1F1127]'
-                        : isDarkCard
-                        ? 'bg-[#FFE842] text-[#1F1127] hover:bg-white'
-                        : 'bg-[#1F1127] text-white hover:bg-[#FF5E2B] shadow-neo-sm'
-                    }`}
-                    title="Add to Bag"
-                  >
-                    {isJustAdded ? <Check className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
-                  </button>
-                </div>
-              </motion.div>
-            );
-          })}
         </div>
       </section>
-
-      {/* Embedded Custom Box Builder (Figma Frame 4 bottom) */}
-      <CustomBoxBuilderSection />
 
     </div>
   );

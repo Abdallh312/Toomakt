@@ -1,4 +1,4 @@
-export type ProductCategory = 'all' | 'chewy' | 'bright' | 'buttery' | 'giftably' | 'berries' | 'tropical' | 'citrus' | 'gifts' | 'fruits' | 'butter' | 'coffee' | 'eclairs' | 'family';
+export type ProductCategory = 'all' | 'mango' | 'berry' | 'citrus' | 'gift-boxes' | 'chewy' | 'bright' | 'buttery' | 'giftably' | 'berries' | 'tropical' | 'gifts' | string;
 
 export interface Product {
   id: string;

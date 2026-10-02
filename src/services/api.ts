@@ -1,4 +1,5 @@
 // toomakt Unified API Client — Directly Connected to Supabase PostgreSQL Database
+import { PRODUCTS } from '../data/toomaktData';
 
 const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
@@ -133,23 +134,26 @@ export const api = {
       );
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
-      return data.map((p: any) => ({
-        ...p,
-        category_name: p.category?.name || 'Confectionery',
-        category_slug: p.category?.slug || 'confectionery',
-        flavor_name: p.name,
-        flavor_color: p.accent_color || '#C26715',
-        status: p.in_stock ? 'published' : 'draft',
-        stock_quantity: p.stock_quantity ?? 50,
-        in_stock: (p.stock_quantity ?? 50) > 0,
-        price: Number(p.price || 0),
-        variants: [
-          { id: `${p.id}-v1`, title: p.weight || '250g Pouch', price: p.price, stock_quantity: p.stock_quantity ?? 50 },
-        ],
-      }));
+      if (data && data.length > 0) {
+        return data.map((p: any) => ({
+          ...p,
+          category_name: p.category?.name || 'Confectionery',
+          category_slug: p.category?.slug || 'confectionery',
+          flavor_name: p.name,
+          flavor_color: p.accent_color || '#FFD147',
+          status: p.in_stock ? 'published' : 'draft',
+          stock_quantity: p.stock_quantity ?? 50,
+          in_stock: (p.stock_quantity ?? 50) > 0,
+          price: Number(p.price || 0),
+          variants: [
+            { id: `${p.id}-v1`, title: p.weight || '250g Pouch', price: p.price, stock_quantity: p.stock_quantity ?? 50 },
+          ],
+        }));
+      }
+      return PRODUCTS;
     } catch (e) {
-      console.error('Error fetching products from Supabase:', e);
-      return [];
+      console.warn('Supabase products unavailable, using local atelier products:', e);
+      return PRODUCTS;
     }
   },
 

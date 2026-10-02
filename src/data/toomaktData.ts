@@ -1,396 +1,321 @@
-import { Product, BundleItem, Review } from '../types';
+import { Product, Review, BundleItem } from '../types';
 
-export interface ProductLine {
+export interface CategoryItem {
   id: string;
-  title: string;
-  arabicTitle: string;
-  category: string;
-  description: string;
-  image: string;
-  highlights: string;
-  foilBadge: string;
-  tag: string;
-  samplePrice: number;
+  name: string;
+  arabicName: string;
 }
 
-export const TOOMAKT_PRODUCT_LINES: ProductLine[] = [
-  {
-    id: 'fruit-flavors',
-    title: 'Fruit Flavors & Fruity Candy',
-    arabicTitle: 'توماكت كاندي الفواكه المشكلة',
-    category: 'Fruit Toffee / Fruity Candy',
-    description: 'High-resolution artisan fruit toffee with vibrant layers of sun-ripened orchard purée and European butter.',
-    image: '/images/toomakt/cat_fruity_candy.webp',
-    highlights: 'High-resolution detail shot of colorful, individually wrapped fruit candies.',
-    foilBadge: '100% Real Fruit Purée',
-    tag: 'Fruity Best Seller',
-    samplePrice: 22.00
-  },
-  {
-    id: 'butter-milk',
-    title: 'Butter & Milk Toffee Line',
-    arabicTitle: 'توماكت حليب وبتر كاندي فاخر',
-    category: 'Toffee Milk / Vanilla Cream',
-    description: 'Crisp, velvety soft milk toffee crafted with slow-simmered browned butter and European sweet cream.',
-    image: '/images/toomakt/cat_butter_milk_toffee.webp',
-    highlights: 'Crisp, professional packaging display featuring blue and silver premium foil wrappers.',
-    foilBadge: 'Grass-Fed Butter Cream',
-    tag: 'Classic Gold Medal',
-    samplePrice: 24.00
-  },
-  {
-    id: 'coffee-cappuccino',
-    title: 'Coffee & Cappuccino Line',
-    arabicTitle: 'توماكت قهوة وكابتشينو كاندي',
-    category: 'Coffee & Cappuccino Bonbons',
-    description: 'Rich slow-roasted Arabica coffee extracts blended into decadent caramelized toffee bonbons.',
-    image: '/images/toomakt/cat_coffee_cappuccino.webp',
-    highlights: 'Clean graphic layout with rich coffee bean and chocolate tones.',
-    foilBadge: 'Espresso Roasted Bean',
-    tag: 'Connoisseur Edition',
-    samplePrice: 26.00
-  },
-  {
-    id: 'eclairs-peanut',
-    title: 'Eclairs & Stuffed Peanut Line',
-    arabicTitle: 'إكليرز وشوكولاتة محشوة بالفول السوداني',
-    category: 'Eclairs / Chocolate-Stuffed Toffee',
-    description: 'Decadent chocolate-stuffed toffee eclairs layered with crunchy roasted peanut praline center.',
-    image: '/images/toomakt/cat_eclairs_peanut.webp',
-    highlights: 'Close-up display highlighting gold foil details and rich chocolate texture.',
-    foilBadge: 'Molten Chocolate Core',
-    tag: 'Luxury Reserve',
-    samplePrice: 28.00
-  }
+export const CATEGORIES: CategoryItem[] = [
+  { id: 'all', name: 'All', arabicName: 'الكل' },
+  { id: 'mango', name: 'Mango', arabicName: 'مانجو' },
+  { id: 'berry', name: 'Berry', arabicName: 'توت' },
+  { id: 'citrus', name: 'Citrus', arabicName: 'حمضيات' },
+  { id: 'gift-boxes', name: 'Gift boxes', arabicName: 'صناديق هدايا' },
 ];
 
-export const HERO_PRODUCT: Product = {
-  id: 'mango-sunbeam',
-  name: 'Mango Sunbeam',
-  tagline: 'buttery, golden, bright',
-  description: 'Pure Alphonso mango purée slow-simmered with Normandy sweet cream butter into an explosive sunny chew.',
-  badge: 'NEW ARRIVALS / TASTE LAB',
-  badgeType: 'gold',
-  price: 220.00,
-  weight: '250g Weather Pack',
-  category: 'bright',
-  tags: ['BRIGHT', 'BUTTERY'],
-  mood: 'NEED A SUNBEAM',
-  rating: 4.98,
-  reviewsCount: 1420,
-  chewiness: 9.8,
-  fruitImpact: { label: 'Fruit Density', score: 9.9 },
-  fruitNotes: ['Alphonso Mango Nectar', 'Normandy Sweet Butter', 'Tahitian Vanilla', 'Citrus Zing'],
-  image: '/images/toomakt/cat_fruity_candy.webp',
-  accentColor: '#FF5E2B',
-  lightBgColor: '#FFE842',
-  cardBgColor: '#FFE842',
-  isPopular: true,
-  pieces_per_pack: 24
-};
-
-export const FLAVOR_VAULT_PRODUCTS: Product[] = [
+export const PRODUCTS: Product[] = [
   {
     id: 'mango-sunbeam',
     name: 'Mango Sunbeam',
-    tagline: 'buttery, golden, bright',
-    description: 'Golden sun-ripened Alphonso mangoes folded into warm European butter caramel with a crisp, clean citrus finish.',
-    badge: 'TASTE LAB NO. 01',
+    tagline: 'Creamy, bright, buttery finish.',
+    description: 'Pure Alphonso mango purée slow-simmered with Normandy sweet cream butter into an explosive sunny chew.',
+    badge: 'BEST SELLER',
     badgeType: 'gold',
-    price: 220.00,
-    weight: '250g Pack',
-    category: 'bright',
-    tags: ['BRIGHT', 'BUTTERY'],
-    mood: 'NEED A SUNBEAM',
+    price: 260.00,
+    weight: '250g Pouch',
+    category: 'mango',
+    tags: ['MANGO', 'BEST SELLER'],
+    mood: 'SUNSHINE',
     rating: 4.98,
-    reviewsCount: 1230,
+    reviewsCount: 1420,
     chewiness: 9.8,
-    fruitImpact: { label: 'Fruit Tartness', score: 9.5 },
+    fruitImpact: { label: 'Fruit Density', score: 9.9 },
     fruitNotes: ['Alphonso Mango Purée', 'Normandy Sweet Butter', 'Tahitian Vanilla', 'Citrus Zing'],
-    image: '/images/toomakt/cat_fruity_candy.webp',
-    accentColor: '#1F1127',
+    image: '/images/products/mango_sunbeam.jpg',
+    accentColor: '#FFD147',
     lightBgColor: '#FFFDF5',
-    cardBgColor: '#FFE842',
-    isPopular: true
+    cardBgColor: '#FAF7F2',
+    isPopular: true,
+    pieces_per_pack: 24,
+    stock_quantity: 85,
+    in_stock: true
   },
   {
     id: 'berry-afterglow',
     name: 'Berry Afterglow',
-    tagline: 'juicy, tart, wild',
+    tagline: 'Layered berries, delicate cream.',
     description: 'Cold-macerated wild alpine strawberries, raspberries, and dark forest berries swirling in velvety cultured sweet cream.',
-    badge: 'MOST POPULAR',
+    badge: 'POPULAR',
     badgeType: 'berry',
-    price: 230.00,
-    weight: '250g Pack',
-    category: 'chewy',
-    tags: ['CHEWY', 'BRIGHT'],
-    mood: 'SEND A LOVE NOTE',
+    price: 220.00,
+    weight: '250g Pouch',
+    category: 'berry',
+    tags: ['BERRY', 'ORGANIC'],
+    mood: 'SERENITY',
     rating: 4.99,
     reviewsCount: 1890,
     chewiness: 10.0,
-    fruitImpact: { label: 'Berry Acid Burst', score: 9.9 },
+    fruitImpact: { label: 'Berry Burst', score: 9.9 },
     fruitNotes: ['Wild Alpine Strawberries', 'Tart Forest Raspberries', 'Cultured European Cream'],
-    image: '/images/toomakt/cat_fruity_candy.webp',
-    accentColor: '#1F1127',
-    lightBgColor: '#FFFDF5',
-    cardBgColor: '#FF4D8D',
-    isPopular: true
+    image: '/images/products/berry_afterglow.jpg',
+    accentColor: '#C84B5B',
+    lightBgColor: '#FFF8F9',
+    cardBgColor: '#FAF7F2',
+    isPopular: true,
+    pieces_per_pack: 24,
+    stock_quantity: 60,
+    in_stock: true
   },
   {
     id: 'citrus-comet',
     name: 'Citrus Comet',
-    tagline: 'zesty, sparkling',
-    description: 'A dazzling cosmic spark of cold-pressed Mediterranean lemons, sun-warmed limes, and slow-churned butter toffee.',
-    badge: 'LIMITED DROP',
+    tagline: 'Bright citrus, sparkling acidity.',
+    description: 'A dazzling spark of cold-pressed Mediterranean lemons, sun-warmed limes, and slow-churned butter toffee.',
+    badge: 'FRESH PICK',
     badgeType: 'limited',
     price: 210.00,
-    weight: '250g Pack',
-    category: 'bright',
-    tags: ['BRIGHT', 'CHEWY'],
-    mood: 'WAKE UP YOUR TONGUE',
+    weight: '250g Pouch',
+    category: 'citrus',
+    tags: ['CITRUS', 'ZESTY'],
+    mood: 'ENERGIZING',
     rating: 4.95,
     reviewsCount: 840,
     chewiness: 9.6,
     fruitImpact: { label: 'Citrus Spark', score: 9.8 },
     fruitNotes: ['Sicilian Lemon Zest', 'Mediterranean Lime Purée', 'Whipped Sweet Butter'],
-    image: '/images/toomakt/cat_fruity_candy.webp',
-    accentColor: '#1F1127',
-    lightBgColor: '#FFFDF5',
-    cardBgColor: '#C4E86E'
-  },
-  {
-    id: 'peach-daydream',
-    name: 'Peach Daydream',
-    tagline: 'velvety, soft-baked, floral',
-    description: 'White orchard peaches infused with wild apricot honey and slow browned French butter. Tender and fragrant.',
-    badge: 'SUMMER FAVORITE',
-    badgeType: 'gold',
-    price: 200.00,
-    weight: '250g Pack',
-    category: 'buttery',
-    tags: ['BUTTERY', 'CHEWY'],
-    mood: 'GO FULL TROPICAL',
-    rating: 4.94,
-    reviewsCount: 710,
-    chewiness: 9.5,
-    fruitImpact: { label: 'Peach Velvet', score: 9.6 },
-    fruitNotes: ['Sun-Ripened White Peach', 'Orchard Apricot Nectar', 'Browned Butter Caramel'],
-    image: '/images/toomakt/cat_butter_milk_toffee.webp',
-    accentColor: '#1F1127',
-    lightBgColor: '#FFFDF5',
-    cardBgColor: '#FFB088'
-  },
-  {
-    id: 'guava-hotline',
-    name: 'Guava Hotline',
-    tagline: 'tropical, sweet-tangy rush',
-    description: 'Egyptian pink guava purée with a squeeze of ruby lime and red sea salt. A direct line to pure island bliss.',
-    badge: 'LOCAL HARVEST',
-    badgeType: 'berry',
-    price: 215.00,
-    weight: '250g Pack',
-    category: 'bright',
-    tags: ['BRIGHT', 'CHEWY'],
-    mood: 'GO FULL TROPICAL',
-    rating: 4.97,
-    reviewsCount: 960,
-    chewiness: 9.7,
-    fruitImpact: { label: 'Guava Rush', score: 9.9 },
-    fruitNotes: ['Egyptian Pink Guava', 'Ruby Citrus Blossom', 'Maldon Sea Salt'],
-    image: '/images/toomakt/cat_fruity_candy.webp',
-    accentColor: '#1F1127',
-    lightBgColor: '#FFFDF5',
-    cardBgColor: '#FF6B6B'
-  },
-  {
-    id: 'pineapple-frequency',
-    name: 'Pineapple Frequency',
-    tagline: 'electric, sun-drenched chew',
-    description: 'High-energy caramelized golden pineapple with Tahitian sweet cream and an electric pop of fruit acidity.',
-    badge: 'TASTE LAB DROP',
-    badgeType: 'primary',
-    price: 225.00,
-    weight: '250g Pack',
-    category: 'chewy',
-    tags: ['CHEWY', 'BRIGHT'],
-    mood: 'GO FULL TROPICAL',
-    rating: 4.96,
-    reviewsCount: 820,
-    chewiness: 9.9,
-    fruitImpact: { label: 'Pineapple Voltage', score: 9.7 },
-    fruitNotes: ['Caramelized Golden Pineapple', 'Tahitian Sweet Cream', 'Crushed Cane Sugar'],
-    image: '/images/toomakt/cat_fruity_candy.webp',
-    accentColor: '#1F1127',
-    lightBgColor: '#FFFDF5',
-    cardBgColor: '#4AD4DA'
+    image: '/images/products/citrus_comet.jpg',
+    accentColor: '#88C057',
+    lightBgColor: '#F7FCF2',
+    cardBgColor: '#FAF7F2',
+    isPopular: false,
+    pieces_per_pack: 24,
+    stock_quantity: 95,
+    in_stock: true
   },
   {
     id: 'sun-chaser-box',
-    name: 'The Sun Chaser Box',
-    tagline: '4-flavor signature weather box',
-    description: 'The definitive toomakt sampler box featuring Mango Sunbeam, Berry Afterglow, Citrus Comet, and Peach Daydream.',
-    badge: 'BEST VALUE BOX',
+    name: 'Sun Chaser Box',
+    tagline: 'A bright gathering of fruit-forward favorites.',
+    description: 'A curated deluxe gift collection featuring our finest fruit toffees in a keepsake gold-embossed presentation box.',
+    badge: 'DELUXE BOX',
     badgeType: 'gold',
-    price: 750.00,
-    weight: '1000g Grand Box',
-    category: 'giftably',
-    tags: ['GIFTABLY', 'ALL'],
-    mood: 'NEED A SUNBEAM',
+    price: 1190.00,
+    weight: '1000g Deluxe Box',
+    category: 'gift-boxes',
+    tags: ['GIFT BOXES', 'DELUXE'],
+    mood: 'CELEBRATION',
     rating: 5.0,
-    reviewsCount: 1540,
+    reviewsCount: 650,
     chewiness: 9.8,
     fruitImpact: { label: 'Full Spectrum', score: 10.0 },
-    fruitNotes: ['Mango Sunbeam', 'Berry Afterglow', 'Citrus Comet', 'Peach Daydream'],
-    image: '/images/toomakt/hero_family_showcase.webp',
-    accentColor: '#1F1127',
-    lightBgColor: '#FFFDF5',
-    cardBgColor: '#FF5E2B'
+    fruitNotes: ['Mango Sunbeam', 'Berry Afterglow', 'Citrus Comet', 'Pecan Toffee'],
+    image: '/images/products/sun_chaser_box.jpg',
+    accentColor: '#D4AF37',
+    lightBgColor: '#FCFAF2',
+    cardBgColor: '#FAF7F2',
+    isPopular: true,
+    pieces_per_pack: 48,
+    stock_quantity: 40,
+    in_stock: true
   },
   {
-    id: 'office-weather-kit',
-    name: 'Office Weather Kit',
-    tagline: 'sharing box with 48 bites',
-    description: 'Engineered to transform your entire office team into instant chew connoisseurs. Includes 48 individually sealed treats.',
-    badge: 'CORPORATE FAVORITE',
+    id: 'orchard-reserve',
+    name: 'Orchard Reserve',
+    tagline: 'Deep stone fruit, crisp caramel nuance.',
+    description: 'Hand-selected autumn orchard plums, apricots, and caramelized honey cream in an artisan wooden keepsake box.',
+    badge: 'ARTISAN RESERVE',
     badgeType: 'primary',
-    price: 980.00,
-    weight: '1200g Kit',
-    category: 'giftably',
-    tags: ['GIFTABLY', 'ALL'],
-    mood: 'SEND A LOVE NOTE',
-    rating: 4.99,
-    reviewsCount: 890,
+    price: 820.00,
+    weight: '750g Keepsake Box',
+    category: 'gift-boxes',
+    tags: ['GIFT BOXES', 'RESERVE'],
+    mood: 'KEEPSAKE',
+    rating: 4.97,
+    reviewsCount: 420,
     chewiness: 9.7,
-    fruitImpact: { label: 'Office Joy', score: 9.9 },
-    fruitNotes: ['Complete Atelier Lineup (48 Pieces)'],
-    image: '/images/toomakt/hero_family_showcase.webp',
-    accentColor: '#1F1127',
-    lightBgColor: '#FFFDF5',
-    cardBgColor: '#B497D6'
+    fruitImpact: { label: 'Rich Orchard', score: 9.9 },
+    fruitNotes: ['Sun-Dried Apricots', 'Spiced Damson Plum', 'Wild Clover Honey Butter'],
+    image: '/images/products/orchard_reserve.jpg',
+    accentColor: '#8D6E63',
+    lightBgColor: '#FBF8F5',
+    cardBgColor: '#FAF7F2',
+    isPopular: false,
+    pieces_per_pack: 36,
+    stock_quantity: 35,
+    in_stock: true
   },
   {
-    id: 'build-own-forecast',
-    name: 'Build Your Own Forecast',
-    tagline: 'custom 4-pack box creator',
-    description: 'Select your base, pick any 4 fruit weather profiles, and personalize the sleeve with your own custom name.',
-    badge: 'INTERACTIVE BUILDER',
-    badgeType: 'gold',
-    price: 850.00,
-    weight: '1000g Custom Box',
-    category: 'giftably',
-    tags: ['GIFTABLY', 'ALL'],
-    mood: 'GO FULL TROPICAL',
-    rating: 5.0,
-    reviewsCount: 2130,
+    id: 'evening-citrus',
+    name: 'Evening Citrus',
+    tagline: 'Blood orange, bergamot, dark molasses.',
+    description: 'Late-harvest Sicilian blood orange and floral bergamot infused with golden clover honey and browned butter toffee.',
+    badge: 'LIMITED EDITION',
+    badgeType: 'limited',
+    price: 310.00,
+    weight: '250g Pouch',
+    category: 'citrus',
+    tags: ['CITRUS', 'LIMITED'],
+    mood: 'EVENING',
+    rating: 4.96,
+    reviewsCount: 510,
     chewiness: 9.8,
-    fruitImpact: { label: 'Personal Match', score: 10.0 },
-    fruitNotes: ['Custom Curated 4 Flavors', 'Personalized Box Sleeve'],
-    image: '/images/toomakt/hero_family_showcase.webp',
-    accentColor: '#FFFDF5',
-    lightBgColor: '#1F1127',
-    cardBgColor: '#1F1127'
+    fruitImpact: { label: 'Dark Citrus', score: 9.9 },
+    fruitNotes: ['Sicilian Blood Orange', 'Calabrian Bergamot', 'Raw Cane Molasses'],
+    image: '/images/products/evening_citrus.jpg',
+    accentColor: '#D35400',
+    lightBgColor: '#FDF6F0',
+    cardBgColor: '#FAF7F2',
+    isPopular: false,
+    pieces_per_pack: 24,
+    stock_quantity: 50,
+    in_stock: true
   }
 ];
 
-export const GRAND_CAROUSEL_BOX: BundleItem = {
-  id: 'grand-carousel-box',
-  title: 'The Sun Chaser Box — Signature Weather Box',
-  category: 'BEST SELLER HARVEST',
-  badge: 'Complete 4-Flavor Weather Assortment',
-  description: 'Our bespoke collector assortment presenting all flagship fruit weather systems: Mango Sunbeam, Berry Afterglow, Citrus Comet, and Peach Daydream.',
-  price: 750.00,
-  rating: 4.99,
-  reviewCount: 1540,
-  image: '/images/toomakt/hero_family_showcase.webp',
-  weight: '1000G PRESENTATION BOX'
-};
+export const HERO_PRODUCT = PRODUCTS[0];
+export const FLAVOR_VAULT_PRODUCTS = PRODUCTS;
 
-export const CROWD_FAVORITES_ITEMS: BundleItem[] = [
+export const APPROACH_PILLARS = [
   {
-    id: 'mango-sunbeam-item',
-    title: 'Mango Sunbeam Pack',
-    category: 'Fruit Weather Line',
-    description: 'Buttery, golden, bright fruit chew with pure Alphonso mango purée.',
-    price: 220.00,
-    rating: 5.0,
-    reviewCount: 1230,
-    image: '/images/toomakt/cat_fruity_candy.webp',
-    weight: '250g Pack'
+    number: '01',
+    title: 'Real fruit',
+    arabicTitle: 'فاكهة طبيعية',
+    description: 'Bright, natural fruit flavor balanced with a soft, buttery finish.',
+    arabicDescription: 'نكهة فاكهة طبيعية نقية متوازنة مع لمسة زبدية أوروبية ناعمة.'
   },
   {
-    id: 'berry-afterglow-item',
-    title: 'Berry Afterglow Pack',
-    category: 'Fruit Weather Line',
-    description: 'Wild alpine strawberries and forest raspberries in cultured sweet cream.',
-    price: 230.00,
-    rating: 4.98,
-    reviewCount: 1890,
-    image: '/images/toomakt/cat_fruity_candy.webp',
-    weight: '250g Pack'
+    number: '02',
+    title: 'Small batches',
+    arabicTitle: 'دفعات صغيرة',
+    description: 'Made slowly, laid carefully, so every piece keeps its character.',
+    arabicDescription: 'تُصنع ببطء وعناية فائقة، حتى تحافظ كل قطعة على قوامها ونكهتها الفريدة.'
   },
   {
-    id: 'citrus-comet-item',
-    title: 'Citrus Comet Pack',
-    category: 'Fruit Weather Line',
-    description: 'Zesty, sparkling Sicilian lemons and Mediterranean lime zest.',
-    price: 210.00,
-    rating: 4.99,
-    reviewCount: 840,
-    image: '/images/toomakt/cat_fruity_candy.webp',
-    weight: '250g Pack'
+    number: '03',
+    title: 'Thoughtful packaging',
+    arabicTitle: 'تغليف مدروس',
+    description: 'Considered materials and quiet details designed to be kept.',
+    arabicDescription: 'مواد قابلة لإعادة التدوير وتفاصيل أنيقة صُممت لتبقى وتُهدى.'
   }
 ];
 
-export const REVIEWS_LIST: Review[] = [
+export const RITUAL_STEPS = [
+  {
+    step: '01',
+    title: 'Choose a flavor',
+    arabicTitle: 'اختر نكهتك',
+    description: 'Follow your instinct. From bright Alphonso mango to layered alpine berries.',
+    arabicDescription: 'اتبع ذوقك من المانجو الاستوائية المشرقة إلى التوت الجبلي العميق.'
+  },
+  {
+    step: '02',
+    title: 'Open slowly',
+    arabicTitle: 'افتحها ببطء',
+    description: 'Unwrap the quiet fold. Notice the rich fruit aroma before your first bite.',
+    arabicDescription: 'افتح الغلاف برفق ولاحظ شذى الفاكهة الطبيعية قبل القرمشة الأولى.'
+  },
+  {
+    step: '03',
+    title: 'Take your time',
+    arabicTitle: 'تمهل واستمتع',
+    description: 'Let the European butter and fruit purée melt across the palate.',
+    arabicDescription: 'دع الزبدة الفاخرة وبيوريه الفاكهة يذوبان بهدوء على لسانك.'
+  },
+  {
+    step: '04',
+    title: 'Share the goodwill',
+    arabicTitle: 'شارك اللحظة',
+    description: 'Confectionery made for company, long conversations, and quiet afternoons.',
+    arabicDescription: 'حلوى صنعت للمشاركة، والأحاديث الدافئة، ولحظات الاسترخاء.'
+  }
+];
+
+export const REVIEWS: Review[] = [
   {
     id: 'rev-1',
-    author: 'Maya',
-    location: 'Cairo, Egypt',
-    role: 'Verified Foodie',
+    author: 'Nour El-Din',
+    location: 'Zamalek, Cairo',
+    role: 'Verified Buyer',
     rating: 5,
-    title: '“The mango one tastes like a holiday.”',
-    content: 'The mango one tastes like a holiday. The soft chew melts without sticking, and you can tell immediately this is real fruit purée and high-end cultured butter.',
+    title: 'The cleanest fruit toffee I have ever tasted',
+    content: 'Nothing like ordinary candy. The Alphonso mango has real acidity and the texture is remarkably smooth. Beautiful packaging as well.',
     productTag: 'Mango Sunbeam'
   },
   {
     id: 'rev-2',
-    author: 'Omar',
-    location: 'Alexandria, Egypt',
+    author: 'Yasmine Mansour',
+    location: 'New Cairo',
     role: 'Verified Buyer',
     rating: 5,
-    title: '“The box arrived looking like a tiny party.”',
-    content: 'The box arrived looking like a tiny party! The insulated cold-pack kept the candies perfectly chilled in Alexandria summer heat. The Berry Afterglow is pure obsession.',
-    productTag: 'The Sun Chaser Box'
+    title: 'The Sun Chaser Box made the perfect Ramadan gift',
+    content: 'Everyone in our family kept asking where we ordered it from. The gold embossing and variety of fruit flavors are extraordinary.',
+    productTag: 'Sun Chaser Box'
   },
   {
     id: 'rev-3',
-    author: 'Lina',
-    location: 'Giza, Egypt',
-    role: 'Verified Confection Fan',
+    author: 'Karim Fakhry',
+    location: 'Maadi',
+    role: 'Verified Buyer',
     rating: 5,
-    title: '“I bought it for a gift. Kept it.”',
-    content: 'I bought it for a gift. Kept it for myself! The texture curve is phenomenal — zero stickiness on teeth and pure explosive fruit flavor. Ordering 3 more boxes today.',
+    title: 'Sophisticated and not overly sugary',
+    content: 'You can actually taste the French butter and the citrus zest. Exceptional craft.',
     productTag: 'Citrus Comet'
   }
 ];
 
-export const CHEW_TIMELINE_STEPS = [
+export const GRAND_CAROUSEL_BOX: BundleItem = {
+  id: 'sun-chaser-box',
+  title: 'Sun Chaser Gift Box',
+  category: 'Deluxe Gift Box',
+  badge: 'BEST GIFT',
+  description: 'A bright gathering of fruit-forward favorites. Twelve individually wrapped confections in an embossed linen gift box.',
+  price: 1190.00,
+  rating: 5.0,
+  reviewCount: 650,
+  image: '/images/products/sun_chaser_box.jpg',
+  weight: '1000g Deluxe Box',
+  pieces_per_pack: 48
+};
+
+export const CROWD_FAVORITES_ITEMS: BundleItem[] = [
   {
-    time: '0s',
-    title: 'Warm Butter',
-    stage: 'Toffee Melt',
-    description: 'As the chew meets your body temperature, cultured Normandy butter releases rich dairy notes and fragrant vanilla warmth without sticking to your teeth.'
+    id: 'orchard-reserve',
+    title: 'Orchard Reserve Box',
+    category: 'Keepsake Box',
+    badge: 'Artisan',
+    description: 'Deep stone fruit, crisp caramel nuance. Eight signature pieces.',
+    price: 820.00,
+    rating: 4.97,
+    reviewCount: 420,
+    image: '/images/products/orchard_reserve.jpg',
+    weight: '750g Box',
+    pieces_per_pack: 36
   },
   {
-    time: '20s',
-    title: 'Fruit Peak',
-    stage: 'Pure Fruit Acid Burst',
-    description: 'Cold-pressed real orchard fruit purée blooms across the palate. High natural pectin creates an exhilarating burst of authentic tart fruitiness.'
+    id: 'mango-sunbeam',
+    title: 'Mango Sunbeam Duo',
+    category: 'Duo Pouch',
+    badge: 'Bestseller',
+    description: 'Two 250g pouches of Alphonso mango purée slow-simmered with Normandy sweet butter.',
+    price: 520.00,
+    rating: 4.98,
+    reviewCount: 1420,
+    image: '/images/products/mango_sunbeam.jpg',
+    weight: '500g',
+    pieces_per_pack: 48
   },
   {
-    time: '45s',
-    title: 'Crisp Toffee',
-    stage: 'Salted Finish',
-    description: 'Maldon sea salt flakes and caramelized cane sugar crystallize into a smooth, satisfying savory-sweet finish that leaves zero cloying residue.'
+    id: 'evening-citrus',
+    title: 'Evening Citrus Collection',
+    category: 'Citrus Box',
+    badge: 'Limited',
+    description: 'Blood orange, bergamot, dark molasses toffee.',
+    price: 310.00,
+    rating: 4.96,
+    reviewCount: 780,
+    image: '/images/products/evening_citrus.jpg',
+    weight: '250g',
+    pieces_per_pack: 24
   }
 ];

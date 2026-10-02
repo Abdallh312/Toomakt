@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Check, Eye } from 'lucide-react';
+import { Check, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
@@ -31,86 +31,81 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     setTimeout(() => setJustAdded(false), 1600);
   };
 
-  const isDarkCard = product.cardBgColor === '#1F1127';
-
   return (
     <motion.div
-      whileHover={{ y: -6 }}
-      transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
       onClick={() => onSelectProduct(product)}
-      className={`group rounded-2xl border-2 border-[#1F1127] shadow-neo hover:shadow-neo-lg transition-all p-5 flex flex-col justify-between cursor-pointer select-none overflow-hidden min-h-[360px] ${
-        isDarkCard ? 'text-white' : 'text-[#1F1127]'
-      }`}
-      style={{ backgroundColor: product.cardBgColor || '#FFE842' }}
+      className="group bg-white border border-[#E8E2D7] rounded-2xl overflow-hidden hover:border-[#1A1A1A] hover:shadow-soft-md transition-all flex flex-col justify-between cursor-pointer select-none"
     >
-      {/* Top Tag & 45S Chew */}
-      <div className="flex items-center justify-between mb-3">
-        <span
-          className={`badge-neo text-[10px] px-2.5 py-0.5 ${
-            isDarkCard ? 'bg-[#FFE842] text-[#1F1127]' : 'bg-[#1F1127] text-white'
-          }`}
-        >
-          {product.badge || 'WEATHER BITE'}
-        </span>
-        <span className="text-[10px] font-mono font-bold opacity-75">
-          45S CHEW
-        </span>
-      </div>
-
-      {/* Candy Image Stage */}
-      <div className="relative aspect-4/3 rounded-xl border-2 border-[#1F1127] bg-[#FFFDF5] p-3 flex items-center justify-center overflow-hidden mb-4 shadow-neo-sm group-hover:scale-102 transition-transform">
+      {/* Product Image Stage */}
+      <div className="relative aspect-square w-full overflow-hidden bg-[#FAF7F2] border-b border-[#E8E2D7]/60">
         <img
-          src={product.image || '/images/canister.jpg'}
+          src={product.image}
           alt={product.name}
-          className="w-full h-full object-contain filter drop-shadow group-hover:rotate-2 transition-transform"
+          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-[#1F1127]/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          <span className="badge-neo bg-[#FFFDF5] text-[#1F1127] text-[10px]">
-            <Eye className="w-3 h-3 mr-1" />
-            QUICK VIEW
-          </span>
-        </div>
-      </div>
 
-      {/* Product Name & Tagline */}
-      <div className="flex-1">
-        <h3 className="font-display text-lg sm:text-xl font-black uppercase leading-tight line-clamp-1">
-          {product.name}
-        </h3>
-        {showDescription && (
-          <p className="text-xs font-bold mt-1 line-clamp-2 opacity-80 leading-relaxed">
-            {product.tagline || product.description}
-          </p>
+        {/* Optional Tag / Badge */}
+        {product.badge && (
+          <div className="absolute top-3 left-3 rtl:left-auto rtl:right-3">
+            <span className="bg-[#FAF7F2]/90 backdrop-blur-sm text-[#1A1A1A] border border-[#E8E2D7] text-[10px] font-medium uppercase tracking-wider px-2.5 py-1 rounded-full">
+              {product.badge}
+            </span>
+          </div>
         )}
       </div>
 
-      {/* Price & Action Row */}
-      <div className="pt-3 mt-3 border-t-2 border-[#1F1127] flex items-center justify-between">
+      {/* Info & Content */}
+      <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
         <div>
-          <span className="text-[9px] font-bold uppercase tracking-wider opacity-70 block">
-            PRICE
-          </span>
-          <span className="font-display font-black text-base sm:text-lg">
-            {product.price} EGP
-          </span>
+          <h3 className="font-serif text-lg sm:text-xl font-normal text-[#1A1A1A] group-hover:text-[#3C1322] transition-colors line-clamp-1">
+            {product.name}
+          </h3>
+          
+          {showDescription && (
+            <p className="text-xs sm:text-sm text-[#736B63] mt-1 font-light line-clamp-2 leading-relaxed">
+              {product.tagline || product.description}
+            </p>
+          )}
         </div>
 
-        <button
-          type="button"
-          disabled={isOutOfStock}
-          onClick={handleAddToCart}
-          className={`w-9 h-9 rounded-full border-2 border-[#1F1127] flex items-center justify-center transition-all cursor-pointer ${
-            justAdded
-              ? 'bg-[#C4E86E] text-[#1F1127]'
-              : isDarkCard
-              ? 'bg-[#FFE842] text-[#1F1127] hover:bg-white'
-              : 'bg-[#1F1127] text-white hover:bg-[#FF5E2B] shadow-neo-sm'
-          }`}
-          title="Add to Bag"
-        >
-          {justAdded ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-        </button>
+        {/* Price & Add to Bag Row */}
+        <div className="pt-4 mt-4 border-t border-[#E8E2D7] flex items-center justify-between gap-3">
+          <div>
+            <span className="text-sm sm:text-base font-medium text-[#1A1A1A]">
+              EGP {product.price.toLocaleString()}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            disabled={isOutOfStock}
+            onClick={handleAddToCart}
+            className={`px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs font-medium border transition-all flex items-center gap-1.5 cursor-pointer ${
+              justAdded
+                ? 'bg-[#3C1322] text-[#FAF7F2] border-[#3C1322]'
+                : isOutOfStock
+                ? 'bg-[#F4EFEA] text-[#9B938A] border-[#E8E2D7] cursor-not-allowed'
+                : 'border-[#E8E2D7] text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-[#FAF7F2] hover:border-[#1A1A1A]'
+            }`}
+          >
+            {justAdded ? (
+              <>
+                <Check className="w-3.5 h-3.5" />
+                <span>{isRtl ? 'تمت الإضافة' : 'Added'}</span>
+              </>
+            ) : isOutOfStock ? (
+              <span>{isRtl ? 'نفذت الكمية' : 'Sold out'}</span>
+            ) : (
+              <>
+                <ShoppingBag className="w-3.5 h-3.5" />
+                <span>{isRtl ? 'أضف للحقيبة' : 'Add to bag'}</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </motion.div>
   );

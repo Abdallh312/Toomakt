@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Check, Sparkles, Send } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import { api } from '../services/api';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -31,185 +31,169 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView }) => {
   };
 
   return (
-    <footer className="bg-[#1F1127] text-[#F5EFE6] pt-16 sm:pt-20 pb-12 border-t-2 border-[#1F1127] select-none">
+    <footer className="bg-[#1A1512] text-[#FAF7F2] pt-16 sm:pt-20 pb-12 border-t border-[#2A221C] select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Top Newsletter & Headline Bar */}
-        <div className="pb-12 border-b-2 border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="font-display font-black text-3xl sm:text-4xl text-white tracking-tight lowercase">
-                toomakt
-              </span>
-              <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#FF5E2B] border border-white" />
-            </div>
-            <p className="text-xs sm:text-sm font-bold text-[#F5EFE6]/70 max-w-md">
+        {/* Top Manifesto & Newsletter */}
+        <div className="pb-16 border-b border-[#2A221C] grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <div className="lg:col-span-6">
+            <span className="font-serif text-3xl sm:text-4xl text-[#FAF7F2] font-semibold tracking-tight lowercase block mb-4">
+              toomakt
+            </span>
+            <p className="text-sm sm:text-base text-[#FAF7F2]/70 font-light max-w-md leading-relaxed">
               {isRtl
-                ? 'أنظمة طقس صغيرة من الفاكهة الطبيعية تصنع يدوياً في القاهرة.'
-                : 'Little fruit weather systems handmade in small batches in Cairo, Egypt.'}
+                ? 'حلوى توفي مصنوعة ببطء من بيوريه الفاكهة الطبيعية والزبدة الأوروبية. دفعات صغيرة طازجة من معملنا بالقاهرة.'
+                : 'Artisanal fruit toffee crafted slowly with real fruit purée and European butter. Made in small batches in Cairo, Egypt.'}
             </p>
           </div>
 
-          {/* Newsletter Input Box */}
-          <div className="w-full lg:w-auto">
+          <div className="lg:col-span-6 flex flex-col lg:items-end">
+            <span className="text-xs font-semibold text-[#FAF7F2] uppercase tracking-wider mb-2 block">
+              {isRtl ? 'النشرة الحرفية' : 'THE ATELIER JOURNAL'}
+            </span>
+            <p className="text-xs text-[#FAF7F2]/60 mb-4 font-light lg:text-right rtl:lg:text-left">
+              {isRtl
+                ? 'انضم لقائمتنا للحصول على أول وصول للإصدارات الموسمية وهدية أول طلب.'
+                : 'Receive early access to seasonal fruit releases and private tastings.'}
+            </p>
+
             {subscribed ? (
-              <div className="inline-flex items-center gap-2 bg-[#C4E86E] text-[#1F1127] px-5 py-3 rounded-full text-xs font-black uppercase tracking-wider border-2 border-[#1F1127]">
-                <Check className="w-4 h-4" />
-                <span>{isRtl ? 'تم الاشتراك بنجاح! كود الخصم: JOY10' : 'YOU ARE ON THE FORECAST LIST! CODE: JOY10'}</span>
+              <div className="inline-flex items-center gap-2 bg-[#FAF7F2]/10 border border-[#FAF7F2]/20 text-[#FAF7F2] px-4 py-2.5 rounded-full text-xs font-medium">
+                <Check className="w-3.5 h-3.5 text-[#88C057]" />
+                <span>{isRtl ? 'تم اشتراكك بنجاح!' : 'Welcome to the atelier.'}</span>
               </div>
             ) : (
-              <form onSubmit={handleSubscribe} className="flex items-center gap-2">
+              <form onSubmit={handleSubscribe} className="flex w-full max-w-md gap-2">
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your email..."
+                  placeholder={isRtl ? 'بريدك الإلكتروني...' : 'your.email@example.com'}
                   required
-                  className="w-full sm:w-64 bg-[#FFFDF5] text-[#1F1127] placeholder-[#1F1127]/50 text-xs px-4 py-3 rounded-full border-2 border-[#1F1127] focus:outline-none focus:bg-[#FFE842]/40 font-bold"
+                  className="flex-1 bg-[#261E1A] text-[#FAF7F2] placeholder-[#FAF7F2]/40 text-xs px-4 py-2.5 rounded-full border border-[#3A2D27] focus:outline-none focus:border-[#FAF7F2]/60 font-light"
                 />
                 <button
                   type="submit"
-                  className="btn-neo bg-[#FFE842] text-[#1F1127] px-6 py-3 text-xs font-black uppercase tracking-wider hover:bg-[#FF5E2B] hover:text-white cursor-pointer"
+                  className="px-5 py-2.5 bg-[#FAF7F2] text-[#1A1512] hover:bg-[#FFD147] rounded-full text-xs font-medium transition-colors cursor-pointer shrink-0"
                 >
-                  JOIN
+                  {isRtl ? 'اشتراك' : 'Subscribe'}
                 </button>
               </form>
             )}
           </div>
         </div>
 
-        {/* 4 Navigation Columns */}
-        <div className="py-12 grid grid-cols-2 md:grid-cols-4 gap-8 border-b-2 border-white/10 text-xs">
-          {/* Col 1: SHOP */}
+        {/* Links Navigation Grid */}
+        <div className="py-12 border-b border-[#2A221C] grid grid-cols-2 md:grid-cols-4 gap-8 text-xs font-light">
+          {/* Col 1: Shop */}
           <div>
-            <span className="font-display font-black text-sm text-[#FFE842] uppercase tracking-wider block mb-4">
-              SHOP
-            </span>
-            <ul className="space-y-2.5 font-bold text-[#F5EFE6]/80">
+            <h4 className="font-semibold text-xs tracking-wider uppercase text-[#FAF7F2] mb-4">
+              {isRtl ? 'المجموعة' : 'COLLECTION'}
+            </h4>
+            <ul className="space-y-2.5 text-[#FAF7F2]/70">
               <li>
-                <button onClick={() => nav('shop')} className="hover:text-white transition-colors cursor-pointer">
-                  Mango Sunbeam (220 EGP)
+                <button onClick={() => nav('shop')} className="hover:text-[#FAF7F2] transition-colors">
+                  {isRtl ? 'كل المنتجات' : 'All Collection'}
                 </button>
               </li>
               <li>
-                <button onClick={() => nav('shop')} className="hover:text-white transition-colors cursor-pointer">
-                  Berry Afterglow (230 EGP)
+                <button onClick={() => nav('shop')} className="hover:text-[#FAF7F2] transition-colors">
+                  {isRtl ? 'مانجو سن بيم' : 'Mango Sunbeam'}
                 </button>
               </li>
               <li>
-                <button onClick={() => nav('shop')} className="hover:text-white transition-colors cursor-pointer">
-                  Citrus Comet (210 EGP)
+                <button onClick={() => nav('shop')} className="hover:text-[#FAF7F2] transition-colors">
+                  {isRtl ? 'بيري أفترجلو' : 'Berry Afterglow'}
                 </button>
               </li>
               <li>
-                <button onClick={() => nav('shop')} className="hover:text-white transition-colors cursor-pointer">
-                  The Sun Chaser Box
-                </button>
-              </li>
-              <li>
-                <button onClick={() => nav('shop')} className="hover:text-white transition-colors cursor-pointer text-[#FF5E2B]">
-                  Build a Custom Box →
+                <button onClick={() => nav('shop')} className="hover:text-[#FAF7F2] transition-colors">
+                  {isRtl ? 'صناديق الهدايا الفاخرة' : 'Deluxe Gift Boxes'}
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Col 2: EXPLORE */}
+          {/* Col 2: About */}
           <div>
-            <span className="font-display font-black text-sm text-[#C4E86E] uppercase tracking-wider block mb-4">
-              EXPLORE
-            </span>
-            <ul className="space-y-2.5 font-bold text-[#F5EFE6]/80">
+            <h4 className="font-semibold text-xs tracking-wider uppercase text-[#FAF7F2] mb-4">
+              {isRtl ? 'عن توماكت' : 'ABOUT'}
+            </h4>
+            <ul className="space-y-2.5 text-[#FAF7F2]/70">
               <li>
-                <button onClick={() => nav('shop')} className="hover:text-white transition-colors cursor-pointer">
-                  Taste Lab Catalog
+                <button onClick={() => nav('our-story')} className="hover:text-[#FAF7F2] transition-colors">
+                  {isRtl ? 'قصتنا وحرفتنا' : 'Our Story & Atelier'}
                 </button>
               </li>
               <li>
-                <button onClick={() => nav('our-story')} className="hover:text-white transition-colors cursor-pointer">
-                  When We Started (2021-2024)
+                <button onClick={() => nav('ingredients')} className="hover:text-[#FAF7F2] transition-colors">
+                  {isRtl ? 'المكونات والزبدة' : 'Ingredients & Origins'}
                 </button>
               </li>
               <li>
-                <button onClick={() => nav('ingredients')} className="hover:text-white transition-colors cursor-pointer">
-                  Real Fruit Puree & 84% Butter
-                </button>
-              </li>
-              <li>
-                <button onClick={() => nav('shipping')} className="hover:text-white transition-colors cursor-pointer">
-                  Cold-Chain Delivery Cairo & Alex
+                <button onClick={() => nav('wholesale')} className="hover:text-[#FAF7F2] transition-colors">
+                  {isRtl ? 'طلبات الجملة والشركات' : 'Corporate Gifting & Wholesale'}
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: HELP */}
+          {/* Col 3: Assistance */}
           <div>
-            <span className="font-display font-black text-sm text-[#FF4D8D] uppercase tracking-wider block mb-4">
-              HELP
-            </span>
-            <ul className="space-y-2.5 font-bold text-[#F5EFE6]/80">
+            <h4 className="font-semibold text-xs tracking-wider uppercase text-[#FAF7F2] mb-4">
+              {isRtl ? 'المساعدة' : 'ASSISTANCE'}
+            </h4>
+            <ul className="space-y-2.5 text-[#FAF7F2]/70">
               <li>
-                <button onClick={() => nav('track')} className="hover:text-white transition-colors cursor-pointer">
-                  Track Your Weather Box
+                <button onClick={() => nav('track')} className="hover:text-[#FAF7F2] transition-colors">
+                  {isRtl ? 'تتبع طلبك' : 'Track Your Order'}
                 </button>
               </li>
               <li>
-                <button onClick={() => nav('wholesale')} className="hover:text-white transition-colors cursor-pointer">
-                  Wholesale & Corporate Gifting
+                <button onClick={() => nav('shipping')} className="hover:text-[#FAF7F2] transition-colors">
+                  {isRtl ? 'الشحن والتوصيل' : 'Shipping & Delivery'}
                 </button>
               </li>
               <li>
-                <button onClick={() => nav('faq')} className="hover:text-white transition-colors cursor-pointer">
-                  Frequently Asked Questions
+                <button onClick={() => nav('faq')} className="hover:text-[#FAF7F2] transition-colors">
+                  {isRtl ? 'الأسئلة الشائعة' : 'FAQ'}
                 </button>
-              </li>
-              <li>
-                <a href="https://wa.me/201000000000" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
-                  WhatsApp Atelier Concierge
-                </a>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: ABOUT / ADMIN */}
+          {/* Col 4: Atelier & Admin */}
           <div>
-            <span className="font-display font-black text-sm text-[#4AD4DA] uppercase tracking-wider block mb-4">
-              ABOUT
-            </span>
-            <ul className="space-y-2.5 font-bold text-[#F5EFE6]/80">
-              <li>Cairo Atelier No. 08</li>
-              <li>Slow-Simmered Copper Cauldrons</li>
-              <li>45-Second Signature Chew</li>
-              <li>
-                <button onClick={() => nav('admin')} className="text-[#FFE842] hover:underline font-mono font-bold cursor-pointer">
-                  Merchant Admin Access ↗
-                </button>
-              </li>
-            </ul>
+            <h4 className="font-semibold text-xs tracking-wider uppercase text-[#FAF7F2] mb-4">
+              {isRtl ? 'المقر' : 'ATELIER'}
+            </h4>
+            <p className="text-[#FAF7F2]/70 leading-relaxed mb-4">
+              {isRtl ? 'القاهرة · جمهورية مصر العربية' : 'Cairo, Egypt'}<br />
+              <span className="text-[11px] text-[#FAF7F2]/50">WhatsApp: +20 101 686 9608</span>
+            </p>
+            <div>
+              <a
+                href="#admin/login"
+                className="text-[11px] text-[#FAF7F2]/40 hover:text-[#FAF7F2] transition-colors"
+              >
+                {isRtl ? 'بوابة إدارة المتجر' : 'Admin Portal →'}
+              </a>
+            </div>
           </div>
         </div>
 
-        {/* Badges Strip & Copyright */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="px-2.5 py-1 rounded-full border border-white/20 text-[10px] font-mono font-bold text-[#FFE842]">
-              REAL FRUIT
-            </span>
-            <span className="px-2.5 py-1 rounded-full border border-white/20 text-[10px] font-mono font-bold text-[#FF5E2B]">
-              SMALL BATCH
-            </span>
-            <span className="px-2.5 py-1 rounded-full border border-white/20 text-[10px] font-mono font-bold text-[#C4E86E]">
-              FREE SHIPPING OVER EGP 2,500
-            </span>
-            <span className="px-2.5 py-1 rounded-full border border-white/20 text-[10px] font-mono font-bold text-[#4AD4DA]">
-              ATMOSPHERE: 100% JOY
-            </span>
+        {/* Bottom Copyright & Guarantee */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#FAF7F2]/50 font-light">
+          <div>
+            © {new Date().getFullYear()} toomakt. {isRtl ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}
           </div>
-
-          <p className="text-[11px] text-[#F5EFE6]/60 font-mono">
-            © 2024 toomakt fruit weather co. all rights reserved.
-          </p>
+          <div className="flex items-center gap-4">
+            <span>{isRtl ? 'الدفع عند الاستلام' : 'Cash on Delivery'}</span>
+            <span>·</span>
+            <span>{isRtl ? 'إنستاباي' : 'InstaPay'}</span>
+            <span>·</span>
+            <span>{isRtl ? 'شحن لجميع المحافظات' : 'All Egyptian Governorates'}</span>
+          </div>
         </div>
 
       </div>

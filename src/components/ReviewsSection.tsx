@@ -1,178 +1,138 @@
 import React, { useState } from 'react';
-import { Star, ShieldCheck, HeartHandshake, CheckCircle2, MessageSquareHeart, Sparkles, ZoomIn, X } from 'lucide-react';
+import { Star, ShieldCheck, ZoomIn, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { REVIEWS } from '../data/toomaktData';
 
 export const ReviewsSection: React.FC = () => {
-  const { t, isRtl } = useLanguage();
+  const { isRtl } = useLanguage();
   const [isZoomOpen, setIsZoomOpen] = useState(false);
 
-  const reviews = [
-    {
-      name: t('review1_author'),
-      city: t('review1_city'),
-      quote: t('review1_quote'),
-      rating: 5,
-      flavor: isRtl ? 'توفي الفواكه المشكلة' : 'Fruity Candy & Orchard Toffee'
-    },
-    {
-      name: t('review2_author'),
-      city: t('review2_city'),
-      quote: t('review2_quote'),
-      rating: 5,
-      flavor: isRtl ? 'صندوق الحصاد الفاخر' : 'Luxury Harvest Box'
-    },
-    {
-      name: t('review3_author'),
-      city: t('review3_city'),
-      quote: t('review3_quote'),
-      rating: 5,
-      flavor: isRtl ? 'توفي زبدة نورماندي' : 'Normandy Butter Toffee'
-    }
-  ];
-
   return (
-    <section id="reviews" className="py-24 bg-[#FAF6F0] relative overflow-hidden border-b border-stone-200/80">
+    <section id="reviews" className="py-20 md:py-28 bg-[#FAF7F2] border-b border-[#E8E2D7]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14 text-left rtl:text-right">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#C26715] flex items-center gap-1.5 mb-2">
-              <HeartHandshake className="w-3.5 h-3.5" />
-              <span>{t('reviews_badge')}</span>
+            <span className="text-[11px] sm:text-xs font-semibold tracking-widest uppercase text-[#736B63] block mb-3">
+              {isRtl ? 'آراء وتجارب' : 'TESTIMONIALS'}
             </span>
-            <h2 className="text-3xl sm:text-5xl font-serif font-black text-[#2B170E] tracking-tight leading-tight">
-              {t('reviews_title')}
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-[#1A1A1A] tracking-tight">
+              {isRtl ? 'محبوبة في جميع أنحاء القاهرة.' : 'Loved across Cairo.'}
             </h2>
           </div>
 
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#E5DACD] text-xs font-semibold text-[#2E7D32] shadow-xs">
-            <ShieldCheck className="w-4 h-4 text-[#2E7D32]" />
-            <span>{isRtl ? '98.7% نسبة رضا عملاء مؤكدة في مصر' : '98.7% Verified Confectionery Satisfaction'}</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8E2D7] text-xs text-[#736B63]">
+            <ShieldCheck className="w-4 h-4 text-[#88C057]" />
+            <span>{isRtl ? 'أكثر من 2,400 عميل موثق في مصر' : 'Over 2,400 verified client reviews'}</span>
           </div>
         </div>
 
-        {/* 3 Verified Egyptian Customer Review Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {reviews.map((rev, idx) => (
+        {/* 3 Verified Client Reviews */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12">
+          {REVIEWS.map((rev) => (
             <div
-              key={idx}
-              className="bg-white rounded-3xl p-6 sm:p-7 border border-[#E9E0D4] shadow-xs hover:shadow-lg transition-all flex flex-col justify-between group"
+              key={rev.id}
+              className="bg-white rounded-2xl p-6 sm:p-7 border border-[#E8E2D7] hover:border-[#1A1A1A] hover:shadow-soft transition-all flex flex-col justify-between"
             >
               <div>
                 {/* 5 Stars */}
-                <div className="flex items-center gap-1 text-[#DF9B35] mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
+                <div className="flex items-center gap-1 text-[#FFD147] mb-4">
+                  {[...Array(rev.rating)].map((_, i) => (
+                    <Star key={i} className="w-3.5 h-3.5 fill-current" />
                   ))}
                 </div>
 
-                <p className="text-sm sm:text-base text-[#4A3B32] italic leading-relaxed font-normal mb-5">
-                  "{rev.quote}"
+                <p className="text-sm sm:text-base text-[#1A1A1A] font-light leading-relaxed mb-6">
+                  "{rev.content}"
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-[#F2EAE0] flex items-center justify-between">
+              <div className="pt-4 border-t border-[#E8E2D7] flex items-center justify-between">
                 <div>
-                  <h4 className="font-serif font-bold text-sm text-[#2B170E]">
-                    {rev.name}
+                  <h4 className="font-serif text-sm font-normal text-[#1A1A1A]">
+                    {rev.author}
                   </h4>
-                  <span className="text-xs text-stone-500 font-mono">
-                    {rev.city}
+                  <span className="text-xs text-[#736B63]">
+                    {rev.location}
                   </span>
                 </div>
 
-                <span className="text-[11px] font-semibold text-[#C26715] bg-[#FAF5EE] px-2.5 py-1 rounded-full border border-amber-200/60">
-                  {rev.flavor}
+                <span className="text-[11px] text-[#736B63] bg-[#F4EFEA] px-2.5 py-1 rounded-full border border-[#E8E2D7]">
+                  {rev.productTag}
                 </span>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Highlighted Social Proof Showcase Banner */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E9E0D4] shadow-md relative overflow-hidden">
+        {/* Social Proof Banner */}
+        <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#E8E2D7] overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Left Image Showcase with Zoom */}
-            <div className="lg:col-span-5 relative group cursor-pointer" onClick={() => setIsZoomOpen(true)}>
-              <div className="aspect-square sm:aspect-4/3 rounded-2xl overflow-hidden border border-[#EAE0D4] bg-[#FAF5EE] shadow-xs relative">
+            
+            <div
+              className="lg:col-span-5 relative group cursor-pointer"
+              onClick={() => setIsZoomOpen(true)}
+            >
+              <div className="aspect-4/3 rounded-xl overflow-hidden border border-[#E8E2D7] bg-[#FAF7F2] relative">
                 <img
                   src="/images/toomakt/social_proof_reviews.webp"
-                  alt="toomakt Customer Feedback & Social Proof"
-                  className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500"
+                  alt="toomakt Customer Feedback"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="bg-white/90 text-[#2B170E] text-xs font-bold px-3.5 py-1.5 rounded-full shadow-md flex items-center gap-1.5">
+                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span className="bg-[#FAF7F2] text-[#1A1A1A] text-xs font-medium px-3.5 py-1.5 rounded-full shadow-soft flex items-center gap-1.5">
                     <ZoomIn className="w-3.5 h-3.5" />
-                    {isRtl ? 'تكبير آراء العملاء' : 'Click to Enlarge'}
+                    {isRtl ? 'تكبير الصورة' : 'Click to enlarge'}
                   </span>
                 </div>
               </div>
-              <div className="mt-2 text-center text-[11px] text-[#8C7B71] flex items-center justify-center gap-1">
-                <Sparkles className="w-3 h-3 text-[#C26715]" />
-                <span>{isRtl ? 'آراء حقيقية من محبي الحلويات في مصر' : 'Real customer feedback across Egypt'}</span>
-              </div>
             </div>
 
-            {/* Right Context & Feedback Highlights */}
-            <div className="lg:col-span-7 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FEF4E8] text-[#C26715] text-xs font-bold uppercase tracking-wider">
-                <MessageSquareHeart className="w-4 h-4" />
-                <span>{isRtl ? 'توثيق تجارب الذواقة' : 'Verified Social Proof'}</span>
-              </div>
-
-              <h3 className="font-serif font-black text-2xl sm:text-3xl text-[#2B170E] leading-snug">
+            <div className="lg:col-span-7 text-left rtl:text-right">
+              <span className="text-[10px] font-semibold tracking-widest uppercase text-[#736B63] block mb-2">
+                {isRtl ? 'شهادات حقيقية' : 'UNFILTERED FEEDBACK'}
+              </span>
+              <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#1A1A1A] mb-3">
                 {isRtl
-                  ? 'لماذا يفضل عشاق الحلويات في مصر توماكت؟'
-                  : 'Why Confectionery Lovers in Egypt Choose toomakt'}
+                  ? 'من محبي الحلويات الحرفية في الزمالك والمعادي والتجمع.'
+                  : 'From fruit toffee lovers in Zamalek, Maadi, and New Cairo.'}
               </h3>
-
-              <p className="text-sm text-[#735F52] leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#736B63] font-light leading-relaxed mb-6">
                 {isRtl
-                  ? 'من الزبدة الأوروبية الفاخرة التي تذوب بسلاسة دون أن تلتصق بالأسنان، إلى بيوريه الفاكهة الطبيعية 100% والتغليف المبرد الذي يصل بحالته المثالية حتى باب المنزل.'
-                  : 'From 84% European cultured butter that dissolves cleanly on the palate without sticking to teeth, to 100% real fruit purées and insulated cooler bags delivered nationwide.'}
+                  ? 'كل رسالة شكر وملاحظة من عملائنا تلهمنا لنستمر في صنع دفعاتنا بالصبر والحرص ذاتهما.'
+                  : 'Every WhatsApp note, tagged unboxing, and repeat order fuels our kitchen to keep crafting each batch with the same meticulous care.'}
               </p>
-
-              <div className="grid grid-cols-2 gap-3 pt-2">
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#2B170E]">
-                  <CheckCircle2 className="w-4 h-4 text-[#2E7D32]" />
-                  <span>{isRtl ? 'لا يلتصق بالأسنان إطلاقاً' : 'Never sticks to teeth'}</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#2B170E]">
-                  <CheckCircle2 className="w-4 h-4 text-[#2E7D32]" />
-                  <span>{isRtl ? 'شحن مبرد لـ 27 محافظة' : 'Cooler shipping across Egypt'}</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#2B170E]">
-                  <CheckCircle2 className="w-4 h-4 text-[#2E7D32]" />
-                  <span>{isRtl ? 'زبدة قشطة طبيعية 100%' : '100% European butter'}</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#2B170E]">
-                  <CheckCircle2 className="w-4 h-4 text-[#2E7D32]" />
-                  <span>{isRtl ? 'دفع عند الاستلام كاش' : 'Cash on delivery'}</span>
-                </div>
+              <div className="flex flex-wrap gap-4 text-xs text-[#1A1A1A] font-medium">
+                <div>✓ {isRtl ? 'توصيل خلال 24-48 ساعة' : '24-48h Delivery'}</div>
+                <div>✓ {isRtl ? 'تغليف حراري واقٍ' : 'Climate-Packaged'}</div>
+                <div>✓ {isRtl ? 'دفع عند الاستلام' : 'Pay on Delivery'}</div>
               </div>
             </div>
+
           </div>
         </div>
+
       </div>
 
-      {/* Modal Zoom */}
+      {/* Zoom Modal */}
       {isZoomOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm"
           onClick={() => setIsZoomOpen(false)}
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 cursor-pointer"
         >
-          <div className="relative max-w-4xl max-h-[90vh] bg-white rounded-3xl p-4 overflow-hidden">
+          <div className="relative max-w-4xl max-h-[90vh] bg-white rounded-2xl overflow-hidden p-2">
             <button
               onClick={() => setIsZoomOpen(false)}
-              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black transition-colors"
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/90 text-[#1A1A1A] shadow-soft"
             >
               <X className="w-5 h-5" />
             </button>
             <img
               src="/images/toomakt/social_proof_reviews.webp"
-              alt="Enlarged Proof"
-              className="w-full h-full object-contain rounded-2xl"
+              alt="Full reviews proof"
+              className="max-h-[85vh] w-auto object-contain rounded-xl mx-auto"
             />
           </div>
         </div>

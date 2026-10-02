@@ -124,7 +124,7 @@ export const CrowdFavoritesSection: React.FC = () => {
 
           {/* Right Column: 3 Curated Stack Items (5 Cols) */}
           <div className="lg:col-span-5 flex flex-col justify-between gap-4">
-            {CROWD_FAVORITES_ITEMS.map((item) => {
+            {CROWD_FAVORITES_ITEMS.map((item: BundleItem) => {
               const isAdded = !!addedIds[item.id];
 
               return (

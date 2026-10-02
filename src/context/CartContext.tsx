@@ -61,13 +61,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return [
       {
         product: {
-          id: 'summer-fruit-canister',
-          name: 'The Summer Fruit Canister',
-          price: 28.00,
-          weight: '250g Cylindrical Tin',
-          image: '/images/canister.jpg',
-          badge: 'BATCH NO. 08',
-          pieces_per_pack: 20
+          id: 'mango-sunbeam',
+          name: 'Mango Sunbeam',
+          price: 260.00,
+          weight: '250g Pouch',
+          image: '/images/products/mango_sunbeam.jpg',
+          badge: 'BEST SELLER',
+          pieces_per_pack: 24
         },
         quantity: 1
       }
@@ -80,7 +80,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [cartLimitNotice, setCartLimitNotice] = useState<string | null>(null);
   const [toastNotification, setToastNotification] = useState<ToastData | null>(null);
 
-  const freeShippingThreshold = 250.00; // EGP equivalent
+  const freeShippingThreshold = 2000.00; // EGP matching Figma spec
 
   useEffect(() => {
     try {

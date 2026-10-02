@@ -5,12 +5,6 @@ import {
   ShoppingBag,
   Menu,
   X,
-  ArrowRight,
-  Sparkles,
-  Flame,
-  Globe,
-  Building2,
-  Package
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
@@ -31,11 +25,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   onNavigateView,
   currentView = 'home'
 }) => {
-  const { totalCount, subtotal, setIsCartOpen } = useCart();
-  const { language, setLanguage, isRtl, t, toggleLanguage } = useLanguage();
+  const { totalCount, setIsCartOpen } = useCart();
+  const { language, isRtl, toggleLanguage } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -61,71 +54,51 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const navLinks = [
-    { id: 'shop', label: isRtl ? 'معمل النكهات' : 'Taste Lab', type: 'view' as const, target: 'shop', badge: isRtl ? 'جديد' : 'NEW', badgeColor: 'bg-[#FFE842] text-[#1F1127]' },
-    { id: 'build-box', label: isRtl ? 'صمم بوكسك' : 'Build a Box', type: 'section' as const, target: 'build-a-box', badge: isRtl ? 'تفاعلي' : 'CUSTOM', badgeColor: 'bg-[#FF5E2B] text-white' },
-    { id: 'our-story', label: isRtl ? 'قصتنا وحرفتنا' : 'Our Story', type: 'view' as const, target: 'our-story' },
-    { id: 'wholesale', label: isRtl ? 'الجملة والشركات' : 'Wholesale', type: 'view' as const, target: 'wholesale' }
+    { id: 'shop', label: isRtl ? 'المتجر' : 'Shop', type: 'view' as const, target: 'shop' },
+    { id: 'collections', label: isRtl ? 'المجموعات' : 'Collections', type: 'section' as const, target: 'the-collection' },
+    { id: 'ingredients', label: isRtl ? 'مكوناتنا' : 'Our Ingredients', type: 'view' as const, target: 'ingredients' },
+    { id: 'about', label: isRtl ? 'عن توماكت' : 'About', type: 'view' as const, target: 'our-story' }
   ];
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full transition-all duration-200 border-b-2 border-[#1F1127] ${
+      className={`sticky top-0 z-40 w-full transition-all duration-200 border-b border-[#E8E2D7] ${
         isScrolled
-          ? 'bg-[#F5EFE6]/95 backdrop-blur-md shadow-neo-sm py-2.5 sm:py-3'
-          : 'bg-[#F5EFE6] py-3 sm:py-3.5'
+          ? 'bg-[#FAF7F2]/95 backdrop-blur-md shadow-soft py-3'
+          : 'bg-[#FAF7F2] py-4'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-2 sm:gap-4">
-          {/* Brand Logo */}
-          <motion.div
+        <div className="flex items-center justify-between gap-4">
+          {/* Brand Logo - Custom editorial serif typography */}
+          <div
             onClick={() => {
               if (onNavigateView) onNavigateView('home');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="cursor-pointer group flex items-center gap-2 select-none"
+            className="cursor-pointer group flex items-center select-none"
           >
-            <div className="flex items-center gap-1.5">
-              <span className="font-display font-black text-2xl sm:text-3xl tracking-tight text-[#1F1127] lowercase">
-                toomakt
-              </span>
-              <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#FF5E2B] border border-[#1F1127]" />
-            </div>
-            <span className="hidden sm:inline-block px-2 py-0.5 rounded-full bg-[#FFE842] border border-[#1F1127] text-[10px] font-bold tracking-wider text-[#1F1127] uppercase">
-              Taste Lab
+            <span className="font-serif text-2xl sm:text-3xl font-semibold tracking-tight text-[#1A1A1A] lowercase group-hover:text-[#3C1322] transition-colors">
+              toomakt
             </span>
-          </motion.div>
+          </div>
 
           {/* Desktop Navigation Links */}
-          <nav
-            onMouseLeave={() => setHoveredNav(null)}
-            className="hidden lg:flex items-center gap-2 bg-[#FFFDF5] px-3 py-1.5 rounded-full border-2 border-[#1F1127] shadow-neo-sm"
-          >
+          <nav className="hidden md:flex items-center gap-8">
             {navLinks.map(link => {
               const isActive = link.type === 'view' ? currentView === link.target : false;
-              const isHovered = hoveredNav === link.id;
 
               return (
                 <button
                   key={link.id}
                   onClick={() => handleLinkClick(link.type, link.target)}
-                  onMouseEnter={() => setHoveredNav(link.id)}
-                  className={`relative px-3.5 py-1 rounded-full text-xs font-bold transition-all uppercase tracking-wider flex items-center gap-1.5 cursor-pointer z-10 ${
+                  className={`text-sm font-medium transition-colors hover:text-[#3C1322] cursor-pointer ${
                     isActive
-                      ? 'bg-[#1F1127] text-[#FFFDF5]'
-                      : 'text-[#1F1127] hover:bg-[#FFE842]/40'
+                      ? 'text-[#1A1A1A] font-semibold underline underline-offset-8 decoration-1'
+                      : 'text-[#736B63]'
                   }`}
                 >
-                  <span>{link.label}</span>
-                  {link.badge && (
-                    <span
-                      className={`text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider border border-[#1F1127] ${link.badgeColor}`}
-                    >
-                      {link.badge}
-                    </span>
-                  )}
+                  {link.label}
                 </button>
               );
             })}
@@ -134,63 +107,52 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Action Hub & Utilities */}
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Search Button */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <button
               onClick={onOpenSearch}
-              className="p-2 text-[#1F1127] bg-[#FFFDF5] hover:bg-[#FFE842] rounded-full border-2 border-[#1F1127] shadow-neo-sm transition-colors cursor-pointer"
-              title={isRtl ? 'البحث في معمل النكهات' : 'Search Taste Lab'}
+              className="p-2 text-[#1A1A1A] hover:text-[#3C1322] hover:bg-[#F4EFEA] rounded-full transition-colors cursor-pointer"
+              title={isRtl ? 'البحث' : 'Search'}
               aria-label="Search"
             >
               <Search className="w-4 h-4" />
-            </motion.button>
+            </button>
 
             {/* Wishlist Button */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <button
               onClick={onOpenWishlist}
-              className="p-2 text-[#1F1127] bg-[#FFFDF5] hover:bg-[#FF4D8D]/30 rounded-full border-2 border-[#1F1127] shadow-neo-sm transition-colors cursor-pointer relative"
+              className="p-2 text-[#1A1A1A] hover:text-[#C84B5B] hover:bg-[#F4EFEA] rounded-full transition-colors cursor-pointer"
               title={isRtl ? 'المفضلة' : 'Wishlist'}
               aria-label="Wishlist"
             >
               <Heart className="w-4 h-4" />
-            </motion.button>
+            </button>
 
-            {/* Clean Language Switcher */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            {/* Language Switcher */}
+            <button
               onClick={toggleLanguage}
-              className="px-2.5 py-1 text-xs font-mono font-bold text-[#1F1127] bg-[#FFFDF5] hover:bg-[#FFE842] rounded-full border-2 border-[#1F1127] shadow-neo-sm transition-colors cursor-pointer"
+              className="px-2.5 py-1 text-xs font-medium text-[#736B63] hover:text-[#1A1A1A] border border-[#E8E2D7] rounded-full hover:border-[#1A1A1A] transition-colors cursor-pointer"
               title={isRtl ? 'Switch to English' : 'التحويل إلى العربية'}
               aria-label="Toggle Language"
             >
               {language === 'en' ? 'عربي' : 'EN'}
-            </motion.button>
+            </button>
 
-            {/* Tasting Bag CTA (Solid Orange Pill with Counter) */}
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+            {/* Shopping Bag Button (Pill matching Figma Frame 1 & 2) */}
+            <button
               onClick={() => setIsCartOpen(true)}
-              className="px-3.5 sm:px-4 py-1.5 sm:py-2 bg-[#FF5E2B] text-white rounded-full border-2 border-[#1F1127] shadow-neo hover:shadow-neo-lg transition-all flex items-center gap-2 cursor-pointer"
+              className="px-4 py-1.5 sm:py-2 bg-[#1A1A1A] hover:bg-[#3C1322] text-[#FAF7F2] rounded-full transition-all flex items-center gap-2 cursor-pointer shadow-soft hover:shadow-soft-md"
               title="Shopping Bag"
               aria-label="Shopping Bag"
             >
-              <ShoppingBag className="w-4 h-4 text-white shrink-0" />
-              <span className="font-extrabold text-xs uppercase tracking-wider hidden sm:inline">
-                {isRtl ? 'الحقيبة' : 'Bag'}
+              <ShoppingBag className="w-3.5 h-3.5 text-[#FAF7F2] shrink-0" />
+              <span className="font-medium text-xs tracking-wide">
+                {isRtl ? `الحقيبة (${totalCount})` : `Bag (${totalCount})`}
               </span>
-              <span className="w-5 h-5 rounded-full bg-[#1F1127] text-[#FFE842] text-[11px] font-black flex items-center justify-center shrink-0">
-                {totalCount}
-              </span>
-            </motion.button>
+            </button>
 
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-[#1F1127] bg-[#FFFDF5] rounded-full border-2 border-[#1F1127] shadow-neo-sm cursor-pointer"
+              className="md:hidden p-2 text-[#1A1A1A] hover:bg-[#F4EFEA] rounded-full cursor-pointer"
               aria-label="Toggle Menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -199,67 +161,25 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-
-      {/* Animated Mobile Drawer Menu */}
+      {/* Mobile Menu Dropdown */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
-            className="lg:hidden bg-[#FFFDF5] border-b-2 border-[#1F1127] shadow-neo overflow-hidden"
+            className="md:hidden border-t border-[#E8E2D7] bg-[#FAF7F2] px-6 py-4"
           >
-            <div className="px-4 py-5 space-y-4">
-              {/* Mobile Navigation Links */}
-              <div className="flex flex-col space-y-2">
-                {navLinks.map((link, idx) => (
-                  <motion.button
-                    key={link.id}
-                    initial={{ opacity: 0, x: isRtl ? 15 : -15 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.04 }}
-                    onClick={() => handleLinkClick(link.type, link.target)}
-                    className="flex items-center justify-between py-2.5 px-4 rounded-full border-2 border-[#1F1127] bg-[#F5EFE6] hover:bg-[#FFE842] font-black text-xs uppercase tracking-wider text-[#1F1127] transition-all cursor-pointer shadow-neo-sm"
-                  >
-                    <span>{link.label}</span>
-                    {link.badge && (
-                      <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border border-[#1F1127] ${link.badgeColor}`}>
-                        {link.badge}
-                      </span>
-                    )}
-                  </motion.button>
-                ))}
-              </div>
-
-              {/* Mobile Language Switcher Highlight */}
-              <div className="pt-3 border-t-2 border-[#1F1127] flex items-center justify-between">
-                <span className="text-xs font-bold text-[#1F1127]">
-                  {isRtl ? 'اللغة / Language' : 'Language / اللغة'}
-                </span>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setLanguage('en')}
-                    className={`px-3 py-1 rounded-full text-xs font-black cursor-pointer border-2 border-[#1F1127] transition ${
-                      language === 'en'
-                        ? 'bg-[#FFE842] text-[#1F1127] shadow-neo-sm'
-                        : 'bg-[#FFFDF5] text-[#1F1127]'
-                    }`}
-                  >
-                    English
-                  </button>
-                  <button
-                    onClick={() => setLanguage('ar')}
-                    className={`px-3 py-1 rounded-full text-xs font-black cursor-pointer font-arabic border-2 border-[#1F1127] transition ${
-                      language === 'ar'
-                        ? 'bg-[#FFE842] text-[#1F1127] shadow-neo-sm'
-                        : 'bg-[#FFFDF5] text-[#1F1127]'
-                    }`}
-                  >
-                    العربية
-                  </button>
-                </div>
-              </div>
+            <div className="flex flex-col gap-3">
+              {navLinks.map(link => (
+                <button
+                  key={link.id}
+                  onClick={() => handleLinkClick(link.type, link.target)}
+                  className="text-left rtl:text-right py-2 text-base font-medium text-[#1A1A1A] hover:text-[#3C1322] border-b border-[#E8E2D7]/60"
+                >
+                  {link.label}
+                </button>
+              ))}
             </div>
           </motion.div>
         )}
