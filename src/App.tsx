@@ -171,7 +171,7 @@ export const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#1A1A1A] flex flex-col font-sans selection:bg-[#3C1322] selection:text-white">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#FAF7F2] text-[#1A1A1A] flex flex-col font-sans selection:bg-[#3C1322] selection:text-white">
       {/* 1. Global Announcement Header Bar */}
       <AnnouncementBar onNavigateView={handleNavigateView} />
 
@@ -187,7 +187,7 @@ export const AppContent: React.FC = () => {
       />
 
       {/* 3. Main Dynamic Content Switcher */}
-      <main className="flex-1 w-full">
+      <main className="flex-1 w-full max-w-full overflow-x-hidden">
         {/* PAGE 1: DEDICATED BRAND INTRODUCTION LANDING PAGE */}
         {currentView === 'home' && (
           <div id="brand-landing" className="relative w-full">
