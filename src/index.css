@@ -209,3 +209,98 @@ html[dir="rtl"] .font-serif {
 .animate-fade-in {
   animation: fadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+/* =========================================================================
+   LUXURY ATELIER DARK MODE THEME PALETTE
+   ========================================================================= */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #120A0E;
+  color: #FAF7F2;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: #120A0E;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #3B202D;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #FFD147;
+}
+
+html.dark .bg-white {
+  background-color: #1C1217 !important;
+}
+
+html.dark .bg-\[\#FAF7F2\] {
+  background-color: #140D11 !important;
+}
+
+html.dark .bg-\[\#F4EFEA\] {
+  background-color: #24171E !important;
+}
+
+html.dark .bg-\[\#FDFBF7\] {
+  background-color: #1C1217 !important;
+}
+
+html.dark .bg-\[\#EAE3D2\] {
+  background-color: #2F1E28 !important;
+}
+
+html.dark .border-\[\#E8E2D7\],
+html.dark .border-\[\#E8E2D7\]\/60 {
+  border-color: #38242E !important;
+}
+
+html.dark .text-\[\#1A1A1A\] {
+  color: #FAF7F2 !important;
+}
+
+html.dark .text-\[\#736B63\] {
+  color: #B2A79F !important;
+}
+
+html.dark .shadow-soft {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
+}
+
+html.dark .atelier-card {
+  background: #1C1217;
+  border-color: #38242E;
+}
+
+html.dark .atelier-card:hover {
+  border-color: #FFD147;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #21151D !important;
+  color: #FAF7F2 !important;
+  border-color: #402935 !important;
+}
+
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  border-color: #FFD147 !important;
+}
+
+html.dark .btn-secondary {
+  border-color: #402935;
+  color: #FAF7F2;
+}
+
+html.dark .btn-secondary:hover {
+  border-color: #FFD147;
+  background-color: #271A22;
+}
+

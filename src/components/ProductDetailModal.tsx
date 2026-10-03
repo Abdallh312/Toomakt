@@ -33,9 +33,21 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
 
+  const flavorsList: string[] = product?.available_flavors && product.available_flavors.length > 0
+    ? product.available_flavors
+    : (product?.fruitNotes && product.fruitNotes.length > 0 ? [product.name, ...product.fruitNotes.slice(0, 2)] : [product?.name || 'Original']);
+
+  const [selectedFlavor, setSelectedFlavor] = useState<string>(() => flavorsList[0] || 'Original');
+
   useEffect(() => {
     setQuantity(1);
     setJustAdded(false);
+    if (product) {
+      const flvs = product.available_flavors && product.available_flavors.length > 0
+        ? product.available_flavors
+        : (product.fruitNotes && product.fruitNotes.length > 0 ? [product.name, ...product.fruitNotes.slice(0, 2)] : [product.name]);
+      setSelectedFlavor(flvs[0] || product.name);
+    }
   }, [product?.id]);
 
   if (!product) return null;
@@ -45,7 +57,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   const handleAddToCart = () => {
     if (isOutOfStock) return;
-    addToCart(product, quantity);
+    addToCart(product, quantity, selectedFlavor);
     setJustAdded(true);
     setTimeout(() => {
       setJustAdded(false);
@@ -55,7 +67,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   const handleBuyNow = () => {
     if (isOutOfStock) return;
-    addToCart(product, quantity);
+    addToCart(product, quantity, selectedFlavor);
     onClose();
     if (onNavigateView) {
       onNavigateView('checkout');
@@ -147,9 +159,41 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     {product.description || product.tagline}
                   </p>
 
+                  {/* Interactive Flavor Selector */}
+                  <div className="pt-2 pb-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-semibold text-[#736B63] uppercase tracking-wider">
+                        {isRtl ? 'اختر النكهة المفضلة' : 'CHOOSE YOUR FLAVOR'}
+                      </span>
+                      <span className="text-[11px] font-medium text-[#3C1322] bg-[#FFD147]/30 px-2 py-0.5 rounded-full">
+                        {selectedFlavor}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {flavorsList.map((flv) => {
+                        const isSelected = selectedFlavor === flv;
+                        return (
+                          <button
+                            key={flv}
+                            type="button"
+                            onClick={() => setSelectedFlavor(flv)}
+                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer ${
+                              isSelected
+                                ? 'bg-[#3C1322] text-[#FAF7F2] shadow-soft scale-[1.02]'
+                                : 'bg-[#F4EFEA] text-[#1A1A1A] border border-[#E8E2D7] hover:border-[#1A1A1A]'
+                            }`}
+                          >
+                            {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[#FFD147]" />}
+                            <span>{flv}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                   {/* Fruit Notes */}
                   {product.fruitNotes && product.fruitNotes.length > 0 && (
-                    <div className="pt-2">
+                    <div className="pt-1">
                       <span className="text-[10px] font-semibold text-[#736B63] uppercase tracking-wider block mb-2">
                         {isRtl ? 'المكونات والنكهات البارزة' : 'TASTING NOTES'}
                       </span>

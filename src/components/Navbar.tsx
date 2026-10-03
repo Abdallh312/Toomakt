@@ -5,11 +5,14 @@ import {
   Menu,
   X,
   ArrowRight,
-  Sparkles
+  Gift,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 import { navigateTo } from '../utils/navigation';
 
 interface NavbarProps {
@@ -26,6 +29,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const { totalCount, setIsCartOpen } = useCart();
   const { language, isRtl, toggleLanguage } = useLanguage();
+  const { isDark, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -34,7 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 12);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -66,7 +70,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     } else {
       navigateTo('shop');
     }
-    // Also dispatch custom event for shop view to filter products immediately
     window.dispatchEvent(new CustomEvent('toomakt:search', { detail: query }));
     setSearchOpen(false);
   };
@@ -74,6 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const navLinks = [
     { id: 'home', label: isRtl ? 'الرئيسية' : 'Home', target: 'home' },
     { id: 'products', label: isRtl ? 'المنتجات' : 'Products', target: 'shop' },
+    { id: 'bundles', label: isRtl ? 'الباقات' : 'Bundles', target: 'bundles', accent: true },
     { id: 'about', label: isRtl ? 'عن توماكت' : 'About', target: 'our-story' },
     { id: 'contact', label: isRtl ? 'اتصل بنا' : 'Contact', target: 'wholesale' },
   ];
@@ -81,6 +85,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const isLinkActive = (target: string) => {
     if (target === 'home') return currentView === 'home' || !currentView;
     if (target === 'shop') return currentView === 'shop' || currentView === 'products';
+    if (target === 'bundles') return currentView === 'bundles' || currentView === 'gifts';
     if (target === 'our-story') {
       return ['our-story', 'about', 'ingredients', 'faq', 'shipping'].includes(currentView);
     }
@@ -90,69 +95,69 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full transition-all duration-300 border-b ${
+      className={`sticky top-0 z-40 w-full transition-all duration-300 ${
         isScrolled
-          ? 'bg-[#FAF7F2]/95 backdrop-blur-md shadow-soft border-[#E8E2D7]/80 py-3 sm:py-3.5'
-          : 'bg-[#FAF7F2] border-[#E8E2D7] py-4 sm:py-5'
+          ? 'bg-[#FAF7F2]/90 backdrop-blur-xl shadow-[0_8px_30px_rgba(26,21,18,0.06)] border-b border-[#E8E2D7]/70 py-2.5 sm:py-3'
+          : 'bg-gradient-to-b from-[#FAF7F2] to-[#FAF7F2]/95 border-b border-transparent py-4 sm:py-5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3 sm:gap-6">
-          
-          {/* 1. Brand Logo - Quiet Luxury Serif */}
-          <div
+          {/* Brand */}
+          <button
+            type="button"
             onClick={() => handleLinkClick('home')}
-            className="cursor-pointer group flex flex-col items-start select-none shrink-0"
+            className="cursor-pointer group flex flex-col items-start select-none shrink-0 text-left rtl:text-right"
+            aria-label="toomakt home"
           >
             <div className="flex items-baseline gap-1.5">
-              <span className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-[#1A1A1A] lowercase group-hover:text-[#3C1322] transition-colors">
+              <span className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-[#1A1A1A] lowercase group-hover:text-[#3C1322] transition-colors duration-300">
                 toomakt
               </span>
               <span className="w-1.5 h-1.5 rounded-full bg-[#3C1322] inline-block mb-1 group-hover:scale-125 transition-transform" />
             </div>
-            <span className="text-[9px] font-mono tracking-widest uppercase text-[#736B63]/80 -mt-1 hidden sm:block">
+            <span className="text-[9px] font-mono tracking-[0.22em] uppercase text-[#736B63]/75 -mt-0.5 hidden sm:block">
               {isRtl ? 'معمل التوفي الحرفي' : 'ATELIER DU TOFFEE'}
             </span>
-          </div>
+          </button>
 
-          {/* 2. Desktop Navigation Links (Centered, Elegant Spacing) */}
-          <nav className="hidden md:flex items-center gap-7 lg:gap-10">
-            {navLinks.map(link => {
+          {/* Desktop links */}
+          <nav
+            className="hidden md:flex items-center gap-1 lg:gap-1.5 px-2 py-1 rounded-full bg-white/50 border border-[#E8E2D7]/60"
+            aria-label="Primary"
+          >
+            {navLinks.map((link) => {
               const active = isLinkActive(link.target);
+              const isBundles = link.id === 'bundles';
 
               return (
                 <button
                   key={link.id}
+                  type="button"
                   onClick={() => handleLinkClick(link.target)}
-                  className={`text-sm tracking-wide transition-all duration-200 hover:text-[#3C1322] cursor-pointer py-1 relative font-light ${
+                  className={`relative px-3.5 lg:px-4 py-2 rounded-full text-sm tracking-wide transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                     active
-                      ? 'text-[#1A1A1A] font-medium'
-                      : 'text-[#736B63] hover:text-[#1A1A1A]'
+                      ? 'bg-[#3C1322] text-[#FAF7F2] font-medium shadow-soft'
+                      : 'text-[#736B63] hover:text-[#1A1A1A] hover:bg-[#F4EFEA]/80 font-light'
                   }`}
                 >
-                  <span>{link.label}</span>
-                  {active && (
-                    <motion.span
-                      layoutId="nav-underline-active"
-                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#3C1322] rounded-full"
-                      transition={{ duration: 0.25, ease: 'easeOut' }}
-                    />
+                  {isBundles && (
+                    <Gift className={`w-3.5 h-3.5 ${active ? 'text-[#FFD147]' : 'text-[#3C1322]/70'}`} />
                   )}
+                  <span>{link.label}</span>
                 </button>
               );
             })}
           </nav>
 
-          {/* 3. Action Hub & Utilities */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            
-            {/* Inline Expanding Search Bar (NO popup window!) */}
+          {/* Actions */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
             <div className="relative flex items-center">
               <AnimatePresence>
                 {searchOpen ? (
                   <motion.form
                     initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: 230, opacity: 1 }}
+                    animate={{ width: 220, opacity: 1 }}
                     exit={{ width: 0, opacity: 0 }}
                     transition={{ duration: 0.22, ease: 'easeOut' }}
                     onSubmit={handleSearchSubmit}
@@ -207,20 +212,30 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             </div>
 
-            {/* Language Switcher Pill */}
             <button
+              type="button"
               onClick={toggleLanguage}
-              className="px-2.5 py-1 text-xs font-mono font-medium text-[#736B63] hover:text-[#1A1A1A] border border-[#E8E2D7] rounded-full hover:border-[#1A1A1A] transition-colors cursor-pointer"
+              className="hidden sm:inline-flex px-2.5 py-1 text-xs font-mono font-medium text-[#736B63] hover:text-[#1A1A1A] border border-[#E8E2D7] rounded-full hover:border-[#1A1A1A] transition-colors cursor-pointer"
               title={isRtl ? 'Switch to English' : 'التحويل إلى العربية'}
               aria-label="Toggle Language"
             >
               {language === 'en' ? 'عربي' : 'EN'}
             </button>
 
-            {/* Shopping Bag Button (Pill with Count) */}
             <button
+              type="button"
+              onClick={toggleTheme}
+              className="p-1.5 sm:p-2 rounded-full text-[#736B63] hover:text-[#1A1A1A] hover:bg-[#F4EFEA] border border-[#E8E2D7] transition-colors cursor-pointer"
+              title={isDark ? (isRtl ? 'تفعيل الوضع النهاري' : 'Switch to Light Mode') : (isRtl ? 'تفعيل الوضع الليلي' : 'Switch to Dark Mode')}
+              aria-label="Toggle Dark/Light Mode"
+            >
+              {isDark ? <Sun className="w-4 h-4 text-[#FFD147]" /> : <Moon className="w-4 h-4 text-[#3C1322]" />}
+            </button>
+
+            <button
+              type="button"
               onClick={() => setIsCartOpen(true)}
-              className="px-3.5 sm:px-4 py-1.5 sm:py-2 bg-[#1A1A1A] hover:bg-[#3C1322] text-[#FAF7F2] rounded-full transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-soft hover:shadow-soft-md shrink-0 active:scale-95"
+              className="relative px-3 sm:px-4 py-1.5 sm:py-2 bg-[#1A1A1A] hover:bg-[#3C1322] text-[#FAF7F2] rounded-full transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-soft hover:shadow-soft-md shrink-0 active:scale-[0.97]"
               title="Shopping Bag"
               aria-label="Shopping Bag"
             >
@@ -229,13 +244,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="hidden sm:inline">{isRtl ? 'الحقيبة ' : 'Bag '}</span>
                 <span>({totalCount})</span>
               </span>
+              {totalCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#FFD147] border-2 border-[#FAF7F2]" />
+              )}
             </button>
 
-            {/* Mobile Menu Hamburger */}
             <button
+              type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-[#1A1A1A] hover:bg-[#F4EFEA] rounded-full cursor-pointer ml-1"
+              className="md:hidden p-2 text-[#1A1A1A] hover:bg-[#F4EFEA] rounded-full cursor-pointer"
               aria-label="Toggle Menu"
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -243,7 +262,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown with Smooth Slide */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -251,11 +270,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="md:hidden border-t border-[#E8E2D7] bg-[#FAF7F2] px-6 py-5 shadow-soft"
+            className="md:hidden border-t border-[#E8E2D7] bg-[#FAF7F2] px-5 py-5 shadow-soft"
           >
-            {/* Mobile Search Bar (Direct inline search) */}
             <form onSubmit={handleSearchSubmit} className="mb-4">
-              <div className="flex items-center bg-white border border-[#E8E2D7] rounded-full px-3.5 py-2">
+              <div className="flex items-center bg-white border border-[#E8E2D7] rounded-full px-3.5 py-2.5">
                 <Search className="w-3.5 h-3.5 text-[#736B63] mr-2 rtl:mr-0 rtl:ml-2" />
                 <input
                   type="text"
@@ -270,25 +288,43 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             </form>
 
-            <div className="flex flex-col gap-2">
-              {navLinks.map(link => {
+            <div className="flex flex-col gap-1.5">
+              {navLinks.map((link) => {
                 const active = isLinkActive(link.target);
+                const isBundles = link.id === 'bundles';
 
                 return (
                   <button
                     key={link.id}
+                    type="button"
                     onClick={() => handleLinkClick(link.target)}
-                    className={`text-left rtl:text-right py-3 px-3 rounded-xl text-base font-medium transition-colors flex items-center justify-between cursor-pointer ${
+                    className={`text-left rtl:text-right py-3.5 px-3.5 rounded-2xl text-base font-medium transition-colors flex items-center justify-between cursor-pointer ${
                       active
                         ? 'bg-[#3C1322] text-[#FAF7F2] font-semibold'
                         : 'text-[#1A1A1A] hover:bg-[#F4EFEA]'
                     }`}
                   >
-                    <span>{link.label}</span>
-                    <ArrowRight className="w-4 h-4 opacity-60 rtl:rotate-180" />
+                    <span className="flex items-center gap-2">
+                      {isBundles && <Gift className={`w-4 h-4 ${active ? 'text-[#FFD147]' : 'text-[#3C1322]'}`} />}
+                      {link.label}
+                    </span>
+                    <ArrowRight className="w-4 h-4 opacity-50 rtl:rotate-180" />
                   </button>
                 );
               })}
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-[#E8E2D7] flex items-center justify-between">
+              <button
+                type="button"
+                onClick={toggleLanguage}
+                className="px-3 py-1.5 text-xs font-mono font-medium text-[#736B63] border border-[#E8E2D7] rounded-full"
+              >
+                {language === 'en' ? 'عربي' : 'EN'}
+              </button>
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[#736B63]/70">
+                {isRtl ? 'معمل القاهرة' : 'Cairo Atelier'}
+              </span>
             </div>
           </motion.div>
         )}

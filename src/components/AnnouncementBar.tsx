@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { navigateTo } from '../utils/navigation';
+import { api } from '../services/api';
 
 interface AnnouncementBarProps {
   onNavigateView?: (view: string) => void;
@@ -55,6 +56,12 @@ export const AnnouncementBar: React.FC<AnnouncementBarProps> = ({ onNavigateView
   });
 
   useEffect(() => {
+    // Fetch live alert config from database
+    api.getGlobalSetting('toomakt_alert_config').then((dbConfig: any) => {
+      if (dbConfig && typeof dbConfig === 'object') {
+        setAlertConfig(prev => ({ ...prev, ...dbConfig }));
+      }
+    }).catch(() => {});
     // Listen for custom alert updates from alert manager
     const handleUpdate = (e?: any) => {
       try {

@@ -39,7 +39,8 @@ export const PRODUCTS: Product[] = [
     isPopular: true,
     pieces_per_pack: 24,
     stock_quantity: 85,
-    in_stock: true
+    in_stock: true,
+    available_flavors: ['Alphonso Mango', 'Passion Mango Twist', 'Golden Honey Mango']
   },
   {
     id: 'berry-afterglow',
@@ -65,7 +66,8 @@ export const PRODUCTS: Product[] = [
     isPopular: true,
     pieces_per_pack: 24,
     stock_quantity: 60,
-    in_stock: true
+    in_stock: true,
+    available_flavors: ['Wild Alpine Strawberry', 'Tart Forest Raspberry', 'Dark Forest Blackberry']
   },
   {
     id: 'citrus-comet',
@@ -91,7 +93,8 @@ export const PRODUCTS: Product[] = [
     isPopular: false,
     pieces_per_pack: 24,
     stock_quantity: 95,
-    in_stock: true
+    in_stock: true,
+    available_flavors: ['Sicilian Lemon Zest', 'Mediterranean Lime', 'Yuzu Butter Chew']
   },
   {
     id: 'sun-chaser-box',
@@ -117,7 +120,8 @@ export const PRODUCTS: Product[] = [
     isPopular: true,
     pieces_per_pack: 48,
     stock_quantity: 40,
-    in_stock: true
+    in_stock: true,
+    available_flavors: ['Harvest Trio (Mango, Berry, Citrus)', 'Orchard Gold (Mango & Apricot)', 'Berry & Butter Harmony']
   },
   {
     id: 'orchard-reserve',
@@ -143,7 +147,8 @@ export const PRODUCTS: Product[] = [
     isPopular: false,
     pieces_per_pack: 36,
     stock_quantity: 35,
-    in_stock: true
+    in_stock: true,
+    available_flavors: ['Sun-Dried Apricot & Plum', 'Damson Honey Glaze', 'Velvet Fig & Butter']
   },
   {
     id: 'evening-citrus',
@@ -169,7 +174,8 @@ export const PRODUCTS: Product[] = [
     isPopular: false,
     pieces_per_pack: 24,
     stock_quantity: 50,
-    in_stock: true
+    in_stock: true,
+    available_flavors: ['Sicilian Blood Orange', 'Calabrian Bergamot', 'Molasses Blood Orange']
   }
 ];
 

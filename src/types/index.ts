@@ -35,6 +35,8 @@ export interface Product {
   sold_quantity?: number;
   in_stock?: boolean;
   category_name?: string;
+  available_flavors?: string[];
+  selected_flavor?: string;
 }
 
 export interface BundleItem {
@@ -47,8 +49,14 @@ export interface BundleItem {
   rating: number;
   reviewCount: number;
   image: string;
+  image_url?: string;
   weight: string;
   pieces_per_pack?: number;
+  perk_note?: string;
+  is_grand_feature?: boolean;
+  is_active?: boolean;
+  slug?: string;
+  compare_at_price?: number | null;
 }
 
 export interface Review {
@@ -71,16 +79,20 @@ export interface CartItem {
     image: string;
     badge?: string;
     pieces_per_pack?: number;
+    available_flavors?: string[];
   };
   quantity: number;
+  selected_flavor?: string;
 }
 
 export interface ShippingRate {
   id: string;
   governorate: string;
   price: number;
+  rate?: number;
   estimated_delivery: string;
   active: boolean;
+  is_active?: boolean;
 }
 
 export interface WholesaleRequest {

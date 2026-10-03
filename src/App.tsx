@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CartProvider } from './context/CartContext';
 import { LanguageProvider } from './context/LanguageContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { AnnouncementBar } from './components/AnnouncementBar';
@@ -16,6 +17,7 @@ import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { ShopAllView } from './components/ShopAllView';
+import { BundlesView } from './components/BundlesView';
 import { TrackOrderView } from './components/TrackOrderView';
 import { CMSPageView } from './components/CMSPageView';
 import { NotFoundPage } from './components/NotFoundPage';
@@ -63,6 +65,8 @@ export const AppContent: React.FC = () => {
         'contact',
         'shop',
         'products',
+        'bundles',
+        'gifts',
         'track',
         'our-story',
         'about',
@@ -84,6 +88,8 @@ export const AppContent: React.FC = () => {
         }
       } else if (route === 'products' || route === 'shop') {
         setCurrentView('shop');
+      } else if (route === 'bundles' || route === 'gifts') {
+        setCurrentView('bundles');
       } else if (route === 'about' || route === 'our-story') {
         setCurrentView('our-story');
       } else if (route === 'contact' || route === 'wholesale') {
@@ -109,6 +115,7 @@ export const AppContent: React.FC = () => {
   const handleNavigateView = (view: string) => {
     let target = view;
     if (view === 'products') target = 'shop';
+    if (view === 'gifts') target = 'bundles';
     if (view === 'about') target = 'our-story';
     if (view === 'contact') target = 'wholesale';
     if (view === 'announcements') target = 'alerts';
@@ -230,6 +237,11 @@ export const AppContent: React.FC = () => {
           />
         )}
 
+        {/* PAGE 2b: CURATED BUNDLES FROM DATABASE */}
+        {(currentView === 'bundles' || currentView === 'gifts') && (
+          <BundlesView onNavigateHome={() => handleNavigateView('home')} />
+        )}
+
         {/* PAGE 3: ABOUT / CRAFT & INGREDIENTS */}
         {['our-story', 'about', 'ingredients', 'faq', 'shipping'].includes(currentView) && (
           <CMSPageView
@@ -322,13 +334,15 @@ export const AppContent: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
-    <LanguageProvider>
-      <CartProvider>
-        <SmoothScroll>
-          <AppContent />
-        </SmoothScroll>
-      </CartProvider>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <CartProvider>
+          <SmoothScroll>
+            <AppContent />
+          </SmoothScroll>
+        </CartProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 };
 

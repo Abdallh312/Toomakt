@@ -60,9 +60,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Info & Content */}
       <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
         <div>
-          <h3 className="font-serif text-lg sm:text-xl font-normal text-[#1A1A1A] group-hover:text-[#3C1322] transition-colors line-clamp-1">
-            {product.name}
-          </h3>
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="font-serif text-lg sm:text-xl font-normal text-[#1A1A1A] group-hover:text-[#3C1322] transition-colors line-clamp-1">
+              {product.name}
+            </h3>
+            {product.available_flavors && product.available_flavors.length > 1 && (
+              <span className="text-[10px] font-medium text-[#3C1322] bg-[#FFD147]/30 border border-[#FFD147]/50 px-2 py-0.5 rounded-full shrink-0">
+                {product.available_flavors.length} {isRtl ? 'نكهات' : 'Flavors'}
+              </span>
+            )}
+          </div>
           
           {showDescription && (
             <p className="text-xs sm:text-sm text-[#736B63] mt-1 font-light line-clamp-2 leading-relaxed">

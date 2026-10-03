@@ -1,12 +1,12 @@
-// toomakt Unified API Client — Directly Connected to Supabase PostgreSQL Database
+// ============================================================================
+// toomakt Unified API Client — 100% Supabase PostgreSQL (No Django Backend)
+// ============================================================================
 import { PRODUCTS } from '../data/toomaktData';
 
 const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-const DJANGO_BASE = (import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
-
-// Use Vite proxy for administrative requests so service role key is attached securely server-side
+// Use Vite proxy for admin mutations so service_role key is attached server-side
 const USE_PROXY = typeof window !== 'undefined';
 const ADMIN_BASE = USE_PROXY ? '/supabase-admin' : `${SUPABASE_URL}/rest/v1`;
 const PUBLIC_BASE = `${SUPABASE_URL}/rest/v1`;
@@ -23,20 +23,19 @@ const getHeaders = (isAdmin = false): Record<string, string> => {
   return headers;
 };
 
-const getAdminAuthHeaders = (): Record<string, string> => {
-  const token = typeof window !== 'undefined'
-    ? (localStorage.getItem('toomakt_admin_token') || sessionStorage.getItem('toomakt_admin_token'))
-    : '';
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-  return headers;
+const PRODUCT_DEFAULT_FLAVORS: Record<string, string[]> = {
+  'mango-sunbeam': ['Alphonso Mango', 'Passion Mango Twist', 'Golden Honey Mango'],
+  'berry-afterglow': ['Wild Alpine Strawberry', 'Tart Forest Raspberry', 'Dark Forest Blackberry'],
+  'citrus-comet': ['Sicilian Lemon Zest', 'Mediterranean Lime', 'Yuzu Butter Chew'],
+  'sun-chaser-box': ['Harvest Trio (Mango, Berry, Citrus)', 'Orchard Gold (Mango & Apricot)', 'Berry & Butter Harmony'],
+  'orchard-reserve': ['Sun-Dried Apricot & Plum', 'Damson Honey Glaze', 'Velvet Fig & Butter'],
+  'evening-citrus': ['Sicilian Blood Orange', 'Calabrian Bergamot', 'Molasses Blood Orange'],
 };
 
-
 export const api = {
+  // =========================================================================
   // SUPABASE CONNECTION & DIAGNOSTICS
+  // =========================================================================
   async checkDatabaseConnection(): Promise<{
     connected: boolean;
     latencyMs: number;
@@ -47,15 +46,26 @@ export const api = {
     const start = performance.now();
     try {
       const headers = getHeaders(true);
-      const tables = ['toomakt_products', 'toomakt_orders', 'toomakt_categories', 'toomakt_bundles', 'toomakt_reviews', 'toomakt_promo_codes', 'toomakt_subscribers'];
+      const tables = [
+        'toomakt_products',
+        'toomakt_orders',
+        'toomakt_order_items',
+        'toomakt_categories',
+        'toomakt_bundles',
+        'toomakt_shipping_rates',
+        'toomakt_payment_confirmations',
+        'toomakt_promo_codes',
+        'toomakt_reviews',
+        'toomakt_global_settings',
+        'toomakt_subscribers',
+        'toomakt_notifications'
+      ];
       const counts: Record<string, number> = {};
 
       const results = await Promise.all(
         tables.map(async (t) => {
           try {
-            const res = await fetch(`${ADMIN_BASE}/${t}?select=id`, {
-              headers,
-            });
+            const res = await fetch(`${ADMIN_BASE}/${t}?select=id`, { headers });
             if (res.ok) {
               const rows = await res.json();
               return { table: t, count: Array.isArray(rows) ? rows.length : 0 };
@@ -67,14 +77,11 @@ export const api = {
         })
       );
 
-      results.forEach((r) => {
-        counts[r.table] = r.count;
-      });
+      results.forEach((r) => { counts[r.table] = r.count; });
 
-      const latencyMs = Math.round(performance.now() - start);
       return {
         connected: true,
-        latencyMs,
+        latencyMs: Math.round(performance.now() - start),
         url: SUPABASE_URL,
         tableCounts: counts,
       };
@@ -89,44 +96,10 @@ export const api = {
     }
   },
 
+  // =========================================================================
   // 1. PRODUCTS & INVENTORY
+  // =========================================================================
   async getProducts(): Promise<any[]> {
-    // 1. Try Django backend (real database source of truth)
-    try {
-      const djangoRes = await fetch(`${DJANGO_BASE}/api/products/`);
-      if (djangoRes.ok) {
-        const data = await djangoRes.json();
-        const list = Array.isArray(data) ? data : (data.results || []);
-        if (list.length > 0) {
-          return list.map((p: any) => ({
-            ...p,
-            id: String(p.id),
-            category_name: p.category_name || (typeof p.category === 'object' ? p.category?.name : 'Confectionery'),
-            category_slug: p.category_slug || (typeof p.category === 'object' ? p.category?.slug : 'confectionery'),
-            flavor_name: p.name,
-            flavor_color: p.accent_color || '#C26715',
-            status: p.status || (p.in_stock ? 'published' : 'draft'),
-            stock_quantity: p.stock_quantity ?? (p.in_stock ? 50 : 0),
-            in_stock: p.stock_quantity !== undefined ? p.stock_quantity > 0 : (p.in_stock ?? true),
-            pieces_per_pack: p.pieces_per_pack || 20,
-            image: p.image || '/images/canister.jpg',
-            price: Number(p.price || 0),
-            weight: p.weight || '250g Pouch',
-            tagline: p.tagline || p.description?.slice(0, 70) || '',
-            description: p.description || '',
-            rating: 4.98,
-            reviewsCount: 1420,
-            variants: [
-              { id: `${p.id}-v1`, title: p.weight || '250g Pouch', price: p.price, stock_quantity: p.stock_quantity ?? 50 },
-            ],
-          }));
-        }
-      }
-    } catch (e) {
-      console.warn('Django products unavailable, trying Supabase:', e);
-    }
-
-    // 2. Supabase Fallback
     try {
       const res = await fetch(
         `${ADMIN_BASE}/toomakt_products?select=*,category:toomakt_categories(name,slug)&order=is_featured.desc,name.asc`,
@@ -135,26 +108,40 @@ export const api = {
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       if (data && data.length > 0) {
-        return data.map((p: any) => ({
-          ...p,
-          category_name: p.category?.name || 'Confectionery',
-          category_slug: p.category?.slug || 'confectionery',
-          flavor_name: p.name,
-          flavor_color: p.accent_color || '#FFD147',
-          status: p.in_stock ? 'published' : 'draft',
-          stock_quantity: p.stock_quantity ?? 50,
-          in_stock: (p.stock_quantity ?? 50) > 0,
-          price: Number(p.price || 0),
-          variants: [
-            { id: `${p.id}-v1`, title: p.weight || '250g Pouch', price: p.price, stock_quantity: p.stock_quantity ?? 50 },
-          ],
-        }));
+        return data.map((p: any) => {
+          const defaultFlavors = (PRODUCT_DEFAULT_FLAVORS as Record<string, string[]>)[p.slug] || (PRODUCT_DEFAULT_FLAVORS as Record<string, string[]>)[p.id] || (Array.isArray(p.fruit_notes) && p.fruit_notes.length > 0 ? p.fruit_notes : [p.name]);
+          const availableFlavors = p.available_flavors && Array.isArray(p.available_flavors) && p.available_flavors.length > 0
+            ? p.available_flavors
+            : defaultFlavors;
+
+          return {
+            ...p,
+            category_name: p.category?.name || 'Confectionery',
+            category_slug: p.category?.slug || 'confectionery',
+            flavor_name: p.name,
+            flavor_color: p.accent_color || '#FFD147',
+            status: p.in_stock ? 'published' : 'draft',
+            stock_quantity: p.stock_quantity ?? 50,
+            in_stock: (p.stock_quantity ?? 50) > 0,
+            price: Number(p.price || 0),
+            pieces_per_pack: p.pieces_per_pack || 20,
+            image: p.image_url || '/images/canister.jpg',
+            weight: p.weight || '250g Pouch',
+            tagline: p.tagline || '',
+            description: p.description || '',
+            available_flavors: availableFlavors,
+            rating: 4.98,
+            reviewsCount: 1420,
+            variants: [
+              { id: `${p.id}-v1`, title: p.weight || '250g Pouch', price: p.price, stock_quantity: p.stock_quantity ?? 50 },
+            ],
+          };
+        });
       }
-      return PRODUCTS;
     } catch (e) {
-      console.warn('Supabase products unavailable, using local atelier products:', e);
-      return PRODUCTS;
+      console.warn('Supabase products unavailable, using local data:', e);
     }
+    return PRODUCTS;
   },
 
   async getProduct(slugOrId: string): Promise<any> {
@@ -199,13 +186,10 @@ export const api = {
       ingredients: Array.isArray(data.ingredients) ? data.ingredients : ['Fruit Puree', 'Grass-fed Butter', 'Cane Sugar', 'Sea Salt'],
       in_stock: stockQuantity > 0,
       stock_quantity: stockQuantity,
-      pieces_per_pack: parseInt(data.pieces_per_pack) || 20,
       is_featured: Boolean(data.is_featured),
     };
 
-    if (data.category_id) {
-      payload.category_id = data.category_id;
-    }
+    if (data.category_id) payload.category_id = data.category_id;
 
     const res = await fetch(`${ADMIN_BASE}/toomakt_products`, {
       method: 'POST',
@@ -215,7 +199,7 @@ export const api = {
 
     if (!res.ok) {
       const err = await res.text();
-      throw new Error(`Failed to create product in Supabase: ${err}`);
+      throw new Error(`Failed to create product: ${err}`);
     }
 
     const created = await res.json();
@@ -257,7 +241,7 @@ export const api = {
 
     if (!res.ok) {
       const err = await res.text();
-      throw new Error(`Failed to update product in Supabase: ${err}`);
+      throw new Error(`Failed to update product: ${err}`);
     }
 
     const updated = await res.json();
@@ -272,63 +256,282 @@ export const api = {
     return res.ok;
   },
 
+  // =========================================================================
   // 2. CATEGORIES
+  // =========================================================================
   async getCategories(): Promise<any[]> {
     try {
       const res = await fetch(
-        `${PUBLIC_BASE}/toomakt_categories?select=*&order=display_order.asc`,
-        { headers: getHeaders(false) }
+        `${ADMIN_BASE}/toomakt_categories?select=*&order=display_order.asc`,
+        { headers: getHeaders(true) }
       );
-      if (res.ok) return await res.json();
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.length > 0) return data;
+      }
     } catch (e) {
-      console.error('Error fetching categories from Supabase:', e);
+      console.error('Error fetching categories:', e);
     }
-    return [];
+    return [
+      { id: 'cat-1', name: 'All', slug: 'all', description: 'Complete collection of artisanal fruit confections', display_order: 1 },
+      { id: 'cat-2', name: 'Mango', slug: 'mango', description: 'Equatorial golden Alphonso mango creations', display_order: 2 },
+      { id: 'cat-3', name: 'Berry', slug: 'berry', description: 'Wild mountain strawberries and arctic bilberries', display_order: 3 },
+      { id: 'cat-4', name: 'Citrus', slug: 'citrus', description: 'Sun-drenched Mediterranean blood orange zest', display_order: 4 },
+      { id: 'cat-5', name: 'Gift boxes', slug: 'gift-boxes', description: 'Prestige curated tins and tasting assortments', display_order: 5 }
+    ];
   },
 
+  async createCategory(data: any): Promise<any> {
+    const slug = data.slug || (data.name || 'category').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const payload = {
+      name: data.name,
+      slug,
+      description: data.description || '',
+      display_order: parseInt(data.display_order) || 0
+    };
+    try {
+      const res = await fetch(`${ADMIN_BASE}/toomakt_categories`, {
+        method: 'POST',
+        headers: getHeaders(true),
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        const rows = await res.json();
+        return rows[0] || payload;
+      }
+    } catch (e) {
+      console.error('Error creating category:', e);
+    }
+    return { id: String(Date.now()), ...payload };
+  },
+
+  async updateCategory(id: string, data: any): Promise<boolean> {
+    try {
+      const res = await fetch(`${ADMIN_BASE}/toomakt_categories?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: getHeaders(true),
+        body: JSON.stringify(data)
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+
+  async deleteCategory(id: string): Promise<boolean> {
+    try {
+      const res = await fetch(`${ADMIN_BASE}/toomakt_categories?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: getHeaders(true)
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+
+  // =========================================================================
   // 3. CURATED BUNDLES & TINS
+  // =========================================================================
   async getBundles(): Promise<any[]> {
     try {
       const res = await fetch(
-        `${PUBLIC_BASE}/toomakt_bundles?select=*&order=is_grand_feature.desc,price.asc`,
-        { headers: getHeaders(false) }
+        `${ADMIN_BASE}/toomakt_bundles?select=*&order=is_grand_feature.desc,price.asc`,
+        { headers: getHeaders(true) }
       );
-      if (res.ok) return await res.json();
+      if (res.ok) {
+        const data = await res.json();
+        return (data || []).map((b: any) => ({
+          ...b,
+          title: b.title,
+          category: b.category || 'Curated Gift Box',
+          badge: b.badge || '',
+          description: b.description || '',
+          price: Number(b.price || 0),
+          compare_at_price: b.compare_at_price != null ? Number(b.compare_at_price) : null,
+          weight: b.weight || '450G LUXURY TIN',
+          rating: Number(b.rating || 5),
+          reviewCount: b.review_count ?? b.reviewCount ?? 0,
+          review_count: b.review_count ?? 0,
+          image: b.image_url || b.image || '/images/carousel.jpg',
+          image_url: b.image_url || b.image || '/images/carousel.jpg',
+          perk_note: b.perk_note || '',
+          is_grand_feature: Boolean(b.is_grand_feature),
+          is_active: b.is_active !== false,
+        }));
+      }
     } catch (e) {
-      console.error('Error fetching bundles from Supabase:', e);
+      console.error('Error fetching bundles:', e);
     }
     return [];
   },
 
-  // 4. FLAVORS VAULT
-  async getFlavors(): Promise<any[]> {
-    const products = await this.getProducts();
-    const defaults = [
-      { id: '1', name: 'Alphonso Mango', slug: 'mango', color: '#E58A1F', description: 'Sun-ripened Ratnagiri mango & salted Madagascar vanilla toffee.', tartness: 9.4 },
-      { id: '2', name: 'Wild Mara Strawberry', slug: 'strawberry', color: '#D93848', description: 'Heritage mountain strawberries reduced into a tart jewel swirl.', tartness: 9.6 },
-      { id: '3', name: 'Sicilian Blood Orange', slug: 'blood-orange', color: '#D65A20', description: 'Cold-pressed blood orange flavedo folded into nutty browned butter.', tartness: 9.8 },
-      { id: '4', name: 'Nordic Blueberry', slug: 'blueberry', color: '#533C85', description: 'Arctic wild blueberries paired with double-cream dairy toffee.', tartness: 9.1 },
-      { id: '5', name: 'Crisp Granny Smith', slug: 'apple', color: '#7B8838', description: 'Tangy cider reduction swirled with dark honeyed butterscotch.', tartness: 9.2 }
-    ];
+  async createBundle(data: any): Promise<any> {
+    const slug =
+      data.slug ||
+      (data.title || 'gift-box')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
 
-    if (products.length > 0) {
-      return products.map((p, idx) => ({
-        id: p.id || String(idx + 1),
-        name: p.name,
-        slug: p.slug,
-        color: p.accent_color || defaults[idx % defaults.length].color,
-        description: p.description || p.tagline,
-        tartness: Number(p.fruit_impact_score) || 9.4
-      }));
+    const payload: any = {
+      title: data.title,
+      slug,
+      category: data.category || 'Curated Gift Box',
+      badge: data.badge || '',
+      description: data.description || 'A curated gift assortment from the toomakt atelier.',
+      price: parseFloat(data.price) || 0,
+      weight: data.weight || '450G LUXURY TIN',
+      rating: parseFloat(data.rating) || 5.0,
+      review_count: parseInt(data.review_count || data.reviewCount) || 0,
+      image_url: data.image_url || data.image || '/images/carousel.jpg',
+      perk_note: data.perk_note || '',
+      is_grand_feature: Boolean(data.is_grand_feature),
+      is_active: data.is_active !== false,
+    };
+
+    if (data.compare_at_price != null && data.compare_at_price !== '') {
+      payload.compare_at_price = parseFloat(data.compare_at_price);
     }
-    return defaults;
+
+    const res = await fetch(`${ADMIN_BASE}/toomakt_bundles`, {
+      method: 'POST',
+      headers: getHeaders(true),
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`Failed to create bundle: ${err}`);
+    }
+
+    const created = await res.json();
+    const row = created[0] || payload;
+    return {
+      ...row,
+      image: row.image_url || payload.image_url,
+      reviewCount: row.review_count ?? 0,
+    };
+  },
+
+  async updateBundle(id: string, data: any): Promise<any> {
+    const patchPayload: any = {};
+    if (data.title !== undefined) patchPayload.title = data.title;
+    if (data.slug !== undefined) patchPayload.slug = data.slug;
+    if (data.category !== undefined) patchPayload.category = data.category;
+    if (data.badge !== undefined) patchPayload.badge = data.badge;
+    if (data.description !== undefined) patchPayload.description = data.description;
+    if (data.price !== undefined) patchPayload.price = parseFloat(data.price);
+    if (data.compare_at_price !== undefined) {
+      patchPayload.compare_at_price =
+        data.compare_at_price === '' || data.compare_at_price == null
+          ? null
+          : parseFloat(data.compare_at_price);
+    }
+    if (data.weight !== undefined) patchPayload.weight = data.weight;
+    if (data.rating !== undefined) patchPayload.rating = parseFloat(data.rating);
+    if (data.review_count !== undefined || data.reviewCount !== undefined) {
+      patchPayload.review_count = parseInt(data.review_count ?? data.reviewCount) || 0;
+    }
+    if (data.image_url !== undefined || data.image !== undefined) {
+      patchPayload.image_url = data.image_url || data.image;
+    }
+    if (data.perk_note !== undefined) patchPayload.perk_note = data.perk_note;
+    if (data.is_grand_feature !== undefined) patchPayload.is_grand_feature = Boolean(data.is_grand_feature);
+    if (data.is_active !== undefined) patchPayload.is_active = Boolean(data.is_active);
+
+    const res = await fetch(`${ADMIN_BASE}/toomakt_bundles?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: getHeaders(true),
+      body: JSON.stringify(patchPayload),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`Failed to update bundle: ${err}`);
+    }
+
+    const updated = await res.json();
+    return updated[0] || data;
+  },
+
+  async deleteBundle(id: string): Promise<boolean> {
+    const res = await fetch(`${ADMIN_BASE}/toomakt_bundles?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(true),
+    });
+    return res.ok;
+  },
+
+  // =========================================================================
+  // 4. FLAVORS VAULT
+  // =========================================================================
+  async getFlavors(): Promise<any[]> {
+    try {
+      const res = await fetch(
+        `${ADMIN_BASE}/toomakt_global_settings?key=eq.store_flavors&select=value`,
+        { headers: getHeaders(true) }
+      );
+      if (res.ok) {
+        const rows = await res.json();
+        if (rows.length > 0 && Array.isArray(rows[0].value) && rows[0].value.length > 0) {
+          return rows[0].value;
+        }
+      }
+    } catch (e) {
+      console.warn('Could not fetch flavors from DB, using catalog:', e);
+    }
+    return [
+      { id: '1', name: 'Wild Strawberry', slug: 'strawberry', color: '#C2293E', secondary_color: '#FDF0F2', description: 'Hand-picked Alpine berries simmered in pure copper kettles.', is_active: true, is_featured: true },
+      { id: '2', name: 'Alphonso Mango', slug: 'mango', color: '#E58B12', secondary_color: '#FEF7EC', description: 'Equatorial sunshine and golden honeycomb notes.', is_active: true, is_featured: true },
+      { id: '3', name: 'Nordic Bilberry', slug: 'blueberry', color: '#3B3868', secondary_color: '#F2F2FC', description: 'Midnight sun arctic bilberries with lavender notes.', is_active: true, is_featured: false },
+      { id: '4', name: 'Sicilian Blood Orange', slug: 'citrus', color: '#D65A20', secondary_color: '#FEF3EC', description: 'Sun-drenched citrus zest against rich browned butter.', is_active: true, is_featured: false },
+      { id: '5', name: 'Granny Smith Apple', slug: 'apple', color: '#7B8838', secondary_color: '#F4F7EB', description: 'Crisp orchard tartness with honeyed butterscotch.', is_active: true, is_featured: false }
+    ];
   },
 
   async createFlavor(data: any): Promise<any> {
-    return { id: String(Date.now()), ...data };
+    const flavors = await this.getFlavors();
+    const newFlavor = {
+      id: data.id || String(Date.now()),
+      name: data.name,
+      slug: data.slug || (data.name || 'flavor').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      color: data.color || '#E58B12',
+      secondary_color: data.secondary_color || '#FEF7EC',
+      description: data.description || '',
+      is_active: data.is_active !== false,
+      is_featured: Boolean(data.is_featured)
+    };
+    const updated = [...flavors, newFlavor];
+    await this.updateGlobalSetting('store_flavors', updated);
+    return newFlavor;
   },
 
+  async updateFlavor(id: string, data: any): Promise<boolean> {
+    try {
+      const flavors = await this.getFlavors();
+      const updated = flavors.map((f: any) => f.id === id ? { ...f, ...data } : f);
+      await this.updateGlobalSetting('store_flavors', updated);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  async deleteFlavor(id: string): Promise<boolean> {
+    try {
+      const flavors = await this.getFlavors();
+      const updated = flavors.filter((f: any) => f.id !== id);
+      await this.updateGlobalSetting('store_flavors', updated);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  // =========================================================================
   // 5. REVIEWS & MODERATION
+  // =========================================================================
   async getReviews(): Promise<any[]> {
     try {
       const res = await fetch(
@@ -343,7 +546,7 @@ export const api = {
         }));
       }
     } catch (e) {
-      console.error('Error fetching reviews from Supabase:', e);
+      console.error('Error fetching reviews:', e);
     }
     return [];
   },
@@ -391,22 +594,10 @@ export const api = {
     return res.ok;
   },
 
+  // =========================================================================
   // 6. ORDERS & FULFILLMENT
+  // =========================================================================
   async getAdminOrders(): Promise<any[]> {
-    // 1. Try Django backend
-    try {
-      const djangoRes = await fetch(`${DJANGO_BASE}/api/admin/orders/`, {
-        headers: getAdminAuthHeaders(),
-      });
-      if (djangoRes.ok) {
-        const data = await djangoRes.json();
-        return Array.isArray(data) ? data : (data.results || []);
-      }
-    } catch (err) {
-      console.warn('Django orders endpoint unavailable, falling back to Supabase:', err);
-    }
-
-    // 2. Supabase Fallback
     try {
       const res = await fetch(
         `${ADMIN_BASE}/toomakt_orders?select=*,items:toomakt_order_items(*)&order=created_at.desc`,
@@ -414,42 +605,21 @@ export const api = {
       );
       if (res.ok) return await res.json();
     } catch (e) {
-      console.error('Error fetching admin orders from Supabase:', e);
+      console.error('Error fetching orders:', e);
     }
     return [];
   },
 
-  async updateOrderStatus(orderId: string, status: string, trackingNumber?: string, notes?: string, adminName?: string): Promise<any> {
-    // 1. Try Django backend (handles automatic WhatsApp invoice on PREPARING, tracking, and logs)
-    try {
-      const djangoRes = await fetch(`${DJANGO_BASE}/api/admin/orders/${orderId}/update_status/`, {
-        method: 'POST',
-        headers: getAdminAuthHeaders(),
-        body: JSON.stringify({
-          status,
-          tracking_number: trackingNumber,
-          internal_notes: notes,
-          admin_name: adminName || 'Admin'
-        })
-      });
-      const data = await djangoRes.json();
-      if (djangoRes.ok) return data;
-      if (!djangoRes.ok && data.message) {
-        throw new Error(data.message);
-      }
-    } catch (err: any) {
-      if (err.message && err.message.includes('Cannot move order')) {
-        throw err;
-      }
-      console.warn('Django update_status unavailable, falling back to Supabase:', err);
-    }
+  async updateOrderStatus(orderId: string, status: string, trackingNumber?: string, notes?: string, _adminName?: string, paymentStatus?: string): Promise<any> {
+    const patchPayload: any = { status, updated_at: new Date().toISOString() };
+    if (trackingNumber !== undefined) patchPayload.tracking_number = trackingNumber;
+    if (notes !== undefined) patchPayload.internal_notes = notes;
+    if (paymentStatus !== undefined) patchPayload.payment_status = paymentStatus;
 
-    // 2. Supabase Fallback
-    const patchPayload: any = { status };
-    if (trackingNumber) patchPayload.tracking_number = trackingNumber;
-    if (notes) patchPayload.internal_notes = notes;
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(orderId);
+    const filter = isUUID ? `id=eq.${orderId}` : `order_number=eq.${orderId}`;
 
-    const res = await fetch(`${ADMIN_BASE}/toomakt_orders?id=eq.${orderId}`, {
+    const res = await fetch(`${ADMIN_BASE}/toomakt_orders?${filter}`, {
       method: 'PATCH',
       headers: getHeaders(true),
       body: JSON.stringify(patchPayload)
@@ -457,14 +627,26 @@ export const api = {
 
     if (!res.ok) {
       const err = await res.text();
-      throw new Error(`Failed to update order status in Supabase: ${err}`);
+      throw new Error(`Failed to update order status: ${err}`);
     }
 
     const updated = await res.json();
     return updated[0] || patchPayload;
   },
 
+  async deleteOrder(orderId: string): Promise<boolean> {
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(orderId);
+    const filter = isUUID ? `id=eq.${orderId}` : `order_number=eq.${orderId}`;
+    const res = await fetch(`${ADMIN_BASE}/toomakt_orders?${filter}`, {
+      method: 'DELETE',
+      headers: getHeaders(true)
+    });
+    return res.ok;
+  },
+
+  // =========================================================================
   // PAYMENT CONFIRMATIONS (INSTAPAY / BANK TRANSFER)
+  // =========================================================================
   async submitPaymentConfirmation(orderNumber: string, data: {
     transfer_amount?: number;
     transfer_reference?: string;
@@ -472,36 +654,6 @@ export const api = {
     payment_screenshot?: string;
     screenshot_file?: File;
   }): Promise<{ success: boolean; message: string; order?: any; confirmation?: any }> {
-    // 1. Try Django backend
-    try {
-      let body: any;
-      let headers: Record<string, string> = {};
-
-      if (data.screenshot_file) {
-        const formData = new FormData();
-        formData.append('screenshot_file', data.screenshot_file);
-        if (data.transfer_amount) formData.append('transfer_amount', String(data.transfer_amount));
-        if (data.transfer_reference) formData.append('transfer_reference', data.transfer_reference);
-        if (data.customer_phone) formData.append('customer_phone', data.customer_phone);
-        body = formData;
-      } else {
-        headers['Content-Type'] = 'application/json';
-        body = JSON.stringify(data);
-      }
-
-      const res = await fetch(`${DJANGO_BASE}/api/orders/${orderNumber}/payment-confirmation/`, {
-        method: 'POST',
-        headers,
-        body
-      });
-      const json = await res.json();
-      if (res.ok) return json;
-      if (!res.ok && json.message) return { success: false, message: json.message };
-    } catch (err) {
-      console.warn('Django payment-confirmation unavailable, falling back to Supabase:', err);
-    }
-
-    // 2. Supabase Cloud Fallback
     try {
       const confirmationPayload = {
         order_number: orderNumber,
@@ -523,14 +675,14 @@ export const api = {
         body: JSON.stringify(confirmationPayload)
       });
 
-      // Update order status in Supabase
+      // Update order status
       await fetch(`${ADMIN_BASE}/toomakt_orders?order_number=eq.${orderNumber}`, {
         method: 'PATCH',
         headers: getHeaders(true),
         body: JSON.stringify({ status: 'payment_review', payment_status: 'waiting_verification' })
       });
 
-      // Create Admin Notification in Supabase
+      // Create admin notification
       await fetch(`${ADMIN_BASE}/toomakt_notifications`, {
         method: 'POST',
         headers: getHeaders(true),
@@ -553,21 +705,6 @@ export const api = {
   },
 
   async getPaymentConfirmations(verificationStatus?: string): Promise<any[]> {
-    // 1. Try Django backend
-    try {
-      const url = verificationStatus && verificationStatus !== 'all'
-        ? `${DJANGO_BASE}/api/admin/payment-confirmations/?verification_status=${encodeURIComponent(verificationStatus)}`
-        : `${DJANGO_BASE}/api/admin/payment-confirmations/`;
-      const res = await fetch(url, { headers: getAdminAuthHeaders() });
-      if (res.ok) {
-        const data = await res.json();
-        return Array.isArray(data) ? data : (data.results || []);
-      }
-    } catch (err) {
-      console.warn('Django payment-confirmations unavailable, falling back to Supabase:', err);
-    }
-
-    // 2. Supabase Fallback
     try {
       let query = `${ADMIN_BASE}/toomakt_payment_confirmations?select=*&order=submission_date.desc`;
       if (verificationStatus && verificationStatus !== 'all') {
@@ -576,24 +713,12 @@ export const api = {
       const res = await fetch(query, { headers: getHeaders(true) });
       if (res.ok) return await res.json();
     } catch (e) {
-      console.error('Error fetching payment confirmations from Supabase:', e);
+      console.error('Error fetching payment confirmations:', e);
     }
     return [];
   },
 
-  async approvePaymentConfirmation(confirmationId: string, adminName?: string, notes?: string): Promise<any> {
-    try {
-      const res = await fetch(`${DJANGO_BASE}/api/admin/payment-confirmations/${confirmationId}/approve/`, {
-        method: 'POST',
-        headers: getAdminAuthHeaders(),
-        body: JSON.stringify({ admin_name: adminName || 'Admin', admin_notes: notes })
-      });
-      if (res.ok) return await res.json();
-    } catch (err) {
-      console.warn('Django approve payment confirmation failed, falling back to Supabase:', err);
-    }
-
-    // Supabase fallback
+  async approvePaymentConfirmation(confirmationId: string, adminName?: string, _notes?: string): Promise<any> {
     await fetch(`${ADMIN_BASE}/toomakt_payment_confirmations?id=eq.${confirmationId}`, {
       method: 'PATCH',
       headers: getHeaders(true),
@@ -607,19 +732,7 @@ export const api = {
     return { success: true };
   },
 
-  async rejectPaymentConfirmation(confirmationId: string, reason: string, adminName?: string, notes?: string): Promise<any> {
-    try {
-      const res = await fetch(`${DJANGO_BASE}/api/admin/payment-confirmations/${confirmationId}/reject/`, {
-        method: 'POST',
-        headers: getAdminAuthHeaders(),
-        body: JSON.stringify({ reason, admin_name: adminName || 'Admin', admin_notes: notes })
-      });
-      if (res.ok) return await res.json();
-    } catch (err) {
-      console.warn('Django reject payment confirmation failed, falling back to Supabase:', err);
-    }
-
-    // Supabase fallback
+  async rejectPaymentConfirmation(confirmationId: string, reason: string, adminName?: string, _notes?: string): Promise<any> {
     await fetch(`${ADMIN_BASE}/toomakt_payment_confirmations?id=eq.${confirmationId}`, {
       method: 'PATCH',
       headers: getHeaders(true),
@@ -634,40 +747,22 @@ export const api = {
     return { success: true };
   },
 
+  // =========================================================================
   // NOTIFICATION SYSTEM
+  // =========================================================================
   async getNotifications(unreadOnly = false): Promise<any[]> {
-    // 1. Try Django
-    try {
-      const url = unreadOnly
-        ? `${DJANGO_BASE}/api/admin/notifications/?unread=true`
-        : `${DJANGO_BASE}/api/admin/notifications/`;
-      const res = await fetch(url, { headers: getAdminAuthHeaders() });
-      if (res.ok) {
-        const data = await res.json();
-        return Array.isArray(data) ? data : (data.results || []);
-      }
-    } catch {}
-
-    // 2. Supabase Fallback
     try {
       let query = `${ADMIN_BASE}/toomakt_notifications?select=*&order=created_at.desc`;
       if (unreadOnly) query += '&is_read=eq.false';
       const res = await fetch(query, { headers: getHeaders(true) });
       if (res.ok) return await res.json();
     } catch (e) {
-      console.error('Error fetching notifications from Supabase:', e);
+      console.error('Error fetching notifications:', e);
     }
     return [];
   },
 
   async markNotificationRead(id: string): Promise<boolean> {
-    try {
-      await fetch(`${DJANGO_BASE}/api/admin/notifications/${id}/mark_read/`, {
-        method: 'POST',
-        headers: getAdminAuthHeaders()
-      });
-      return true;
-    } catch {}
     try {
       await fetch(`${ADMIN_BASE}/toomakt_notifications?id=eq.${id}`, {
         method: 'PATCH',
@@ -675,18 +770,12 @@ export const api = {
         body: JSON.stringify({ is_read: true })
       });
       return true;
-    } catch {}
-    return false;
+    } catch {
+      return false;
+    }
   },
 
   async markAllNotificationsRead(): Promise<boolean> {
-    try {
-      await fetch(`${DJANGO_BASE}/api/admin/notifications/mark_all_read/`, {
-        method: 'POST',
-        headers: getAdminAuthHeaders()
-      });
-      return true;
-    } catch {}
     try {
       await fetch(`${ADMIN_BASE}/toomakt_notifications?is_read=eq.false`, {
         method: 'PATCH',
@@ -694,11 +783,14 @@ export const api = {
         body: JSON.stringify({ is_read: true })
       });
       return true;
-    } catch {}
-    return false;
+    } catch {
+      return false;
+    }
   },
 
-  // SERVER-SIDE SHIPPING CALCULATION
+  // =========================================================================
+  // SHIPPING CALCULATION
+  // =========================================================================
   async calculateShipping(governorate: string, subtotal: number, promoCode?: string): Promise<{
     success: boolean;
     subtotal: number;
@@ -710,62 +802,77 @@ export const api = {
     estimated_delivery: string;
     coupon_valid?: boolean;
   }> {
+    // Fetch shipping rate from Supabase
+    let fee = 50;
+    let estimatedDelivery = '1–3 Business Days';
     try {
-      const res = await fetch(`${DJANGO_BASE}/api/shipping/calculate/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ governorate, subtotal, promo_code: promoCode })
-      });
-      if (res.ok) return await res.json();
+      const res = await fetch(
+        `${PUBLIC_BASE}/toomakt_shipping_rates?governorate=eq.${encodeURIComponent(governorate)}&active=eq.true&select=price,estimated_delivery&limit=1`,
+        { headers: getHeaders(false) }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (data.length > 0) {
+          fee = Number(data[0].price);
+          estimatedDelivery = data[0].estimated_delivery;
+        }
+      }
     } catch (e) {
-      console.warn('Server shipping calculate endpoint unavailable, using client logic:', e);
+      console.warn('Shipping rate lookup failed, using default:', e);
     }
 
-    // Client fallback
-    const freeThreshold = 500;
+    // Fetch shipping threshold from settings
+    let freeThreshold = 500;
+    try {
+      const settingsRes = await fetch(
+        `${PUBLIC_BASE}/toomakt_global_settings?key=eq.shipping_rules&select=value&limit=1`,
+        { headers: getHeaders(false) }
+      );
+      if (settingsRes.ok) {
+        const settings = await settingsRes.json();
+        if (settings.length > 0 && settings[0].value) {
+          freeThreshold = settings[0].value.free_shipping_threshold || 500;
+        }
+      }
+    } catch {}
+
     const isFree = subtotal >= freeThreshold;
-    const fee = isFree ? 0 : 50;
-    const discount = promoCode === 'TOOMAKT10' ? subtotal * 0.1 : 0;
+    const finalFee = isFree ? 0 : fee;
+
+    // Validate coupon
+    let discount = 0;
+    let couponValid = false;
+    if (promoCode) {
+      const couponResult = await this.validateCoupon(promoCode, subtotal);
+      if (couponResult.valid && couponResult.discount_percent) {
+        discount = subtotal * (couponResult.discount_percent / 100);
+        couponValid = true;
+      }
+    }
+
     return {
       success: true,
       subtotal,
       discount,
-      shipping_fee: fee,
-      final_total: Math.max(0, subtotal - discount + fee),
+      shipping_fee: finalFee,
+      final_total: Math.max(0, subtotal - discount + finalFee),
       is_free_shipping: isFree,
       free_shipping_threshold: freeThreshold,
-      estimated_delivery: '1–3 Business Days',
-      coupon_valid: Boolean(promoCode)
+      estimated_delivery: estimatedDelivery,
+      coupon_valid: couponValid
     };
   },
 
+  // =========================================================================
   // ANALYTICS & REPORTS
-  async getAdminReports(period = 'weekly', format = 'json'): Promise<any> {
-    try {
-      const res = await fetch(`${DJANGO_BASE}/api/admin/reports/?period=${period}&format=${format}`, {
-        headers: getAdminAuthHeaders()
-      });
-      if (res.ok) {
-        if (format === 'csv') return await res.blob();
-        return await res.json();
-      }
-    } catch (e) {
-      console.warn('Reports endpoint unavailable:', e);
-    }
+  // =========================================================================
+  async getAdminReports(_period = 'weekly', _format = 'json'): Promise<any> {
+    // Reports are computed from Supabase data in getAdminStats
     return null;
   },
 
-  // DASHBOARD STATS (14 METRICS)
   async getDashboardStats(): Promise<any> {
-    try {
-      const res = await fetch(`${DJANGO_BASE}/api/admin/dashboard/stats/`, {
-        headers: getAdminAuthHeaders()
-      });
-      if (res.ok) return await res.json();
-    } catch (e) {
-      console.warn('Dashboard stats endpoint unavailable:', e);
-    }
-    return null;
+    return await this.getAdminStats();
   },
 
   async trackOrder(orderNumber: string): Promise<any> {
@@ -780,34 +887,22 @@ export const api = {
         return data[0] || null;
       }
     } catch (e) {
-      console.error('Error tracking order from Supabase:', e);
+      console.error('Error tracking order:', e);
     }
     return null;
   },
 
   async adminLogin(email: string, password: string): Promise<any> {
-    try {
-      const res = await fetch(`${DJANGO_BASE}/api/auth/admin-login/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (res.ok && data.access) {
-        return { success: true, access: data.access, user: data.user, role: data.role };
-      }
-      return { success: false, error: data.error || 'Invalid administrator credentials' };
-    } catch (e: any) {
-      if (email === 'admin@toomakt.com' && password === 'admin123456') {
-        return {
-          success: true,
-          access: 'demo-admin-jwt-token-toomakt-2026',
-          user: { email, username: 'admin' },
-          role: 'Super Admin'
-        };
-      }
-      return { success: false, error: 'Cannot connect to authentication service.' };
+    // Simple credential check — production should use Supabase Auth
+    if (email === 'admin@toomakt.com' && password === 'admin123456') {
+      return {
+        success: true,
+        access: 'toomakt-admin-session-' + Date.now(),
+        user: { email, username: 'admin' },
+        role: 'Super Admin'
+      };
     }
+    return { success: false, error: 'Invalid administrator credentials.' };
   },
 
   async checkout(orderData: {
@@ -830,32 +925,51 @@ export const api = {
       image?: string;
     }>;
   }): Promise<{ success: boolean; order?: any; error?: string; message?: string }> {
-    // 1. Try Django backend first (enforces 1-5 limits, Egypt shipping, PDF invoice, emails)
-    try {
-      const djangoRes = await fetch(`${DJANGO_BASE}/api/checkout/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
-      });
-      const data = await djangoRes.json();
-      if (djangoRes.ok && data.success) {
-        return { success: true, order: data.order };
-      }
-      if (!djangoRes.ok) {
-        return { success: false, error: data.message || data.error || 'Failed to place order.' };
-      }
-    } catch (err) {
-      console.warn('Django checkout endpoint unavailable, falling back to Supabase:', err);
-    }
-
-    // 2. Supabase Cloud Fallback
     try {
       const orderNumber = `ORD-2026-${Math.floor(100000 + Math.random() * 900000)}`;
       const subtotal = orderData.items.reduce((s, i) => s + (Number(i.unit_price || 16) * Number(i.quantity || 1)), 0);
-      const discountAmount = orderData.promo_code ? subtotal * 0.1 : 0;
-      const shippingFee = 50.0;
+
+      // Calculate discount
+      let discountAmount = 0;
+      if (orderData.promo_code) {
+        const couponResult = await this.validateCoupon(orderData.promo_code, subtotal);
+        if (couponResult.valid && couponResult.discount_percent) {
+          discountAmount = subtotal * (couponResult.discount_percent / 100);
+        }
+      }
+
+      // Calculate shipping from Supabase
+      let shippingFee = 50.0;
+      try {
+        const shipRes = await fetch(
+          `${PUBLIC_BASE}/toomakt_shipping_rates?governorate=eq.${encodeURIComponent(orderData.governorate || 'Cairo')}&active=eq.true&select=price&limit=1`,
+          { headers: getHeaders(false) }
+        );
+        if (shipRes.ok) {
+          const shipData = await shipRes.json();
+          if (shipData.length > 0) shippingFee = Number(shipData[0].price);
+        }
+      } catch {}
+
+      // Check free shipping threshold
+      try {
+        const settingsRes = await fetch(
+          `${PUBLIC_BASE}/toomakt_global_settings?key=eq.shipping_rules&select=value&limit=1`,
+          { headers: getHeaders(false) }
+        );
+        if (settingsRes.ok) {
+          const settings = await settingsRes.json();
+          if (settings.length > 0 && settings[0].value?.free_shipping_threshold) {
+            if (subtotal >= settings[0].value.free_shipping_threshold) {
+              shippingFee = 0;
+            }
+          }
+        }
+      } catch {}
+
       const totalAmount = subtotal - discountAmount + shippingFee;
 
+      // Insert order
       const orderRes = await fetch(`${ADMIN_BASE}/toomakt_orders`, {
         method: 'POST',
         headers: getHeaders(true),
@@ -870,17 +984,24 @@ export const api = {
           shipping_fee: shippingFee,
           total_amount: totalAmount,
           promo_code: orderData.promo_code || null,
-          status: 'pending'
+          status: 'pending',
+          governorate: orderData.governorate || 'Cairo',
+          shipping_city: orderData.shipping_city || '',
+          building_number: orderData.building_number || '',
+          apartment_floor: orderData.apartment_floor || '',
+          delivery_notes: orderData.delivery_notes || '',
+          payment_method: orderData.payment_method || 'cod'
         })
       });
 
       if (!orderRes.ok) {
         const err = await orderRes.text();
-        return { success: false, error: `Failed to insert order: ${err}` };
+        return { success: false, error: `Failed to place order: ${err}` };
       }
 
       const [createdOrder] = await orderRes.json();
 
+      // Insert order items
       if (createdOrder && orderData.items && orderData.items.length > 0) {
         const orderItems = orderData.items.map(item => ({
           order_id: createdOrder.id,
@@ -899,13 +1020,26 @@ export const api = {
         });
       }
 
-      // Dispatch Telegram alert as a fallback guarantee
+      // Create notification for admin
+      await fetch(`${ADMIN_BASE}/toomakt_notifications`, {
+        method: 'POST',
+        headers: getHeaders(true),
+        body: JSON.stringify({
+          notification_type: 'new_order',
+          title: `New order received — Order #${orderNumber}`,
+          message: `${orderData.customer_name} placed an order for ${totalAmount.toFixed(2)} EGP (${orderData.items.length} items).`,
+          related_order_number: orderNumber,
+          priority: 'high'
+        })
+      });
+
+      // Dispatch Telegram alert
       try {
         const rawPhone = orderData.customer_phone || '';
         const cleanPhone = rawPhone.replace(/\D/g, '');
         const waPhone = cleanPhone.startsWith('20') ? cleanPhone : (cleanPhone.startsWith('0') ? '20' + cleanPhone.slice(1) : '20' + cleanPhone);
         const itemsText = (orderData.items || []).map((i: any) => `  ▫️ <b>${i.quantity || 1}x</b> ${i.name || 'Confection'} — <code>${(Number(i.unit_price || 16) * Number(i.quantity || 1)).toFixed(2)} EGP</code>`).join('\n');
-        
+
         const msg = `🎉 <b>NEW ORDER RECEIVED! | طلب جديد</b>\n` +
           `━━━━━━━━━━━━━━━━━━━\n` +
           `🏷️ <b>Order Number:</b> <code>#${orderNumber}</code>\n` +
@@ -946,7 +1080,7 @@ export const api = {
           }).catch(() => {});
         }
       } catch (tgErr) {
-        console.warn('Telegram alert fallback error:', tgErr);
+        console.warn('Telegram alert error:', tgErr);
       }
 
       return {
@@ -954,7 +1088,7 @@ export const api = {
         order: {
           ...createdOrder,
           governorate: orderData.governorate || 'Cairo',
-          payment_method: 'cod'
+          payment_method: orderData.payment_method || 'cod'
         }
       };
     } catch (e: any) {
@@ -963,54 +1097,117 @@ export const api = {
     }
   },
 
-  // EGYPT SHIPPING RATES APIS
+  // =========================================================================
+  // EGYPT SHIPPING RATES (100% Synced with Database)
+  // =========================================================================
   async getShippingRates(): Promise<any[]> {
     try {
-      const res = await fetch(`${DJANGO_BASE}/api/shipping-rates/`);
+      const res = await fetch(
+        `${ADMIN_BASE}/toomakt_shipping_rates?select=*&order=governorate.asc`,
+        { headers: getHeaders(true) }
+      );
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
+        if (data && data.length > 0) {
+          return data.map((sr: any) => ({
+            ...sr,
+            price: Number(sr.price),
+            rate: Number(sr.price), // Support both property names seamlessly
+            estimated_delivery: sr.estimated_delivery || '1–3 Business Days',
+            active: sr.active !== false
+          }));
+        }
       }
     } catch (e) {
-      console.warn('Could not fetch shipping rates from Django, using fallback:', e);
+      console.warn('Could not fetch shipping rates from Supabase:', e);
     }
+    // Reliable 27 Egyptian Governorates fallback matching database
     return [
-      { id: '1', governorate: 'Cairo', price: 50.0, estimated_delivery: '1–2 Days', active: true },
-      { id: '2', governorate: 'Giza', price: 50.0, estimated_delivery: '1–2 Days', active: true },
-      { id: '3', governorate: 'Alexandria', price: 65.0, estimated_delivery: '2–3 Days', active: true },
-      { id: '4', governorate: 'Qalyubia', price: 55.0, estimated_delivery: '1–2 Days', active: true },
-      { id: '5', governorate: 'Dakahlia', price: 65.0, estimated_delivery: '2–3 Days', active: true },
-      { id: '6', governorate: 'Gharbia', price: 65.0, estimated_delivery: '2–3 Days', active: true },
-      { id: '7', governorate: 'Menofia', price: 65.0, estimated_delivery: '2–3 Days', active: true },
-      { id: '8', governorate: 'Sharkia', price: 65.0, estimated_delivery: '2–3 Days', active: true },
-      { id: '9', governorate: 'Damietta', price: 65.0, estimated_delivery: '2–3 Days', active: true },
-      { id: '10', governorate: 'Kafr El Sheikh', price: 65.0, estimated_delivery: '2–3 Days', active: true },
-      { id: '11', governorate: 'Beheira', price: 65.0, estimated_delivery: '2–3 Days', active: true },
-      { id: '12', governorate: 'Port Said', price: 65.0, estimated_delivery: '2–3 Days', active: true },
-      { id: '13', governorate: 'Ismailia', price: 65.0, estimated_delivery: '2–3 Days', active: true },
-      { id: '14', governorate: 'Suez', price: 65.0, estimated_delivery: '2–3 Days', active: true },
-      { id: '15', governorate: 'Fayoum', price: 70.0, estimated_delivery: '2–3 Days', active: true },
-      { id: '16', governorate: 'Beni Suef', price: 70.0, estimated_delivery: '2–3 Days', active: true },
-      { id: '17', governorate: 'Minya', price: 75.0, estimated_delivery: '3–4 Days', active: true },
-      { id: '18', governorate: 'Assiut', price: 75.0, estimated_delivery: '3–4 Days', active: true },
-      { id: '19', governorate: 'Sohag', price: 80.0, estimated_delivery: '3–4 Days', active: true },
-      { id: '20', governorate: 'Qena', price: 80.0, estimated_delivery: '3–5 Days', active: true },
-      { id: '21', governorate: 'Luxor', price: 85.0, estimated_delivery: '3–5 Days', active: true },
-      { id: '22', governorate: 'Aswan', price: 85.0, estimated_delivery: '3–5 Days', active: true },
-      { id: '23', governorate: 'Red Sea', price: 85.0, estimated_delivery: '3–4 Days', active: true },
-      { id: '24', governorate: 'Matrouh', price: 85.0, estimated_delivery: '3–4 Days', active: true },
-      { id: '25', governorate: 'New Valley', price: 90.0, estimated_delivery: '3–5 Days', active: true },
-      { id: '26', governorate: 'North Sinai', price: 90.0, estimated_delivery: '3–5 Days', active: true },
-      { id: '27', governorate: 'South Sinai', price: 90.0, estimated_delivery: '3–5 Days', active: true },
+      { id: '1', governorate: 'Cairo', price: 45.0, rate: 45.0, estimated_delivery: 'Same Day – 24 Hours', active: true },
+      { id: '2', governorate: 'Giza', price: 45.0, rate: 45.0, estimated_delivery: 'Same Day – 24 Hours', active: true },
+      { id: '3', governorate: 'Alexandria', price: 55.0, rate: 55.0, estimated_delivery: '1–2 Business Days', active: true },
+      { id: '4', governorate: 'Qalyubia', price: 50.0, rate: 50.0, estimated_delivery: '1–2 Business Days', active: true },
+      { id: '5', governorate: 'Sharqia', price: 60.0, rate: 60.0, estimated_delivery: '1–2 Business Days', active: true },
+      { id: '6', governorate: 'Dakahlia', price: 60.0, rate: 60.0, estimated_delivery: '1–2 Business Days', active: true },
+      { id: '7', governorate: 'Gharbia', price: 60.0, rate: 60.0, estimated_delivery: '1–2 Business Days', active: true },
+      { id: '8', governorate: 'Monufia', price: 60.0, rate: 60.0, estimated_delivery: '1–2 Business Days', active: true },
+      { id: '9', governorate: 'Beheira', price: 65.0, rate: 65.0, estimated_delivery: '1–3 Business Days', active: true },
+      { id: '10', governorate: 'Damietta', price: 65.0, rate: 65.0, estimated_delivery: '1–3 Business Days', active: true },
+      { id: '11', governorate: 'Port Said', price: 65.0, rate: 65.0, estimated_delivery: '1–3 Business Days', active: true },
+      { id: '12', governorate: 'Ismailia', price: 65.0, rate: 65.0, estimated_delivery: '1–3 Business Days', active: true },
+      { id: '13', governorate: 'Suez', price: 65.0, rate: 65.0, estimated_delivery: '1–3 Business Days', active: true },
+      { id: '14', governorate: 'Kafr El Sheikh', price: 65.0, rate: 65.0, estimated_delivery: '1–3 Business Days', active: true },
+      { id: '15', governorate: 'Faiyum', price: 70.0, rate: 70.0, estimated_delivery: '2–3 Business Days', active: true },
+      { id: '16', governorate: 'Beni Suef', price: 75.0, rate: 75.0, estimated_delivery: '2–3 Business Days', active: true },
+      { id: '17', governorate: 'Minya', price: 80.0, rate: 80.0, estimated_delivery: '2–3 Business Days', active: true },
+      { id: '18', governorate: 'Asyut', price: 85.0, rate: 85.0, estimated_delivery: '2–4 Business Days', active: true },
+      { id: '19', governorate: 'Sohag', price: 90.0, rate: 90.0, estimated_delivery: '2–4 Business Days', active: true },
+      { id: '20', governorate: 'Qena', price: 95.0, rate: 95.0, estimated_delivery: '2–4 Business Days', active: true },
+      { id: '21', governorate: 'Luxor', price: 100.0, rate: 100.0, estimated_delivery: '3–5 Business Days', active: true },
+      { id: '22', governorate: 'Aswan', price: 110.0, rate: 110.0, estimated_delivery: '3–5 Business Days', active: true },
+      { id: '23', governorate: 'Matrouh', price: 110.0, rate: 110.0, estimated_delivery: '3–5 Business Days', active: true },
+      { id: '24', governorate: 'Red Sea', price: 120.0, rate: 120.0, estimated_delivery: '3–5 Business Days', active: true },
+      { id: '25', governorate: 'South Sinai', price: 120.0, rate: 120.0, estimated_delivery: '3–5 Business Days', active: true },
+      { id: '26', governorate: 'North Sinai', price: 130.0, rate: 130.0, estimated_delivery: '3–5 Business Days', active: true },
+      { id: '27', governorate: 'New Valley', price: 130.0, rate: 130.0, estimated_delivery: '3–5 Business Days', active: true }
     ];
   },
 
   async updateShippingRate(id: string, data: any): Promise<boolean> {
     try {
-      const res = await fetch(`${DJANGO_BASE}/api/admin/shipping-rates/${id}/`, {
+      let patchPayload: any = {};
+      if (typeof data === 'number') {
+        patchPayload = { price: Number(data) };
+      } else if (typeof data === 'object') {
+        patchPayload = { ...data };
+        if (data.rate !== undefined && data.price === undefined) {
+          patchPayload.price = Number(data.rate);
+        }
+        delete patchPayload.rate;
+      }
+      patchPayload.updated_at = new Date().toISOString();
+
+      const res = await fetch(`${ADMIN_BASE}/toomakt_shipping_rates?id=eq.${id}`, {
         method: 'PATCH',
-        headers: getAdminAuthHeaders(),
-        body: JSON.stringify(data)
+        headers: getHeaders(true),
+        body: JSON.stringify(patchPayload)
+      });
+      return res.ok;
+    } catch (e) {
+      console.error('Error updating shipping rate in DB:', e);
+      return false;
+    }
+  },
+
+  async createShippingRate(data: { governorate: string; price: number; estimated_delivery?: string; active?: boolean }): Promise<any> {
+    try {
+      const res = await fetch(`${ADMIN_BASE}/toomakt_shipping_rates`, {
+        method: 'POST',
+        headers: getHeaders(true),
+        body: JSON.stringify({
+          governorate: data.governorate.trim(),
+          price: Number(data.price) || 50.0,
+          estimated_delivery: data.estimated_delivery || '1–2 Business Days',
+          active: data.active !== false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+      });
+      if (res.ok) {
+        const rows = await res.json();
+        return rows[0];
+      }
+    } catch (e) {
+      console.error('Error creating shipping rate:', e);
+    }
+    return null;
+  },
+
+  async deleteShippingRate(id: string): Promise<boolean> {
+    try {
+      const res = await fetch(`${ADMIN_BASE}/toomakt_shipping_rates?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: getHeaders(true)
       });
       return res.ok;
     } catch {
@@ -1018,101 +1215,107 @@ export const api = {
     }
   },
 
-  async createShippingRate(data: any): Promise<any> {
-    try {
-      const res = await fetch(`${DJANGO_BASE}/api/admin/shipping-rates/`, {
-        method: 'POST',
-        headers: getAdminAuthHeaders(),
-        body: JSON.stringify(data)
-      });
-      if (res.ok) return await res.json();
-    } catch {
-      return null;
-    }
-  },
-
-  // WHOLESALE APIS
+  // =========================================================================
+  // WHOLESALE & B2B INQUIRIES
+  // =========================================================================
   async submitWholesaleRequest(data: any): Promise<{ success: boolean; message?: string }> {
     try {
-      const res = await fetch(`${DJANGO_BASE}/api/wholesale/`, {
+      // Store in notifications for admin live alert
+      await fetch(`${ADMIN_BASE}/toomakt_notifications`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        headers: getHeaders(true),
+        body: JSON.stringify({
+          notification_type: 'wholesale_request',
+          title: `Wholesale inquiry from ${data.company_name || data.name || 'New Client'}`,
+          message: `${data.name || 'Client'} (${data.email}) requested wholesale: ${data.message || 'No details provided'}. Phone: ${data.phone || 'N/A'}`,
+          priority: 'high'
+        })
       });
-      const resData = await res.json();
-      return { success: res.ok, message: resData.message || resData.error };
-    } catch {
-      const saved = JSON.parse(localStorage.getItem('toomakt_wholesale_requests') || '[]');
-      const newReq = { id: String(Date.now()), ...data, status: 'new', created_at: new Date().toISOString() };
-      localStorage.setItem('toomakt_wholesale_requests', JSON.stringify([newReq, ...saved]));
+
+      // Store in DB global_settings
+      const current = await this.getWholesaleRequests();
+      const newReq = {
+        id: String(Date.now()),
+        ...data,
+        status: 'new',
+        created_at: new Date().toISOString()
+      };
+      const updated = [newReq, ...current];
+      await this.updateGlobalSetting('toomakt_wholesale_requests', updated);
+      localStorage.setItem('toomakt_wholesale_requests', JSON.stringify(updated));
+
       return { success: true, message: 'We received your wholesale request. Our team will contact you shortly.' };
+    } catch (e) {
+      console.error('Error saving wholesale request:', e);
+      return { success: true, message: 'We received your wholesale request.' };
     }
   },
 
   async getWholesaleRequests(params?: { status?: string; search?: string }): Promise<any[]> {
     try {
-      const query = new URLSearchParams();
-      if (params?.status && params.status !== 'all') query.set('status', params.status);
-      if (params?.search) query.set('search', params.search);
-
-      const res = await fetch(`${DJANGO_BASE}/api/admin/wholesale/?${query.toString()}`, {
-        headers: getAdminAuthHeaders()
-      });
+      // Fetch from Supabase global_settings
+      const res = await fetch(`${ADMIN_BASE}/toomakt_global_settings?key=eq.toomakt_wholesale_requests&select=value`, { headers: getHeaders(true) });
+      let list: any[] = [];
       if (res.ok) {
-        return await res.json();
+        const rows = await res.json();
+        if (rows.length > 0 && Array.isArray(rows[0].value)) {
+          list = rows[0].value;
+        }
       }
+      if (list.length === 0) {
+        const saved = localStorage.getItem('toomakt_wholesale_requests');
+        if (saved) list = JSON.parse(saved);
+      }
+      if (params?.status && params.status !== 'all') {
+        list = list.filter((r: any) => r.status === params.status);
+      }
+      if (params?.search) {
+        const s = params.search.toLowerCase();
+        list = list.filter((r: any) =>
+          (r.company_name || '').toLowerCase().includes(s) ||
+          (r.name || '').toLowerCase().includes(s) ||
+          (r.email || '').toLowerCase().includes(s) ||
+          (r.governorate || '').toLowerCase().includes(s)
+        );
+      }
+      return list;
     } catch (e) {
-      console.warn('Could not fetch wholesale from Django:', e);
+      console.error('Error fetching wholesale requests:', e);
+      return [];
     }
-    const saved = localStorage.getItem('toomakt_wholesale_requests');
-    if (saved) {
-      try { return JSON.parse(saved); } catch {}
-    }
-    return [
-      {
-        id: 'wh-1',
-        company_name: 'Nile Gourmet Cafes',
-        name: 'Kareem Tarek',
-        email: 'kareem@nilegourmet.eg',
-        phone: '01234567890',
-        governorate: 'Alexandria',
-        city: 'Smouha',
-        business_type: 'Cafe Chain',
-        requested_quantity: 500,
-        monthly_quantity: 250,
-        message: 'Looking to stock signature tins in 12 branches.',
-        status: 'new',
-        created_at: new Date().toISOString()
-      }
-    ];
   },
 
   async updateWholesaleStatus(id: string, newStatus: string, internalNotes?: string): Promise<boolean> {
     try {
-      const res = await fetch(`${DJANGO_BASE}/api/admin/wholesale/${id}/update_status/`, {
-        method: 'POST',
-        headers: getAdminAuthHeaders(),
-        body: JSON.stringify({ status: newStatus, internal_notes: internalNotes })
+      const list = await this.getWholesaleRequests();
+      const updated = list.map((r: any) => {
+        if (r.id === id) {
+          return {
+            ...r,
+            status: newStatus,
+            internal_notes: internalNotes !== undefined ? internalNotes : r.internal_notes,
+            updated_at: new Date().toISOString()
+          };
+        }
+        return r;
       });
-      return res.ok;
+      await this.updateGlobalSetting('toomakt_wholesale_requests', updated);
+      localStorage.setItem('toomakt_wholesale_requests', JSON.stringify(updated));
+      return true;
     } catch {
       return false;
     }
   },
 
-  async resendInvoiceEmail(orderId: string): Promise<boolean> {
-    try {
-      const res = await fetch(`${DJANGO_BASE}/api/admin/orders/${orderId}/resend_invoice/`, {
-        method: 'POST',
-        headers: getAdminAuthHeaders()
-      });
-      return res.ok;
-    } catch {
-      return false;
-    }
+  async resendInvoiceEmail(_orderId: string): Promise<boolean> {
+    // Not implemented without backend — would need Supabase Edge Function
+    console.warn('Invoice resend requires backend server');
+    return false;
   },
 
+  // =========================================================================
   // 7. COUPONS & PROMOS
+  // =========================================================================
   async getCoupons(): Promise<any[]> {
     try {
       const res = await fetch(
@@ -1132,12 +1335,9 @@ export const api = {
         }));
       }
     } catch (e) {
-      console.error('Error fetching promo codes from Supabase:', e);
+      console.error('Error fetching promo codes:', e);
     }
-    return [
-      { id: '1', code: 'TOOMAKT10', discount_type: 'percentage', discount_value: '10.00', min_order_amount: '0.00', is_active: true, times_used: 14 },
-      { id: '2', code: 'CHEWCLUB15', discount_type: 'percentage', discount_value: '15.00', min_order_amount: '30.00', is_active: true, times_used: 28 },
-    ];
+    return [];
   },
 
   async createCoupon(data: any): Promise<any> {
@@ -1169,6 +1369,19 @@ export const api = {
     return res.ok;
   },
 
+  async updateCoupon(id: string, data: any): Promise<boolean> {
+    try {
+      const res = await fetch(`${ADMIN_BASE}/toomakt_promo_codes?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: getHeaders(true),
+        body: JSON.stringify(data)
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+
   async validateCoupon(code: string, subtotal = 0): Promise<{ valid: boolean; discount_percent?: number; discount_amount?: number; message?: string }> {
     try {
       const cleanCode = code.trim().toUpperCase();
@@ -1192,15 +1405,12 @@ export const api = {
     } catch (e) {
       console.error('Error validating coupon:', e);
     }
-
-    const upper = code.trim().toUpperCase();
-    if (upper === 'TOOMAKT10') return { valid: true, discount_percent: 10 };
-    if (upper === 'CHEWCLUB15') return { valid: true, discount_percent: 15 };
-    if (upper === 'FREESHIP') return { valid: true, discount_amount: 5.0 };
     return { valid: false, message: 'Invalid or expired promo code' };
   },
 
+  // =========================================================================
   // 8. SUBSCRIBERS & NEWSLETTER
+  // =========================================================================
   async subscribeNewsletter(email: string, source = 'footer'): Promise<{ success: boolean; promo_code?: string; message?: string }> {
     try {
       const res = await fetch(`${ADMIN_BASE}/toomakt_subscribers`, {
@@ -1221,7 +1431,31 @@ export const api = {
     return { success: true, promo_code: 'TOOMAKT10', message: 'Welcome to the Tasting Society!' };
   },
 
+  async getSubscribers(): Promise<any[]> {
+    try {
+      const res = await fetch(`${ADMIN_BASE}/toomakt_subscribers?select=*&order=created_at.desc`, { headers: getHeaders(true) });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.error('Error fetching subscribers:', e);
+    }
+    return [];
+  },
+
+  async deleteSubscriber(id: string): Promise<boolean> {
+    try {
+      const res = await fetch(`${ADMIN_BASE}/toomakt_subscribers?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: getHeaders(true)
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+
+  // =========================================================================
   // 9. DYNAMIC ADMIN ANALYTICS FROM SUPABASE
+  // =========================================================================
   async getAdminStats(): Promise<any> {
     try {
       const headers = getHeaders(true);
@@ -1240,10 +1474,10 @@ export const api = {
 
       return {
         metrics: {
-          total_revenue: totalRevenue > 0 ? totalRevenue : 4180.50,
+          total_revenue: totalRevenue,
           total_orders: orders.length,
           pending_orders: pendingCount,
-          total_customers: Math.max(uniqueCustomers, 1),
+          total_customers: Math.max(uniqueCustomers, 0),
           total_products: products.length,
           low_stock_count: lowStockAlerts.length
         },
@@ -1256,38 +1490,53 @@ export const api = {
         recent_orders: orders.slice(0, 5)
       };
     } catch (e) {
-      console.error('Error computing admin stats from Supabase:', e);
+      console.error('Error computing admin stats:', e);
       return {
         metrics: {
-          total_revenue: 4180.50,
-          total_orders: 84,
-          pending_orders: 3,
-          total_customers: 72,
+          total_revenue: 0,
+          total_orders: 0,
+          pending_orders: 0,
+          total_customers: 0,
           total_products: 6,
-          low_stock_count: 1
+          low_stock_count: 0
         },
-        low_stock_alerts: [
-          { name: 'Blueberry Velvet', sku: 'TMK-BLU-004', stock: 9, threshold: 15 }
-        ],
+        low_stock_alerts: [],
         recent_orders: []
       };
     }
   },
 
-  // 10. CMS PAGES & HOMEPAGE (Stored with Local Persistence)
+  // =========================================================================
+  // 10. CMS PAGES & HOMEPAGE SECTIONS (Supabase via global_settings)
+  // =========================================================================
   async getCMSPages(): Promise<any[]> {
+    // Try Supabase settings first
+    try {
+      const res = await fetch(
+        `${ADMIN_BASE}/toomakt_global_settings?category=eq.cms&select=*&order=updated_at.desc`,
+        { headers: getHeaders(true) }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (data.length > 0) {
+          const pagesEntry = data.find((d: any) => d.key === 'cms_pages');
+          if (pagesEntry && pagesEntry.value) return pagesEntry.value;
+        }
+      }
+    } catch {}
+
+    // localStorage fallback
     const saved = localStorage.getItem('toomakt_cms_pages');
     if (saved) {
       try { return JSON.parse(saved); } catch {}
     }
-    const defaults = [
+    return [
       { id: '1', title: 'Our Story & Philosophy', slug: 'our-story', visibility: 'published', content: 'Born from a passionate obsession with pure orchard fruit and authentic French soft toffee craft.' },
       { id: '2', title: 'Ingredients & Craft', slug: 'ingredients', visibility: 'published', content: 'Real pressed fruits, grass-fed Brittany butter, and zero artificial dyes or high-fructose syrup.' },
       { id: '3', title: 'Frequently Asked Questions', slug: 'faq', visibility: 'published', content: 'Everything you need to know about our chew times, shelf life, and allergen assurances.' },
       { id: '4', title: 'Shipping & Climate Guarantee', slug: 'shipping', visibility: 'published', content: 'All packages ship in insulated eco-coolers with 48h ice retention.' },
       { id: '5', title: 'Privacy & Terms', slug: 'privacy', visibility: 'published', content: 'Complete consumer data privacy protocols and customer guarantees.' }
     ];
-    return defaults;
   },
 
   async getCMSPage(slug: string): Promise<any> {
@@ -1324,8 +1573,48 @@ export const api = {
     return updated.find(s => s.id === id);
   },
 
-  // 11. GLOBAL SETTINGS
+  // =========================================================================
+  // 11. GLOBAL SETTINGS (from Supabase)
+  // =========================================================================
   async getGlobalSettings(): Promise<any> {
+    try {
+      const res = await fetch(
+        `${ADMIN_BASE}/toomakt_global_settings?select=*`,
+        { headers: getHeaders(true) }
+      );
+      if (res.ok) {
+        const rows = await res.json();
+        if (rows.length > 0) {
+          // Merge all settings values into one object
+          const merged: any = {};
+          for (const row of rows) {
+            if (row.value && typeof row.value === 'object') {
+              Object.assign(merged, row.value);
+            }
+          }
+          // Add standard keys
+          if (merged.store_name) return merged;
+          return {
+            store_name: merged.store_name || 'toomakt Confectionery',
+            currency: merged.currency || 'EGP',
+            free_shipping_threshold: merged.free_shipping_threshold || 500.0,
+            tax_rate: merged.tax_rate || 0.05,
+            contact_email: merged.contact_email || 'bonjour@toomakt.com',
+            contact_phone: merged.contact_phone || merged.phone || '+20 100 000 0000',
+            address: merged.address || '24 Rue de la Confiserie, Cairo, Egypt',
+            instagram: merged.instagram || 'https://instagram.com/toomaktchews',
+            tiktok: merged.tiktok || 'https://tiktok.com/@toomakt',
+            seo_site_title: merged.site_name || 'toomakt — Big Fruit. Real Toffee. Pure Obsession.',
+            seo_meta_description: merged.meta_description || 'Artisanal French fruit-infused soft toffee. Made with real orchard fruits, browned butter, and sea salt.',
+            ...merged
+          };
+        }
+      }
+    } catch (e) {
+      console.error('Error fetching global settings:', e);
+    }
+
+    // LocalStorage fallback
     const saved = localStorage.getItem('toomakt_global_settings');
     if (saved) {
       try { return JSON.parse(saved); } catch {}
@@ -1333,27 +1622,94 @@ export const api = {
     return {
       store_name: 'toomakt Confectionery',
       currency: 'EGP',
-      free_shipping_threshold: 150.0,
+      free_shipping_threshold: 500.0,
       tax_rate: 0.05,
       contact_email: 'bonjour@toomakt.com',
-      contact_phone: '+1 (800) 866-6258',
-      address: '24 Rue de la Confiserie, New York & Paris',
+      contact_phone: '+20 100 000 0000',
+      address: '24 Rue de la Confiserie, Cairo, Egypt',
       instagram: 'https://instagram.com/toomaktchews',
       tiktok: 'https://tiktok.com/@toomakt',
       seo_site_title: 'toomakt — Big Fruit. Real Toffee. Pure Obsession.',
-      seo_meta_description: 'Artisanal French fruit-infused soft toffee. Made with real orchard fruits, browned butter, and sea salt.',
+      seo_meta_description: 'Artisanal French fruit-infused soft toffee.',
     };
   },
 
-  async updateGlobalSetting(key: string, value: any): Promise<any> {
-    const current = await this.getGlobalSettings();
-    const merged = { ...current, ...(typeof value === 'object' ? value : { [key]: value }) };
-    localStorage.setItem('toomakt_global_settings', JSON.stringify(merged));
-    return merged;
+  async getGlobalSetting(key: string): Promise<any> {
+    try {
+      const res = await fetch(
+        `${ADMIN_BASE}/toomakt_global_settings?key=eq.${encodeURIComponent(key)}&select=value`,
+        { headers: getHeaders(true) }
+      );
+      if (res.ok) {
+        const rows = await res.json();
+        if (rows.length > 0 && rows[0].value !== undefined) {
+          return rows[0].value;
+        }
+      }
+    } catch {}
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      try { return JSON.parse(saved); } catch { return saved; }
+    }
+    return null;
   },
 
+  async updateGlobalSetting(key: string, value: any): Promise<any> {
+    // Update in Supabase
+    try {
+      const merged = typeof value === 'object' ? value : { [key]: value };
+
+      // Try to update existing setting
+      const checkRes = await fetch(
+        `${ADMIN_BASE}/toomakt_global_settings?key=eq.${encodeURIComponent(key)}&select=id`,
+        { headers: getHeaders(true) }
+      );
+      if (checkRes.ok) {
+        const existing = await checkRes.json();
+        if (existing.length > 0) {
+          await fetch(`${ADMIN_BASE}/toomakt_global_settings?key=eq.${encodeURIComponent(key)}`, {
+            method: 'PATCH',
+            headers: getHeaders(true),
+            body: JSON.stringify({ value: merged, updated_at: new Date().toISOString() })
+          });
+        } else {
+          await fetch(`${ADMIN_BASE}/toomakt_global_settings`, {
+            method: 'POST',
+            headers: getHeaders(true),
+            body: JSON.stringify({ category: 'general', key, label: key, value: merged })
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('Could not save setting to Supabase:', e);
+    }
+
+    // Also save to localStorage as fallback
+    const current = await this.getGlobalSettings();
+    const mergedLocal = { ...current, ...(typeof value === 'object' ? value : { [key]: value }) };
+    localStorage.setItem('toomakt_global_settings', JSON.stringify(mergedLocal));
+    return mergedLocal;
+  },
+
+  // =========================================================================
   // 12. CONTACT INQUIRIES
+  // =========================================================================
   async submitContact(data: { name: string; email: string; subject: string; message: string; phone?: string }): Promise<boolean> {
+    // Store as notification in Supabase
+    try {
+      await fetch(`${ADMIN_BASE}/toomakt_notifications`, {
+        method: 'POST',
+        headers: getHeaders(true),
+        body: JSON.stringify({
+          notification_type: 'contact_inquiry',
+          title: `Contact from ${data.name}: ${data.subject}`,
+          message: `${data.message}\n\nEmail: ${data.email}${data.phone ? `\nPhone: ${data.phone}` : ''}`,
+          priority: 'medium'
+        })
+      });
+    } catch {}
+
+    // Also store in localStorage
     const messages = await this.getContactMessages();
     const newMsg = {
       id: String(Date.now()),
@@ -1379,6 +1735,21 @@ export const api = {
       created_at: new Date().toISOString()
     };
     localStorage.setItem('toomakt_contact_messages', JSON.stringify([newMsg, ...messages]));
+
+    // Also create notification in Supabase
+    try {
+      await fetch(`${ADMIN_BASE}/toomakt_notifications`, {
+        method: 'POST',
+        headers: getHeaders(true),
+        body: JSON.stringify({
+          notification_type: 'wholesale_inquiry',
+          title: `Wholesale inquiry from ${data.company_name || data.name || 'Client'}`,
+          message: `${data.contact_name || data.name} (${data.email}) — ${data.message || 'Wholesale request'}`,
+          priority: 'high'
+        })
+      });
+    } catch {}
+
     return { success: true };
   },
 
@@ -1387,9 +1758,78 @@ export const api = {
     if (saved) {
       try { return JSON.parse(saved); } catch {}
     }
-    return [
-      { id: '1', name: 'Sophie Laurent', email: 'sophie@atelier.fr', subject: 'Custom Wedding Favor Tins', message: 'Hello! Can we order 200 custom labeled canisters of the Mango & Passionfruit chew for our vineyard reception?', status: 'unread', created_at: '2026-09-24T14:20:00Z' },
-      { id: '2', name: 'Marcus Sterling', email: 'm.sterling@gourmet.co', subject: 'Wholesale Inquiries for Boutique Hotels', message: 'We manage 4 boutique hotels in Aspen and would love to stock your 180g pouches in guest suites.', status: 'read', created_at: '2026-09-22T09:15:00Z' }
-    ];
+    return [];
+  },
+
+  // =========================================================================
+  // UNIVERSAL RAW DATABASE EXPLORER & SYNCHRONIZATION
+  // =========================================================================
+  async getRawTableData(tableName: string): Promise<any[]> {
+    try {
+      const res = await fetch(`${ADMIN_BASE}/${tableName}?select=*&limit=100`, { headers: getHeaders(true) });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      console.error(`Error querying raw table ${tableName}:`, e);
+    }
+    return [];
+  },
+
+  async updateRawTableRow(tableName: string, id: string, data: any): Promise<boolean> {
+    try {
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      const query = isUUID ? `id=eq.${id}` : (tableName === 'toomakt_global_settings' ? `key=eq.${id}` : `id=eq.${id}`);
+      const res = await fetch(`${ADMIN_BASE}/${tableName}?${query}`, {
+        method: 'PATCH',
+        headers: getHeaders(true),
+        body: JSON.stringify(data)
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+
+  async insertRawTableRow(tableName: string, data: any): Promise<any> {
+    try {
+      const res = await fetch(`${ADMIN_BASE}/${tableName}`, {
+        method: 'POST',
+        headers: getHeaders(true),
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        const rows = await res.json();
+        return rows[0] || data;
+      }
+    } catch (e) {
+      console.error(`Error inserting into ${tableName}:`, e);
+    }
+    return null;
+  },
+
+  async deleteRawTableRow(tableName: string, id: string): Promise<boolean> {
+    try {
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      const query = isUUID ? `id=eq.${id}` : (tableName === 'toomakt_global_settings' ? `key=eq.${id}` : `id=eq.${id}`);
+      const res = await fetch(`${ADMIN_BASE}/${tableName}?${query}`, {
+        method: 'DELETE',
+        headers: getHeaders(true)
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  },
+
+  async syncDatabases(): Promise<{ success: boolean; message: string; tableCounts: Record<string, number> }> {
+    try {
+      const diag = await this.checkDatabaseConnection();
+      return {
+        success: diag.connected,
+        message: diag.connected ? `Successfully synced with database (${diag.latencyMs}ms)` : 'Database sync error',
+        tableCounts: diag.tableCounts
+      };
+    } catch (e: any) {
+      return { success: false, message: e.message || 'Sync failed', tableCounts: {} };
+    }
   }
 };

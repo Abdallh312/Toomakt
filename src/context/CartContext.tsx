@@ -14,9 +14,9 @@ export interface ToastData {
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: any, quantity?: number) => boolean;
-  removeFromCart: (id: string) => void;
-  updateQuantity: (id: string, delta: number) => void;
+  addToCart: (product: any, quantity?: number, selectedFlavor?: string) => boolean;
+  removeFromCart: (id: string, selectedFlavor?: string) => void;
+  updateQuantity: (id: string, delta: number, selectedFlavor?: string) => void;
   clearCart: () => void;
   totalCount: number;
   subtotal: number;
@@ -113,16 +113,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
-  const addToCart = (product: any, quantity = 1): boolean => {
+  const addToCart = (product: any, quantity = 1, selectedFlavor?: string): boolean => {
     let limitReached = false;
-    let addedProductTitle = '';
-    let addedProductPieces = 20;
+    const targetFlavor = selectedFlavor || product.selected_flavor || (Array.isArray(product.available_flavors) && product.available_flavors.length > 0 ? product.available_flavors[0] : undefined);
 
     setItems(prev => {
-      const existing = prev.find(item => item.product.id === product.id);
+      const existing = prev.find(item =>
+        item.product.id === product.id && (targetFlavor ? item.selected_flavor === targetFlavor : true)
+      );
       if (existing) {
-        addedProductTitle = existing.product.name;
-        addedProductPieces = existing.product.pieces_per_pack || 20;
         const nextQty = existing.quantity + quantity;
         if (nextQty > 5) {
           limitReached = true;
@@ -135,14 +134,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             () => { navigateTo('wholesale'); }
           );
           return prev.map(item =>
-            item.product.id === product.id
+            (item.product.id === product.id && (targetFlavor ? item.selected_flavor === targetFlavor : true))
               ? { ...item, quantity: 5 }
               : item
           );
         }
-        // No intrusive toast popup on add
         return prev.map(item =>
-          item.product.id === product.id
+          (item.product.id === product.id && (targetFlavor ? item.selected_flavor === targetFlavor : true))
             ? { ...item, quantity: nextQty }
             : item
         );
@@ -162,29 +160,37 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         weight: product.weight || '180g Pouch',
         image: product.image || product.image_url || '/images/canister.jpg',
         badge: product.badge,
-        pieces_per_pack: product.pieces_per_pack || 20
+        pieces_per_pack: product.pieces_per_pack || 20,
+        available_flavors: product.available_flavors
       };
 
-      addedProductTitle = newProduct.name;
-      addedProductPieces = newProduct.pieces_per_pack;
-
-      // No intrusive toast popup on add
-      return [...prev, { product: newProduct, quantity: safeQty }];
+      return [...prev, { product: newProduct, quantity: safeQty, selected_flavor: targetFlavor }];
     });
 
     setIsCartOpen(true);
     return !limitReached;
   };
 
-  const removeFromCart = (id: string) => {
-    setItems(prev => prev.filter(item => item.product.id !== id));
+  const removeFromCart = (id: string, selectedFlavor?: string) => {
+    setItems(prev =>
+      prev.filter(item => {
+        if (selectedFlavor !== undefined) {
+          return !(item.product.id === id && item.selected_flavor === selectedFlavor);
+        }
+        return item.product.id !== id;
+      })
+    );
   };
 
-  const updateQuantity = (id: string, delta: number) => {
+  const updateQuantity = (id: string, delta: number, selectedFlavor?: string) => {
     setItems(prev =>
       prev
         .map(item => {
-          if (item.product.id === id) {
+          const isMatch = selectedFlavor !== undefined
+            ? (item.product.id === id && item.selected_flavor === selectedFlavor)
+            : (item.product.id === id);
+
+          if (isMatch) {
             const newQty = item.quantity + delta;
             if (newQty > 5) {
               setCartLimitNotice(`Maximum limit is 5 packs per item. For larger bulk orders, please check our Wholesale page.`);

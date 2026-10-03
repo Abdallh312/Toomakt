@@ -107,8 +107,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView }) => {
                 </button>
               </li>
               <li>
-                <button onClick={() => nav('shop')} className="hover:text-[#FAF7F2] transition-colors">
-                  {isRtl ? 'صناديق الهدايا الفاخرة' : 'Deluxe Gift Boxes'}
+                <button onClick={() => nav('bundles')} className="hover:text-[#FAF7F2] transition-colors">
+                  {isRtl ? 'صناديق الهدايا والباقات' : 'Gift Bundles & Boxes'}
                 </button>
               </li>
             </ul>

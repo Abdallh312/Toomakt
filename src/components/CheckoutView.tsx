@@ -135,7 +135,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
           item_id: item.product.id,
           quantity: item.quantity,
           unit_price: Number(item.product.price),
-          name: item.product.name,
+          name: item.selected_flavor ? `${item.product.name} (${item.selected_flavor})` : item.product.name,
+          flavor: item.selected_flavor,
           image: item.product.image
         }))
       };
@@ -524,7 +525,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                 {items.map(item => {
                   return (
                     <div
-                      key={item.product.id}
+                      key={`${item.product.id}-${item.selected_flavor || ''}`}
                       className="flex gap-3.5 pb-4 border-b border-[#E8E2D7] last:border-b-0"
                     >
                       <img
@@ -536,6 +537,11 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                         <h4 className="text-sm font-medium text-[#1A1A1A] truncate">
                           {item.product.name}
                         </h4>
+                        {item.selected_flavor && (
+                          <span className="text-[11px] font-medium text-[#3C1322] bg-[#FFD147]/25 border border-[#FFD147]/40 px-2 py-0.5 rounded-full inline-block mt-0.5">
+                            {isRtl ? 'النكهة: ' : 'Flavor: '}{item.selected_flavor}
+                          </span>
+                        )}
                         <div className="flex items-center gap-2 mt-0.5 text-xs text-[#736B63] font-light">
                           <span>Qty: {item.quantity}</span>
                           <span>•</span>

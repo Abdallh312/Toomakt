@@ -37,12 +37,30 @@ import {
   Sliders,
   Code,
   Share2,
-  Copy
+  Copy,
+  Upload,
+  Camera,
+  Image as ImageIcon,
+  Gift,
+  Database,
+  Star,
+  Users,
+  FolderTree,
+  Palette,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { WhatsAppService } from '../../services/whatsapp';
 import { ShippingRate, WholesaleRequest, PaymentConfirmationRecord } from '../../types';
 import { applySeoAndTracking } from '../../services/seoTracking';
+import { useLanguage } from '../../context/LanguageContext';
+import { useTheme } from '../../context/ThemeContext';
+import { ImageUploadButton } from './ImageUploadButton';
+import { ShippingRatesTab } from './ShippingRatesTab';
+import { CategoriesFlavorsTab } from './CategoriesFlavorsTab';
+import { ReviewsTab } from './ReviewsTab';
+import { SubscribersTab } from './SubscribersTab';
 
 interface AdminDashboardProps {
   onBackToStore: () => void;
@@ -50,30 +68,49 @@ interface AdminDashboardProps {
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, onLogout }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'products' | 'payments' | 'inquiries' | 'shipping' | 'alerts' | 'seo'>('overview');
+  const { language, isRtl, toggleLanguage, t } = useLanguage();
+  const { theme, isDark, toggleTheme } = useTheme();
+
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'orders' | 'products' | 'categories' | 'bundles' | 'payments' | 'shipping' | 'reviews' | 'inquiries' | 'subscribers' | 'alerts' | 'seo'
+  >('overview');
   const [loading, setLoading] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Core Data
   const [orders, setOrders] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [flavors, setFlavors] = useState<any[]>([]);
+  const [bundles, setBundles] = useState<any[]>([]);
   const [paymentConfirmations, setPaymentConfirmations] = useState<PaymentConfirmationRecord[]>([]);
   const [wholesaleRequests, setWholesaleRequests] = useState<WholesaleRequest[]>([]);
   const [shippingRates, setShippingRates] = useState<ShippingRate[]>([]);
   const [coupons, setCoupons] = useState<any[]>([]);
-  const [dbStatus, setDbStatus] = useState<{ connected: boolean; latencyMs: number } | null>(null);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [subscribers, setSubscribers] = useState<any[]>([]);
+  const [dbStatus, setDbStatus] = useState<{ connected: boolean; latencyMs: number; tableCounts?: Record<string, number> } | null>(null);
 
   // Filters & Search
   const [orderSearchQuery, setOrderSearchQuery] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState('all');
   const [productSearchQuery, setProductSearchQuery] = useState('');
+  const [bundleSearchQuery, setBundleSearchQuery] = useState('');
 
   // Modals & Editing Items
   const [inspectingOrder, setInspectingOrder] = useState<any | null>(null);
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
+  const [editingBundle, setEditingBundle] = useState<any | null>(null);
   const [isNewProductModalOpen, setIsNewProductModalOpen] = useState(false);
+  const [isNewBundleModalOpen, setIsNewBundleModalOpen] = useState(false);
   const [inspectingReceipt, setInspectingReceipt] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Image Upload & Asset Management State
+  const [newProductImage, setNewProductImage] = useState('/images/products/mango_sunbeam.jpg');
+  const [isUploadAssetModalOpen, setIsUploadAssetModalOpen] = useState(false);
+  const [uploadedAssetUrl, setUploadedAssetUrl] = useState('');
+  const [targetAssetProductId, setTargetAssetProductId] = useState<string>('');
 
   // Coupon Generator State
   const [newCouponCode, setNewCouponCode] = useState('');
@@ -165,22 +202,32 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
   const loadData = async () => {
     setLoading(true);
     try {
-      const [pData, oData, sData, wData, cData, confData, diagData] = await Promise.all([
+      const [pData, bData, oData, sData, wData, cData, confData, diagData, catData, flavData, revData, subData] = await Promise.all([
         api.getProducts(),
+        api.getBundles(),
         api.getAdminOrders(),
         api.getShippingRates(),
         api.getWholesaleRequests(),
         api.getCoupons(),
         api.getPaymentConfirmations(),
-        api.checkDatabaseConnection()
+        api.checkDatabaseConnection(),
+        api.getCategories(),
+        api.getFlavors(),
+        api.getReviews(),
+        api.getSubscribers()
       ]);
       setProducts(pData || []);
+      setBundles(bData || []);
       setOrders(oData || []);
       setShippingRates(sData || []);
       setWholesaleRequests(wData || []);
       setCoupons(cData || []);
       setPaymentConfirmations(confData || []);
-      setDbStatus(diagData ? { connected: diagData.connected, latencyMs: diagData.latencyMs } : null);
+      setCategories(catData || []);
+      setFlavors(flavData || []);
+      setReviews(revData || []);
+      setSubscribers(subData || []);
+      setDbStatus(diagData ? { connected: diagData.connected, latencyMs: diagData.latencyMs, tableCounts: diagData.tableCounts } : null);
     } catch (e) {
       console.error('Failed to load admin data:', e);
     } finally {
@@ -249,6 +296,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
     }
   };
 
+  // REAL ACTION: Direct Image Upload for Product
+  const handleDirectImageUpload = async (productId: string | number, newImageUrl: string, productName: string) => {
+    if (!newImageUrl) return;
+    try {
+      await api.updateProduct(String(productId), { image_url: newImageUrl, image: newImageUrl });
+      setProducts(prev => prev.map(p => p.id === productId ? { ...p, image: newImageUrl, image_url: newImageUrl } : p));
+      showToast(`New image uploaded for "${productName}"!`);
+    } catch {
+      setProducts(prev => prev.map(p => p.id === productId ? { ...p, image: newImageUrl, image_url: newImageUrl } : p));
+      showToast(`Image uploaded for "${productName}"!`);
+    }
+  };
+
   // REAL ACTION: Toggle Product In-Stock
   const handleToggleProductStock = async (prod: any) => {
     const nextInStock = !(prod.in_stock ?? true);
@@ -303,6 +363,103 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
     } catch {
       setProducts(prev => prev.filter(p => p.id !== id));
       showToast(`Product removed.`);
+    }
+  };
+
+  // REAL ACTION: Save Bundle Edit
+  const handleSaveBundleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingBundle) return;
+
+    try {
+      const updates = {
+        title: editingBundle.title,
+        category: editingBundle.category || 'Curated Gift Box',
+        badge: editingBundle.badge || '',
+        description: editingBundle.description || '',
+        price: parseFloat(editingBundle.price) || 0,
+        compare_at_price: editingBundle.compare_at_price || null,
+        weight: editingBundle.weight || '450G LUXURY TIN',
+        rating: parseFloat(editingBundle.rating) || 5,
+        review_count: parseInt(editingBundle.review_count ?? editingBundle.reviewCount) || 0,
+        image_url: editingBundle.image || editingBundle.image_url || '/images/carousel.jpg',
+        perk_note: editingBundle.perk_note || '',
+        is_grand_feature: Boolean(editingBundle.is_grand_feature),
+        is_active: editingBundle.is_active !== false,
+      };
+
+      await api.updateBundle(String(editingBundle.id), updates);
+      setBundles(prev =>
+        prev.map(b =>
+          b.id === editingBundle.id
+            ? { ...b, ...updates, image: updates.image_url, reviewCount: updates.review_count }
+            : b
+        )
+      );
+      setEditingBundle(null);
+      showToast(`Bundle "${editingBundle.title}" saved!`);
+    } catch (err: any) {
+      showToast(err?.message || 'Failed to save bundle');
+    }
+  };
+
+  // REAL ACTION: Delete Bundle
+  const handleDeleteBundle = async (id: string | number, title: string) => {
+    if (!confirm(`Permanently remove bundle "${title}" from the database?`)) return;
+    try {
+      await api.deleteBundle(String(id));
+      setBundles(prev => prev.filter(b => b.id !== id));
+      setEditingBundle(null);
+      showToast(`"${title}" removed.`);
+    } catch {
+      showToast('Failed to delete bundle');
+    }
+  };
+
+  // REAL ACTION: Toggle bundle active / grand feature
+  const handleToggleBundleActive = async (bundle: any) => {
+    const next = !(bundle.is_active !== false);
+    try {
+      await api.updateBundle(String(bundle.id), { is_active: next });
+      setBundles(prev => prev.map(b => (b.id === bundle.id ? { ...b, is_active: next } : b)));
+      showToast(`${bundle.title} is now ${next ? 'active' : 'hidden'}`);
+    } catch {
+      showToast('Failed to update bundle status');
+    }
+  };
+
+  const handleToggleBundleFeatured = async (bundle: any) => {
+    const next = !bundle.is_grand_feature;
+    try {
+      await api.updateBundle(String(bundle.id), { is_grand_feature: next });
+      setBundles(prev => prev.map(b => (b.id === bundle.id ? { ...b, is_grand_feature: next } : b)));
+      showToast(next ? `"${bundle.title}" set as featured` : `Removed featured from "${bundle.title}"`);
+    } catch {
+      showToast('Failed to update featured flag');
+    }
+  };
+
+  const handleDirectBundlePriceChange = async (bundleId: string | number, value: string) => {
+    const nextPrice = Math.max(0, parseFloat(value) || 0);
+    try {
+      await api.updateBundle(String(bundleId), { price: nextPrice });
+      setBundles(prev => prev.map(b => (b.id === bundleId ? { ...b, price: nextPrice } : b)));
+      showToast(`Bundle price updated to EGP ${nextPrice}`);
+    } catch {
+      showToast('Failed to update price');
+    }
+  };
+
+  const handleDirectBundleImageUpload = async (bundleId: string | number, newImageUrl: string, title: string) => {
+    if (!newImageUrl) return;
+    try {
+      await api.updateBundle(String(bundleId), { image_url: newImageUrl });
+      setBundles(prev =>
+        prev.map(b => (b.id === bundleId ? { ...b, image: newImageUrl, image_url: newImageUrl } : b))
+      );
+      showToast(`Image updated for "${title}"`);
+    } catch {
+      showToast('Failed to update image');
     }
   };
 
@@ -400,6 +557,88 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
     }, 400);
   };
 
+  // REAL ACTION: Send Official WhatsApp Invoice to Customer
+  const handleSendWhatsAppInvoice = (ord: any) => {
+    const phone = ord.customer_phone || ord.phone;
+    if (!phone) {
+      showToast(isRtl ? 'لا يوجد رقم هاتف مسجل لهذا الطلب' : 'No phone number recorded for this order');
+      return;
+    }
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    const phoneWithCountry = cleanPhone.startsWith('0') ? '2' + cleanPhone : cleanPhone;
+
+    const dateStr = ord.created_at ? new Date(ord.created_at).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    }) : new Date().toLocaleDateString();
+
+    const itemsSummary = (ord.items && ord.items.length > 0)
+      ? ord.items.map((it: any, idx: number) => {
+          const flavorStr = it.flavor || it.selected_flavor ? ` [${it.flavor || it.selected_flavor}]` : '';
+          const lineTotal = (it.unit_price || it.price || 0) * (it.quantity || 1);
+          return `${idx + 1}. *${it.name || it.product_name || 'Toffee Pack'}*${flavorStr} × ${it.quantity || 1}${lineTotal > 0 ? ` — ${lineTotal} EGP` : ''}`;
+        }).join('\n')
+      : `1. *toomakt Signature Confections Pack* × 1 — ${ord.total_amount} EGP`;
+
+    const address = [ord.shipping_address, ord.city || ord.shipping_city, ord.governorate].filter(Boolean).join(', ');
+
+    const invoiceText = isRtl
+      ? `✨ *مخبز وحلويات توماكت الفاخرة | TOOMAKT ATELIER* ✨
+━━━━━━━━━━━━━━━━━━━━
+📄 *فاتورة طلبية رسمية وتأكيد الشحن*
+رقم الطلب: *#${ord.order_number}*
+التاريخ: ${dateStr}
+
+👤 *بيانات العميل:*
+• الاسم: *${ord.customer_name}*
+• رقم الهاتف: ${ord.customer_phone}
+• العنوان: ${address || 'مصر'}
+
+📦 *المنتجات المطلوبة:*
+${itemsSummary}
+
+━━━━━━━━━━━━━━━━━━━━
+💰 *الملخص المالي:*
+• الإجمالي الفرعي: ${ord.subtotal ? `${ord.subtotal} ج.م` : `${ord.total_amount} ج.م`}
+• رسوم التوصيل (${ord.governorate || 'القاهرة'}): ${ord.shipping_fee ? `${ord.shipping_fee} ج.م` : 'شحن مجاني'}
+• *الإجمالي النهائي المطلوب:* *${ord.total_amount} ج.م*
+• طريقة الدفع: *${ord.payment_method?.toUpperCase() || 'الدفع عند الاستلام (COD)'}*
+• حالة السداد: *${ord.payment_status === 'paid' ? 'تم الدفع بنجاح ✅' : 'قيد المتابعة / الدفع عند الاستلام'}*
+• حالة الطلبية: *${ord.status || 'قيد المعالجة والتجهيز'}*
+━━━━━━━━━━━━━━━━━━━━
+🚚 يتم تجهيز الحلوى الحرفية في أواني النحاس مع شحن مبرد ومحكم حرارياً.
+نشكركم على اختيار توماكت! نسعد بخدمتكم دائماً.`
+      : `✨ *TOOMAKT CONFECTIONERY ATELIER* ✨
+━━━━━━━━━━━━━━━━━━━━
+📄 *OFFICIAL ORDER INVOICE & DISPATCH RECEIPT*
+Order Number: *#${ord.order_number}*
+Date: ${dateStr}
+
+👤 *Customer Details:*
+• Name: *${ord.customer_name}*
+• Phone: ${ord.customer_phone}
+• Delivery Address: ${address || 'Egypt'}
+
+📦 *Items Ordered:*
+${itemsSummary}
+
+━━━━━━━━━━━━━━━━━━━━
+💰 *Financial Breakdown:*
+• Subtotal: ${ord.subtotal ? `${ord.subtotal} EGP` : `${ord.total_amount} EGP`}
+• Delivery Fee (${ord.governorate || 'Cairo'}): ${ord.shipping_fee ? `${ord.shipping_fee} EGP` : 'Complimentary'}
+• *Total Due:* *${ord.total_amount} EGP*
+• Payment Method: *${ord.payment_method?.toUpperCase() || 'Cash on Delivery (COD)'}*
+• Payment Status: *${ord.payment_status === 'paid' ? 'Verified Paid ✅' : 'Pending / Cash on Delivery'}*
+• Fulfillment Status: *${ord.status?.toUpperCase() || 'PREPARING'}*
+━━━━━━━━━━━━━━━━━━━━
+🚚 Hand-pulled in copper cauldrons with European cultured butter and real orchard fruits, packaged in insulated cooler bags.
+Thank you for choosing toomakt!`;
+
+    const url = `https://wa.me/${phoneWithCountry}?text=${encodeURIComponent(invoiceText)}`;
+    window.open(url, '_blank');
+  };
+
   // REAL ACTION: WhatsApp Customer Directly
   const handleOpenWhatsApp = (phone: string, customerName = 'Guest', orderNum?: string) => {
     if (!phone) {
@@ -467,14 +706,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
   };
 
   // REAL ACTION: Save Alert Banner
-  const handleSaveAlert = () => {
+  const handleSaveAlert = async () => {
     try {
       localStorage.setItem('toomakt_alert_config', JSON.stringify(alertConfig));
       window.dispatchEvent(new Event('storage'));
       window.dispatchEvent(new CustomEvent('toomakt:alert-updated', { detail: alertConfig }));
-      showToast('Announcement Bar updated & published live!');
+      await api.updateGlobalSetting('header_alert_config', alertConfig);
+      showToast('Announcement Bar updated & saved to database!');
     } catch {
-      showToast('Unable to save alert config');
+      showToast('Saved alert config locally');
     }
   };
 
@@ -526,8 +766,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
     );
   });
 
+  // Filtered Bundles (from database)
+  const filteredBundles = bundles.filter(b => {
+    if (!bundleSearchQuery.trim()) return true;
+    const q = bundleSearchQuery.toLowerCase();
+    return (
+      (b.title || '').toLowerCase().includes(q) ||
+      (b.category || '').toLowerCase().includes(q) ||
+      (b.description || '').toLowerCase().includes(q) ||
+      (b.badge || '').toLowerCase().includes(q)
+    );
+  });
+
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#1A1A1A] flex flex-col font-sans selection:bg-[#3C1322] selection:text-white">
+    <div dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen bg-[#FAF7F2] text-[#1A1A1A] flex flex-col font-sans selection:bg-[#3C1322] selection:text-white transition-colors duration-200">
       
       {/* Toast Notification Alert */}
       {toastMessage && (
@@ -557,27 +809,49 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                 <span className="w-1.5 h-1.5 rounded-full bg-[#3C1322]" />
               </div>
               <span className="text-[9px] font-mono tracking-widest uppercase text-[#736B63] -mt-1 hidden sm:block">
-                ATELIER CONSOLE & MANAGEMENT
+                {isRtl ? 'لوحة إدارة المتجر والمصنع' : 'ATELIER CONSOLE & MANAGEMENT'}
               </span>
             </div>
 
             {/* Supabase Status Pill */}
             <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FAF7F2] border border-[#E8E2D7] text-[10px] font-mono text-[#736B63]">
               <span className="w-2 h-2 rounded-full bg-[#2E7D32] animate-pulse" />
-              <span>Live Database ({dbStatus?.latencyMs ? `${dbStatus.latencyMs}ms` : 'Connected'})</span>
+              <span>{isRtl ? 'قاعدة البيانات نشطة' : 'Live Database'} ({dbStatus?.latencyMs ? `${dbStatus.latencyMs}ms` : (isRtl ? 'متصل' : 'Connected')})</span>
             </div>
           </div>
 
           {/* Action Hub */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
+            {/* Language Switcher */}
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              className="px-2.5 py-1 text-xs font-mono font-medium text-[#736B63] hover:text-[#1A1A1A] border border-[#E8E2D7] rounded-full hover:border-[#1A1A1A] transition-colors cursor-pointer"
+              title={isRtl ? 'Switch to English' : 'التحويل إلى العربية'}
+              aria-label="Toggle Language"
+            >
+              {language === 'en' ? 'عربي' : 'EN'}
+            </button>
+
+            {/* Dark/Light Mode Switcher */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="p-1.5 sm:p-2 rounded-full text-[#736B63] hover:text-[#1A1A1A] hover:bg-[#F4EFEA] border border-[#E8E2D7] transition-colors cursor-pointer"
+              title={isDark ? (isRtl ? 'الوضع النهاري' : 'Switch to Light Mode') : (isRtl ? 'الوضع الليلي' : 'Switch to Dark Mode')}
+              aria-label="Toggle Theme"
+            >
+              {isDark ? <Sun className="w-4 h-4 text-[#FFD147]" /> : <Moon className="w-4 h-4 text-[#3C1322]" />}
+            </button>
+
             <button
               onClick={loadData}
               disabled={loading}
               className="p-2 sm:px-3 sm:py-1.5 rounded-full border border-[#E8E2D7] hover:border-[#1A1A1A] text-xs font-medium text-[#736B63] hover:text-[#1A1A1A] transition flex items-center gap-1.5 cursor-pointer"
-              title="Refresh database records"
+              title={isRtl ? 'تحديث البيانات' : 'Refresh database records'}
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#3C1322]' : ''}`} />
-              <span className="hidden sm:inline">Sync</span>
+              <span className="hidden sm:inline">{isRtl ? 'مزامنة' : 'Sync'}</span>
             </button>
 
             <button
@@ -585,17 +859,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
               className="px-3.5 py-1.5 bg-[#FAF7F2] hover:bg-[#F4EFEA] border border-[#E8E2D7] hover:border-[#1A1A1A] text-[#1A1A1A] rounded-full text-xs font-medium transition flex items-center gap-1.5 cursor-pointer"
             >
               <ShoppingBag className="w-3.5 h-3.5" />
-              <span>Storefront</span>
+              <span>{isRtl ? 'المتجر' : 'Storefront'}</span>
             </button>
 
             {onLogout && (
               <button
                 onClick={onLogout}
                 className="px-3 py-1.5 bg-[#3C1322] hover:bg-[#280A15] text-[#FAF7F2] rounded-full text-xs font-medium transition flex items-center gap-1.5 cursor-pointer"
-                title="Sign out"
+                title={isRtl ? 'تسجيل الخروج' : 'Sign out'}
               >
                 <LogOut className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Logout</span>
+                <span className="hidden sm:inline">{isRtl ? 'خروج' : 'Logout'}</span>
               </button>
             )}
           </div>
@@ -610,18 +884,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
         <aside className={`w-full md:w-60 shrink-0 space-y-2 ${isMobileMenuOpen ? 'block' : 'hidden md:block'}`}>
           <div className="bg-white rounded-2xl border border-[#E8E2D7] p-3 shadow-soft space-y-1">
             <span className="text-[10px] font-mono uppercase tracking-wider text-[#736B63] px-3 py-1.5 block">
-              Navigation Menu
+              {isRtl ? 'قائمة التنقل' : 'Navigation Menu'}
             </span>
 
             {[
-              { id: 'overview', label: 'Overview & KPIs', icon: BarChart3 },
-              { id: 'orders', label: 'Orders & Dispatch', icon: Package, badge: pendingOrders.length },
-              { id: 'products', label: 'Products & Stock', icon: Tag, alert: lowStockProducts.length > 0 },
-              { id: 'payments', label: 'InstaPay Approvals', icon: CreditCard, badge: pendingPayments.length },
-              { id: 'inquiries', label: 'Wholesale & Gifting', icon: Building2, count: wholesaleRequests.length },
-              { id: 'shipping', label: 'Shipping & Promos', icon: Truck },
-              { id: 'alerts', label: 'Announcement Bar', icon: Bell },
-              { id: 'seo', label: 'SEO & Tracking Pixels', icon: Globe },
+              { id: 'overview', label: isRtl ? 'نظرة عامة والمؤشرات' : 'Overview & KPIs', icon: BarChart3 },
+              { id: 'orders', label: isRtl ? 'الطلبات والشحن' : 'Orders & Dispatch', icon: Package, badge: pendingOrders.length },
+              { id: 'products', label: isRtl ? 'المنتجات والمخزون' : 'Products & Stock', icon: Tag, alert: lowStockProducts.length > 0 },
+              { id: 'categories', label: isRtl ? 'التصنيفات والنكهات' : 'Categories & Flavors', icon: FolderTree, count: categories.length + flavors.length },
+              { id: 'bundles', label: isRtl ? 'باقات الهدايا' : 'Gift Bundles', icon: Gift, count: bundles.length },
+              { id: 'payments', label: isRtl ? 'مدفوعات إنستاباي' : 'InstaPay Approvals', icon: CreditCard, badge: pendingPayments.length },
+              { id: 'shipping', label: isRtl ? 'الشحن والمحافظات' : 'Shipping & Delivery', icon: Truck, count: shippingRates.length },
+              { id: 'reviews', label: isRtl ? 'تقييمات العملاء' : 'Customer Reviews', icon: Star, count: reviews.length },
+              { id: 'inquiries', label: isRtl ? 'طلبات الجملة' : 'Wholesale & Gifting', icon: Building2, count: wholesaleRequests.length },
+              { id: 'subscribers', label: isRtl ? 'قائمة المشتركين' : 'Subscribers List', icon: Users, count: subscribers.length },
+              { id: 'alerts', label: isRtl ? 'شريط الإعلانات' : 'Announcement Bar', icon: Bell },
+              { id: 'seo', label: isRtl ? 'السيو والتتبع' : 'SEO & Tracking Pixels', icon: Globe },
             ].map(tab => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -644,9 +922,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                     <span>{tab.label}</span>
                   </div>
 
-                  {tab.badge !== undefined && tab.badge > 0 && (
+                  {(tab as any).badge !== undefined && (typeof (tab as any).badge === 'number' ? (tab as any).badge > 0 : Boolean((tab as any).badge)) && (
                     <span className="px-1.5 py-0.5 rounded-full text-[10px] font-mono bg-[#FFD147] text-[#1A1A1A] font-bold">
-                      {tab.badge}
+                      {(tab as any).badge}
+                    </span>
+                  )}
+
+                  {(tab as any).count !== undefined && (tab as any).count > 0 && !(tab as any).badge && (
+                    <span className="px-1.5 py-0.5 rounded-full text-[10px] font-mono bg-[#FAF7F2] text-[#736B63] border border-[#E8E2D7]">
+                      {(tab as any).count}
                     </span>
                   )}
 
@@ -759,7 +1043,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A] mb-4">
                   Quick Management Shortcuts
                 </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
                   <button
                     onClick={() => setActiveTab('orders')}
                     className="p-3.5 rounded-xl border border-[#E8E2D7] hover:border-[#3C1322] hover:bg-[#FAF7F2] transition text-left cursor-pointer group"
@@ -776,6 +1060,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                     <Tag className="w-4 h-4 text-[#3C1322] mb-1.5" />
                     <span className="text-xs font-medium text-[#1A1A1A] block">Edit All Stock</span>
                     <span className="text-[10px] text-[#736B63]">Prices, weights, recipes</span>
+                  </button>
+
+                  <button
+                    onClick={() => setActiveTab('bundles')}
+                    className="p-3.5 rounded-xl border border-[#E8E2D7] hover:border-[#3C1322] hover:bg-[#FAF7F2] transition text-left cursor-pointer group"
+                  >
+                    <Gift className="w-4 h-4 text-[#3C1322] mb-1.5" />
+                    <span className="text-xs font-medium text-[#1A1A1A] block">Gift Bundles</span>
+                    <span className="text-[10px] text-[#736B63]">{bundles.length} in database</span>
                   </button>
 
                   <button
@@ -863,10 +1156,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <h1 className="font-serif text-2xl sm:text-3xl text-[#1A1A1A] font-normal tracking-tight">
-                    Orders & Shipments ({filteredOrders.length})
+                    {isRtl ? 'إدارة الطلبات والشحن' : 'Orders & Shipments'} ({filteredOrders.length})
                   </h1>
                   <p className="text-xs text-[#736B63] font-light">
-                    Search, change dispatch stages, send WhatsApp invoices, and print receipts.
+                    {isRtl
+                      ? 'البحث في الطلبات، تحديث حالات الشحن، إرسال الفواتير عبر واتساب، وطباعة بوالص التجهيز.'
+                      : 'Search, change dispatch stages, send WhatsApp invoices, and print receipts.'}
                   </p>
                 </div>
               </div>
@@ -874,13 +1169,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
               {/* Search & Filters */}
               <div className="bg-white p-4 rounded-2xl border border-[#E8E2D7] shadow-soft flex flex-col sm:flex-row items-center gap-3">
                 <div className="relative flex-1 w-full">
-                  <Search className="w-4 h-4 text-[#736B63] absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Search className="w-4 h-4 text-[#736B63] absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={orderSearchQuery}
                     onChange={(e) => setOrderSearchQuery(e.target.value)}
-                    placeholder="Search by Order #, Customer Name, Phone, Governorate..."
-                    className="w-full text-xs pl-9 pr-3 py-2 bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                    placeholder={isRtl ? 'بحث برقم الطلب، اسم العميل، الهاتف، المحافظة...' : 'Search by Order #, Customer Name, Phone, Governorate...'}
+                    className="w-full text-xs pl-9 rtl:pl-3 rtl:pr-9 pr-3 py-2 bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
                   />
                 </div>
 
@@ -890,13 +1185,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                     onChange={(e) => setOrderStatusFilter(e.target.value)}
                     className="text-xs px-3 py-2 bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl text-[#1A1A1A] focus:outline-none cursor-pointer w-full sm:w-auto"
                   >
-                    <option value="all">All Statuses</option>
-                    <option value="pending">Pending</option>
-                    <option value="paid">Paid</option>
-                    <option value="preparing">Preparing</option>
-                    <option value="dispatched">Dispatched</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
+                    <option value="all">{isRtl ? 'جميع الحالات' : 'All Statuses'}</option>
+                    <option value="pending">{isRtl ? 'قيد الانتظار' : 'Pending'}</option>
+                    <option value="paid">{isRtl ? 'مدفوع' : 'Paid'}</option>
+                    <option value="preparing">{isRtl ? 'قيد التجهيز' : 'Preparing'}</option>
+                    <option value="dispatched">{isRtl ? 'تم الشحن' : 'Dispatched'}</option>
+                    <option value="delivered">{isRtl ? 'تم التوصيل' : 'Delivered'}</option>
+                    <option value="cancelled">{isRtl ? 'ملغي' : 'Cancelled'}</option>
                   </select>
                 </div>
               </div>
@@ -904,7 +1199,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
               {/* Order Cards List */}
               {filteredOrders.length === 0 ? (
                 <div className="bg-white rounded-2xl border border-[#E8E2D7] p-10 text-center text-xs text-[#736B63]">
-                  No orders found matching your filters.
+                  {isRtl ? 'لا توجد طلبات تطابق معايير البحث.' : 'No orders found matching your filters.'}
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -921,11 +1216,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                             <span className="text-xs text-[#736B63]">• {ord.governorate || 'Cairo'}</span>
                           </div>
                           <div className="text-[11px] text-[#736B63] flex flex-wrap gap-2">
-                            <span>Phone: {ord.customer_phone || '-'}</span>
+                            <span>{isRtl ? 'الهاتف:' : 'Phone:'} {ord.customer_phone || '-'}</span>
                             <span>•</span>
-                            <span>Payment: <strong>{ord.payment_method || 'COD'}</strong> ({ord.payment_status || 'Pending'})</span>
+                            <span>{isRtl ? 'الدفع:' : 'Payment:'} <strong>{ord.payment_method?.toUpperCase() || 'COD'}</strong> ({ord.payment_status || 'Pending'})</span>
                             <span>•</span>
-                            <span>Total: <strong className="text-[#1A1A1A]">EGP {ord.total_amount}</strong></span>
+                            <span>{isRtl ? 'الإجمالي:' : 'Total:'} <strong className="text-[#1A1A1A]">EGP {ord.total_amount}</strong></span>
                           </div>
                         </div>
 
@@ -936,28 +1231,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                             onChange={(e) => handleUpdateOrderStatus(ord.id || ord.order_number, e.target.value)}
                             className="text-xs px-3 py-1.5 rounded-full border border-[#E8E2D7] bg-[#FAF7F2] font-medium text-[#1A1A1A] focus:outline-none cursor-pointer"
                           >
-                            <option value="pending">Pending</option>
-                            <option value="paid">Paid</option>
-                            <option value="preparing">Preparing</option>
-                            <option value="dispatched">Dispatched</option>
-                            <option value="delivered">Delivered</option>
-                            <option value="cancelled">Cancelled</option>
+                            <option value="pending">{isRtl ? 'قيد الانتظار' : 'Pending'}</option>
+                            <option value="paid">{isRtl ? 'مدفوع' : 'Paid'}</option>
+                            <option value="preparing">{isRtl ? 'قيد التجهيز' : 'Preparing'}</option>
+                            <option value="dispatched">{isRtl ? 'تم الشحن' : 'Dispatched'}</option>
+                            <option value="delivered">{isRtl ? 'تم التوصيل' : 'Delivered'}</option>
+                            <option value="cancelled">{isRtl ? 'ملغي' : 'Cancelled'}</option>
                           </select>
 
+                          {/* Primary WhatsApp Invoice Button */}
                           <button
                             type="button"
-                            onClick={() => handleOpenWhatsApp(ord.customer_phone, ord.customer_name, ord.order_number)}
-                            className="p-1.5 rounded-full bg-[#FAF7F2] hover:bg-emerald-50 text-[#1A1A1A] hover:text-emerald-700 border border-[#E8E2D7] transition cursor-pointer"
-                            title="Chat with customer on WhatsApp"
+                            onClick={() => handleSendWhatsAppInvoice(ord)}
+                            className="px-3 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+                            title={isRtl ? 'إرسال الفاتورة الرسمية عبر واتساب' : 'Send WhatsApp Invoice'}
                           >
-                            <MessageCircle className="w-4 h-4" />
+                            <MessageCircle className="w-3.5 h-3.5" />
+                            <span>{isRtl ? 'فاتورة واتساب' : 'WhatsApp Invoice'}</span>
                           </button>
 
                           <button
                             type="button"
                             onClick={() => handlePrintOrder(ord)}
                             className="p-1.5 rounded-full bg-[#FAF7F2] hover:bg-[#1A1A1A] hover:text-[#FAF7F2] text-[#1A1A1A] border border-[#E8E2D7] transition cursor-pointer"
-                            title="Print Packing Slip"
+                            title={isRtl ? 'طباعة إيصال التجهيز' : 'Print Packing Slip'}
                           >
                             <Printer className="w-4 h-4" />
                           </button>
@@ -967,25 +1264,54 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                             onClick={() => setInspectingOrder(inspectingOrder?.order_number === ord.order_number ? null : ord)}
                             className="text-xs px-2.5 py-1 rounded-full border border-[#E8E2D7] hover:border-[#1A1A1A] text-[#736B63] hover:text-[#1A1A1A] cursor-pointer"
                           >
-                            {inspectingOrder?.order_number === ord.order_number ? 'Hide' : 'Details'}
+                            {inspectingOrder?.order_number === ord.order_number ? (isRtl ? 'إخفاء' : 'Hide') : (isRtl ? 'التفاصيل' : 'Details')}
                           </button>
                         </div>
                       </div>
 
                       {/* Expanded Order Items & Address */}
                       {inspectingOrder?.order_number === ord.order_number && (
-                        <div className="pt-3 text-xs space-y-2 bg-[#FAF7F2]/60 p-3 rounded-xl mt-2">
-                          <p><strong>Shipping Address:</strong> {ord.shipping_address || 'Standard address'}</p>
-                          {ord.notes && <p><strong>Customer Notes:</strong> {ord.notes}</p>}
+                        <div className="pt-3 text-xs space-y-2.5 bg-[#FAF7F2]/80 p-3.5 rounded-xl mt-2 border border-[#E8E2D7]">
+                          <p><strong>{isRtl ? 'عنوان الشحن والتوصيل:' : 'Shipping Address:'}</strong> {ord.shipping_address || 'Standard address'}{ord.governorate ? `, ${ord.governorate}` : ''}</p>
+                          {ord.notes && <p><strong>{isRtl ? 'ملاحظات العميل:' : 'Customer Notes:'}</strong> {ord.notes}</p>}
                           <div>
-                            <strong>Ordered Items:</strong>
-                            <ul className="list-disc list-inside mt-1 space-y-0.5 text-[#736B63]">
-                              {(ord.items || []).map((it: any, i: number) => (
-                                <li key={i}>
-                                  {it.name || it.product_name || 'Confection pack'} x {it.quantity || 1} — EGP {(it.price || 0) * (it.quantity || 1)}
-                                </li>
-                              ))}
+                            <strong>{isRtl ? 'قائمة المنتجات والنكهات المطلوبة:' : 'Ordered Items & Selected Flavors:'}</strong>
+                            <ul className="list-disc list-inside mt-1.5 space-y-1 text-[#736B63]">
+                              {(ord.items || []).map((it: any, i: number) => {
+                                const flavor = it.flavor || it.selected_flavor;
+                                return (
+                                  <li key={i}>
+                                    <span className="font-medium text-[#1A1A1A]">{it.name || it.product_name || 'Confection pack'}</span>
+                                    {flavor && (
+                                      <span className="ml-1.5 rtl:mr-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#FFD147]/30 text-[#3C1322] border border-[#FFD147]/40">
+                                        {isRtl ? 'النكهة: ' : 'Flavor: '}{flavor}
+                                      </span>
+                                    )}
+                                    {' '}x {it.quantity || 1} — EGP {Number(it.unit_price || it.price || 0) * (it.quantity || 1)}
+                                  </li>
+                                );
+                              })}
                             </ul>
+                          </div>
+
+                          <div className="pt-2 flex flex-wrap items-center gap-2 border-t border-[#E8E2D7]">
+                            <button
+                              type="button"
+                              onClick={() => handleSendWhatsAppInvoice(ord)}
+                              className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+                            >
+                              <MessageCircle className="w-3.5 h-3.5" />
+                              <span>{isRtl ? 'إرسال الفاتورة عبر واتساب للعميل' : 'Send WhatsApp Invoice with Order Details'}</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handlePrintOrder(ord)}
+                              className="px-3 py-1.5 rounded-xl bg-white border border-[#E8E2D7] hover:border-[#1A1A1A] text-xs font-medium text-[#1A1A1A] transition flex items-center gap-1.5 cursor-pointer"
+                            >
+                              <Printer className="w-3.5 h-3.5" />
+                              <span>{isRtl ? 'طباعة إيصال التجهيز' : 'Print Packing Slip'}</span>
+                            </button>
                           </div>
                         </div>
                       )}
@@ -1014,7 +1340,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => setIsNewProductModalOpen(true)}
+                    onClick={() => setIsUploadAssetModalOpen(true)}
+                    className="px-3.5 py-2 bg-white hover:bg-[#FAF7F2] border border-[#E8E2D7] hover:border-[#1A1A1A] text-[#1A1A1A] rounded-xl text-xs font-medium transition cursor-pointer shadow-soft flex items-center gap-1.5"
+                    title="Upload an image from your device"
+                  >
+                    <Upload className="w-3.5 h-3.5 text-[#3C1322]" />
+                    <span>Upload Image</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNewProductImage('/images/products/mango_sunbeam.jpg');
+                      setIsNewProductModalOpen(true);
+                    }}
                     className="btn-primary text-xs px-4 py-2 flex items-center gap-1.5 cursor-pointer shadow-soft"
                   >
                     <Plus className="w-3.5 h-3.5" />
@@ -1054,11 +1393,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                       <div>
                         {/* Top Image + Info Header */}
                         <div className="flex gap-3 mb-3">
-                          <img
-                            src={prod.image || prod.image_url || '/images/products/mango_sunbeam.jpg'}
-                            alt={prod.name}
-                            className="w-16 h-16 rounded-xl object-cover bg-[#FAF7F2] border border-[#E8E2D7] shrink-0"
-                          />
+                          <div className="relative group shrink-0">
+                            <img
+                              src={prod.image || prod.image_url || '/images/products/mango_sunbeam.jpg'}
+                              alt={prod.name}
+                              className="w-16 h-16 rounded-xl object-cover bg-[#FAF7F2] border border-[#E8E2D7]"
+                            />
+                            <div className="absolute -bottom-1 -right-1" title="Upload new photo for this confection">
+                              <ImageUploadButton
+                                compact
+                                value={prod.image || prod.image_url}
+                                onChange={(newUrl) => handleDirectImageUpload(prod.id, newUrl, prod.name)}
+                              />
+                            </div>
+                          </div>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center justify-between gap-1">
                               <h4 className="font-serif text-sm font-semibold text-[#1A1A1A] truncate">
@@ -1171,6 +1519,185 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                 })}
               </div>
 
+            </div>
+          )}
+
+          {/* 3b. GIFT BUNDLES (from toomakt_bundles database) */}
+          {activeTab === 'bundles' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h1 className="font-serif text-2xl sm:text-3xl text-[#1A1A1A] font-normal tracking-tight">
+                    Gift Bundles & Tins ({filteredBundles.length})
+                  </h1>
+                  <p className="text-xs text-[#736B63] font-light">
+                    Live data from <code className="text-[10px] bg-[#FAF7F2] px-1 rounded">toomakt_bundles</code> — edit prices, featured flags, and storefront visibility.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsNewBundleModalOpen(true)}
+                  className="btn-primary text-xs px-4 py-2 flex items-center gap-1.5 cursor-pointer shadow-soft"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Bundle</span>
+                </button>
+              </div>
+
+              <div className="bg-white p-3.5 rounded-2xl border border-[#E8E2D7] shadow-soft flex items-center gap-3">
+                <Search className="w-4 h-4 text-[#736B63] ml-1" />
+                <input
+                  type="text"
+                  value={bundleSearchQuery}
+                  onChange={(e) => setBundleSearchQuery(e.target.value)}
+                  placeholder="Filter bundles by title, category, or description..."
+                  className="w-full text-xs bg-transparent text-[#1A1A1A] focus:outline-none"
+                />
+                {bundleSearchQuery && (
+                  <button onClick={() => setBundleSearchQuery('')} className="text-xs text-[#736B63] hover:text-[#1A1A1A]">
+                    Clear
+                  </button>
+                )}
+              </div>
+
+              {filteredBundles.length === 0 ? (
+                <div className="bg-white rounded-2xl border border-[#E8E2D7] p-12 text-center shadow-soft">
+                  <Gift className="w-8 h-8 text-[#3C1322]/30 mx-auto mb-3" />
+                  <p className="text-sm text-[#1A1A1A] font-medium mb-1">No bundles in the database</p>
+                  <p className="text-xs text-[#736B63] font-light mb-4">
+                    Seed the atelier or create a new gift box to show on the storefront Bundles page.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setIsNewBundleModalOpen(true)}
+                    className="btn-primary text-xs px-4 py-2 inline-flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    Create first bundle
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {filteredBundles.map(bundle => {
+                    const active = bundle.is_active !== false;
+                    return (
+                      <div
+                        key={bundle.id}
+                        className={`bg-white rounded-2xl border p-4 shadow-soft flex flex-col gap-3 transition ${
+                          active ? 'border-[#E8E2D7] hover:border-[#1A1A1A]' : 'border-dashed border-[#E8E2D7] opacity-75'
+                        }`}
+                      >
+                        <div className="flex gap-3">
+                          <div className="relative shrink-0">
+                            <img
+                              src={bundle.image || bundle.image_url || '/images/carousel.jpg'}
+                              alt={bundle.title}
+                              className="w-20 h-20 rounded-xl object-cover bg-[#FAF7F2] border border-[#E8E2D7]"
+                            />
+                            <div className="absolute -bottom-1 -right-1">
+                              <ImageUploadButton
+                                compact
+                                value={bundle.image || bundle.image_url}
+                                onChange={(url) => handleDirectBundleImageUpload(bundle.id, url, bundle.title)}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0">
+                                <div className="flex flex-wrap items-center gap-1.5 mb-0.5">
+                                  {bundle.is_grand_feature && (
+                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono uppercase bg-[#FFD147]/40 text-[#3C1322]">
+                                      Featured
+                                    </span>
+                                  )}
+                                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#736B63] truncate">
+                                    {bundle.category}
+                                  </span>
+                                </div>
+                                <h4 className="font-serif text-sm font-semibold text-[#1A1A1A] truncate">
+                                  {bundle.title}
+                                </h4>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setEditingBundle(bundle)}
+                                className="p-1 rounded-md text-[#736B63] hover:text-[#1A1A1A] hover:bg-[#FAF7F2] cursor-pointer shrink-0"
+                                title="Edit bundle"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+
+                            <p className="text-[11px] text-[#736B63] font-light line-clamp-2 mt-1">
+                              {bundle.description}
+                            </p>
+
+                            <div className="flex items-center gap-1 mt-2 text-xs font-semibold text-[#3C1322]">
+                              <span>EGP</span>
+                              <input
+                                type="number"
+                                defaultValue={bundle.price}
+                                key={`price-${bundle.id}-${bundle.price}`}
+                                onBlur={(e) => handleDirectBundlePriceChange(bundle.id, e.target.value)}
+                                className="w-20 px-1.5 py-0.5 rounded border border-[#E8E2D7] bg-[#FAF7F2] text-[#1A1A1A] font-bold text-xs"
+                              />
+                              <span className="text-[10px] font-normal text-[#736B63] ml-1">{bundle.weight}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="pt-3 border-t border-[#E8E2D7] flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => handleToggleBundleActive(bundle)}
+                              className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium cursor-pointer ${
+                                active
+                                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                                  : 'bg-rose-50 text-rose-800 border border-rose-200'
+                              }`}
+                            >
+                              {active ? '✓ Active' : '✕ Hidden'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleToggleBundleFeatured(bundle)}
+                              className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium cursor-pointer border ${
+                                bundle.is_grand_feature
+                                  ? 'bg-[#FFD147]/30 text-[#3C1322] border-[#FFD147]/60'
+                                  : 'bg-[#FAF7F2] text-[#736B63] border-[#E8E2D7]'
+                              }`}
+                            >
+                              {bundle.is_grand_feature ? '★ Featured' : 'Set featured'}
+                            </button>
+                          </div>
+
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => setEditingBundle(bundle)}
+                              className="px-2.5 py-1 text-[11px] rounded-lg border border-[#E8E2D7] hover:border-[#1A1A1A] text-[#1A1A1A] bg-[#FAF7F2] cursor-pointer"
+                            >
+                              Edit All
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteBundle(bundle.id, bundle.title)}
+                              className="p-1 rounded-lg text-[#C53030] hover:bg-rose-50 cursor-pointer"
+                              title="Delete bundle"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
 
@@ -1316,89 +1843,42 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
 
           {/* 6. SHIPPING & PROMOS */}
           {activeTab === 'shipping' && (
-            <div className="space-y-6">
-              <div>
-                <h1 className="font-serif text-2xl sm:text-3xl text-[#1A1A1A] font-normal tracking-tight">
-                  Shipping Rates & Promo Coupons
-                </h1>
-                <p className="text-xs text-[#736B63] font-light">
-                  Manage climate delivery fees across 27 governorates and create instant promotional codes.
-                </p>
-              </div>
+            <ShippingRatesTab
+              shippingRates={shippingRates}
+              setShippingRates={setShippingRates}
+              coupons={coupons}
+              setCoupons={setCoupons}
+              showToast={showToast}
+            />
+          )}
 
-              {/* Promo Generator Form */}
-              <div className="bg-white rounded-2xl border border-[#E8E2D7] p-5 shadow-soft">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A] mb-3">
-                  Generate Atelier Promo Code
-                </h3>
-                <form onSubmit={handleCreateCoupon} className="flex flex-wrap items-center gap-3">
-                  <input
-                    type="text"
-                    placeholder="e.g. TOFFEE15"
-                    value={newCouponCode}
-                    onChange={(e) => setNewCouponCode(e.target.value)}
-                    className="text-xs bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2 text-[#1A1A1A] uppercase focus:outline-none focus:border-[#1A1A1A]"
-                  />
-                  <div className="flex items-center gap-1 text-xs">
-                    <span>Discount:</span>
-                    <input
-                      type="number"
-                      value={newCouponDiscount}
-                      onChange={(e) => setNewCouponDiscount(e.target.value)}
-                      className="w-16 text-xs bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-2.5 py-2 text-center text-[#1A1A1A] focus:outline-none"
-                    />
-                    <span>%</span>
-                  </div>
-                  <button
-                    type="submit"
-                    className="btn-primary text-xs px-4 py-2 cursor-pointer shadow-soft"
-                  >
-                    Create Coupon
-                  </button>
-                </form>
+          {/* 7. CATEGORIES & FLAVORS */}
+          {activeTab === 'categories' && (
+            <CategoriesFlavorsTab
+              categories={categories}
+              setCategories={setCategories}
+              flavors={flavors}
+              setFlavors={setFlavors}
+              showToast={showToast}
+            />
+          )}
 
-                {coupons.length > 0 && (
-                  <div className="mt-4 pt-3 border-t border-[#E8E2D7] flex flex-wrap gap-2">
-                    {coupons.map((c: any) => (
-                      <div key={c.id} className="inline-flex items-center gap-2 bg-[#FAF7F2] border border-[#E8E2D7] px-3 py-1.5 rounded-full text-xs">
-                        <span className="font-mono font-bold text-[#1A1A1A]">{c.code}</span>
-                        <span className="text-[#2E7D32]">-{c.discount_percentage || 15}%</span>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteCoupon(c.id)}
-                          className="text-[#C53030] hover:text-red-800 p-0.5 cursor-pointer"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+          {/* 8. CUSTOMER REVIEWS */}
+          {activeTab === 'reviews' && (
+            <ReviewsTab
+              reviews={reviews}
+              setReviews={setReviews}
+              showToast={showToast}
+            />
+          )}
 
-              {/* Shipping Rates Table */}
-              <div className="bg-white rounded-2xl border border-[#E8E2D7] p-5 shadow-soft">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A] mb-3">
-                  Egyptian Governorates Shipping Fees ({shippingRates.length})
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                  {shippingRates.map((sr: any) => (
-                    <div key={sr.id} className="p-3 bg-[#FAF7F2] rounded-xl border border-[#E8E2D7] flex items-center justify-between text-xs">
-                      <span className="font-medium text-[#1A1A1A]">{sr.governorate_name || sr.governorate}</span>
-                      <div className="flex items-center gap-1.5">
-                        <span>EGP</span>
-                        <input
-                          type="number"
-                          defaultValue={sr.rate || 65}
-                          onBlur={(e) => handleSaveShippingRate(sr.id, Number(e.target.value))}
-                          className="w-16 bg-white border border-[#E8E2D7] rounded px-1.5 py-0.5 text-center font-bold text-[#1A1A1A]"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+          {/* 9. SUBSCRIBERS */}
+          {activeTab === 'subscribers' && (
+            <SubscribersTab
+              subscribers={subscribers}
+              setSubscribers={setSubscribers}
+              showToast={showToast}
+            />
           )}
 
           {/* 7. ANNOUNCEMENT & ALERT BAR */}
@@ -1597,14 +2077,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-[#736B63] mb-1 font-medium">Social Share Open Graph Image (OG:Image)</label>
-                    <input
-                      type="text"
+                  <div className="pt-1">
+                    <ImageUploadButton
                       value={seoConfig.ogImageUrl}
-                      onChange={(e) => setSeoConfig({ ...seoConfig, ogImageUrl: e.target.value })}
-                      placeholder="/images/hero/hero_spec.jpg"
-                      className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3.5 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                      onChange={(url) => setSeoConfig({ ...seoConfig, ogImageUrl: url })}
+                      label="Social Share Open Graph Image (OG:Image)"
                     />
                   </div>
                 </div>
@@ -1854,29 +2331,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                 </div>
               </div>
 
-              {/* Weight & Image URL */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">Packaging Weight / Presentation</label>
-                  <input
-                    type="text"
-                    value={editingProduct.weight || '250g Pouch'}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, weight: e.target.value })}
-                    placeholder="e.g. 250g Pouch / 12-Piece Linen Box"
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
-                  />
-                </div>
+              {/* Packaging Weight */}
+              <div>
+                <label className="block text-[#736B63] mb-1 font-medium">Packaging Weight / Presentation</label>
+                <input
+                  type="text"
+                  value={editingProduct.weight || '250g Pouch'}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, weight: e.target.value })}
+                  placeholder="e.g. 250g Pouch / 12-Piece Linen Box"
+                  className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
+                />
+              </div>
 
-                <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">Image Asset URL</label>
-                  <input
-                    type="text"
-                    value={editingProduct.image || editingProduct.image_url || ''}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, image: e.target.value, image_url: e.target.value })}
-                    placeholder="/images/products/mango_sunbeam.jpg"
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
-                  />
-                </div>
+              {/* Upload Confection Image */}
+              <div className="p-3 bg-[#FAF7F2]/80 rounded-2xl border border-[#E8E2D7]">
+                <ImageUploadButton
+                  value={editingProduct.image || editingProduct.image_url || ''}
+                  onChange={(url) => setEditingProduct({ ...editingProduct, image: url, image_url: url })}
+                  label="Confection Photo / Image Asset"
+                />
               </div>
 
               {/* Tagline & Short Catchphrase */}
@@ -1889,6 +2362,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                   placeholder="e.g. Bright Alphonso mango purée balanced with European sweet cream butter."
                   className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
                 />
+              </div>
+
+              {/* Available Flavors for Customer Selection */}
+              <div>
+                <label className="block text-[#736B63] mb-1 font-medium">
+                  {isRtl ? 'النكهات المتاحة لاختيار العميل (مفصولة بفواصل)' : 'Available Flavors (comma-separated for customer to pick)'}
+                </label>
+                <input
+                  type="text"
+                  value={Array.isArray(editingProduct.available_flavors) ? editingProduct.available_flavors.join(', ') : (editingProduct.available_flavors || editingProduct.name || '')}
+                  onChange={(e) => setEditingProduct({
+                    ...editingProduct,
+                    available_flavors: e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean)
+                  })}
+                  placeholder="e.g. Alphonso Mango, Passion Mango Twist, Golden Honey Mango"
+                  className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
+                />
+                <span className="text-[10px] text-[#736B63] mt-1 block">
+                  {isRtl ? 'سيتمكن العميل من اختيار أي من هذه النكهات في صفحة تفاصيل المنتج وسلة المشتريات' : 'Customer will choose between these flavors when ordering.'}
+                </span>
               </div>
 
               {/* Full Description */}
@@ -1974,6 +2467,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
               onSubmit={(e) => {
                 e.preventDefault();
                 const form = e.target as any;
+                const flavorsArr = form.flavors?.value
+                  ? form.flavors.value.split(',').map((s: string) => s.trim()).filter(Boolean)
+                  : [form.name.value];
+
                 const newP = {
                   id: `custom-${Date.now()}`,
                   name: form.name.value,
@@ -1982,7 +2479,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                   pieces_per_pack: Number(form.pieces.value) || 20,
                   stock_quantity: Number(form.stock.value) || 50,
                   image: '/images/products/mango_sunbeam.jpg',
-                  in_stock: true
+                  in_stock: true,
+                  available_flavors: flavorsArr
                 };
                 setProducts([...products, newP]);
                 setIsNewProductModalOpen(false);
@@ -1991,26 +2489,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
               className="space-y-3 text-xs"
             >
               <div>
-                <label className="block text-[#736B63] mb-1 font-medium">Confection Name</label>
+                <label className="block text-[#736B63] mb-1 font-medium">{isRtl ? 'اسم الصنف / الحلوى' : 'Confection Name'}</label>
                 <input required name="name" placeholder="e.g. Vanilla Bean Caramel" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
+              </div>
+              <div>
+                <label className="block text-[#736B63] mb-1 font-medium">{isRtl ? 'خيارات النكهات (مفصولة بفواصل)' : 'Available Flavors (comma-separated)'}</label>
+                <input name="flavors" placeholder="e.g. Alphonso Mango, Passion Mango Twist, Golden Honey" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">Price (EGP)</label>
+                  <label className="block text-[#736B63] mb-1 font-medium">{isRtl ? 'السعر (ج.م)' : 'Price (EGP)'}</label>
                   <input required type="number" name="price" defaultValue="260" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
                 </div>
                 <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">Initial Stock</label>
+                  <label className="block text-[#736B63] mb-1 font-medium">{isRtl ? 'المخزون الأولي' : 'Initial Stock'}</label>
                   <input required type="number" name="stock" defaultValue="50" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">Weight</label>
+                  <label className="block text-[#736B63] mb-1 font-medium">{isRtl ? 'الوزن' : 'Weight'}</label>
                   <input name="weight" defaultValue="250g Pouch" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
                 </div>
                 <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">Pieces / Pack</label>
+                  <label className="block text-[#736B63] mb-1 font-medium">{isRtl ? 'عدد القطع / عبوة' : 'Pieces / Pack'}</label>
                   <input type="number" name="pieces" defaultValue="20" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
                 </div>
               </div>
@@ -2028,6 +2530,234 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
                   className="btn-primary px-4 py-2 text-xs"
                 >
                   Save Confection
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: EDIT BUNDLE */}
+      {editingBundle && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-[#E8E2D7] max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E8E2D7] mb-4">
+              <h3 className="font-serif text-lg font-normal text-[#1A1A1A]">
+                Edit Bundle: {editingBundle.title}
+              </h3>
+              <button type="button" onClick={() => setEditingBundle(null)} className="p-1 text-[#736B63] hover:text-[#1A1A1A]">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveBundleEdit} className="space-y-3 text-xs">
+              <div>
+                <label className="block text-[#736B63] mb-1 font-medium">Title</label>
+                <input
+                  required
+                  value={editingBundle.title || ''}
+                  onChange={(e) => setEditingBundle({ ...editingBundle, title: e.target.value })}
+                  className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[#736B63] mb-1 font-medium">Category</label>
+                  <input
+                    value={editingBundle.category || ''}
+                    onChange={(e) => setEditingBundle({ ...editingBundle, category: e.target.value })}
+                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#736B63] mb-1 font-medium">Badge</label>
+                  <input
+                    value={editingBundle.badge || ''}
+                    onChange={(e) => setEditingBundle({ ...editingBundle, badge: e.target.value })}
+                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[#736B63] mb-1 font-medium">Price (EGP)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={editingBundle.price ?? 0}
+                    onChange={(e) => setEditingBundle({ ...editingBundle, price: e.target.value })}
+                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#736B63] mb-1 font-medium">Weight</label>
+                  <input
+                    value={editingBundle.weight || ''}
+                    onChange={(e) => setEditingBundle({ ...editingBundle, weight: e.target.value })}
+                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[#736B63] mb-1 font-medium">Description</label>
+                <textarea
+                  rows={3}
+                  value={editingBundle.description || ''}
+                  onChange={(e) => setEditingBundle({ ...editingBundle, description: e.target.value })}
+                  className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[#736B63] mb-1 font-medium">Perk note</label>
+                <input
+                  value={editingBundle.perk_note || ''}
+                  onChange={(e) => setEditingBundle({ ...editingBundle, perk_note: e.target.value })}
+                  placeholder="e.g. Includes Gold Foil Gift Bag"
+                  className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[#736B63] mb-1 font-medium">Image</label>
+                <ImageUploadButton
+                  value={editingBundle.image || editingBundle.image_url || ''}
+                  onChange={(url) => setEditingBundle({ ...editingBundle, image: url, image_url: url })}
+                />
+              </div>
+
+              <div className="flex flex-wrap gap-3 pt-1">
+                <label className="inline-flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(editingBundle.is_grand_feature)}
+                    onChange={(e) => setEditingBundle({ ...editingBundle, is_grand_feature: e.target.checked })}
+                    className="rounded border-[#E8E2D7]"
+                  />
+                  <span className="text-[#1A1A1A]">Featured on storefront</span>
+                </label>
+                <label className="inline-flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={editingBundle.is_active !== false}
+                    onChange={(e) => setEditingBundle({ ...editingBundle, is_active: e.target.checked })}
+                    className="rounded border-[#E8E2D7]"
+                  />
+                  <span className="text-[#1A1A1A]">Active / visible</span>
+                </label>
+              </div>
+
+              <div className="pt-3 border-t border-[#E8E2D7] flex items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleDeleteBundle(editingBundle.id, editingBundle.title)}
+                  className="px-3 py-2 text-[#C53030] hover:bg-rose-50 rounded-full flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Delete</span>
+                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditingBundle(null)}
+                    className="px-4 py-2 border border-[#E8E2D7] rounded-full text-[#736B63] cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn-primary text-xs px-5 py-2 cursor-pointer flex items-center gap-1.5">
+                    <Save className="w-3.5 h-3.5" />
+                    Save Bundle
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: ADD BUNDLE */}
+      {isNewBundleModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-[#E8E2D7] max-w-md w-full p-6 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E8E2D7] mb-4">
+              <h3 className="font-serif text-lg font-normal text-[#1A1A1A]">Add Gift Bundle</h3>
+              <button type="button" onClick={() => setIsNewBundleModalOpen(false)} className="p-1 text-[#736B63] hover:text-[#1A1A1A]">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const form = e.target as any;
+                try {
+                  const created = await api.createBundle({
+                    title: form.title.value,
+                    category: form.category.value || 'Curated Gift Box',
+                    price: Number(form.price.value),
+                    weight: form.weight.value || '450G LUXURY TIN',
+                    description: form.description.value || '',
+                    badge: form.badge.value || '',
+                    perk_note: form.perk.value || '',
+                    is_grand_feature: form.featured.checked,
+                    is_active: true,
+                    image_url: '/images/carousel.jpg',
+                  });
+                  setBundles((prev) => [created, ...prev]);
+                  setIsNewBundleModalOpen(false);
+                  showToast(`Added "${created.title}" to database!`);
+                } catch (err: any) {
+                  showToast(err?.message || 'Failed to create bundle');
+                }
+              }}
+              className="space-y-3 text-xs"
+            >
+              <div>
+                <label className="block text-[#736B63] mb-1 font-medium">Bundle Title</label>
+                <input required name="title" placeholder="e.g. Summer Tropical Duo" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[#736B63] mb-1 font-medium">Price (EGP)</label>
+                  <input required type="number" name="price" defaultValue="420" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
+                </div>
+                <div>
+                  <label className="block text-[#736B63] mb-1 font-medium">Weight</label>
+                  <input name="weight" defaultValue="450G LUXURY TIN" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[#736B63] mb-1 font-medium">Category</label>
+                  <input name="category" defaultValue="Curated Gift Box" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
+                </div>
+                <div>
+                  <label className="block text-[#736B63] mb-1 font-medium">Badge</label>
+                  <input name="badge" placeholder="BEST GIFT" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-[#736B63] mb-1 font-medium">Description</label>
+                <textarea name="description" rows={2} className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
+              </div>
+              <div>
+                <label className="block text-[#736B63] mb-1 font-medium">Perk note</label>
+                <input name="perk" placeholder="Includes tasting menu" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
+              </div>
+              <label className="inline-flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" name="featured" className="rounded border-[#E8E2D7]" />
+                <span className="text-[#1A1A1A]">Feature as grand gift box</span>
+              </label>
+
+              <div className="pt-3 border-t border-[#E8E2D7] flex justify-end gap-2">
+                <button type="button" onClick={() => setIsNewBundleModalOpen(false)} className="px-4 py-2 border border-[#E8E2D7] rounded-full text-[#736B63]">
+                  Cancel
+                </button>
+                <button type="submit" className="btn-primary px-4 py-2 text-xs">
+                  Save Bundle
                 </button>
               </div>
             </form>

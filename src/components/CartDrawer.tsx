@@ -156,7 +156,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
             ) : (
               items.map(item => (
                 <div
-                  key={item.product.id}
+                  key={`${item.product.id}-${item.selected_flavor || ''}`}
                   className="bg-white border border-[#E8E2D7] rounded-xl p-4 flex gap-4 items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
@@ -169,6 +169,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                       <h4 className="font-serif text-base font-normal text-[#1A1A1A] line-clamp-1">
                         {item.product.name}
                       </h4>
+                      {item.selected_flavor && (
+                        <span className="text-[11px] font-medium text-[#3C1322] bg-[#FFD147]/25 border border-[#FFD147]/40 px-2 py-0.5 rounded-full inline-block mt-0.5">
+                          {isRtl ? 'النكهة: ' : 'Flavor: '}{item.selected_flavor}
+                        </span>
+                      )}
                       <span className="text-xs text-[#736B63] block mt-0.5">
                         {item.product.weight || '250g Pouch'} · EGP {item.product.price}
                       </span>
@@ -176,7 +181,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                       {/* Quantity Stepper */}
                       <div className="flex items-center gap-2 mt-2">
                         <button
-                          onClick={() => updateQuantity(item.product.id, -1)}
+                          onClick={() => updateQuantity(item.product.id, -1, item.selected_flavor)}
                           className="w-6 h-6 rounded-md border border-[#E8E2D7] hover:border-[#1A1A1A] flex items-center justify-center text-xs transition-colors"
                         >
                           <Minus className="w-3 h-3" />
@@ -185,7 +190,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.product.id, 1)}
+                          onClick={() => updateQuantity(item.product.id, 1, item.selected_flavor)}
                           className="w-6 h-6 rounded-md border border-[#E8E2D7] hover:border-[#1A1A1A] flex items-center justify-center text-xs transition-colors"
                         >
                           <Plus className="w-3 h-3" />
@@ -196,7 +201,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
 
                   <div className="text-right rtl:text-left flex flex-col items-end justify-between self-stretch">
                     <button
-                      onClick={() => removeFromCart(item.product.id)}
+                      onClick={() => removeFromCart(item.product.id, item.selected_flavor)}
                       className="text-[#9B938A] hover:text-[#C84B5B] transition-colors p-1"
                       title="Remove"
                     >
