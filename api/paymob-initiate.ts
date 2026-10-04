@@ -26,8 +26,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const apiKey = process.env.PAYMOB_API_KEY || process.env.VITE_PAYMOB_API_KEY;
   const publicKey = process.env.PAYMOB_PUBLIC_KEY || process.env.VITE_PAYMOB_PUBLIC_KEY;
   const secretKey = process.env.PAYMOB_SECRET_KEY || process.env.VITE_PAYMOB_SECRET_KEY;
-  const cardIntegrationId = process.env.PAYMOB_CARD_INTEGRATION_ID || process.env.VITE_PAYMOB_CARD_INTEGRATION_ID;
-  const iframeId = process.env.PAYMOB_IFRAME_ID || process.env.VITE_PAYMOB_IFRAME_ID;
+  const rawCardIntegrationId = process.env.PAYMOB_CARD_INTEGRATION_ID || process.env.VITE_PAYMOB_CARD_INTEGRATION_ID || '5963962';
+  const rawIframeId = process.env.PAYMOB_IFRAME_ID || process.env.VITE_PAYMOB_IFRAME_ID || '1084110';
+  const cardIntegrationId = String(rawCardIntegrationId).replace(/[^0-9]/g, '');
+  const iframeId = String(rawIframeId).replace(/[^0-9]/g, '');
 
   // 1. Try Unified Checkout (Intention API) if Secret Key is provided
   if (secretKey && publicKey) {
@@ -72,6 +74,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           paymentUrl: unifiedUrl,
           iframeUrl: unifiedUrl,
           token: clientSecret,
+          paymobOrderId: data.intention_order?.id || data.id,
         });
       }
     } catch (err: any) {
@@ -143,6 +146,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         paymentUrl: iframeUrl,
         iframeUrl,
         token: paymentToken,
+        paymobOrderId,
       });
     } catch (err: any) {
       console.error('Paymob classic serverless error:', err);

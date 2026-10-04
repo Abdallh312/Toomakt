@@ -955,6 +955,7 @@ export const api = {
   },
 
   async checkout(orderData: {
+    order_number?: string;
     customer_name: string;
     customer_email: string;
     customer_phone?: string;
@@ -966,6 +967,7 @@ export const api = {
     delivery_notes?: string;
     promo_code?: string;
     payment_method?: string;
+    payment_status?: string;
     items: Array<{
       item_id: string;
       name?: string;
@@ -975,7 +977,7 @@ export const api = {
     }>;
   }): Promise<{ success: boolean; order?: any; error?: string; message?: string }> {
     try {
-      const orderNumber = `ORD-2026-${Math.floor(100000 + Math.random() * 900000)}`;
+      const orderNumber = orderData.order_number || `ORD-2026-${Math.floor(100000 + Math.random() * 900000)}`;
       const subtotal = orderData.items.reduce((s, i) => s + (Number(i.unit_price || 16) * Number(i.quantity || 1)), 0);
 
       // Calculate discount
@@ -1017,6 +1019,7 @@ export const api = {
       } catch {}
 
       const totalAmount = subtotal - discountAmount + shippingFee;
+      const isPaid = orderData.payment_status === 'paid' || orderData.payment_method === 'card';
 
       // Insert order
       const orderRes = await fetch(`${ADMIN_BASE}/toomakt_orders`, {
@@ -1033,7 +1036,8 @@ export const api = {
           shipping_fee: shippingFee,
           total_amount: totalAmount,
           promo_code: orderData.promo_code || null,
-          status: 'pending',
+          status: isPaid ? 'processing' : 'pending',
+          payment_status: orderData.payment_status || (isPaid ? 'paid' : 'pending'),
           governorate: orderData.governorate || 'Cairo',
           shipping_city: orderData.shipping_city || '',
           building_number: orderData.building_number || '',
@@ -1100,12 +1104,13 @@ export const api = {
           `  • Subtotal: <code>${subtotal.toFixed(2)} EGP</code>\n` +
           `  • Shipping: <code>${shippingFee.toFixed(2)} EGP</code>\n` +
           `  • <b>TOTAL AMOUNT:</b> <b><u>${totalAmount.toFixed(2)} EGP</u></b>\n\n` +
-          `<b>Payment:</b> <b>${(orderData.payment_method || 'COD').toUpperCase()}</b>\n\n` +
+          `<b>Payment Method:</b> ${isPaid ? '💳 <b>Visa / Card (PAID via Paymob 3D-Secure)</b>' : '💵 <b>Cash on Delivery (COD)</b>'}\n` +
+          `<b>Payment Status:</b> ${isPaid ? '✅ <i>Confirmed & Paid</i>' : `⏳ <i>Due upon delivery: ${totalAmount.toFixed(2)} EGP</i>`}\n\n` +
           `<b>DELIVERY DESTINATION:</b>\n` +
           `• Governorate: ${orderData.governorate || 'Cairo'}\n` +
           `• Address: ${orderData.shipping_address}\n` +
           `━━━━━━━━━━━━━━━━━━━\n` +
-          `<i>Status: Pending atelier preparation</i>`;
+          `<i>Status: ${isPaid ? 'Payment Approved · Ready for Atelier Preparation' : 'COD Order Confirmed · Ready for Courier Dispatch'}</i>`;
 
         const tgPayload: any = {
           chat_id: '1686960840',

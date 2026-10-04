@@ -9,6 +9,12 @@ import {
   CreditCard,
   Lock,
   X,
+  Banknote,
+  RotateCcw,
+  Sparkles,
+  Check,
+  Info,
+  Clock,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -39,12 +45,18 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
   const [buildingNumber, setBuildingNumber] = useState('');
   const [apartmentFloor, setApartmentFloor] = useState('');
   const [deliveryNotes, setDeliveryNotes] = useState('');
-  const [paymentMethod] = useState<'card'>('card');
+  
+  // Payment Method: 'card' (Visa / Mastercard via Paymob) or 'cod' (Cash on Delivery)
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'cod'>('card');
   const [paymobIframeUrl, setPaymobIframeUrl] = useState<string | null>(null);
-  const [pendingOrder, setPendingOrder] = useState<any>(null);
+  const [paymobOrderId, setPaymobOrderId] = useState<number | string | null>(null);
+  const [activeOrderNumber, setActiveOrderNumber] = useState<string>('');
+  const [pendingOrderPayload, setPendingOrderPayload] = useState<any>(null);
 
-  // Submission state
+  // Submission & Verification state
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVerifyingPayment, setIsVerifyingPayment] = useState(false);
+  const [paymentDeclinedError, setPaymentDeclinedError] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [apiError, setApiError] = useState<string | null>(null);
 
@@ -57,7 +69,6 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
         const res = await api.getShippingRates();
         if (isMounted && res && res.length > 0) {
           setShippingRates(res);
-          // Default to first active or Cairo
           const cairoRate = res.find(r => r.governorate.toLowerCase() === 'cairo');
           if (cairoRate) {
             setGovernorate(cairoRate.governorate);
@@ -77,6 +88,28 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
     };
   }, []);
 
+  // Listen for Paymob iframe postMessage events
+  useEffect(() => {
+    const handleMessage = async (event: MessageEvent) => {
+      if (!event.data || !paymobIframeUrl) return;
+      try {
+        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        if (data.type === 'transaction_status' || data.success !== undefined) {
+          if (data.success === true || data.status === 'success') {
+            await handleVerifyAndFinalizePayment();
+          } else if (data.success === false) {
+            setPaymentDeclinedError(
+              'Paymob reported this card transaction as DECLINED. In test mode, make sure to use the Paymob Test Card, or switch to Cash on Delivery.'
+            );
+          }
+        }
+      } catch {}
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [paymobIframeUrl, pendingOrderPayload, paymobOrderId, activeOrderNumber]);
+
   // Selected shipping rate
   const selectedRate = shippingRates.find(
     r => r.governorate.toLowerCase() === governorate.toLowerCase()
@@ -89,30 +122,34 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
   // Validation
   const validateForm = () => {
     const errors: Record<string, string> = {};
-    if (!fullName.trim()) errors.fullName = 'Full name is required.';
+    if (!fullName.trim()) errors.fullName = isRtl ? 'الاسم بالكامل مطلوب.' : 'Full name is required.';
     if (!mobileNumber.trim()) {
-      errors.mobileNumber = 'Mobile number is required.';
+      errors.mobileNumber = isRtl ? 'رقم الهاتف مطلوب.' : 'Mobile number is required.';
     } else if (!/^(010|011|012|015|\+20)\d{7,10}$/.test(mobileNumber.replace(/\s+/g, ''))) {
-      errors.mobileNumber = 'Please enter a valid Egyptian mobile number (e.g. 01012345678).';
+      errors.mobileNumber = isRtl
+        ? 'يرجى إدخال رقم موبايل مصري صحيح (مثال: 01012345678).'
+        : 'Please enter a valid Egyptian mobile number (e.g. 01012345678).';
     }
     if (!email.trim()) {
-      errors.email = 'Email address is required for order confirmation.';
+      errors.email = isRtl ? 'البريد الإلكتروني مطلوب.' : 'Email address is required for order confirmation.';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      errors.email = 'Please enter a valid email address.';
+      errors.email = isRtl ? 'يرجى إدخال بريد إلكتروني صحيح.' : 'Please enter a valid email address.';
     }
-    if (!governorate) errors.governorate = 'Please select your Egyptian governorate.';
-    if (!streetAddress.trim()) errors.streetAddress = 'Detailed street address is required.';
+    if (!governorate) errors.governorate = isRtl ? 'يرجى اختيار المحافظة.' : 'Please select your Egyptian governorate.';
+    if (!streetAddress.trim()) errors.streetAddress = isRtl ? 'العنوان التفصيلي مطلوب.' : 'Detailed street address is required.';
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
+  // Submit Order Handler
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setApiError(null);
+    setPaymentDeclinedError(null);
 
     if (items.length === 0) {
-      setApiError('Your cart is empty. Please add items to your bag before checking out.');
+      setApiError(isRtl ? 'حقيبة التسوق فارغة.' : 'Your cart is empty. Please add items before checking out.');
       return;
     }
 
@@ -123,7 +160,11 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
     setIsSubmitting(true);
 
     try {
+      const generatedOrderNumber = `ORD-2026-${Math.floor(100000 + Math.random() * 900000)}`;
+      setActiveOrderNumber(generatedOrderNumber);
+
       const orderPayload = {
+        order_number: generatedOrderNumber,
         customer_name: fullName.trim(),
         customer_phone: mobileNumber.trim(),
         customer_email: email.trim(),
@@ -141,16 +182,31 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
           unit_price: Number(item.product.price),
           name: item.selected_flavor ? `${item.product.name} (${item.selected_flavor})` : item.product.name,
           flavor: item.selected_flavor,
-          image: item.product.image
-        }))
+          image: item.product.image,
+        })),
       };
 
-      const res = await api.checkout(orderPayload);
+      if (paymentMethod === 'cod') {
+        // Direct Cash on Delivery: create order immediately in Supabase
+        const res = await api.checkout({
+          ...orderPayload,
+          payment_method: 'cod',
+          payment_status: 'pending',
+        });
 
-      if (res.success && res.order) {
-        // Initiate Paymob Visa payment
+        if (res.success && res.order) {
+          clearCart();
+          onOrderSuccess(res.order);
+        } else {
+          setApiError(res.message || res.error || 'Failed to place Cash on Delivery order. Please try again.');
+        }
+      } else {
+        // Visa / Mastercard via Paymob:
+        // DO NOT create completed order in DB yet. Only initialize payment session!
+        setPendingOrderPayload(orderPayload);
+
         const paymobResult = await PaymobService.initiateCardPayment({
-          orderNumber: res.order.order_number,
+          orderNumber: generatedOrderNumber,
           amountEgp: orderTotal,
           customerName: fullName.trim(),
           customerEmail: email.trim(),
@@ -168,14 +224,24 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
         });
 
         if (paymobResult.iframeUrl) {
-          setPendingOrder(res.order);
+          setPaymobOrderId(paymobResult.paymobOrderId || null);
           setPaymobIframeUrl(paymobResult.iframeUrl);
+        } else if (paymobResult.isSandboxDemo) {
+          // Fallback simulation when no live Paymob credentials are configured
+          const res = await api.checkout({
+            ...orderPayload,
+            payment_method: 'card',
+            payment_status: 'paid',
+          });
+          if (res.success && res.order) {
+            clearCart();
+            onOrderSuccess(res.order);
+          } else {
+            setApiError(res.message || res.error || 'Error processing card checkout.');
+          }
         } else {
-          clearCart();
-          onOrderSuccess(res.order);
+          setApiError('Unable to connect to Paymob card gateway. Please try again or choose Cash on Delivery.');
         }
-      } else {
-        setApiError(res.message || res.error || 'Failed to place order. Please verify your details.');
       }
     } catch (err: any) {
       console.error('Order checkout exception:', err);
@@ -185,6 +251,86 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
     }
   };
 
+  // Verify and finalize Visa card payment
+  const handleVerifyAndFinalizePayment = async () => {
+    if (!pendingOrderPayload) return;
+    setIsVerifyingPayment(true);
+    setPaymentDeclinedError(null);
+
+    try {
+      const verifyRes = await PaymobService.verifyPayment({
+        paymobOrderId: paymobOrderId || undefined,
+        orderNumber: activeOrderNumber || pendingOrderPayload.order_number,
+      });
+
+      if (verifyRes.isPaid) {
+        // Genuine payment verified by Paymob!
+        const res = await api.checkout({
+          ...pendingOrderPayload,
+          order_number: activeOrderNumber,
+          payment_method: 'card',
+          payment_status: 'paid',
+        });
+
+        if (res.success && res.order) {
+          clearCart();
+          setPaymobIframeUrl(null);
+          onOrderSuccess(res.order);
+          return;
+        } else {
+          setPaymentDeclinedError(res.message || 'Payment confirmed, but order creation failed in database.');
+        }
+      } else {
+        // Payment declined or incomplete
+        const reason = verifyRes.declineReason || 'Transaction was declined by Paymob / issuing bank.';
+        setPaymentDeclinedError(
+          `Payment could not be confirmed: ${reason}. In test sandbox mode, only Paymob test cards are accepted. You can try with the test card or switch to Cash on Delivery (COD).`
+        );
+      }
+    } catch (err: any) {
+      setPaymentDeclinedError('Could not verify transaction with Paymob gateway: ' + (err.message || 'Unknown error'));
+    } finally {
+      setIsVerifyingPayment(false);
+    }
+  };
+
+  // Switch to Cash on Delivery from inside the Paymob modal
+  const handleSwitchToCodFromModal = async () => {
+    if (!pendingOrderPayload) return;
+    setIsSubmitting(true);
+    setPaymobIframeUrl(null);
+    setPaymentDeclinedError(null);
+
+    try {
+      const res = await api.checkout({
+        ...pendingOrderPayload,
+        payment_method: 'cod',
+        payment_status: 'pending',
+      });
+      if (res.success && res.order) {
+        clearCart();
+        onOrderSuccess(res.order);
+      } else {
+        setApiError('Failed to convert order to Cash on Delivery: ' + (res.message || ''));
+      }
+    } catch (err: any) {
+      setApiError(err.message || 'Failed to switch to Cash on Delivery.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Close modal without finalizing (DOES NOT navigate to Order Success)
+  const handleCloseModal = () => {
+    setPaymobIframeUrl(null);
+    setPaymentDeclinedError(null);
+    setApiError(
+      isRtl
+        ? 'تم إلغاء عملية الدفع بالفيزا ولم يتم خصم أي مبالغ. يمكنك إعادة المحاولة أو اختيار الدفع عند الاستلام.'
+        : 'Visa payment was not completed and your card was not charged. You can retry with Visa or choose Cash on Delivery (COD).'
+    );
+  };
+
   if (items.length === 0) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 bg-[#FAF7F2] text-center">
@@ -192,17 +338,19 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
           <ShoppingBag className="w-7 h-7" />
         </div>
         <h2 className="text-2xl font-serif font-normal text-[#1A1A1A] mb-2">
-          Your Shopping Bag is Empty
+          {isRtl ? 'حقيبة التسوق فارغة' : 'Your Shopping Bag is Empty'}
         </h2>
         <p className="text-sm text-[#736B63] max-w-md mb-6 font-light">
-          Explore our artisan fruit toffees before proceeding to checkout.
+          {isRtl
+            ? 'تصفح تشكيلة التوفي الفاخرة المطعمة بالفواكه الطبيعية قبل إتمام الشراء.'
+            : 'Explore our artisan fruit toffees before proceeding to checkout.'}
         </p>
         <button
           onClick={onBackToShop}
           className="btn-primary flex items-center gap-2 cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>EXPLORE THE COLLECTION</span>
+          <span>{isRtl ? 'تصفح المجموعة' : 'EXPLORE THE COLLECTION'}</span>
         </button>
       </div>
     );
@@ -218,30 +366,40 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
             className="btn-secondary text-xs flex items-center gap-2 cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>RETURN TO COLLECTION</span>
+            <span>{isRtl ? 'العودة للمتجر' : 'RETURN TO COLLECTION'}</span>
           </button>
           <div className="text-xs text-[#736B63] flex items-center gap-1.5 font-light">
             <Truck className="w-3.5 h-3.5 text-[#3C1322]" />
-            <span>Delivering across Cairo & all Egyptian governorates</span>
+            <span>{isRtl ? 'شحن لجميع محافظات جمهورية مصر العربية' : 'Delivering across Cairo & all Egyptian governorates'}</span>
           </div>
         </div>
 
-        <div className="text-center mb-12">
+        <div className="text-center mb-10">
           <span className="text-[11px] font-semibold text-[#736B63] uppercase tracking-widest block mb-2">
             TOOMAKT ATELIER
           </span>
           <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#1A1A1A] tracking-tight">
-            Checkout & Delivery
+            {isRtl ? 'إتمام الطلب والشحن' : 'Checkout & Delivery'}
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-[#736B63] font-light">
-            Crafted slowly and dispatched directly from our Cairo kitchen in protective climate boxes.
+            {isRtl
+              ? 'يتم تجهيز الطلب طازجاً في معملنا ويصلك في صناديق مبردة لحماية النكهة والملمس.'
+              : 'Crafted slowly and dispatched directly from our Cairo kitchen in protective climate boxes.'}
           </p>
         </div>
 
         {apiError && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-xs text-red-700">
-            <AlertCircle className="w-5 h-5 shrink-0 text-red-500" />
-            <span>{apiError}</span>
+          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-between gap-3 text-xs text-amber-900 shadow-xs">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 shrink-0 text-amber-600" />
+              <span>{apiError}</span>
+            </div>
+            <button
+              onClick={() => setApiError(null)}
+              className="text-amber-700 hover:text-amber-900 p-1 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
         )}
 
@@ -255,18 +413,18 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                   01
                 </div>
                 <h2 className="font-serif text-lg font-normal text-[#1A1A1A]">
-                  Customer Information
+                  {isRtl ? 'بيانات العميل' : 'Customer Information'}
                 </h2>
               </div>
 
               <div className="space-y-4">
                 <div>
                   <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
-                    Full Name *
+                    {isRtl ? 'الاسم بالكامل *' : 'Full Name *'}
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Layla Mansour"
+                    placeholder={isRtl ? 'مثال: ليلى منصور' : 'e.g. Layla Mansour'}
                     value={fullName}
                     onChange={e => setFullName(e.target.value)}
                     className={`w-full bg-[#FAF7F2] border ${
@@ -281,7 +439,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
-                      Mobile Number (Egypt) *
+                      {isRtl ? 'رقم الموبايل المصري *' : 'Mobile Number (Egypt) *'}
                     </label>
                     <input
                       type="tel"
@@ -299,7 +457,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
 
                   <div>
                     <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
-                      Email Address *
+                      {isRtl ? 'البريد الإلكتروني *' : 'Email Address *'}
                     </label>
                     <input
                       type="email"
@@ -326,10 +484,10 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                 </div>
                 <div>
                   <h2 className="font-serif text-lg font-normal text-[#1A1A1A]">
-                    Delivery Destination
+                    {isRtl ? 'عنوان التوصيل في مصر' : 'Delivery Destination'}
                   </h2>
                   <span className="text-xs text-[#736B63] font-light">
-                    Select your governorate for real-time dispatch calculation
+                    {isRtl ? 'اختر محافظتك لحساب قيمة الشحن الفعلي' : 'Select your governorate for real-time dispatch calculation'}
                   </span>
                 </div>
               </div>
@@ -339,7 +497,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                   {/* Governorate Dropdown */}
                   <div>
                     <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
-                      Governorate *
+                      {isRtl ? 'المحافظة *' : 'Governorate *'}
                     </label>
                     <select
                       value={governorate}
@@ -357,11 +515,11 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                   {/* City/District */}
                   <div>
                     <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
-                      City / District
+                      {isRtl ? 'المدينة / المنطقة' : 'City / District'}
                     </label>
                     <input
                       type="text"
-                      placeholder="e.g. Zamalek, New Cairo, Maadi"
+                      placeholder={isRtl ? 'مثال: الزمالك، المعادي، التجمع' : 'e.g. Zamalek, New Cairo, Maadi'}
                       value={city}
                       onChange={e => setCity(e.target.value)}
                       className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
@@ -372,11 +530,11 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                 {/* Street Address */}
                 <div>
                   <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
-                    Street Address *
+                    {isRtl ? 'العنوان واسم الشارع *' : 'Street Address *'}
                   </label>
                   <input
                     type="text"
-                    placeholder="Street name, landmark, or square"
+                    placeholder={isRtl ? 'اسم الشارع، علامة مميزة' : 'Street name, landmark, or square'}
                     value={streetAddress}
                     onChange={e => setStreetAddress(e.target.value)}
                     className={`w-full bg-[#FAF7F2] border ${
@@ -392,7 +550,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
-                      Building No.
+                      {isRtl ? 'رقم العمارة' : 'Building No.'}
                     </label>
                     <input
                       type="text"
@@ -404,7 +562,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
-                      Apartment / Floor
+                      {isRtl ? 'رقم الشقة / الدور' : 'Apartment / Floor'}
                     </label>
                     <input
                       type="text"
@@ -419,11 +577,11 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                 {/* Delivery Notes */}
                 <div>
                   <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
-                    Special Delivery Notes (Optional)
+                    {isRtl ? 'ملاحظات خاصة للمندوب (اختياري)' : 'Special Delivery Notes (Optional)'}
                   </label>
                   <textarea
                     rows={2}
-                    placeholder="Gate code, landmark, preferred delivery timing, etc."
+                    placeholder={isRtl ? 'كود البوابة، موعد مفضل للتوصيل، إلخ' : 'Gate code, landmark, preferred delivery timing, etc.'}
                     value={deliveryNotes}
                     onChange={e => setDeliveryNotes(e.target.value)}
                     className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
@@ -432,44 +590,70 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
               </div>
             </div>
 
-            {/* Step 3: Payment Method */}
+            {/* Step 3: Payment Method Selection (Visa / Paymob & Cash on Delivery) */}
             <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#E8E2D7] shadow-soft">
               <div className="flex items-center gap-3 mb-5 border-b border-[#E8E2D7] pb-3">
                 <div className="w-7 h-7 rounded-full bg-[#1A1A1A] text-[#FAF7F2] flex items-center justify-center font-medium text-xs">
                   03
                 </div>
-                <h2 className="font-serif text-lg font-normal text-[#1A1A1A]">
-                  Payment Method
-                </h2>
+                <div>
+                  <h2 className="font-serif text-lg font-normal text-[#1A1A1A]">
+                    {isRtl ? 'طريقة الدفع' : 'Payment Method'}
+                  </h2>
+                  <span className="text-xs text-[#736B63] font-light">
+                    {isRtl ? 'اختر طريقة الدفع المفضلة لديك' : 'Choose your preferred payment method'}
+                  </span>
+                </div>
               </div>
 
-              <div className="space-y-3.5">
-                {/* Pay with Visa / Mastercard (Paymob) */}
+              <div className="space-y-4">
+                {/* Option 1: Pay with Visa / Mastercard (Paymob) */}
                 <div
-                  className="flex flex-col p-5 rounded-2xl border-2 border-[#3C1322] bg-[#FAF7F2] shadow-soft transition-all"
+                  onClick={() => setPaymentMethod('card')}
+                  className={`p-5 rounded-2xl border-2 cursor-pointer transition-all ${
+                    paymentMethod === 'card'
+                      ? 'border-[#3C1322] bg-[#FAF7F2] shadow-sm'
+                      : 'border-[#E8E2D7] hover:border-[#1A1A1A]/30 bg-white'
+                  }`}
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[#3C1322] text-[#FAF7F2] flex items-center justify-center shrink-0 shadow-xs">
-                        <CreditCard className="w-5 h-5 text-[#FAF7F2]" />
+                    <div className="flex items-center gap-3.5">
+                      <div
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                          paymentMethod === 'card'
+                            ? 'bg-[#3C1322] text-[#FAF7F2]'
+                            : 'bg-[#FAF7F2] text-[#736B63] border border-[#E8E2D7]'
+                        }`}
+                      >
+                        <CreditCard className="w-5 h-5" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-semibold text-[#1A1A1A]">
-                            Credit / Debit Card (Visa & Mastercard)
+                            {isRtl ? 'بطاقة بنكية (فيزا وماستركارد وميزة)' : 'Credit / Debit Card (Visa & Mastercard)'}
                           </span>
-                          <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#3C1322] text-[#FAF7F2]">
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#3C1322] text-[#FAF7F2]">
                             Paymob Secure
                           </span>
                         </div>
                         <div className="text-xs text-[#736B63] font-light mt-0.5">
-                          Instant card payment powered by Paymob. Accepts Visa, Mastercard, and Meeza.
+                          {isRtl
+                            ? 'دفع فوري وآمن عبر بوابة بيموب Paymob مع تشفير 3D-Secure.'
+                            : 'Instant, seamless card payment secured by Paymob 3D-Secure.'}
                         </div>
                       </div>
                     </div>
+
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mt-1 shrink-0 ${
+                        paymentMethod === 'card' ? 'border-[#3C1322] bg-[#3C1322]' : 'border-[#C4BCB3]'
+                      }`}
+                    >
+                      {paymentMethod === 'card' && <div className="w-2 h-2 rounded-full bg-white" />}
+                    </div>
                   </div>
 
-                  {/* Card Network Logos & Security assurance */}
+                  {/* Card Network Badges */}
                   <div className="mt-4 pt-3.5 border-t border-[#E8E2D7] flex flex-wrap items-center justify-between gap-2 text-xs">
                     <div className="flex items-center gap-2">
                       <span className="px-2.5 py-1 bg-white border border-[#E8E2D7] rounded-md text-[11px] font-bold text-[#1A1F71] tracking-wider shadow-2xs">
@@ -484,8 +668,65 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                     </div>
                     <div className="flex items-center gap-1.5 text-[11px] text-[#736B63]">
                       <ShieldCheck className="w-3.5 h-3.5 text-[#3C1322]" />
-                      <span>256-bit SSL Encrypted & 3D-Secure</span>
+                      <span>{isRtl ? 'تشفير آمن 256-bit' : '256-bit SSL Encrypted & 3D-Secure'}</span>
                     </div>
+                  </div>
+                </div>
+
+                {/* Option 2: Cash on Delivery (COD) */}
+                <div
+                  onClick={() => setPaymentMethod('cod')}
+                  className={`p-5 rounded-2xl border-2 cursor-pointer transition-all ${
+                    paymentMethod === 'cod'
+                      ? 'border-[#3C1322] bg-[#FAF7F2] shadow-sm'
+                      : 'border-[#E8E2D7] hover:border-[#1A1A1A]/30 bg-white'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3.5">
+                      <div
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                          paymentMethod === 'cod'
+                            ? 'bg-[#3C1322] text-[#FAF7F2]'
+                            : 'bg-[#FAF7F2] text-[#736B63] border border-[#E8E2D7]'
+                        }`}
+                      >
+                        <Banknote className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-semibold text-[#1A1A1A]">
+                            {isRtl ? 'الدفع عند الاستلام (كاش)' : 'Cash on Delivery (COD)'}
+                          </span>
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-700 text-white">
+                            {isRtl ? 'بدون رسوم إضافية' : 'Zero Extra Fee'}
+                          </span>
+                        </div>
+                        <div className="text-xs text-[#736B63] font-light mt-0.5">
+                          {isRtl
+                            ? 'ادفع نقداً لمندوب الشحن عند استلام صندوق التوفي عند باب منزلك.'
+                            : 'Pay in cash directly to our courier when your climate-controlled parcel arrives.'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mt-1 shrink-0 ${
+                        paymentMethod === 'cod' ? 'border-[#3C1322] bg-[#3C1322]' : 'border-[#C4BCB3]'
+                      }`}
+                    >
+                      {paymentMethod === 'cod' && <div className="w-2 h-2 rounded-full bg-white" />}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-3.5 border-t border-[#E8E2D7] flex items-center justify-between text-xs text-[#736B63]">
+                    <div className="flex items-center gap-1.5 text-[11px]">
+                      <Truck className="w-3.5 h-3.5 text-[#3C1322]" />
+                      <span>{isRtl ? 'متاح لجميع محافظات مصر' : 'Available across all Egyptian governorates'}</span>
+                    </div>
+                    <span className="text-[11px] font-medium text-[#1A1A1A]">
+                      {isRtl ? 'الدفع بالجنيه المصري' : 'Exact cash in EGP requested'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -496,7 +737,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
           <div className="lg:col-span-5">
             <div className="sticky top-6 bg-white rounded-2xl p-6 sm:p-7 border border-[#E8E2D7] shadow-soft space-y-6">
               <h2 className="font-serif text-xl font-normal text-[#1A1A1A] pb-3 border-b border-[#E8E2D7]">
-                Order Summary
+                {isRtl ? 'ملخص الطلب' : 'Order Summary'}
               </h2>
 
               {/* Items List */}
@@ -528,7 +769,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                         </div>
                         <div className="flex justify-between items-center mt-1">
                           <span className="text-xs text-[#736B63]">
-                            Line Total
+                            {isRtl ? 'الإجمالي' : 'Line Total'}
                           </span>
                           <span className="text-sm font-medium text-[#1A1A1A]">
                             EGP {(Number(item.product.price) * item.quantity).toFixed(2)}
@@ -545,7 +786,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                 <div className="flex items-center gap-2">
                   <Truck className="w-4 h-4 text-[#3C1322]" />
                   <div>
-                    <span className="font-medium">{governorate} Courier</span>
+                    <span className="font-medium">{governorate} {isRtl ? 'شحن' : 'Courier'}</span>
                     <span className="text-[11px] text-[#736B63] block font-light">Est: {estimatedDelivery}</span>
                   </div>
                 </div>
@@ -555,22 +796,22 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
               {/* Price Breakdown */}
               <div className="space-y-2 text-xs text-[#736B63] pt-2 border-t border-[#E8E2D7]">
                 <div className="flex justify-between">
-                  <span>Product Subtotal</span>
+                  <span>{isRtl ? 'قيمة المنتجات' : 'Product Subtotal'}</span>
                   <span className="font-medium text-[#1A1A1A]">EGP {subtotal.toFixed(2)}</span>
                 </div>
                 {promoApplied && discountAmount > 0 && (
                   <div className="flex justify-between text-[#88C057] font-medium">
-                    <span>Discount ({promoCode || '10%'})</span>
+                    <span>{isRtl ? 'الخصم' : 'Discount'} ({promoCode || '10%'})</span>
                     <span>-EGP {discountAmount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span>Egypt Shipping ({governorate})</span>
+                  <span>{isRtl ? 'مصاريف الشحن' : 'Egypt Shipping'} ({governorate})</span>
                   <span className="font-medium text-[#1A1A1A]">EGP {shippingFee.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-base font-serif font-normal text-[#1A1A1A] pt-3 border-t border-[#E8E2D7]">
-                  <span>Total Due</span>
-                  <span className="font-medium">EGP {orderTotal.toFixed(2)}</span>
+                  <span>{isRtl ? 'المجموع النهائي' : 'Total Due'}</span>
+                  <span className="font-medium text-[#3C1322]">EGP {orderTotal.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -583,12 +824,17 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                 {isSubmitting ? (
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-[#FAF7F2] border-t-transparent rounded-full animate-spin" />
-                    <span>Connecting to Paymob...</span>
+                    <span>{isRtl ? 'جاري المعالجة...' : 'Processing Order...'}</span>
                   </div>
-                ) : (
+                ) : paymentMethod === 'card' ? (
                   <>
                     <CreditCard className="w-4 h-4" />
-                    <span>Pay with Visa · EGP {orderTotal.toFixed(2)}</span>
+                    <span>{isRtl ? `الدفع بالفيزا · ${orderTotal.toFixed(2)} ج.م` : `Proceed to Visa Payment · EGP ${orderTotal.toFixed(2)}`}</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>{isRtl ? `تأكيد الطلب (الدفع عند الاستلام) · ${orderTotal.toFixed(2)} ج.م` : `Confirm Order (Cash on Delivery) · EGP ${orderTotal.toFixed(2)}`}</span>
                   </>
                 )}
               </button>
@@ -596,44 +842,89 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
               <div className="text-[11px] text-center text-[#736B63] space-y-1 font-light">
                 <p className="flex items-center justify-center gap-1.5">
                   <Lock className="w-3.5 h-3.5 text-[#3C1322] inline" />
-                  <span>256-Bit SSL Encrypted Checkout Powered by Paymob</span>
+                  <span>
+                    {paymentMethod === 'card'
+                      ? (isRtl ? 'بوابة دفع إلكتروني مشفرة 256-bit عبر Paymob' : '256-Bit SSL Encrypted Checkout Powered by Paymob')
+                      : (isRtl ? 'الدفع نقداً عند استلام شحنتك' : 'Payment upon physical package delivery')}
+                  </span>
                 </p>
-                <p>Official order receipt & tracking details sent immediately upon payment.</p>
+                <p>
+                  {isRtl
+                    ? 'يتم إرسال إشعار فوري بتأكيد الطلب وتفاصيل المتابعة.'
+                    : 'Official order receipt & dispatch updates provided immediately.'}
+                </p>
               </div>
             </div>
           </div>
         </form>
 
         {/* ======================================================== */}
-        {/* PAYMOB SECURE VISA PAYMENT MODAL                         */}
+        {/* PAYMOB SECURE 3D-SECURE VISA PAYMENT MODAL               */}
         {/* ======================================================== */}
         {paymobIframeUrl && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-xs">
-            <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh]">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-xs">
+            <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[90vh]">
+              {/* Modal Top Header */}
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E8E2D7] bg-[#FAF7F2]">
                 <div className="flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-[#3C1322]" />
-                  <span className="font-serif text-sm font-semibold text-[#1A1A1A]">
-                    Paymob 3D-Secure Visa Payment
-                  </span>
+                  <div className="w-7 h-7 rounded-lg bg-[#3C1322] text-white flex items-center justify-center">
+                    <CreditCard className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="font-serif text-sm font-semibold text-[#1A1A1A] block">
+                      Paymob 3D-Secure Visa Payment
+                    </span>
+                    <span className="text-[11px] text-[#736B63]">
+                      Order #{activeOrderNumber} • Total: <strong className="text-[#1A1A1A]">{orderTotal.toFixed(2)} EGP</strong>
+                    </span>
+                  </div>
                 </div>
                 <button
                   type="button"
-                  onClick={() => {
-                    setPaymobIframeUrl(null);
-                    if (pendingOrder) {
-                      clearCart();
-                      onOrderSuccess(pendingOrder);
-                    }
-                  }}
-                  className="p-1 rounded-full text-[#736B63] hover:text-[#1A1A1A] hover:bg-black/5 cursor-pointer"
+                  onClick={handleCloseModal}
+                  className="p-1.5 rounded-full text-[#736B63] hover:text-[#1A1A1A] hover:bg-black/5 cursor-pointer transition-colors"
                   title="Close payment window"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="flex-1 w-full bg-[#FAF7F2]">
+              {/* Sandbox Test Card Notice Banner */}
+              <div className="bg-amber-50/90 border-b border-amber-200 px-4 py-2.5 text-xs text-amber-900 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <Info className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span>
+                    <strong>Paymob Sandbox Mode:</strong> Real bank cards are declined in test mode. Use Test Card:{' '}
+                    <code className="bg-white px-2 py-0.5 rounded border border-amber-300 font-mono font-bold text-amber-950">
+                      5123 4567 8901 2346
+                    </code>{' '}
+                    • Exp: <strong>12/28</strong> • CVV: <strong>123</strong> • OTP: <strong>1234</strong>
+                  </span>
+                </div>
+              </div>
+
+              {/* Payment Decline Notification Banner inside Modal */}
+              {paymentDeclinedError && (
+                <div className="bg-red-50 border-b border-red-200 px-4 py-3 text-xs text-red-800 flex items-start gap-2.5">
+                  <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <strong className="block font-semibold">Payment Incomplete / Declined</strong>
+                    <span>{paymentDeclinedError}</span>
+                    <div className="mt-2 flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={handleSwitchToCodFromModal}
+                        className="font-bold text-xs underline text-red-900 hover:text-black cursor-pointer"
+                      >
+                        Switch to Cash on Delivery (COD) instead
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Paymob Hosted Iframe */}
+              <div className="flex-1 w-full bg-[#FAF7F2] relative">
                 <iframe
                   src={paymobIframeUrl}
                   title="Paymob Visa Payment Gateway"
@@ -642,22 +933,44 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
                 />
               </div>
 
-              <div className="p-3.5 border-t border-[#E8E2D7] bg-white flex items-center justify-between text-xs">
-                <span className="text-[#736B63] font-light">
-                  Order #{pendingOrder?.order_number} • Total: <strong className="text-[#1A1A1A] font-semibold">{orderTotal.toFixed(2)} EGP</strong>
-                </span>
+              {/* Modal Footer with Verification and Cancel Actions */}
+              <div className="p-4 border-t border-[#E8E2D7] bg-white flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCloseModal}
+                    className="px-4 py-2 rounded-xl border border-[#E8E2D7] text-[#736B63] hover:text-[#1A1A1A] hover:bg-neutral-50 font-medium cursor-pointer transition"
+                  >
+                    Cancel & Return to Checkout
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSwitchToCodFromModal}
+                    className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-[#1A1A1A] font-medium cursor-pointer transition flex items-center gap-1.5"
+                  >
+                    <Banknote className="w-3.5 h-3.5" />
+                    <span>Pay with Cash on Delivery</span>
+                  </button>
+                </div>
+
+                {/* Primary Button: MUST VERIFY PAYMENT BEFORE ORDER SUCCESS */}
                 <button
                   type="button"
-                  onClick={() => {
-                    setPaymobIframeUrl(null);
-                    if (pendingOrder) {
-                      clearCart();
-                      onOrderSuccess(pendingOrder);
-                    }
-                  }}
-                  className="btn-primary py-2 px-5 text-xs font-medium cursor-pointer"
+                  onClick={handleVerifyAndFinalizePayment}
+                  disabled={isVerifyingPayment}
+                  className="btn-primary py-2.5 px-6 text-xs font-semibold uppercase tracking-wider flex items-center gap-2 cursor-pointer disabled:opacity-50 shadow-soft"
                 >
-                  I Completed Card Payment
+                  {isVerifyingPayment ? (
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Verifying with Paymob...</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheck className="w-4 h-4" />
+                      <span>Verify & Confirm Payment</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

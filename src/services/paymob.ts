@@ -39,19 +39,31 @@ export interface PaymobInitiateResult {
   iframeUrl?: string;
   token?: string;
   transactionId?: string;
+  paymobOrderId?: number | string;
   isSandboxDemo?: boolean;
+  message?: string;
+}
+
+export interface PaymobVerifyResult {
+  success: boolean;
+  isPaid: boolean;
+  isDeclined?: boolean;
+  status?: string;
+  declineReason?: string;
   message?: string;
 }
 
 export class PaymobService {
   // Read from Vite environment variables
   private static getConfig(): PaymobConfig {
+    const rawCardId = import.meta.env.VITE_PAYMOB_CARD_INTEGRATION_ID || '5963962';
+    const rawIframeId = import.meta.env.VITE_PAYMOB_IFRAME_ID || '1084110';
     return {
       apiKey: import.meta.env.VITE_PAYMOB_API_KEY || '',
       publicKey: import.meta.env.VITE_PAYMOB_PUBLIC_KEY || '',
       secretKey: import.meta.env.VITE_PAYMOB_SECRET_KEY || '',
-      cardIntegrationId: import.meta.env.VITE_PAYMOB_CARD_INTEGRATION_ID || '',
-      iframeId: import.meta.env.VITE_PAYMOB_IFRAME_ID || '',
+      cardIntegrationId: String(rawCardId).replace(/[^0-9]/g, '') || '5963962',
+      iframeId: String(rawIframeId).replace(/[^0-9]/g, '') || '1084110',
       hmacSecret: import.meta.env.VITE_PAYMOB_HMAC_SECRET || '',
     };
   }
@@ -136,6 +148,7 @@ export class PaymobService {
             paymentUrl: unifiedUrl,
             iframeUrl: unifiedUrl,
             token: clientSecret,
+            paymobOrderId: intentionData.intention_order?.id || intentionData.id,
           };
         }
       } catch (err: any) {
@@ -207,6 +220,7 @@ export class PaymobService {
           paymentUrl: iframeUrl,
           iframeUrl,
           token: paymentToken,
+          paymobOrderId,
         };
       } catch (err: any) {
         console.error('Paymob Classic API error:', err);
@@ -214,13 +228,78 @@ export class PaymobService {
     }
 
     // 4. Safe Simulation Mode (when awaiting credentials from user)
-    // Allows testing checkout flow seamlessly without failing or crashing
     const mockRef = `PAYMOB-VISA-${Math.floor(100000 + Math.random() * 900000)}`;
     return {
       success: true,
       isSandboxDemo: true,
       transactionId: mockRef,
       message: 'Paymob Visa payment processed in demo mode. Ready for live credentials.',
+    };
+  }
+
+  /**
+   * Verifies the status of a Paymob payment before finalizing an order.
+   * Ensures Order Success is NEVER shown unless payment is genuinely approved.
+   */
+  public static async verifyPayment(params: {
+    paymobOrderId?: number | string;
+    orderNumber?: string;
+  }): Promise<PaymobVerifyResult> {
+    // 1. Try serverless verification endpoint first (/api/paymob-verify)
+    try {
+      const response = await fetch('/api/paymob-verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      }
+    } catch {
+      // Backend route unreachable -> proceed to direct check
+    }
+
+    const config = this.getConfig();
+
+    // 2. Direct client verification with Paymob API if API Key is available
+    if (config.apiKey && params.paymobOrderId) {
+      try {
+        const authRes = await fetch('https://accept.paymob.com/api/auth/tokens', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ api_key: config.apiKey }),
+        });
+        const authData = await authRes.json();
+        const token = authData.token;
+
+        if (token) {
+          const orderRes = await fetch(`https://accept.paymob.com/api/ecommerce/orders/${params.paymobOrderId}`, {
+            headers: { 'Authorization': `Bearer ${token}` },
+          });
+          if (orderRes.ok) {
+            const orderData = await orderRes.json();
+            const isPaid = (orderData.paid_amount_cents && Number(orderData.paid_amount_cents) > 0) || orderData.payment_status === 'PAID';
+            return {
+              success: true,
+              isPaid,
+              status: orderData.payment_status,
+              isDeclined: !isPaid && orderData.payment_status !== 'UNPAID',
+              message: isPaid ? 'Payment verified successfully.' : 'Payment is pending or unpaid.',
+            };
+          }
+        }
+      } catch (err: any) {
+        console.error('Direct Paymob verification error:', err);
+      }
+    }
+
+    return {
+      success: false,
+      isPaid: false,
+      status: 'UNVERIFIED',
+      message: 'Could not verify payment status with Paymob gateway.',
     };
   }
 }
