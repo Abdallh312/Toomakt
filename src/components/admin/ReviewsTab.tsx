@@ -158,7 +158,14 @@ export const ReviewsTab: React.FC<ReviewsTabProps> = ({
                   : 'bg-[#FAF7F2] border-[#E8E2D7] text-[#736B63]'
               }`}
             >
-              {val === 'all' ? 'All' : `${val} ★`}
+              {val === 'all' ? (
+                'All'
+              ) : (
+                <span className="inline-flex items-center gap-1">
+                  <span>{val}</span>
+                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -320,9 +327,9 @@ export const ReviewsTab: React.FC<ReviewsTabProps> = ({
                     onChange={(e) => setRating(e.target.value)}
                     className="w-full text-xs bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#1A1A1A]"
                   >
-                    <option value="5">5 ★★★★★ (Exceptional)</option>
-                    <option value="4">4 ★★★★☆ (Very Good)</option>
-                    <option value="3">3 ★★★☆☆ (Average)</option>
+                    <option value="5">5 Stars (Exceptional)</option>
+                    <option value="4">4 Stars (Very Good)</option>
+                    <option value="3">3 Stars (Average)</option>
                   </select>
                 </div>
               </div>

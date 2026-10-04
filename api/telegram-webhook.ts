@@ -97,18 +97,18 @@ export default async function handler(req: any, res: any) {
           });
 
           const statusArabic = newStatus === 'processing' 
-            ? 'قيد التجهيز في المعمل 👨‍🍳' 
-            : (newStatus === 'shipped' ? 'تم الشحن مع المندوب 🚚' : newStatus);
+            ? 'قيد التجهيز في المعمل' 
+            : (newStatus === 'shipped' ? 'تم الشحن مع المندوب' : newStatus);
 
           await sendTelegram('answerCallbackQuery', {
             callback_query_id: cqId,
-            text: `✅ تم تحديث الطلب #${orderNum} إلى: ${newStatus.toUpperCase()}`,
+            text: `[CONFIRMED] تم تحديث الطلب #${orderNum} إلى: ${newStatus.toUpperCase()}`,
             show_alert: true,
           });
 
           await sendTelegram('sendMessage', {
             chat_id: chatId,
-            text: `📌 <b>تحديث حالة طلب:</b>\nالطلب <code>#${orderNum}</code> أصبح الآن: <b>${statusArabic}</b> بواسطة ${fromUser.first_name || 'Admin'}`,
+            text: `<b>تحديث حالة طلب:</b>\nالطلب <code>#${orderNum}</code> أصبح الآن: <b>${statusArabic}</b> بواسطة ${fromUser.first_name || 'Admin'}`,
             parse_mode: 'HTML',
           });
           return res.status(200).json({ ok: true });
@@ -141,21 +141,21 @@ export default async function handler(req: any, res: any) {
         AUTHORIZED_ADMIN_IDS.add(userId);
         await sendTelegram('sendMessage', {
           chat_id: chatId,
-          text: `🎉 <b>تم التوثيق والاعتماد بنجاح! | Authentication Verified</b>\n` +
+          text: `<b>[AUTHENTICATION VERIFIED] | تم التوثيق بنجاح</b>\n` +
             `━━━━━━━━━━━━━━━━━━━\n` +
-            `👑 أهلاً بك يا <b>${fullName}</b> كمسؤول معتمد في معمل <b>toomakt</b>.\n` +
-            `✅ حسابك (ID: <code>${userId}</code>) أصبح مفعلاً الآن.\n\n` +
-            `📋 <b>الأوامر المتاحة لك:</b>\n` +
-            `📦 <code>/orders</code> — أحدث الطلبات المستلمة\n` +
-            `📊 <code>/stats</code> — ملخص مبيعات المتجر\n` +
-            `ℹ️ <code>/help</code> — قائمة التعليمات الكاملة`,
+            `أهلاً بك يا <b>${fullName}</b> كمسؤول معتمد في معمل <b>toomakt</b>.\n` +
+            `حسابك (ID: <code>${userId}</code>) أصبح مفعلاً الآن.\n\n` +
+            `<b>الأوامر المتاحة لك:</b>\n` +
+            `• <code>/orders</code> — أحدث الطلبات المستلمة\n` +
+            `• <code>/stats</code> — ملخص مبيعات المتجر\n` +
+            `• <code>/help</code> — قائمة التعليمات الكاملة`,
           parse_mode: 'HTML',
         });
         return res.status(200).json({ ok: true });
       } else {
         await sendTelegram('sendMessage', {
           chat_id: chatId,
-          text: `❌ <b>رمز الاعتماد غير صحيح!</b>\nيرجى كتابة: <code>/auth ${AUTH_SECRET}</code>`,
+          text: `[ERROR] رمز الاعتماد غير صحيح!\nيرجى كتابة: <code>/auth ${AUTH_SECRET}</code>`,
           parse_mode: 'HTML',
         });
         return res.status(200).json({ ok: true });
@@ -166,19 +166,19 @@ export default async function handler(req: any, res: any) {
     if (text.startsWith('/start') || text.startsWith('/help')) {
       await sendTelegram('sendMessage', {
         chat_id: chatId,
-        text: `✨ <b>مرحباً بك في بوت إدارة معمل toomakt 🍫</b>\n` +
+        text: `<b>[TOOMAKT ATELIER ADMIN CONSOLE]</b>\n` +
           `━━━━━━━━━━━━━━━━━━━\n` +
           `هذا البوت يعمل <b>24 ساعة سحابياً على Vercel</b> لإشعارك وإدارتك للطلبات والمبيعات فورياً.\n\n` +
-          `📋 <b>الأوامر المتاحة:</b>\n` +
-          `📦 <code>/orders</code> — عرض أحدث الطلبات المسجلة\n` +
-          `📊 <code>/stats</code> — إحصائيات المبيعات والأرباح اليوم\n` +
-          `🔍 <code>/order TM-XXXXX</code> — تفاصيل طلب محدد\n` +
-          `🔑 <code>/auth toomakt2026</code> — تأكيد هوية المسؤول`,
+          `<b>الأوامر المتاحة:</b>\n` +
+          `• <code>/orders</code> — عرض أحدث الطلبات المسجلة\n` +
+          `• <code>/stats</code> — إحصائيات المبيعات والأرباح اليوم\n` +
+          `• <code>/order TM-XXXXX</code> — تفاصيل طلب محدد\n` +
+          `• <code>/auth toomakt2026</code> — تأكيد هوية المسؤول`,
         parse_mode: 'HTML',
         reply_markup: {
           keyboard: [
-            [{ text: '📦 أحدث الطلبات /orders' }, { text: '📊 إحصائيات المتجر /stats' }],
-            [{ text: '🌐 زيارة المتجر toomakt.com' }]
+            [{ text: 'أحدث الطلبات /orders' }, { text: 'إحصائيات المتجر /stats' }],
+            [{ text: 'زيارة المتجر toomakt.com' }]
           ],
           resize_keyboard: true
         }
@@ -192,25 +192,23 @@ export default async function handler(req: any, res: any) {
       if (!orders || orders.length === 0) {
         await sendTelegram('sendMessage', {
           chat_id: chatId,
-          text: `📭 <b>لا توجد طلبات مسجلة حتى الآن.</b>`,
+          text: `[NOTICE] لا توجد طلبات مسجلة حتى الآن.`,
           parse_mode: 'HTML',
         });
         return res.status(200).json({ ok: true });
       }
 
-      let msg = `📦 <b>أحدث ${orders.length} طلبات في المتجر:</b>\n━━━━━━━━━━━━━━━━━━━\n\n`;
+      let msg = `<b>[DISPATCH REPORT] أحدث ${orders.length} طلبات في المتجر:</b>\n━━━━━━━━━━━━━━━━━━━\n\n`;
       for (const ord of orders) {
-        const statusIcon = ord.status === 'delivered' ? '✅' : (ord.status === 'processing' ? '👨‍🍳' : '⏳');
+        const statusLabel = ord.status === 'delivered' ? '[Delivered]' : (ord.status === 'processing' ? '[In Kitchen]' : '[Pending]');
         const phone = ord.customer_phone || '';
-        const cleanPhone = phone.replace(/\D/g, '');
-        const waPhone = cleanPhone.startsWith('20') ? cleanPhone : (cleanPhone.startsWith('0') ? '20' + cleanPhone.slice(1) : '20' + cleanPhone);
 
-        msg += `🏷️ <b>الطلب:</b> <code>#${ord.order_number}</code>\n` +
-          `👤 <b>العميل:</b> ${ord.customer_name}\n` +
-          `📞 <b>الهاتف:</b> <code>${phone}</code>\n` +
-          `💰 <b>الإجمالي:</b> <b>${Number(ord.total_amount).toFixed(2)} EGP</b>\n` +
-          `📍 <b>المحافظة:</b> ${ord.governorate || 'القاهرة'}\n` +
-          `📊 <b>الحالة:</b> ${statusIcon} <i>${ord.status}</i>\n` +
+        msg += `<b>الطلب:</b> <code>#${ord.order_number}</code>\n` +
+          `• <b>العميل:</b> ${ord.customer_name}\n` +
+          `• <b>الهاتف:</b> <code>${phone}</code>\n` +
+          `• <b>الإجمالي:</b> <b>${Number(ord.total_amount).toFixed(2)} EGP</b>\n` +
+          `• <b>المحافظة:</b> ${ord.governorate || 'القاهرة'}\n` +
+          `• <b>الحالة:</b> <i>${statusLabel}</i>\n` +
           `━━━━━━━━━━━━━━━━━━━\n\n`;
       }
 
@@ -233,15 +231,15 @@ export default async function handler(req: any, res: any) {
       const processingCount = ordersList.filter((o: any) => o.status === 'processing').length;
       const deliveredCount = ordersList.filter((o: any) => o.status === 'delivered').length;
 
-      const statsMsg = `📊 <b>إحصائيات معمل toomakt:</b>\n` +
+      const statsMsg = `<b>[FINANCIAL REPORT] إحصائيات معمل toomakt:</b>\n` +
         `━━━━━━━━━━━━━━━━━━━\n` +
-        `📦 <b>إجمالي عدد الطلبات:</b> <code>${totalCount}</code> طلب\n` +
-        `💰 <b>إجمالي الإيرادات:</b> <b><u>${totalRevenue.toFixed(2)} EGP</u></b>\n\n` +
-        `⏳ <b>طلبات قيد الانتظار:</b> <code>${pendingCount}</code>\n` +
-        `👨‍🍳 <b>طلبات قيد التجهيز:</b> <code>${processingCount}</code>\n` +
-        `✅ <b>طلبات تم تسليمها:</b> <code>${deliveredCount}</code>\n` +
+        `• إجمالي عدد الطلبات: <code>${totalCount}</code> طلب\n` +
+        `• إجمالي الإيرادات: <b><u>${totalRevenue.toFixed(2)} EGP</u></b>\n\n` +
+        `• طلبات قيد الانتظار: <code>${pendingCount}</code>\n` +
+        `• طلبات قيد التجهيز: <code>${processingCount}</code>\n` +
+        `• طلبات تم تسليمها: <code>${deliveredCount}</code>\n` +
         `━━━━━━━━━━━━━━━━━━━\n` +
-        `🚀 <i>البيانات محدثة في الوقت الفعلي من قاعدة بيانات Supabase.</i>`;
+        `<i>البيانات محدثة في الوقت الفعلي من قاعدة بيانات Supabase.</i>`;
 
       await sendTelegram('sendMessage', {
         chat_id: chatId,
@@ -254,7 +252,7 @@ export default async function handler(req: any, res: any) {
     // General fallback
     await sendTelegram('sendMessage', {
       chat_id: chatId,
-      text: `🤖 أمر غير معروف. استخدم <code>/orders</code> لعرض الطلبات أو <code>/stats</code> للإحصائيات.`,
+      text: `أمر غير معروف. استخدم <code>/orders</code> لعرض الطلبات أو <code>/stats</code> للإحصائيات.`,
       parse_mode: 'HTML',
     });
 

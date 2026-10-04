@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Star, ShieldCheck, ZoomIn, X } from 'lucide-react';
+import { Star, ShieldCheck, ZoomIn, X, Check } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { REVIEWS } from '../data/toomaktData';
 import { ScrollReveal } from './ScrollReveal';
@@ -109,10 +109,10 @@ export const ReviewsSection: React.FC = () => {
                     ? 'كل رسالة شكر وملاحظة من عملائنا تلهمنا لنستمر في صنع دفعاتنا بالصبر والحرص ذاتهما.'
                     : 'Every WhatsApp note, tagged unboxing, and repeat order fuels our kitchen to keep crafting each batch with the same meticulous care.'}
                 </p>
-                <div className="flex flex-wrap gap-4 text-xs text-[#1A1A1A] font-medium">
-                  <div>✓ {isRtl ? 'توصيل خلال 24-48 ساعة' : '24-48h Delivery'}</div>
-                  <div>✓ {isRtl ? 'تغليف حراري واقٍ' : 'Climate-Packaged'}</div>
-                  <div>✓ {isRtl ? 'دفع عند الاستلام' : 'Pay on Delivery'}</div>
+                <div className="flex flex-wrap gap-4 text-xs text-[#1A1A1A] dark:text-[#FAF5EE] font-medium">
+                  <div className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#FFD147]" /> {isRtl ? 'توصيل خلال 24-48 ساعة' : '24-48h Delivery'}</div>
+                  <div className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#FFD147]" /> {isRtl ? 'تغليف حراري واقٍ' : 'Climate-Packaged'}</div>
+                  <div className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#FFD147]" /> {isRtl ? 'دفع عند الاستلام' : 'Pay on Delivery'}</div>
                 </div>
               </div>
 

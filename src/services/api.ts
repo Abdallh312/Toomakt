@@ -1036,23 +1036,23 @@ export const api = {
         const waPhone = cleanPhone.startsWith('20') ? cleanPhone : (cleanPhone.startsWith('0') ? '20' + cleanPhone.slice(1) : '20' + cleanPhone);
         const itemsText = (orderData.items || []).map((i: any) => `  ▫️ <b>${i.quantity || 1}x</b> ${i.name || 'Confection'} — <code>${(Number(i.unit_price || 16) * Number(i.quantity || 1)).toFixed(2)} EGP</code>`).join('\n');
 
-        const msg = `🎉 <b>NEW ORDER RECEIVED! | طلب جديد</b>\n` +
+        const msg = `<b>[NEW ORDER DISPATCH] | طلب جديد</b>\n` +
           `━━━━━━━━━━━━━━━━━━━\n` +
-          `🏷️ <b>Order Number:</b> <code>#${orderNumber}</code>\n` +
-          `👤 <b>Customer:</b> <b>${orderData.customer_name}</b>\n` +
-          `📞 <b>Phone:</b> <code>${rawPhone}</code>\n` +
-          `✉️ <b>Email:</b> <code>${orderData.customer_email}</code>\n\n` +
-          `📦 <b>ORDER ITEMS:</b>\n${itemsText || '  ▫️ Order Confections'}\n\n` +
-          `💰 <b>FINANCIALS:</b>\n` +
+          `<b>Order Number:</b> <code>#${orderNumber}</code>\n` +
+          `<b>Customer:</b> <b>${orderData.customer_name}</b>\n` +
+          `<b>Phone:</b> <code>${rawPhone}</code>\n` +
+          `<b>Email:</b> <code>${orderData.customer_email}</code>\n\n` +
+          `<b>ORDER ITEMS:</b>\n${itemsText || '  - Order Confections'}\n\n` +
+          `<b>FINANCIALS:</b>\n` +
           `  • Subtotal: <code>${subtotal.toFixed(2)} EGP</code>\n` +
           `  • Shipping: <code>${shippingFee.toFixed(2)} EGP</code>\n` +
           `  • <b>TOTAL AMOUNT:</b> <b><u>${totalAmount.toFixed(2)} EGP</u></b>\n\n` +
-          `💳 <b>Payment:</b> 💵 <b>${(orderData.payment_method || 'COD').toUpperCase()}</b>\n\n` +
-          `🚚 <b>DELIVERY DESTINATION:</b>\n` +
-          `📍 <b>Governorate:</b> ${orderData.governorate || 'Cairo'}\n` +
-          `🏠 <b>Address:</b> ${orderData.shipping_address}\n` +
+          `<b>Payment:</b> <b>${(orderData.payment_method || 'COD').toUpperCase()}</b>\n\n` +
+          `<b>DELIVERY DESTINATION:</b>\n` +
+          `• Governorate: ${orderData.governorate || 'Cairo'}\n` +
+          `• Address: ${orderData.shipping_address}\n` +
           `━━━━━━━━━━━━━━━━━━━\n` +
-          `👨‍🍳 <i>Admin: Prepare packaging in atelier!</i>`;
+          `<i>Status: Pending atelier preparation</i>`;
 
         const tgPayload: any = {
           chat_id: '1686960840',
@@ -1062,7 +1062,7 @@ export const api = {
         if (waPhone) {
           tgPayload.reply_markup = {
             inline_keyboard: [
-              [{ text: `💬 WhatsApp Customer (${rawPhone})`, url: `https://wa.me/${waPhone}` }]
+              [{ text: `WhatsApp Customer (${rawPhone})`, url: `https://wa.me/${waPhone}` }]
             ]
           };
         }

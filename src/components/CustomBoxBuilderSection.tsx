@@ -194,8 +194,18 @@ export const CustomBoxBuilderSection: React.FC = () => {
                       }}
                     >
                       <div className="flex items-center justify-between w-full mb-1">
-                        <span className="text-[10px] font-mono font-bold text-[#1F1127]">
-                          {isSelected ? '✓ IN BOX' : '+ ADD'}
+                        <span className="text-[10px] font-mono font-bold text-[#1F1127] inline-flex items-center gap-1">
+                          {isSelected ? (
+                            <>
+                              <Check className="w-3 h-3" />
+                              <span>IN BOX</span>
+                            </>
+                          ) : (
+                            <>
+                              <Plus className="w-3 h-3" />
+                              <span>ADD</span>
+                            </>
+                          )}
                         </span>
                       </div>
                       <span className="text-xs font-display font-black text-[#1F1127] uppercase leading-tight line-clamp-1">

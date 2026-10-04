@@ -584,55 +584,55 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
     const address = [ord.shipping_address, ord.city || ord.shipping_city, ord.governorate].filter(Boolean).join(', ');
 
     const invoiceText = isRtl
-      ? `✨ *مخبز وحلويات توماكت الفاخرة | TOOMAKT ATELIER* ✨
+      ? `*TOOMAKT ATELIER | معمل حلويات توماكت الفاخرة*
 ━━━━━━━━━━━━━━━━━━━━
-📄 *فاتورة طلبية رسمية وتأكيد الشحن*
+*فاتورة طلبية رسمية وتأكيد الشحن*
 رقم الطلب: *#${ord.order_number}*
 التاريخ: ${dateStr}
 
-👤 *بيانات العميل:*
+*بيانات العميل:*
 • الاسم: *${ord.customer_name}*
 • رقم الهاتف: ${ord.customer_phone}
 • العنوان: ${address || 'مصر'}
 
-📦 *المنتجات المطلوبة:*
+*المنتجات المطلوبة:*
 ${itemsSummary}
 
 ━━━━━━━━━━━━━━━━━━━━
-💰 *الملخص المالي:*
+*الملخص المالي:*
 • الإجمالي الفرعي: ${ord.subtotal ? `${ord.subtotal} ج.م` : `${ord.total_amount} ج.م`}
 • رسوم التوصيل (${ord.governorate || 'القاهرة'}): ${ord.shipping_fee ? `${ord.shipping_fee} ج.م` : 'شحن مجاني'}
 • *الإجمالي النهائي المطلوب:* *${ord.total_amount} ج.م*
 • طريقة الدفع: *${ord.payment_method?.toUpperCase() || 'الدفع عند الاستلام (COD)'}*
-• حالة السداد: *${ord.payment_status === 'paid' ? 'تم الدفع بنجاح ✅' : 'قيد المتابعة / الدفع عند الاستلام'}*
+• حالة السداد: *${ord.payment_status === 'paid' ? 'تم الدفع بنجاح [معتمد]' : 'قيد المتابعة / الدفع عند الاستلام'}*
 • حالة الطلبية: *${ord.status || 'قيد المعالجة والتجهيز'}*
 ━━━━━━━━━━━━━━━━━━━━
-🚚 يتم تجهيز الحلوى الحرفية في أواني النحاس مع شحن مبرد ومحكم حرارياً.
+يتم تجهيز الحلوى الحرفية في أواني النحاس مع شحن مبرد ومحكم حرارياً.
 نشكركم على اختيار توماكت! نسعد بخدمتكم دائماً.`
-      : `✨ *TOOMAKT CONFECTIONERY ATELIER* ✨
+      : `*TOOMAKT CONFECTIONERY ATELIER*
 ━━━━━━━━━━━━━━━━━━━━
-📄 *OFFICIAL ORDER INVOICE & DISPATCH RECEIPT*
+*OFFICIAL ORDER INVOICE & DISPATCH RECEIPT*
 Order Number: *#${ord.order_number}*
 Date: ${dateStr}
 
-👤 *Customer Details:*
+*Customer Details:*
 • Name: *${ord.customer_name}*
 • Phone: ${ord.customer_phone}
 • Delivery Address: ${address || 'Egypt'}
 
-📦 *Items Ordered:*
+*Items Ordered:*
 ${itemsSummary}
 
 ━━━━━━━━━━━━━━━━━━━━
-💰 *Financial Breakdown:*
+*Financial Breakdown:*
 • Subtotal: ${ord.subtotal ? `${ord.subtotal} EGP` : `${ord.total_amount} EGP`}
 • Delivery Fee (${ord.governorate || 'Cairo'}): ${ord.shipping_fee ? `${ord.shipping_fee} EGP` : 'Complimentary'}
 • *Total Due:* *${ord.total_amount} EGP*
 • Payment Method: *${ord.payment_method?.toUpperCase() || 'Cash on Delivery (COD)'}*
-• Payment Status: *${ord.payment_status === 'paid' ? 'Verified Paid ✅' : 'Pending / Cash on Delivery'}*
+• Payment Status: *${ord.payment_status === 'paid' ? 'Verified Paid [Confirmed]' : 'Pending / Cash on Delivery'}*
 • Fulfillment Status: *${ord.status?.toUpperCase() || 'PREPARING'}*
 ━━━━━━━━━━━━━━━━━━━━
-🚚 Hand-pulled in copper cauldrons with European cultured butter and real orchard fruits, packaged in insulated cooler bags.
+Hand-pulled in copper cauldrons with European cultured butter and real orchard fruits, packaged in insulated cooler bags.
 Thank you for choosing toomakt!`;
 
     const url = `https://wa.me/${phoneWithCountry}?text=${encodeURIComponent(invoiceText)}`;

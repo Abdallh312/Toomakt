@@ -61,27 +61,27 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
   });
 
   return (
-    <div className="bg-[#FAF7F2] text-[#1A1A1A] min-h-screen">
+    <div className="bg-[#FAF7F2] dark:bg-[#0C080A] text-[#1A1A1A] dark:text-[#FAF5EE] min-h-screen transition-colors duration-300">
       
       {/* Editorial Header (Figma Frame 4) */}
-      <section className="pt-10 pb-12 px-4 sm:px-6 lg:px-8 border-b border-[#E8E2D7] bg-[#FAF7F2]">
+      <section className="pt-10 pb-12 px-4 sm:px-6 lg:px-8 border-b border-[#E8E2D7] dark:border-[#2A1622] bg-[#FAF7F2] dark:bg-[#0C080A]">
         <div className="max-w-7xl mx-auto">
           {/* Breadcrumbs */}
-          <div className="flex items-center gap-2 text-xs font-mono text-[#736B63] uppercase tracking-wider mb-4">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#736B63] dark:text-[#A89C90] uppercase tracking-wider mb-4">
             <button
               onClick={onNavigateHome}
-              className="hover:text-[#1A1A1A] transition-colors cursor-pointer"
+              className="hover:text-[#1A1A1A] dark:hover:text-[#FFD147] transition-colors cursor-pointer"
             >
               TOOMAKT
             </button>
             <span>/</span>
-            <span className="text-[#1A1A1A] font-semibold">COLLECTION</span>
+            <span className="text-[#1A1A1A] dark:text-[#FAF5EE] font-semibold">COLLECTION</span>
           </div>
 
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-normal text-[#1A1A1A] tracking-tight mb-3">
+          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-normal text-[#1A1A1A] dark:text-[#FAF5EE] tracking-tight mb-3">
             {isRtl ? 'المجموعة الحرفية' : 'The collection'}
           </h1>
-          <p className="text-base sm:text-lg text-[#736B63] font-light max-w-xl">
+          <p className="text-base sm:text-lg text-[#736B63] dark:text-[#B5A99D] font-light max-w-xl">
             {isRtl
               ? 'حلوى التوفي بالفواكه الطبيعية، مصنوعة يدوياً في دفعات صغيرة.'
               : 'Fruit-led toffee, made in small batches.'}
@@ -90,7 +90,7 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
       </section>
 
       {/* Filter & Controls Bar */}
-      <section className="sticky top-16 z-30 bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#E8E2D7] py-4 px-4 sm:px-6 lg:px-8">
+      <section className="sticky top-16 z-30 bg-[#FAF7F2]/95 dark:bg-[#0C080A]/95 backdrop-blur-md border-b border-[#E8E2D7] dark:border-[#2A1622] py-4 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           
           {/* Category Pills */}
@@ -113,13 +113,13 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
           <div className="flex items-center gap-3">
             {/* Search Input */}
             <div className="relative flex-1 sm:w-56">
-              <Search className="w-3.5 h-3.5 text-[#736B63] absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-3.5 h-3.5 text-[#736B63] dark:text-[#A89C90] absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={isRtl ? 'تصفية...' : 'Filter collection...'}
-                className="w-full text-xs pl-8 pr-3 rtl:pl-3 rtl:pr-8 py-2 rounded-full border border-[#E8E2D7] bg-white focus:outline-none focus:border-[#1A1A1A] transition-colors"
+                className="w-full text-xs pl-8 pr-3 rtl:pl-3 rtl:pr-8 py-2 rounded-full border border-[#E8E2D7] dark:border-[#38212E] bg-white dark:bg-[#181014] text-[#1A1A1A] dark:text-[#FAF5EE] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#FFD147] transition-colors"
               />
             </div>
 
@@ -129,7 +129,7 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 aria-label={isRtl ? 'ترتيب المنتجات' : 'Sort products'}
-                className="text-xs px-3.5 py-2 rounded-full border border-[#E8E2D7] bg-white text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A] transition-colors cursor-pointer"
+                className="text-xs px-3.5 py-2 rounded-full border border-[#E8E2D7] dark:border-[#38212E] bg-white dark:bg-[#181014] text-[#1A1A1A] dark:text-[#FAF5EE] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#FFD147] transition-colors cursor-pointer"
               >
                 <option value="featured">{isRtl ? 'المميز أولاً' : 'Featured'}</option>
                 <option value="price-asc">{isRtl ? 'السعر: من الأقل للأعلى' : 'Price: Low to High'}</option>

@@ -12,7 +12,8 @@ import {
   Building2,
   Gift,
   ArrowLeft,
-  Sparkles
+  Sparkles,
+  Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
@@ -370,7 +371,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
                         <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
                           isChecked ? 'bg-[#3C1322] border-[#3C1322] text-[#FAF7F2]' : 'border-[#E8E2D7]'
                         }`}>
-                          {isChecked && <span className="text-[10px]">✓</span>}
+                          {isChecked && <Check className="w-2.5 h-2.5" />}
                         </div>
                       </div>
                     );

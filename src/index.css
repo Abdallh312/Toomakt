@@ -267,51 +267,53 @@ html[dir="rtl"] .font-serif {
 /* =========================================================================
    COMPREHENSIVE DARK MODE CLASS MAPPINGS (NO FLASHES, NO BROKEN CONTRAST)
    ========================================================================= */
-html.dark .bg-white {
+html.dark .bg-white,
+html.dark [class*="bg-white"] {
   background-color: #150F13 !important;
 }
 
-html.dark .bg-\[\#FAF7F2\] {
+html.dark [class*="bg-[#FAF7F2]"] {
   background-color: #0C080A !important;
 }
 
-html.dark .bg-\[\#F4EFEA\],
-html.dark .bg-\[\#F4EFEA\]\/80 {
+html.dark [class*="bg-[#FAF7F2]/"] {
+  background-color: rgba(12, 8, 10, 0.95) !important;
+}
+
+html.dark [class*="bg-[#F4EFEA]"] {
   background-color: #1E141B !important;
 }
 
-html.dark .bg-\[\#FDFBF7\] {
+html.dark [class*="bg-[#FDFBF7]"] {
   background-color: #150F13 !important;
 }
 
-html.dark .bg-\[\#EAE3D2\] {
+html.dark [class*="bg-[#EAE3D2]"] {
   background-color: #261922 !important;
 }
 
-html.dark .bg-\[\#F5F0E6\] {
+html.dark [class*="bg-[#F5F0E6]"] {
   background-color: #21151E !important;
 }
 
-html.dark .border-\[\#E8E2D7\],
-html.dark .border-\[\#E8E2D7\]\/60,
-html.dark .border-\[\#E8E2D7\]\/50 {
+html.dark [class*="border-[#E8E2D7]"] {
   border-color: #341F2B !important;
 }
 
-html.dark .border-\[\#D6CCC0\],
-html.dark .border-\[\#CFC5B6\] {
+html.dark [class*="border-[#D6CCC0]"],
+html.dark [class*="border-[#CFC5B6]"] {
   border-color: #4D2E3F !important;
 }
 
-html.dark .text-\[\#1A1A1A\] {
+html.dark [class*="text-[#1A1A1A]"] {
   color: #FAF5EE !important;
 }
 
-html.dark .text-\[\#736B63\] {
+html.dark [class*="text-[#736B63]"] {
   color: #B5A99D !important;
 }
 
-html.dark .text-\[\#9B938A\] {
+html.dark [class*="text-[#9B938A]"] {
   color: #8C8075 !important;
 }
 

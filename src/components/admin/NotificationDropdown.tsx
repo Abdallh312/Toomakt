@@ -180,27 +180,31 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
               }`}
             >
               {[
-                { id: 'all', label: 'All' },
-                { id: 'orders', label: 'Orders 📦' },
-                { id: 'payments', label: 'Payments 💳' },
-                { id: 'system', label: 'Alerts ⚠️' },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition cursor-pointer shrink-0 ${
-                    activeTab === tab.id
-                      ? isDark
-                        ? 'bg-[#FFD147] text-[#1A1A1A] font-bold shadow-xs'
-                        : 'bg-[#3C1322] text-white font-bold shadow-xs'
-                      : isDark
-                      ? 'text-[#A69A8E] hover:bg-[#281A22]'
-                      : 'text-[#736B63] hover:bg-[#EAE3D2]'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
+                { id: 'all', label: 'All', icon: null },
+                { id: 'orders', label: 'Orders', icon: ShoppingBag },
+                { id: 'payments', label: 'Payments', icon: CreditCard },
+                { id: 'system', label: 'Alerts', icon: AlertTriangle },
+              ].map((tab) => {
+                const TabIcon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium transition cursor-pointer shrink-0 ${
+                      activeTab === tab.id
+                        ? isDark
+                          ? 'bg-[#FFD147] text-[#1A1A1A] font-bold shadow-xs'
+                          : 'bg-[#3C1322] text-white font-bold shadow-xs'
+                        : isDark
+                        ? 'text-[#A69A8E] hover:bg-[#281A22]'
+                        : 'text-[#736B63] hover:bg-[#EAE3D2]'
+                    }`}
+                  >
+                    {TabIcon && <TabIcon className="w-3 h-3" />}
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Notification List */}

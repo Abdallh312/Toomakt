@@ -16,7 +16,19 @@ import {
   Eye,
   Save,
   CheckCircle2,
-  Server
+  Server,
+  Truck,
+  Package,
+  Sparkles,
+  Tag,
+  Folder,
+  Gift,
+  CreditCard,
+  Ticket,
+  Star,
+  Settings,
+  Mail,
+  Bell
 } from 'lucide-react';
 import { api } from '../../services/api';
 
@@ -27,18 +39,18 @@ interface DatabaseControlTabProps {
 }
 
 const AVAILABLE_TABLES = [
-  { id: 'toomakt_shipping_rates', label: 'Shipping Rates (27 Governorates)', icon: '🚚' },
-  { id: 'toomakt_orders', label: 'Orders & Dispatch', icon: '📦' },
-  { id: 'toomakt_order_items', label: 'Order Items Snapshot', icon: '🍬' },
-  { id: 'toomakt_products', label: 'Products & Confections', icon: '🏷️' },
-  { id: 'toomakt_categories', label: 'Product Categories', icon: '📁' },
-  { id: 'toomakt_bundles', label: 'Curated Gift Tins', icon: '🎁' },
-  { id: 'toomakt_payment_confirmations', label: 'Payment Verifications', icon: '💳' },
-  { id: 'toomakt_promo_codes', label: 'Promo Coupons', icon: '🎟️' },
-  { id: 'toomakt_reviews', label: 'Customer Reviews', icon: '⭐' },
-  { id: 'toomakt_global_settings', label: 'Global Settings', icon: '⚙️' },
-  { id: 'toomakt_subscribers', label: 'Newsletter Subscribers', icon: '✉️' },
-  { id: 'toomakt_notifications', label: 'Admin Notifications', icon: '🔔' }
+  { id: 'toomakt_shipping_rates', label: 'Shipping Rates (27 Governorates)', icon: Truck },
+  { id: 'toomakt_orders', label: 'Orders & Dispatch', icon: Package },
+  { id: 'toomakt_order_items', label: 'Order Items Snapshot', icon: Sparkles },
+  { id: 'toomakt_products', label: 'Products & Confections', icon: Tag },
+  { id: 'toomakt_categories', label: 'Product Categories', icon: Folder },
+  { id: 'toomakt_bundles', label: 'Curated Gift Tins', icon: Gift },
+  { id: 'toomakt_payment_confirmations', label: 'Payment Verifications', icon: CreditCard },
+  { id: 'toomakt_promo_codes', label: 'Promo Coupons', icon: Ticket },
+  { id: 'toomakt_reviews', label: 'Customer Reviews', icon: Star },
+  { id: 'toomakt_global_settings', label: 'Global Settings', icon: Settings },
+  { id: 'toomakt_subscribers', label: 'Newsletter Subscribers', icon: Mail },
+  { id: 'toomakt_notifications', label: 'Admin Notifications', icon: Bell }
 ];
 
 export const DatabaseControlTab: React.FC<DatabaseControlTabProps> = ({
@@ -250,7 +262,7 @@ export const DatabaseControlTab: React.FC<DatabaseControlTabProps> = ({
               }`}
             >
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-base">{t.icon}</span>
+                <t.icon className={`w-4 h-4 ${isSelected ? 'text-[#FFD147]' : 'text-[#3C1322]'}`} />
                 {count !== undefined && (
                   <span
                     className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${

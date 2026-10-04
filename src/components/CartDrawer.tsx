@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag, Check, ShieldCheck, Leaf } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, Check, ShieldCheck, Leaf, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -107,8 +107,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
             <div className="flex items-center justify-between text-xs mb-1.5 font-medium">
               <span>
                 {amountToFreeShipping <= 0 ? (
-                  <span className="text-[#3C1322] font-semibold">
-                    {isRtl ? '🎉 مبروك! حصلت على شحن مجاني' : '🎉 You unlocked free shipping!'}
+                  <span className="text-[#3C1322] font-semibold flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-[#FFD147]" />
+                    <span>{isRtl ? 'مبروك! حصلت على شحن مجاني' : 'You unlocked free shipping!'}</span>
                   </span>
                 ) : (
                   <span>
