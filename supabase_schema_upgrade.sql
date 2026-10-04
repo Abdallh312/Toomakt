@@ -23,6 +23,18 @@ ALTER TABLE toomakt_orders ADD COLUMN IF NOT EXISTS internal_notes TEXT DEFAULT 
 ALTER TABLE toomakt_orders ADD COLUMN IF NOT EXISTS tracking_number TEXT DEFAULT '';
 ALTER TABLE toomakt_orders ADD COLUMN IF NOT EXISTS timeline JSONB DEFAULT '[]'::jsonb;
 
+-- 2.1 Upgrade toomakt_products table with structured packaging, weight & gallery columns
+ALTER TABLE toomakt_products ADD COLUMN IF NOT EXISTS sku TEXT DEFAULT '';
+ALTER TABLE toomakt_products ADD COLUMN IF NOT EXISTS box_quantity INT DEFAULT 1;
+ALTER TABLE toomakt_products ADD COLUMN IF NOT EXISTS box_quantity_label TEXT DEFAULT '1 Box';
+ALTER TABLE toomakt_products ADD COLUMN IF NOT EXISTS pack_quantity TEXT DEFAULT '250g Pouch';
+ALTER TABLE toomakt_products ADD COLUMN IF NOT EXISTS weight_value NUMERIC(10, 2) DEFAULT 250;
+ALTER TABLE toomakt_products ADD COLUMN IF NOT EXISTS weight_unit TEXT DEFAULT 'g';
+ALTER TABLE toomakt_products ADD COLUMN IF NOT EXISTS flavor TEXT DEFAULT '';
+ALTER TABLE toomakt_products ADD COLUMN IF NOT EXISTS tasting_notes JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE toomakt_products ADD COLUMN IF NOT EXISTS images JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE toomakt_products ADD COLUMN IF NOT EXISTS product_status TEXT DEFAULT 'available';
+
 -- Relax or update the status check constraint on toomakt_orders
 DO $$
 BEGIN

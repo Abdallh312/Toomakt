@@ -61,6 +61,7 @@ import { ShippingRatesTab } from './ShippingRatesTab';
 import { CategoriesFlavorsTab } from './CategoriesFlavorsTab';
 import { ReviewsTab } from './ReviewsTab';
 import { SubscribersTab } from './SubscribersTab';
+import { ProductManagementModal } from './ProductManagementModal';
 
 interface AdminDashboardProps {
   onBackToStore: () => void;
@@ -2247,188 +2248,34 @@ Thank you for choosing toomakt!`;
         </main>
       </div>
 
-      {/* MODAL: COMPREHENSIVE PRODUCT & STOCK DATA EDITOR ("CAN EDIT ANYTHING IN IT") */}
-      {editingProduct && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-[#E8E2D7] max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E8E2D7] mb-4">
-              <div>
-                <h3 className="font-serif text-lg font-normal text-[#1A1A1A]">
-                  Edit Confection: {editingProduct.name}
-                </h3>
-                <span className="text-[11px] text-[#736B63]">
-                  Modify any data field, pricing, stock inventory, and recipe attributes.
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setEditingProduct(null)}
-                className="p-1.5 rounded-full hover:bg-[#FAF7F2] text-[#736B63] hover:text-[#1A1A1A]"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      {/* PROFESSIONAL PRODUCT MANAGEMENT WINDOW (EDITING CONFECTION) */}
+      <ProductManagementModal
+        product={editingProduct}
+        isOpen={Boolean(editingProduct)}
+        onClose={() => setEditingProduct(null)}
+        onSaved={(saved) => {
+          setProducts((prev) => prev.map((p) => (p.id === saved.id ? { ...p, ...saved } : p)));
+          setEditingProduct(null);
+          showToast(`Confection "${saved.name}" updated successfully!`);
+        }}
+        onDeleted={(deletedId) => {
+          handleDeleteProduct(deletedId, editingProduct?.name);
+          setEditingProduct(null);
+        }}
+      />
 
-            <form onSubmit={handleSaveProductEdit} className="space-y-4 text-xs">
-              
-              {/* Name & Badge */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">Product / Confection Name *</label>
-                  <input
-                    required
-                    type="text"
-                    value={editingProduct.name || ''}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A] font-semibold"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">Badge / Ribbon Text</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. BEST SELLER / ATELIER CRAFT"
-                    value={editingProduct.badge || ''}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, badge: e.target.value })}
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
-                  />
-                </div>
-              </div>
-
-              {/* Price, Stock Quantity & Pieces */}
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">Price (EGP) *</label>
-                  <input
-                    required
-                    type="number"
-                    value={editingProduct.price || 0}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A] font-bold"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">Stock Inventory *</label>
-                  <input
-                    required
-                    type="number"
-                    value={editingProduct.stock_quantity ?? 50}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, stock_quantity: e.target.value })}
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A] font-mono font-bold"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">Pieces / Pack</label>
-                  <input
-                    type="number"
-                    value={editingProduct.pieces_per_pack || 20}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, pieces_per_pack: e.target.value })}
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
-                  />
-                </div>
-              </div>
-
-              {/* Packaging Weight */}
-              <div>
-                <label className="block text-[#736B63] mb-1 font-medium">Packaging Weight / Presentation</label>
-                <input
-                  type="text"
-                  value={editingProduct.weight || '250g Pouch'}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, weight: e.target.value })}
-                  placeholder="e.g. 250g Pouch / 12-Piece Linen Box"
-                  className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
-                />
-              </div>
-
-              {/* Upload Confection Image */}
-              <div className="p-3 bg-[#FAF7F2]/80 rounded-2xl border border-[#E8E2D7]">
-                <ImageUploadButton
-                  value={editingProduct.image || editingProduct.image_url || ''}
-                  onChange={(url) => setEditingProduct({ ...editingProduct, image: url, image_url: url })}
-                  label="Confection Photo / Image Asset"
-                />
-              </div>
-
-              {/* Tagline & Short Catchphrase */}
-              <div>
-                <label className="block text-[#736B63] mb-1 font-medium">Tagline / Tasting Headline</label>
-                <input
-                  type="text"
-                  value={editingProduct.tagline || ''}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, tagline: e.target.value })}
-                  placeholder="e.g. Bright Alphonso mango purée balanced with European sweet cream butter."
-                  className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
-                />
-              </div>
-
-              {/* Available Flavors for Customer Selection */}
-              <div>
-                <label className="block text-[#736B63] mb-1 font-medium">
-                  {isRtl ? 'النكهات المتاحة لاختيار العميل (مفصولة بفواصل)' : 'Available Flavors (comma-separated for customer to pick)'}
-                </label>
-                <input
-                  type="text"
-                  value={Array.isArray(editingProduct.available_flavors) ? editingProduct.available_flavors.join(', ') : (editingProduct.available_flavors || editingProduct.name || '')}
-                  onChange={(e) => setEditingProduct({
-                    ...editingProduct,
-                    available_flavors: e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean)
-                  })}
-                  placeholder="e.g. Alphonso Mango, Passion Mango Twist, Golden Honey Mango"
-                  className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
-                />
-                <span className="text-[10px] text-[#736B63] mt-1 block">
-                  {isRtl ? 'سيتمكن العميل من اختيار أي من هذه النكهات في صفحة تفاصيل المنتج وسلة المشتريات' : 'Customer will choose between these flavors when ordering.'}
-                </span>
-              </div>
-
-              {/* Full Description */}
-              <div>
-                <label className="block text-[#736B63] mb-1 font-medium">Full Sensory Confection Description</label>
-                <textarea
-                  rows={3}
-                  value={editingProduct.description || ''}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
-                  placeholder="Detailed craft recipe, origin of fruit purée, and texture profile..."
-                  className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]"
-                />
-              </div>
-
-              {/* Actions Footer */}
-              <div className="pt-3 border-t border-[#E8E2D7] flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={() => handleDeleteProduct(editingProduct.id, editingProduct.name)}
-                  className="text-xs text-[#C53030] hover:underline flex items-center gap-1 cursor-pointer"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span>Delete Confection</span>
-                </button>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setEditingProduct(null)}
-                    className="px-4 py-2 border border-[#E8E2D7] rounded-full text-[#736B63] hover:text-[#1A1A1A] cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn-primary text-xs px-5 py-2 cursor-pointer shadow-soft flex items-center gap-1.5"
-                  >
-                    <Save className="w-3.5 h-3.5" />
-                    <span>Save All Changes</span>
-                  </button>
-                </div>
-              </div>
-
-            </form>
-          </div>
-        </div>
-      )}
+      {/* PROFESSIONAL PRODUCT MANAGEMENT WINDOW (CREATE NEW CONFECTION) */}
+      <ProductManagementModal
+        product={null}
+        isNew={true}
+        isOpen={isNewProductModalOpen}
+        onClose={() => setIsNewProductModalOpen(false)}
+        onSaved={(created) => {
+          setProducts((prev) => [created, ...prev]);
+          setIsNewProductModalOpen(false);
+          showToast(`Confection "${created.name}" created and added to catalog!`);
+        }}
+      />
 
       {/* MODAL: VIEW TRANSFER RECEIPT IMAGE */}
       {inspectingReceipt && (
@@ -2448,91 +2295,6 @@ Thank you for choosing toomakt!`;
               alt="Transfer receipt"
               className="max-h-[80vh] w-auto mx-auto object-contain rounded-xl"
             />
-          </div>
-        </div>
-      )}
-
-      {/* MODAL: ADD CONFECTION RECIPE */}
-      {isNewProductModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-[#E8E2D7] max-w-md w-full p-6 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E8E2D7] mb-4">
-              <h3 className="font-serif text-lg font-normal text-[#1A1A1A]">Add New Confection</h3>
-              <button onClick={() => setIsNewProductModalOpen(false)} className="p-1 text-[#736B63] hover:text-[#1A1A1A]">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const form = e.target as any;
-                const flavorsArr = form.flavors?.value
-                  ? form.flavors.value.split(',').map((s: string) => s.trim()).filter(Boolean)
-                  : [form.name.value];
-
-                const newP = {
-                  id: `custom-${Date.now()}`,
-                  name: form.name.value,
-                  price: Number(form.price.value),
-                  weight: form.weight.value || '250g Pouch',
-                  pieces_per_pack: Number(form.pieces.value) || 20,
-                  stock_quantity: Number(form.stock.value) || 50,
-                  image: '/images/products/mango_sunbeam.jpg',
-                  in_stock: true,
-                  available_flavors: flavorsArr
-                };
-                setProducts([...products, newP]);
-                setIsNewProductModalOpen(false);
-                showToast(`Added ${newP.name} to catalog!`);
-              }}
-              className="space-y-3 text-xs"
-            >
-              <div>
-                <label className="block text-[#736B63] mb-1 font-medium">{isRtl ? 'اسم الصنف / الحلوى' : 'Confection Name'}</label>
-                <input required name="name" placeholder="e.g. Vanilla Bean Caramel" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
-              </div>
-              <div>
-                <label className="block text-[#736B63] mb-1 font-medium">{isRtl ? 'خيارات النكهات (مفصولة بفواصل)' : 'Available Flavors (comma-separated)'}</label>
-                <input name="flavors" placeholder="e.g. Alphonso Mango, Passion Mango Twist, Golden Honey" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">{isRtl ? 'السعر (ج.م)' : 'Price (EGP)'}</label>
-                  <input required type="number" name="price" defaultValue="260" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
-                </div>
-                <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">{isRtl ? 'المخزون الأولي' : 'Initial Stock'}</label>
-                  <input required type="number" name="stock" defaultValue="50" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">{isRtl ? 'الوزن' : 'Weight'}</label>
-                  <input name="weight" defaultValue="250g Pouch" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
-                </div>
-                <div>
-                  <label className="block text-[#736B63] mb-1 font-medium">{isRtl ? 'عدد القطع / عبوة' : 'Pieces / Pack'}</label>
-                  <input type="number" name="pieces" defaultValue="20" className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3 py-2 text-[#1A1A1A]" />
-                </div>
-              </div>
-
-              <div className="pt-3 border-t border-[#E8E2D7] flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsNewProductModalOpen(false)}
-                  className="px-4 py-2 border border-[#E8E2D7] rounded-full text-[#736B63]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="btn-primary px-4 py-2 text-xs"
-                >
-                  Save Confection
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}

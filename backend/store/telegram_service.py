@@ -328,7 +328,7 @@ def handle_telegram_update(update: dict) -> None:
     token = getattr(settings, 'TELEGRAM_BOT_TOKEN', os.environ.get('TELEGRAM_BOT_TOKEN', ''))
     master_chat_id = str(getattr(settings, 'TELEGRAM_ADMIN_CHAT_ID', os.environ.get('TELEGRAM_ADMIN_CHAT_ID', ''))).strip()
 
-    from .models import Order, TelegramAdminUser
+    from .models import Order, TelegramAdminUser, Product
 
     # 1. Handle Inline Button Callback Queries
     if 'callback_query' in update:
@@ -422,6 +422,64 @@ def handle_telegram_update(update: dict) -> None:
                         return
                 except Exception as e:
                     logger.error(f"Error updating order status from telegram callback: {e}")
+
+        # Quick navigation button callbacks
+        if data.startswith('cmd:'):
+            action = data.split(':', 1)[1]
+            if action == 'orders':
+                _answer_callback_query(token, cq_id, "جاري تحميل الطلبات...")
+                # Dispatch orders list
+                orders_list = list(Order.objects.order_by('-created_at')[:5])
+                if not orders_list:
+                    _send_telegram_raw(token, chat_id, "📦 لا توجد أي طلبات مسجلة في المتجر حتى الآن.")
+                else:
+                    lines = ["📦 <b>أحدث الطلبات في معمل toomakt:</b>\n━━━━━━━━━━━━━━━━━━━"]
+                    for o in orders_list:
+                        st_emoji = "⏳" if o.status == 'pending' else ("👨‍🍳" if o.status == 'processing' else ("🚚" if o.status == 'shipped' else "✅"))
+                        lines.append(
+                            f"{st_emoji} <b>#{o.order_number}</b> — <b>{Decimal(str(o.total_amount)):.2f} EGP</b>\n"
+                            f"👤 {o.customer_name} | 📞 <code>{o.customer_phone}</code>\n"
+                            f"الحالة: <b>{o.status.upper()}</b> | الدفع: <b>{o.payment_method.upper()}</b>\n"
+                            f"تفاصيل: <code>/order {o.order_number}</code>\n"
+                            f"───────────────────"
+                        )
+                    _send_telegram_raw(token, chat_id, "\n".join(lines))
+                return
+            elif action == 'stats':
+                _answer_callback_query(token, cq_id, "جاري إعداد الإحصائيات...")
+                now = timezone.now()
+                today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+                today_orders = Order.objects.filter(created_at__gte=today_start)
+                today_count = today_orders.count()
+                today_revenue = sum(Decimal(str(o.total_amount)) for o in today_orders)
+                pending_count = Order.objects.filter(status='pending').count()
+                processing_count = Order.objects.filter(status='processing').count()
+                stats_msg = (
+                    f"📊 <b>إحصائيات مبيعات معمل toomakt</b>\n"
+                    f"━━━━━━━━━━━━━━━━━━━\n"
+                    f"📅 <b>اليوم:</b> {now.strftime('%Y-%m-%d')}\n\n"
+                    f"🛍️ <b>طلبات اليوم:</b> <b>{today_count} طلب</b>\n"
+                    f"💰 <b>مبيعات اليوم:</b> <b>{today_revenue:.2f} EGP</b>\n\n"
+                    f"⏳ <b>طلبات قيد المراجعة:</b> <b>{pending_count}</b>\n"
+                    f"👨‍🍳 <b>طلبات قيد التجهيز بالمعمل:</b> <b>{processing_count}</b>\n"
+                    f"━━━━━━━━━━━━━━━━━━━\n"
+                    f"✨ <i>نظام Toomakt المؤتمت</i>"
+                )
+                _send_telegram_raw(token, chat_id, stats_msg)
+                return
+            elif action == 'admins':
+                _answer_callback_query(token, cq_id, "جاري جلب قائمة المسؤولين...")
+                admins_list = list(TelegramAdminUser.objects.all())
+                lines = [
+                    "👥 <b>قائمة مسؤولي معمل toomakt المعتمدين:</b>\n━━━━━━━━━━━━━━━━━━━",
+                    f"👑 <b>المالك الرئيسي:</b> <code>{master_chat_id}</code> (Super Admin)"
+                ]
+                for a in admins_list:
+                    if str(a.telegram_id) != master_chat_id:
+                        st = "✅ نشط" if a.is_active else "❌ معطل"
+                        lines.append(f"• <b>{a.first_name}</b> — ID: <code>{a.telegram_id}</code> [{st}]")
+                _send_telegram_raw(token, chat_id, "\n".join(lines))
+                return
 
         _answer_callback_query(token, cq_id, "تم استلام الطلب.")
         return
@@ -554,10 +612,15 @@ def handle_telegram_update(update: dict) -> None:
     # -------------------------------------------------------------
     # CASE B: VERIFIED ADMINISTRATOR
     # -------------------------------------------------------------
-    cmd = text.split()[0].lower() if text else ''
+    cmd = text.split()[0].lower().split('@')[0] if text else ''
 
-    # Handle /add or /auth by an existing Admin (to add another admin!)
-    if cmd in ['/add', '/add_admin', '/authorize', '/auth']:
+    # If an already verified admin types /auth
+    if cmd == '/auth':
+        _send_telegram_raw(token, chat_id, f"✅ أنت مسجل وموثق بالفعل كمسؤول في معمل toomakt ({role.upper()}). استخدم /help لعرض الأوامر.")
+        return
+
+    # Handle /add by an existing Admin (to add another admin!)
+    if cmd in ['/add', '/add_admin', '/authorize']:
         parts = text.split()
         if len(parts) < 2:
             _send_telegram_raw(
@@ -655,6 +718,10 @@ def handle_telegram_update(update: dict) -> None:
             f"📦 <code>/orders</code> — أحدث الطلبات ومتابعة التجهيز\n"
             f"📊 <code>/stats</code> — إحصائيات المبيعات والأرباح اليومية\n"
             f"🔍 <code>/order ORD-XXXX</code> — البحث عن طلب محدد\n"
+            f"🍬 <code>/products</code> — قائمة منتجات المعمل والمخزون\n"
+            f"🔎 <code>/product [ID/SKU]</code> — فحص تفاصيل ومواصفات المنتج\n"
+            f"📦 <code>/stock [ID/SKU] [الكمية]</code> — تعديل المخزون المتاح\n"
+            f"💰 <code>/price [ID/SKU] [السعر]</code> — تعديل السعر بالجنيه\n"
             f"👥 <code>/admins</code> — قائمة المسؤولين وإدارتهم\n"
             f"➕ <code>/add [ID] [الاسم]</code> — إضافة مسؤول جديد فورياً\n"
             f"🔔 <code>/test</code> — اختبار وصول إشعار فوري\n"
@@ -668,6 +735,7 @@ def handle_telegram_update(update: dict) -> None:
                     {'text': '📊 إحصائيات اليوم (/stats)', 'callback_data': 'cmd:stats'}
                 ],
                 [
+                    {'text': '🍬 قائمة المنتجات (/products)', 'callback_data': 'cmd:products'},
                     {'text': '👥 إدارة المسؤولين (/admins)', 'callback_data': 'cmd:admins'}
                 ]
             ]
@@ -758,6 +826,156 @@ def handle_telegram_update(update: dict) -> None:
             {'text': '🚚 شحن', 'callback_data': f'status:{o.order_number}:shipped'}
         ])
         _send_telegram_raw(token, chat_id, detail_msg, reply_markup={'inline_keyboard': keyboard})
+        return
+
+    # Handle /products
+    if cmd in ['/products', 'products', 'cmd:products']:
+        prods = list(Product.objects.all().order_by('name'))
+        if not prods:
+            _send_telegram_raw(token, chat_id, "🍬 لا توجد أي منتجات مسجلة في المتجر حالياً.")
+            return
+
+        lines = ["🍬 <b>قائمة منتجات معمل toomakt:</b>\n━━━━━━━━━━━━━━━━━━━"]
+        for p in prods:
+            stock = p.stock_quantity if p.stock_quantity is not None else 50
+            st_text = f"المخزون: <code>{stock}</code>" if stock > 0 else "نفذت الكمية"
+            lines.append(
+                f"• <b>{p.name}</b>\n"
+                f"  السعر: <b>{Decimal(str(p.price)):.2f} EGP</b> | الوزن: <code>{p.weight}</code>\n"
+                f"  {st_text} | المعرّف: <code>{p.slug or str(p.id)[:8]}</code>\n"
+                f"  تعديل المخزون: <code>/stock {p.slug or p.id} [الكمية]</code>\n"
+            )
+        lines.append("━━━━━━━━━━━━━━━━━━━\n<i>لفحص مواصفات المنتج تفصيلياً: <code>/product [المعرّف]</code></i>")
+        _send_telegram_raw(token, chat_id, "\n".join(lines))
+        return
+
+    # Handle /product <id_or_sku>
+    if cmd in ['/product', 'product']:
+        parts = text.split()
+        if len(parts) < 2:
+            _send_telegram_raw(token, chat_id, "ℹ️ يرجى كتابة معرّف أو رمز SKU المنتج:\n<code>/product [ID أو SKU]</code>\nمثال: <code>/product berry-afterglow</code>")
+            return
+        target = parts[1].strip()
+        p = Product.objects.filter(slug__iexact=target).first() or \
+            Product.objects.filter(sku__iexact=target).first() or \
+            Product.objects.filter(name__icontains=target).first()
+        if not p:
+            try:
+                p = Product.objects.filter(id=target).first()
+            except Exception:
+                pass
+        if not p:
+            _send_telegram_raw(token, chat_id, f"❌ لم يتم العثور على منتج يطابق <code>{target}</code>. اكتب <code>/products</code> لعرض القائمة.")
+            return
+
+        stock = p.stock_quantity if p.stock_quantity is not None else 50
+        box_qty = getattr(p, 'box_quantity', 10) or 10
+        pack_qty = getattr(p, 'pack_quantity', p.weight) or p.weight or '250g Pouch'
+        tasting_notes = ", ".join(p.tasting_notes) if hasattr(p, 'tasting_notes') and p.tasting_notes else (", ".join(p.fruit_notes) if p.fruit_notes else "Orchard fruits, cultured butter")
+
+        detail = (
+            f"🍬 <b>مواصفات وتفاصيل المنتج: {p.name}</b>\n"
+            f"━━━━━━━━━━━━━━━━━━━\n"
+            f"🏷️ <b>رمز SKU:</b> <code>{p.sku or 'N/A'}</code>\n"
+            f"💰 <b>السعر:</b> <b><u>{Decimal(str(p.price)):.2f} EGP</u></b>\n"
+            f"⚖️ <b>الوزن الصافي:</b> <code>{p.weight}</code>\n"
+            f"📦 <b>كمية الكرتونة (Box Qty):</b> <code>{box_qty} علب</code>\n"
+            f"🛍️ <b>محتوى العبوة (Pack Qty):</b> <code>{pack_qty}</code>\n"
+            f"📊 <b>المخزون المتوفر:</b> <code>{stock} قطعة</code>\n"
+            f"⏳ <b>الحالة:</b> <b>{'متوفر للطلب' if stock > 0 else 'نفذت الكمية'}</b>\n"
+            f"🍇 <b>ملاحظات التذوق:</b> <i>{tasting_notes}</i>\n"
+            f"📝 <b>الوصف:</b> {p.description[:200] if p.description else p.tagline}\n"
+            f"━━━━━━━━━━━━━━━━━━━\n"
+            f"لتعديل المخزون: <code>/stock {p.slug or p.id} [الكمية]</code>\n"
+            f"لتعديل السعر: <code>/price {p.slug or p.id} [السعر]</code>"
+        )
+        _send_telegram_raw(token, chat_id, detail)
+        return
+
+    # Handle /stock <id_or_sku> <quantity>
+    if cmd in ['/stock', 'stock', '/setstock']:
+        parts = text.split()
+        if len(parts) < 3:
+            _send_telegram_raw(token, chat_id, "ℹ️ صيغة غير صحيحة. يرجى كتابة:\n<code>/stock [ID أو SKU] [الكمية الجديدة]</code>\nمثال:\n<code>/stock berry-afterglow 80</code>")
+            return
+        target = parts[1].strip()
+        raw_qty = parts[2].strip()
+        try:
+            new_qty = int(raw_qty)
+        except ValueError:
+            _send_telegram_raw(token, chat_id, f"❌ خطأ: <code>{raw_qty}</code> ليست قيمة رقمية صحيحة.")
+            return
+
+        if new_qty < 0:
+            _send_telegram_raw(token, chat_id, "❌ خطأ: الكمية لا يمكن أن تكون سالبة. يجب أن تكون 0 أو أكبر.")
+            return
+
+        p = Product.objects.filter(slug__iexact=target).first() or \
+            Product.objects.filter(sku__iexact=target).first() or \
+            Product.objects.filter(name__icontains=target).first()
+        if not p:
+            try:
+                p = Product.objects.filter(id=target).first()
+            except Exception:
+                pass
+        if not p:
+            _send_telegram_raw(token, chat_id, f"❌ لم يتم العثور على منتج يطابق: <code>{target}</code>.")
+            return
+
+        p.stock_quantity = new_qty
+        p.in_stock = (new_qty > 0)
+        p.save(update_fields=['stock_quantity', 'in_stock', 'updated_at'])
+
+        _send_telegram_raw(
+            token,
+            chat_id,
+            f"✅ <b>تم تحديث المخزون بنجاح!</b>\n"
+            f"━━━━━━━━━━━━━━━━━━━\n"
+            f"• <b>المنتج:</b> {p.name}\n"
+            f"• <b>المخزون الجديد:</b> <code>{new_qty}</code> قطعة\n"
+            f"• <b>الحالة:</b> {'متوفر للبيع' if new_qty > 0 else 'نفذت الكمية'}"
+        )
+        return
+
+    # Handle /price <id_or_sku> <price>
+    if cmd in ['/price', 'price']:
+        parts = text.split()
+        if len(parts) < 3:
+            _send_telegram_raw(token, chat_id, "ℹ️ صيغة الأمر لتعديل السعر:\n<code>/price [ID أو SKU] [السعر بالجنيه]</code>\nمثال:\n<code>/price mango-sunbeam 260</code>")
+            return
+        target = parts[1].strip()
+        raw_price = parts[2].strip()
+        try:
+            new_price = Decimal(raw_price)
+            if new_price <= 0:
+                raise ValueError()
+        except Exception:
+            _send_telegram_raw(token, chat_id, f"❌ خطأ: يرجى إدخال سعر صحيح أكبر من صفر.")
+            return
+
+        p = Product.objects.filter(slug__iexact=target).first() or \
+            Product.objects.filter(sku__iexact=target).first() or \
+            Product.objects.filter(name__icontains=target).first()
+        if not p:
+            try:
+                p = Product.objects.filter(id=target).first()
+            except Exception:
+                pass
+        if not p:
+            _send_telegram_raw(token, chat_id, f"❌ لم يتم العثور على منتج يطابق: <code>{target}</code>.")
+            return
+
+        p.price = new_price
+        p.save(update_fields=['price', 'updated_at'])
+
+        _send_telegram_raw(
+            token,
+            chat_id,
+            f"✅ <b>تم تحديث سعر المنتج بنجاح!</b>\n"
+            f"━━━━━━━━━━━━━━━━━━━\n"
+            f"• <b>المنتج:</b> {p.name}\n"
+            f"• <b>السعر الجديد:</b> <b><u>{new_price:.2f} EGP</u></b>"
+        )
         return
 
     # Handle /test

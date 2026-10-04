@@ -1,7 +1,11 @@
 export type ProductCategory = 'all' | 'mango' | 'berry' | 'citrus' | 'gift-boxes' | 'chewy' | 'bright' | 'buttery' | 'giftably' | 'berries' | 'tropical' | 'gifts' | string;
 
+export type ProductStatus = 'available' | 'out_of_stock' | 'hidden' | 'coming_soon' | 'published' | 'draft';
+
 export interface Product {
   id: string;
+  sku?: string;
+  slug?: string;
   name: string;
   tagline: string;
   description: string;
@@ -11,13 +15,25 @@ export interface Product {
   price: number;
   originalPrice?: number;
   weight: string;
+  weight_value?: number;
+  weight_unit?: 'g' | 'kg' | 'ml' | 'pouch' | 'tin' | string;
+  box_quantity?: number;
+  box_quantity_label?: string;
+  pack_quantity?: string;
+  pack_quantity_pieces?: number;
+  customer_quantity?: number;
+  flavor?: string;
+  flavor_name?: string;
+  tasting_notes?: string[];
+  status?: ProductStatus;
+  images?: string[];
   category: ProductCategory;
   tags?: string[];
   mood?: string;
   rating: number;
   reviewsCount: number;
   chewiness: number;
-  fruitImpact: {
+  fruitImpact?: {
     label: string;
     score: number;
   };

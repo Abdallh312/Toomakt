@@ -110,26 +110,48 @@ export const api = {
             ? p.available_flavors
             : defaultFlavors;
 
+          const tastingNotes = Array.isArray(p.tasting_notes) && p.tasting_notes.length > 0
+            ? p.tasting_notes
+            : (Array.isArray(p.fruit_notes) && p.fruit_notes.length > 0 ? p.fruit_notes : ['Orchard Fruits', 'Creamy Butter']);
+
+          const imagesList = Array.isArray(p.images) && p.images.length > 0
+            ? p.images
+            : (p.image_url ? [p.image_url] : ['/images/products/mango_sunbeam.jpg']);
+
+          const weightStr = p.weight || '250g';
+          const weightNum = p.weight_value ? Number(p.weight_value) : (parseInt(weightStr) || 250);
+
           return {
             ...p,
+            sku: p.sku || `TMK-${(p.slug || p.name || 'ITEM').slice(0, 8).toUpperCase()}`,
             category_name: p.category?.name || 'Confectionery',
             category_slug: p.category?.slug || 'confectionery',
-            flavor_name: p.name,
+            flavor_name: p.flavor || p.name,
+            flavor: p.flavor || p.name,
             flavor_color: p.accent_color || '#FFD147',
-            status: p.in_stock ? 'published' : 'draft',
+            status: p.product_status || (p.in_stock ? 'available' : 'out_of_stock'),
             stock_quantity: p.stock_quantity ?? 50,
             in_stock: (p.stock_quantity ?? 50) > 0,
             price: Number(p.price || 0),
-            pieces_per_pack: p.pieces_per_pack || 20,
-            image: p.image_url || '/images/canister.jpg',
-            weight: p.weight || '250g Pouch',
+            weight: weightStr,
+            weight_value: weightNum,
+            weight_unit: p.weight_unit || 'g',
+            box_quantity: p.box_quantity ?? 10,
+            box_quantity_label: p.box_quantity_label || `${p.box_quantity ?? 10} Boxes / Carton`,
+            pack_quantity: p.pack_quantity || `${weightStr} Pouch`,
+            pack_quantity_pieces: p.pieces_per_pack || 24,
+            pieces_per_pack: p.pieces_per_pack || 24,
+            image: imagesList[0] || p.image_url || '/images/products/mango_sunbeam.jpg',
+            images: imagesList,
             tagline: p.tagline || '',
             description: p.description || '',
             available_flavors: availableFlavors,
+            tasting_notes: tastingNotes,
+            fruitNotes: tastingNotes,
             rating: 4.98,
             reviewsCount: 1420,
             variants: [
-              { id: `${p.id}-v1`, title: p.weight || '250g Pouch', price: p.price, stock_quantity: p.stock_quantity ?? 50 },
+              { id: `${p.id}-v1`, title: weightStr, price: p.price, stock_quantity: p.stock_quantity ?? 50 },
             ],
           };
         });
@@ -162,27 +184,43 @@ export const api = {
   async createProduct(data: any): Promise<any> {
     const slug = data.slug || (data.name || 'confection').toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const stockQuantity = parseInt(data.stock_quantity || data.stock) || 50;
+    const imagesList = Array.isArray(data.images) && data.images.length > 0
+      ? data.images
+      : [data.image || data.image_url || '/images/products/mango_sunbeam.jpg'];
+
+    const weightStr = data.weight || `${data.weight_value || 250}${data.weight_unit || 'g'}`;
 
     const payload: any = {
       name: data.name,
+      sku: data.sku || `TMK-${slug.slice(0, 8).toUpperCase()}`,
       slug,
       tagline: data.tagline || 'Sensory fruit-infused French soft toffee.',
       description: data.description || 'Artisanal toffee pulled in copper kettles with real orchard fruits.',
-      price: parseFloat(data.price) || 16.0,
-      weight: data.weight || '180g Pouch',
+      price: parseFloat(data.price) || 220.0,
+      weight: weightStr,
+      weight_value: parseFloat(data.weight_value) || 250,
+      weight_unit: data.weight_unit || 'g',
+      box_quantity: parseInt(data.box_quantity) || 10,
+      box_quantity_label: data.box_quantity_label || `${data.box_quantity || 10} Boxes / Carton`,
+      pack_quantity: data.pack_quantity || `${weightStr} Pouch`,
+      pieces_per_pack: parseInt(data.pieces_per_pack || data.pack_quantity_pieces) || 24,
+      flavor: data.flavor || data.name,
       badge: data.badge || 'NEW RECIPE',
       badge_type: data.badge_type || 'gold',
       accent_color: data.accent_color || '#C26715',
       light_bg_color: data.light_bg_color || '#FAF5EE',
-      image_url: data.image_url || '/images/canister.jpg',
+      image_url: imagesList[0],
+      images: imagesList,
       chewiness: parseFloat(data.chewiness) || 10.0,
       fruit_impact_label: data.fruit_impact_label || 'Fruit Tartness',
       fruit_impact_score: parseFloat(data.fruit_impact_score) || 9.2,
-      fruit_notes: Array.isArray(data.fruit_notes) ? data.fruit_notes : ['Fresh Orchard Fruit', 'Salted Butter', 'European Cream'],
-      ingredients: Array.isArray(data.ingredients) ? data.ingredients : ['Fruit Puree', 'Grass-fed Butter', 'Cane Sugar', 'Sea Salt'],
+      fruit_notes: Array.isArray(data.tasting_notes) ? data.tasting_notes : (Array.isArray(data.fruit_notes) ? data.fruit_notes : ['Fresh Orchard Fruit']),
+      tasting_notes: Array.isArray(data.tasting_notes) ? data.tasting_notes : (Array.isArray(data.fruit_notes) ? data.fruit_notes : ['Fresh Orchard Fruit']),
+      ingredients: Array.isArray(data.ingredients) ? data.ingredients : ['Fruit Puree', 'European Sweet Butter', 'Cane Sugar', 'Sea Salt'],
       in_stock: stockQuantity > 0,
       stock_quantity: stockQuantity,
       is_featured: Boolean(data.is_featured),
+      product_status: data.status || 'available',
     };
 
     if (data.category_id) payload.category_id = data.category_id;
@@ -205,16 +243,28 @@ export const api = {
   async updateProduct(id: string, data: any): Promise<any> {
     const patchPayload: any = {};
     if (data.name !== undefined) patchPayload.name = data.name;
+    if (data.sku !== undefined) patchPayload.sku = data.sku;
     if (data.tagline !== undefined) patchPayload.tagline = data.tagline;
     if (data.description !== undefined) patchPayload.description = data.description;
     if (data.price !== undefined) patchPayload.price = parseFloat(data.price);
     if (data.weight !== undefined) patchPayload.weight = data.weight;
+    if (data.weight_value !== undefined) patchPayload.weight_value = parseFloat(data.weight_value);
+    if (data.weight_unit !== undefined) patchPayload.weight_unit = data.weight_unit;
+    if (data.box_quantity !== undefined) patchPayload.box_quantity = parseInt(data.box_quantity);
+    if (data.box_quantity_label !== undefined) patchPayload.box_quantity_label = data.box_quantity_label;
+    if (data.pack_quantity !== undefined) patchPayload.pack_quantity = data.pack_quantity;
+    if (data.flavor !== undefined) patchPayload.flavor = data.flavor;
     if (data.pieces_per_pack !== undefined) patchPayload.pieces_per_pack = parseInt(data.pieces_per_pack);
     if (data.badge !== undefined) patchPayload.badge = data.badge;
     if (data.badge_type !== undefined) patchPayload.badge_type = data.badge_type;
     if (data.accent_color !== undefined) patchPayload.accent_color = data.accent_color;
     if (data.light_bg_color !== undefined) patchPayload.light_bg_color = data.light_bg_color;
     if (data.image_url !== undefined) patchPayload.image_url = data.image_url;
+    if (data.images !== undefined) patchPayload.images = data.images;
+    if (data.tasting_notes !== undefined) {
+      patchPayload.tasting_notes = data.tasting_notes;
+      patchPayload.fruit_notes = data.tasting_notes;
+    }
     if (data.chewiness !== undefined) patchPayload.chewiness = parseFloat(data.chewiness);
     if (data.fruit_impact_label !== undefined) patchPayload.fruit_impact_label = data.fruit_impact_label;
     if (data.fruit_impact_score !== undefined) patchPayload.fruit_impact_score = parseFloat(data.fruit_impact_score);
@@ -226,8 +276,11 @@ export const api = {
     }
 
     if (data.status !== undefined) {
-      patchPayload.in_stock = data.status === 'published';
+      patchPayload.product_status = data.status;
+      patchPayload.in_stock = data.status === 'available' || data.status === 'published';
     }
+
+    patchPayload.updated_at = new Date().toISOString();
 
     const res = await fetch(`${ADMIN_BASE}/toomakt_products?id=eq.${id}`, {
       method: 'PATCH',
