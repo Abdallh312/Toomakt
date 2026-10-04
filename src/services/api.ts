@@ -3,24 +3,20 @@
 // ============================================================================
 import { PRODUCTS } from '../data/toomaktData';
 
-const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL || 'https://fpabvfwjbxqsrpdglvgt.supabase.co').replace(/\/$/, '');
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_P1RKNGKkCkD4PbauoaFZpA_6GwgJ-Od';
 
-// Use Vite proxy for admin mutations so service_role key is attached server-side
-const USE_PROXY = typeof window !== 'undefined';
-const ADMIN_BASE = USE_PROXY ? '/supabase-admin' : `${SUPABASE_URL}/rest/v1`;
+// Direct 100% Supabase REST endpoints (Works on Vercel, localhost, and production)
+const ADMIN_BASE = `${SUPABASE_URL}/rest/v1`;
 const PUBLIC_BASE = `${SUPABASE_URL}/rest/v1`;
 
-const getHeaders = (isAdmin = false): Record<string, string> => {
-  const headers: Record<string, string> = {
+const getHeaders = (_isAdmin = false): Record<string, string> => {
+  return {
     'Content-Type': 'application/json',
     'Prefer': 'return=representation',
+    'apikey': SUPABASE_ANON_KEY,
+    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
   };
-  if (!isAdmin || !USE_PROXY) {
-    headers['apikey'] = SUPABASE_ANON_KEY;
-    headers['Authorization'] = `Bearer ${SUPABASE_ANON_KEY}`;
-  }
-  return headers;
 };
 
 const PRODUCT_DEFAULT_FLAVORS: Record<string, string[]> = {

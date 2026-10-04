@@ -3,6 +3,40 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: light;
+    --bg-page: #FAF7F2;
+    --bg-card: #FFFFFF;
+    --bg-subtle: #F4EFEA;
+    --text-primary: #1A1A1A;
+    --text-secondary: #736B63;
+    --text-muted: #9B938A;
+    --border-main: #E8E2D7;
+    --border-hover: #CFC5B6;
+    --accent-plum: #3C1322;
+    --accent-gold: #FFD147;
+    --accent-amber: #F5A623;
+    --shadow-card: 0 4px 20px rgba(44, 24, 16, 0.05);
+    --shadow-hover: 0 16px 36px -4px rgba(60, 19, 34, 0.12);
+  }
+
+  html.dark {
+    color-scheme: dark;
+    --bg-page: #0C080A;
+    --bg-card: #150F13;
+    --bg-subtle: #1E141B;
+    --text-primary: #FAF5EE;
+    --text-secondary: #B5A99D;
+    --text-muted: #82776E;
+    --border-main: #341F2B;
+    --border-hover: #5A354A;
+    --accent-plum: #FFD147;
+    --accent-gold: #FFD147;
+    --accent-amber: #F5A623;
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
+    --shadow-hover: 0 20px 45px -5px rgba(0, 0, 0, 0.7);
+  }
+
   html {
     width: 100%;
     max-width: 100vw;
@@ -17,11 +51,12 @@
     width: 100%;
     max-width: 100vw;
     overflow-x: hidden;
-    background-color: #FAF7F2;
-    color: #1A1A1A;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     position: relative;
     -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   h1, h2, h3, h4, h5, h6, .font-serif {
@@ -35,7 +70,7 @@
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #FAF7F2;
+    background: var(--bg-page);
   }
   ::-webkit-scrollbar-thumb {
     background: #D8D0C5;
@@ -45,16 +80,25 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #3C1322;
   }
+
+  html.dark ::-webkit-scrollbar-thumb {
+    background: #3E2433;
+  }
+  html.dark ::-webkit-scrollbar-thumb:hover {
+    background: #FFD147;
+  }
 }
 
-/* Luxury Editorial Buttons */
+/* =========================================================================
+   LUXURY EDITORIAL BUTTONS & ELEMENTS
+   ========================================================================= */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background-color: #1A1A1A;
   color: #FAF7F2;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.9375rem;
   padding: 0.75rem 1.75rem;
   border-radius: 9999px;
@@ -66,7 +110,18 @@
   background-color: #3C1322;
   color: #FAF7F2;
   transform: translateY(-1.5px);
-  box-shadow: 0 6px 18px rgba(60, 19, 34, 0.18);
+  box-shadow: 0 8px 24px rgba(60, 19, 34, 0.22);
+}
+
+html.dark .btn-primary {
+  background-color: #FAF5EE;
+  color: #1A1A1A;
+}
+
+html.dark .btn-primary:hover {
+  background-color: #FFD147;
+  color: #1A1A1A;
+  box-shadow: 0 8px 24px rgba(255, 209, 71, 0.25);
 }
 
 .btn-primary:active {
@@ -78,21 +133,21 @@
   align-items: center;
   justify-content: center;
   background-color: transparent;
-  color: #1A1A1A;
+  color: var(--text-primary);
   font-weight: 500;
   font-size: 0.9375rem;
   padding: 0.75rem 1.75rem;
   border-radius: 9999px;
-  border: 1px solid #E8E2D7;
+  border: 1px solid var(--border-main);
   transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform, background-color;
 }
 
 .btn-secondary:hover {
-  border-color: #1A1A1A;
-  background-color: #FFFFFF;
+  border-color: var(--text-primary);
+  background-color: var(--bg-card);
   transform: translateY(-1.5px);
-  box-shadow: 0 4px 12px rgba(26, 26, 26, 0.06);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .btn-secondary:active {
@@ -103,8 +158,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  font-weight: 500;
-  color: #1A1A1A;
+  font-weight: 600;
+  color: var(--text-primary);
   transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -113,22 +168,38 @@
   gap: 0.55rem;
 }
 
-/* Luxury Product Card */
+html.dark .btn-link:hover {
+  color: #FFD147;
+}
+
+/* =========================================================================
+   LUXURY ATELIER CARDS & FILTERS
+   ========================================================================= */
 .atelier-card {
-  background: #FFFFFF;
-  border: 1px solid #E8E2D7;
-  border-radius: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-main);
+  border-radius: 1.25rem;
   transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform, box-shadow;
 }
 
 .atelier-card:hover {
-  border-color: #D6CCC0;
-  box-shadow: 0 14px 32px rgba(44, 24, 16, 0.07);
-  transform: translateY(-3px);
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-3.5px);
 }
 
-/* Category Filter Pill */
+html.dark .atelier-card {
+  background: #150F13;
+  border-color: #341F2B;
+}
+
+html.dark .atelier-card:hover {
+  border-color: #FFD147;
+  box-shadow: 0 16px 40px -5px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 209, 71, 0.08);
+}
+
+/* Category Filter Pills */
 .category-pill {
   padding: 0.5rem 1.25rem;
   border-radius: 9999px;
@@ -144,15 +215,21 @@
   color: #FAF7F2;
 }
 
+html.dark .category-pill.active {
+  background-color: #FFD147;
+  color: #1A1A1A;
+  font-weight: 700;
+}
+
 .category-pill:not(.active) {
   background-color: transparent;
-  color: #736B63;
-  border-color: #E8E2D7;
+  color: var(--text-secondary);
+  border-color: var(--border-main);
 }
 
 .category-pill:not(.active):hover {
-  border-color: #1A1A1A;
-  color: #1A1A1A;
+  border-color: var(--text-primary);
+  color: var(--text-primary);
 }
 
 /* Continuous Marquee Animation */
@@ -171,19 +248,6 @@
   animation-play-state: paused;
 }
 
-/* Lenis Smooth Scroll Engine */
-html.lenis, html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
 /* RTL Typography Support for Arabic */
 html[dir="rtl"] body,
 html[dir="rtl"] .font-sans,
@@ -200,107 +264,82 @@ html[dir="rtl"] .font-serif {
   letter-spacing: normal !important;
 }
 
-/* Smooth Fade & Slide Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
 /* =========================================================================
-   LUXURY ATELIER DARK MODE THEME PALETTE
+   COMPREHENSIVE DARK MODE CLASS MAPPINGS (NO FLASHES, NO BROKEN CONTRAST)
    ========================================================================= */
-html.dark {
-  color-scheme: dark;
-}
-
-html.dark body {
-  background-color: #120A0E;
-  color: #FAF7F2;
-}
-
-html.dark ::-webkit-scrollbar-track {
-  background: #120A0E;
-}
-
-html.dark ::-webkit-scrollbar-thumb {
-  background: #3B202D;
-}
-
-html.dark ::-webkit-scrollbar-thumb:hover {
-  background: #FFD147;
-}
-
 html.dark .bg-white {
-  background-color: #1C1217 !important;
+  background-color: #150F13 !important;
 }
 
 html.dark .bg-\[\#FAF7F2\] {
-  background-color: #140D11 !important;
+  background-color: #0C080A !important;
 }
 
-html.dark .bg-\[\#F4EFEA\] {
-  background-color: #24171E !important;
+html.dark .bg-\[\#F4EFEA\],
+html.dark .bg-\[\#F4EFEA\]\/80 {
+  background-color: #1E141B !important;
 }
 
 html.dark .bg-\[\#FDFBF7\] {
-  background-color: #1C1217 !important;
+  background-color: #150F13 !important;
 }
 
 html.dark .bg-\[\#EAE3D2\] {
-  background-color: #2F1E28 !important;
+  background-color: #261922 !important;
+}
+
+html.dark .bg-\[\#F5F0E6\] {
+  background-color: #21151E !important;
 }
 
 html.dark .border-\[\#E8E2D7\],
-html.dark .border-\[\#E8E2D7\]\/60 {
-  border-color: #38242E !important;
+html.dark .border-\[\#E8E2D7\]\/60,
+html.dark .border-\[\#E8E2D7\]\/50 {
+  border-color: #341F2B !important;
+}
+
+html.dark .border-\[\#D6CCC0\],
+html.dark .border-\[\#CFC5B6\] {
+  border-color: #4D2E3F !important;
 }
 
 html.dark .text-\[\#1A1A1A\] {
-  color: #FAF7F2 !important;
+  color: #FAF5EE !important;
 }
 
 html.dark .text-\[\#736B63\] {
-  color: #B2A79F !important;
+  color: #B5A99D !important;
 }
 
-html.dark .shadow-soft {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
+html.dark .text-\[\#9B938A\] {
+  color: #8C8075 !important;
 }
 
-html.dark .atelier-card {
-  background: #1C1217;
-  border-color: #38242E;
+html.dark .hover\:bg-\[\#F4EFEA\]:hover {
+  background-color: #241821 !important;
 }
 
-html.dark .atelier-card:hover {
-  border-color: #FFD147;
+html.dark .hover\:border-\[\#1A1A1A\]:hover {
+  border-color: #FFD147 !important;
 }
 
+/* Form Inputs in Dark Mode */
 html.dark input,
 html.dark select,
 html.dark textarea {
-  background-color: #21151D !important;
-  color: #FAF7F2 !important;
-  border-color: #402935 !important;
+  background-color: #1B1218 !important;
+  color: #FAF5EE !important;
+  border-color: #38212F !important;
 }
 
 html.dark input:focus,
 html.dark select:focus,
 html.dark textarea:focus {
   border-color: #FFD147 !important;
+  box-shadow: 0 0 0 2px rgba(255, 209, 71, 0.15) !important;
 }
 
-html.dark .btn-secondary {
-  border-color: #402935;
-  color: #FAF7F2;
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #7A6F65 !important;
 }
-
-html.dark .btn-secondary:hover {
-  border-color: #FFD147;
-  background-color: #271A22;
-}
-

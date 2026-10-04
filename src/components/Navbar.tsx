@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Search,
   ShoppingBag,
   Menu,
   X,
-  ArrowRight,
+  Search,
   Gift,
   Sun,
   Moon,
@@ -16,29 +15,31 @@ import { useTheme } from '../context/ThemeContext';
 import { navigateTo } from '../utils/navigation';
 
 interface NavbarProps {
-  onNavigateSection?: (id: string) => void;
+  onNavigateSection?: (sectionId: string) => void;
   onNavigateView?: (view: string) => void;
   currentView?: string;
   onSearchQuery?: (query: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
+  onNavigateSection,
   onNavigateView,
-  currentView = 'home',
+  currentView,
   onSearchQuery,
 }) => {
   const { totalCount, setIsCartOpen } = useCart();
-  const { language, isRtl, toggleLanguage } = useLanguage();
+  const { language, setLanguage, isRtl } = useLanguage();
   const { isDark, toggleTheme } = useTheme();
-  const [isScrolled, setIsScrolled] = useState(false);
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 12);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -50,22 +51,39 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   }, [searchOpen]);
 
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'ar' : 'en');
+  };
+
   const handleLinkClick = (target: string) => {
-    if (onNavigateView) {
-      onNavigateView(target);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
     setMobileMenuOpen(false);
-    setSearchOpen(false);
+    if (target.startsWith('#')) {
+      const sectionId = target.substring(1);
+      if (onNavigateSection) {
+        onNavigateSection(sectionId);
+      } else {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    } else {
+      if (onNavigateView) {
+        onNavigateView(target);
+      } else {
+        navigateTo(target);
+      }
+    }
   };
 
   const handleSearchSubmit = (e?: React.FormEvent) => {
-    if (e && e.preventDefault) e.preventDefault();
+    if (e) e.preventDefault();
     const query = searchValue.trim();
+    if (!query) return;
+
     if (onSearchQuery) {
       onSearchQuery(query);
-    }
-    if (onNavigateView) {
+    } else if (onNavigateView) {
       onNavigateView('shop');
     } else {
       navigateTo('shop');
@@ -87,7 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     if (target === 'shop') return currentView === 'shop' || currentView === 'products';
     if (target === 'bundles') return currentView === 'bundles' || currentView === 'gifts';
     if (target === 'our-story') {
-      return ['our-story', 'about', 'ingredients', 'faq', 'shipping'].includes(currentView);
+      return currentView ? ['our-story', 'about', 'ingredients', 'faq', 'shipping'].includes(currentView) : false;
     }
     if (target === 'wholesale') return currentView === 'wholesale' || currentView === 'contact';
     return currentView === target;
@@ -97,8 +115,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header
       className={`sticky top-0 z-40 w-full transition-all duration-300 ${
         isScrolled
-          ? 'bg-[#FAF7F2]/90 backdrop-blur-xl shadow-[0_8px_30px_rgba(26,21,18,0.06)] border-b border-[#E8E2D7]/70 py-2.5 sm:py-3'
-          : 'bg-gradient-to-b from-[#FAF7F2] to-[#FAF7F2]/95 border-b border-transparent py-4 sm:py-5'
+          ? 'bg-[#FAF7F2]/90 dark:bg-[#0C080A]/90 backdrop-blur-xl shadow-[0_8px_30px_rgba(26,21,18,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.6)] border-b border-[#E8E2D7]/70 dark:border-[#2A1622] py-2.5 sm:py-3'
+          : 'bg-gradient-to-b from-[#FAF7F2] to-[#FAF7F2]/95 dark:from-[#0C080A] dark:to-[#0C080A]/95 border-b border-transparent dark:border-[#20101A] py-3.5 sm:py-4.5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -111,19 +129,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             aria-label="toomakt home"
           >
             <div className="flex items-baseline gap-1.5">
-              <span className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-[#1A1A1A] lowercase group-hover:text-[#3C1322] transition-colors duration-300">
+              <span className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-[#1A1A1A] dark:text-[#FAF5EE] lowercase group-hover:text-[#3C1322] dark:group-hover:text-[#FFD147] transition-colors duration-300">
                 toomakt
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#3C1322] inline-block mb-1 group-hover:scale-125 transition-transform" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#3C1322] dark:bg-[#FFD147] inline-block mb-1 group-hover:scale-125 transition-transform" />
             </div>
-            <span className="text-[9px] font-mono tracking-[0.22em] uppercase text-[#736B63]/75 -mt-0.5 hidden sm:block">
+            <span className="text-[9px] font-mono tracking-[0.22em] uppercase text-[#736B63]/75 dark:text-[#A89C90] -mt-0.5 hidden sm:block">
               {isRtl ? 'معمل التوفي الحرفي' : 'ATELIER DU TOFFEE'}
             </span>
           </button>
 
           {/* Desktop links */}
           <nav
-            className="hidden md:flex items-center gap-1 lg:gap-1.5 px-2 py-1 rounded-full bg-white/50 border border-[#E8E2D7]/60"
+            className="hidden md:flex items-center gap-1 lg:gap-1.5 px-2 py-1 rounded-full bg-white/70 dark:bg-[#181014]/90 border border-[#E8E2D7]/80 dark:border-[#341F2B] backdrop-blur-md shadow-xs"
             aria-label="Primary"
           >
             {navLinks.map((link) => {
@@ -137,12 +155,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => handleLinkClick(link.target)}
                   className={`relative px-3.5 lg:px-4 py-2 rounded-full text-sm tracking-wide transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
                     active
-                      ? 'bg-[#3C1322] text-[#FAF7F2] font-medium shadow-soft'
-                      : 'text-[#736B63] hover:text-[#1A1A1A] hover:bg-[#F4EFEA]/80 font-light'
+                      ? 'bg-[#3C1322] dark:bg-[#FFD147] text-[#FAF7F2] dark:text-[#1A1A1A] font-semibold shadow-soft'
+                      : 'text-[#736B63] dark:text-[#B5A99D] hover:text-[#1A1A1A] dark:hover:text-[#FAF5EE] hover:bg-[#F4EFEA]/80 dark:hover:bg-[#251821] font-normal'
                   }`}
                 >
                   {isBundles && (
-                    <Gift className={`w-3.5 h-3.5 ${active ? 'text-[#FFD147]' : 'text-[#3C1322]/70'}`} />
+                    <Gift
+                      className={`w-3.5 h-3.5 ${
+                        active
+                          ? 'text-[#FFD147] dark:text-[#1A1A1A]'
+                          : 'text-[#3C1322]/70 dark:text-[#FFD147]/70'
+                      }`}
+                    />
                   )}
                   <span>{link.label}</span>
                 </button>
@@ -152,6 +176,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Actions */}
           <div className="flex items-center gap-1.5 sm:gap-2.5">
+            {/* Search Input */}
             <div className="relative flex items-center">
               <AnimatePresence>
                 {searchOpen ? (
@@ -161,7 +186,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     exit={{ width: 0, opacity: 0 }}
                     transition={{ duration: 0.22, ease: 'easeOut' }}
                     onSubmit={handleSearchSubmit}
-                    className="flex items-center overflow-hidden bg-white border border-[#E8E2D7] rounded-full px-3 py-1.5 shadow-soft mr-1 rtl:mr-0 rtl:ml-1"
+                    className="flex items-center overflow-hidden bg-white dark:bg-[#181014] border border-[#E8E2D7] dark:border-[#341F2B] rounded-full px-3 py-1.5 shadow-soft mr-1 rtl:mr-0 rtl:ml-1"
                   >
                     <input
                       ref={searchInputRef}
@@ -169,12 +194,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
                       placeholder={isRtl ? 'ابحث في النكهات...' : 'Search confections...'}
-                      className="w-full text-xs bg-transparent text-[#1A1A1A] focus:outline-none placeholder-[#736B63]/60 font-light"
+                      className="w-full text-xs bg-transparent text-[#1A1A1A] dark:text-[#FAF5EE] focus:outline-none placeholder-[#736B63]/60 dark:placeholder-[#8C8075] font-light"
                     />
                     {searchValue.trim() ? (
                       <button
                         type="submit"
-                        className="text-[11px] font-semibold text-[#3C1322] hover:underline px-1 shrink-0 cursor-pointer"
+                        className="text-[11px] font-semibold text-[#3C1322] dark:text-[#FFD147] hover:underline px-1 shrink-0 cursor-pointer"
                       >
                         {isRtl ? 'بحث' : 'Go'}
                       </button>
@@ -182,7 +207,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <button
                       type="button"
                       onClick={() => setSearchOpen(false)}
-                      className="p-1 text-[#736B63] hover:text-[#1A1A1A] cursor-pointer ml-1 rtl:ml-0 rtl:mr-1 shrink-0"
+                      className="p-1 text-[#736B63] dark:text-[#8C8075] hover:text-[#1A1A1A] dark:hover:text-white cursor-pointer ml-1 rtl:ml-0 rtl:mr-1 shrink-0"
                       aria-label="Close search"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -203,7 +228,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className={`p-2 rounded-full transition-all cursor-pointer ${
                   searchOpen
                     ? 'bg-[#3C1322] text-[#FAF7F2]'
-                    : 'text-[#1A1A1A] hover:text-[#3C1322] hover:bg-[#F4EFEA]'
+                    : 'text-[#1A1A1A] dark:text-[#FAF5EE] hover:text-[#3C1322] dark:hover:text-[#FFD147] hover:bg-[#F4EFEA] dark:hover:bg-[#251821]'
                 }`}
                 title={isRtl ? 'البحث في المتجر' : 'Search Collection'}
                 aria-label="Search"
@@ -212,47 +237,63 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             </div>
 
+            {/* Language Switcher */}
             <button
               type="button"
               onClick={toggleLanguage}
-              className="hidden sm:inline-flex px-2.5 py-1 text-xs font-mono font-medium text-[#736B63] hover:text-[#1A1A1A] border border-[#E8E2D7] rounded-full hover:border-[#1A1A1A] transition-colors cursor-pointer"
+              className="hidden sm:inline-flex px-2.5 py-1 text-xs font-mono font-medium text-[#736B63] dark:text-[#B5A99D] hover:text-[#1A1A1A] dark:hover:text-[#FAF5EE] border border-[#E8E2D7] dark:border-[#341F2B] rounded-full hover:border-[#1A1A1A] dark:hover:border-[#FFD147] transition-colors cursor-pointer"
               title={isRtl ? 'Switch to English' : 'التحويل إلى العربية'}
               aria-label="Toggle Language"
             >
               {language === 'en' ? 'عربي' : 'EN'}
             </button>
 
+            {/* Theme Toggle (Dark / Light) */}
             <button
               type="button"
               onClick={toggleTheme}
-              className="p-1.5 sm:p-2 rounded-full text-[#736B63] hover:text-[#1A1A1A] hover:bg-[#F4EFEA] border border-[#E8E2D7] transition-colors cursor-pointer"
-              title={isDark ? (isRtl ? 'تفعيل الوضع النهاري' : 'Switch to Light Mode') : (isRtl ? 'تفعيل الوضع الليلي' : 'Switch to Dark Mode')}
+              className="p-1.5 sm:p-2 rounded-full text-[#736B63] dark:text-[#FFD147] hover:text-[#1A1A1A] dark:hover:text-[#FAF5EE] hover:bg-[#F4EFEA] dark:hover:bg-[#251821] border border-[#E8E2D7] dark:border-[#341F2B] transition-colors cursor-pointer"
+              title={
+                isDark
+                  ? isRtl
+                    ? 'تفعيل الوضع النهاري'
+                    : 'Switch to Light Mode'
+                  : isRtl
+                  ? 'تفعيل الوضع الليلي'
+                  : 'Switch to Dark Mode'
+              }
               aria-label="Toggle Dark/Light Mode"
             >
-              {isDark ? <Sun className="w-4 h-4 text-[#FFD147]" /> : <Moon className="w-4 h-4 text-[#3C1322]" />}
+              {isDark ? (
+                <Sun className="w-4 h-4 text-[#FFD147]" />
+              ) : (
+                <Moon className="w-4 h-4 text-[#3C1322]" />
+              )}
             </button>
 
+            {/* Shopping Cart Button */}
             <button
               type="button"
               onClick={() => setIsCartOpen(true)}
-              className="relative px-3 sm:px-4 py-1.5 sm:py-2 bg-[#1A1A1A] hover:bg-[#3C1322] text-[#FAF7F2] rounded-full transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-soft hover:shadow-soft-md shrink-0 active:scale-[0.97]"
+              className="relative px-3 sm:px-4 py-1.5 sm:py-2 bg-[#1A1A1A] dark:bg-[#FAF5EE] hover:bg-[#3C1322] dark:hover:bg-[#FFD147] text-[#FAF7F2] dark:text-[#1A1A1A] rounded-full transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-soft hover:shadow-soft-md shrink-0 active:scale-[0.97]"
               title="Shopping Bag"
               aria-label="Shopping Bag"
             >
-              <ShoppingBag className="w-3.5 h-3.5 text-[#FAF7F2] shrink-0" />
-              <span className="font-medium text-xs tracking-wide">
+              <ShoppingBag className="w-3.5 h-3.5 shrink-0" />
+              <span className="font-semibold text-xs tracking-wide">
                 <span className="hidden sm:inline">{isRtl ? 'الحقيبة ' : 'Bag '}</span>
                 <span>({totalCount})</span>
               </span>
               {totalCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#FFD147] border-2 border-[#FAF7F2]" />
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#FFD147] dark:bg-[#3C1322] border-2 border-[#FAF7F2] dark:border-[#1A1A1A]" />
               )}
             </button>
 
+            {/* Mobile Hamburger Button */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-[#1A1A1A] hover:bg-[#F4EFEA] rounded-full cursor-pointer"
+              className="md:hidden p-2 text-[#1A1A1A] dark:text-[#FAF5EE] hover:bg-[#F4EFEA] dark:hover:bg-[#251821] rounded-full cursor-pointer"
               aria-label="Toggle Menu"
               aria-expanded={mobileMenuOpen}
             >
@@ -262,7 +303,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Drawer Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -270,62 +311,24 @@ export const Navbar: React.FC<NavbarProps> = ({
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="md:hidden border-t border-[#E8E2D7] bg-[#FAF7F2] px-5 py-5 shadow-soft"
+            className="md:hidden bg-[#FAF7F2] dark:bg-[#120A0E] border-b border-[#E8E2D7] dark:border-[#2C1824] px-4 py-4 space-y-2"
           >
-            <form onSubmit={handleSearchSubmit} className="mb-4">
-              <div className="flex items-center bg-white border border-[#E8E2D7] rounded-full px-3.5 py-2.5">
-                <Search className="w-3.5 h-3.5 text-[#736B63] mr-2 rtl:mr-0 rtl:ml-2" />
-                <input
-                  type="text"
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  placeholder={isRtl ? 'ابحث في النكهات...' : 'Search confections...'}
-                  className="w-full text-xs bg-transparent text-[#1A1A1A] focus:outline-none font-light"
-                />
-                <button type="submit" className="text-xs text-[#3C1322] font-semibold cursor-pointer">
-                  {isRtl ? 'بحث' : 'Search'}
+            {navLinks.map((link) => {
+              const active = isLinkActive(link.target);
+              return (
+                <button
+                  key={link.id}
+                  onClick={() => handleLinkClick(link.target)}
+                  className={`w-full text-left rtl:text-right px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                    active
+                      ? 'bg-[#3C1322] dark:bg-[#FFD147] text-[#FAF7F2] dark:text-[#1A1A1A]'
+                      : 'text-[#736B63] dark:text-[#B5A99D] hover:bg-[#F4EFEA] dark:hover:bg-[#22151D]'
+                  }`}
+                >
+                  {link.label}
                 </button>
-              </div>
-            </form>
-
-            <div className="flex flex-col gap-1.5">
-              {navLinks.map((link) => {
-                const active = isLinkActive(link.target);
-                const isBundles = link.id === 'bundles';
-
-                return (
-                  <button
-                    key={link.id}
-                    type="button"
-                    onClick={() => handleLinkClick(link.target)}
-                    className={`text-left rtl:text-right py-3.5 px-3.5 rounded-2xl text-base font-medium transition-colors flex items-center justify-between cursor-pointer ${
-                      active
-                        ? 'bg-[#3C1322] text-[#FAF7F2] font-semibold'
-                        : 'text-[#1A1A1A] hover:bg-[#F4EFEA]'
-                    }`}
-                  >
-                    <span className="flex items-center gap-2">
-                      {isBundles && <Gift className={`w-4 h-4 ${active ? 'text-[#FFD147]' : 'text-[#3C1322]'}`} />}
-                      {link.label}
-                    </span>
-                    <ArrowRight className="w-4 h-4 opacity-50 rtl:rotate-180" />
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="mt-4 pt-4 border-t border-[#E8E2D7] flex items-center justify-between">
-              <button
-                type="button"
-                onClick={toggleLanguage}
-                className="px-3 py-1.5 text-xs font-mono font-medium text-[#736B63] border border-[#E8E2D7] rounded-full"
-              >
-                {language === 'en' ? 'عربي' : 'EN'}
-              </button>
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[#736B63]/70">
-                {isRtl ? 'معمل القاهرة' : 'Cairo Atelier'}
-              </span>
-            </div>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>

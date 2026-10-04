@@ -90,6 +90,7 @@ def launch_frontend_dev_server():
     print(f"  --> Django Backend Server: http://127.0.0.1:8000/")
     print(f"  --> Vite Frontend App:     http://localhost:{port_display}/")
     print(f"  --> Confectionery API:     http://127.0.0.1:8000/api/products/")
+    print(f"  --> Telegram Admin Bot:    @ToomaktBot (Auto-polling active)")
     print("=" * 70 + "\n")
 
 

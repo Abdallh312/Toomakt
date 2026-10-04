@@ -181,7 +181,7 @@ export const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#FAF7F2] text-[#1A1A1A] flex flex-col font-sans selection:bg-[#3C1322] selection:text-white">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#FAF7F2] dark:bg-[#0C080A] text-[#1A1A1A] dark:text-[#FAF5EE] flex flex-col font-sans selection:bg-[#3C1322] selection:text-white dark:selection:bg-[#FFD147] dark:selection:text-[#1A1A1A] transition-colors duration-300">
       {/* 1. Global Announcement Header Bar */}
       <AnnouncementBar onNavigateView={handleNavigateView} />
 

@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import json
 import logging
@@ -10,6 +11,14 @@ logger = logging.getLogger('store.telegram.daemon')
 
 _POLLING_THREAD = None
 _IS_RUNNING = False
+
+
+def _safe_print(msg: str) -> None:
+    try:
+        if sys.stdout and hasattr(sys.stdout, 'write'):
+            print(msg, flush=True)
+    except Exception:
+        pass
 
 
 def run_polling(token: str = None) -> None:
@@ -25,6 +34,7 @@ def run_polling(token: str = None) -> None:
         logger.error("Cannot run Telegram bot polling: TELEGRAM_BOT_TOKEN is missing.")
         return
 
+    _safe_print("[toomakt-bot] Polling daemon active for @ToomaktBot...")
     logger.info("Starting Telegram Bot Polling Daemon for @ToomaktBot...")
     _IS_RUNNING = True
     last_update_id = 0
@@ -47,15 +57,35 @@ def run_polling(token: str = None) -> None:
                         last_update_id = max(last_update_id, upd_id + 1)
 
                     try:
+                        from django.db import close_old_connections
+                        close_old_connections()
+                        _safe_print(f"[toomakt-bot] Handling Telegram update {upd_id}...")
                         handle_telegram_update(upd)
                     except Exception as handler_err:
+                        _safe_print(f"[toomakt-bot] [!] Error handling Telegram update {upd_id}: {handler_err}")
                         logger.error(f"Error handling Telegram update {upd_id}: {handler_err}", exc_info=True)
+                    finally:
+                        try:
+                            from django.db import close_old_connections
+                            close_old_connections()
+                        except Exception:
+                            pass
 
+        except urllib.error.HTTPError as e:
+            if e.code == 409:
+                _safe_print("[toomakt-bot] Warning: Another poller instance is active (HTTP 409). Waiting 10s...")
+                logger.warning("Telegram polling conflict (409): Another instance is polling. Waiting 10s...")
+                time.sleep(10)
+            else:
+                _safe_print(f"[toomakt-bot] [!] Telegram HTTP error ({e.code}): {e}")
+                logger.warning(f"Telegram HTTP error ({e.code}): {e}")
+                time.sleep(3)
         except urllib.error.URLError as e:
             # Typical for network timeout during long-poll, normal
             logger.debug(f"Telegram polling timeout or connection glitch: {e}")
             time.sleep(1)
         except Exception as e:
+            _safe_print(f"[toomakt-bot] [!] Telegram polling exception: {e}")
             logger.error(f"Telegram polling exception: {e}")
             time.sleep(4)
 
