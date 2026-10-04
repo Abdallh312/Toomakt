@@ -125,6 +125,8 @@ export const ProductManagementModal: React.FC<ProductManagementModalProps> = ({
         category: product.category || 'all',
         accentColor: product.accentColor || '#C26715',
         lightBgColor: product.lightBgColor || '#FAF5EE',
+        available_flavors: product.available_flavors || [],
+        flavor_images: product.flavor_images || {},
       });
       setSelectedImageIndex(0);
     } else if (isNew) {

@@ -6,13 +6,15 @@ import {
   AlertCircle,
   ArrowLeft,
   ShoppingBag,
-  Sparkles,
-  Banknote,
+  CreditCard,
+  Lock,
+  X,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
 import { ShippingRate } from '../types';
+import { PaymobService } from '../services/paymob';
 
 interface CheckoutViewProps {
   onOrderSuccess: (order: any) => void;
@@ -37,7 +39,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
   const [buildingNumber, setBuildingNumber] = useState('');
   const [apartmentFloor, setApartmentFloor] = useState('');
   const [deliveryNotes, setDeliveryNotes] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'instapay' | 'cod'>('instapay');
+  const [paymentMethod] = useState<'card'>('card');
+  const [paymobIframeUrl, setPaymobIframeUrl] = useState<string | null>(null);
+  const [pendingOrder, setPendingOrder] = useState<any>(null);
 
   // Submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -144,8 +148,32 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
       const res = await api.checkout(orderPayload);
 
       if (res.success && res.order) {
-        clearCart();
-        onOrderSuccess(res.order);
+        // Initiate Paymob Visa payment
+        const paymobResult = await PaymobService.initiateCardPayment({
+          orderNumber: res.order.order_number,
+          amountEgp: orderTotal,
+          customerName: fullName.trim(),
+          customerEmail: email.trim(),
+          customerPhone: mobileNumber.trim(),
+          shippingAddress: streetAddress.trim(),
+          shippingCity: city.trim() || governorate,
+          governorate: governorate,
+          buildingNumber: buildingNumber.trim(),
+          apartmentFloor: apartmentFloor.trim(),
+          items: orderPayload.items.map(it => ({
+            name: it.name,
+            unit_price: it.unit_price,
+            quantity: it.quantity,
+          })),
+        });
+
+        if (paymobResult.iframeUrl) {
+          setPendingOrder(res.order);
+          setPaymobIframeUrl(paymobResult.iframeUrl);
+        } else {
+          clearCart();
+          onOrderSuccess(res.order);
+        }
       } else {
         setApiError(res.message || res.error || 'Failed to place order. Please verify your details.');
       }
@@ -416,99 +444,50 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
               </div>
 
               <div className="space-y-3.5">
-                {/* 1. InstaPay / Bank Transfer */}
-                <label
-                  className={`flex flex-col p-4 rounded-xl border transition cursor-pointer ${
-                    paymentMethod === 'instapay'
-                      ? 'border-[#3C1322] bg-[#FAF7F2] shadow-soft'
-                      : 'border-[#E8E2D7] hover:border-[#1A1A1A] bg-white'
-                  }`}
+                {/* Pay with Visa / Mastercard (Paymob) */}
+                <div
+                  className="flex flex-col p-5 rounded-2xl border-2 border-[#3C1322] bg-[#FAF7F2] shadow-soft transition-all"
                 >
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="instapay"
-                      checked={paymentMethod === 'instapay'}
-                      onChange={() => setPaymentMethod('instapay')}
-                      className="w-4 h-4 text-[#3C1322] focus:ring-[#3C1322]"
-                    />
-                    <div className="w-9 h-9 rounded-full bg-[#3C1322]/10 text-[#3C1322] flex items-center justify-center shrink-0">
-                      <Sparkles className="w-4 h-4 text-[#3C1322]" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-[#1A1A1A]">
-                          InstaPay / Bank Transfer
-                        </span>
-                        <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#3C1322] text-[#FAF7F2]">
-                          Recommended
-                        </span>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#3C1322] text-[#FAF7F2] flex items-center justify-center shrink-0 shadow-xs">
+                        <CreditCard className="w-5 h-5 text-[#FAF7F2]" />
                       </div>
-                      <div className="text-xs text-[#736B63] font-light">
-                        Instant transfer confirmation via WhatsApp receipt verification.
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-semibold text-[#1A1A1A]">
+                            Credit / Debit Card (Visa & Mastercard)
+                          </span>
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#3C1322] text-[#FAF7F2]">
+                            Paymob Secure
+                          </span>
+                        </div>
+                        <div className="text-xs text-[#736B63] font-light mt-0.5">
+                          Instant card payment powered by Paymob. Accepts Visa, Mastercard, and Meeza.
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  {paymentMethod === 'instapay' && (
-                    <div className="mt-3.5 pt-3 border-t border-[#E8E2D7] text-xs text-[#736B63] space-y-2 bg-white p-3.5 rounded-xl border border-[#E8E2D7]">
-                      <div className="font-medium text-[#1A1A1A] flex items-center justify-between">
-                        <span>Official InstaPay Account Details:</span>
-                        <span className="text-[11px] font-normal text-[#3C1322]">Toomakt Atelier Cairo</span>
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-                        <div className="bg-[#FAF7F2] p-2 rounded-lg border border-[#E8E2D7]">
-                          <span className="text-[#736B63] block font-light">InstaPay Address</span>
-                          <span className="font-mono font-medium text-[#1A1A1A] select-all">toomakt@instapay</span>
-                        </div>
-                        <div className="bg-[#FAF7F2] p-2 rounded-lg border border-[#E8E2D7]">
-                          <span className="text-[#736B63] block font-light">Mobile Number</span>
-                          <span className="font-mono font-medium text-[#1A1A1A] select-all">01000000000</span>
-                        </div>
-                        <div className="bg-[#FAF7F2] p-2 rounded-lg border border-[#E8E2D7] sm:col-span-2">
-                          <span className="text-[#736B63] block font-light">Account / Bank</span>
-                          <span className="font-medium text-[#1A1A1A]">toomakt Confectionery (CIB Egypt)</span>
-                        </div>
-                      </div>
-                      <p className="text-[11px] text-[#736B63] italic font-light">
-                        * Once placed, you will be prompted to submit your payment transfer screenshot via WhatsApp for immediate atelier verification.
-                      </p>
+                  {/* Card Network Logos & Security assurance */}
+                  <div className="mt-4 pt-3.5 border-t border-[#E8E2D7] flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-1 bg-white border border-[#E8E2D7] rounded-md text-[11px] font-bold text-[#1A1F71] tracking-wider shadow-2xs">
+                        VISA
+                      </span>
+                      <span className="px-2.5 py-1 bg-white border border-[#E8E2D7] rounded-md text-[11px] font-bold text-[#EB001B] tracking-wider shadow-2xs">
+                        Mastercard
+                      </span>
+                      <span className="px-2.5 py-1 bg-white border border-[#E8E2D7] rounded-md text-[11px] font-bold text-[#006633] tracking-wider shadow-2xs">
+                        Meeza
+                      </span>
                     </div>
-                  )}
-                </label>
-
-                {/* 2. Cash on Delivery (COD) */}
-                <label
-                  className={`flex items-center gap-3 p-4 rounded-xl border transition cursor-pointer ${
-                    paymentMethod === 'cod'
-                      ? 'border-[#3C1322] bg-[#FAF7F2] shadow-soft'
-                      : 'border-[#E8E2D7] hover:border-[#1A1A1A] bg-white'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="cod"
-                    checked={paymentMethod === 'cod'}
-                    onChange={() => setPaymentMethod('cod')}
-                    className="w-4 h-4 text-[#3C1322] focus:ring-[#3C1322]"
-                  />
-                  <div className="w-9 h-9 rounded-full bg-[#FAF7F2] text-[#1A1A1A] flex items-center justify-center shrink-0 border border-[#E8E2D7]">
-                    <Banknote className="w-4 h-4" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-[#1A1A1A]">
-                      Cash on Delivery (COD)
-                    </div>
-                    <div className="text-xs text-[#736B63] font-light">
-                      Pay in Egyptian Pounds upon courier arrival at your address.
+                    <div className="flex items-center gap-1.5 text-[11px] text-[#736B63]">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#3C1322]" />
+                      <span>256-bit SSL Encrypted & 3D-Secure</span>
                     </div>
                   </div>
-                  <span className="text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#FAF7F2] text-[#736B63] border border-[#E8E2D7]">
-                    Active
-                  </span>
-                </label>
+                </div>
               </div>
             </div>
           </div>
@@ -599,31 +578,91 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-primary w-full py-4 text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                className="btn-primary w-full py-4 text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-soft hover:shadow-lg transition-all"
               >
                 {isSubmitting ? (
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-[#FAF7F2] border-t-transparent rounded-full animate-spin" />
-                    <span>Processing Order...</span>
+                    <span>Connecting to Paymob...</span>
                   </div>
                 ) : (
                   <>
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Confirm Order · EGP {orderTotal.toFixed(2)}</span>
+                    <CreditCard className="w-4 h-4" />
+                    <span>Pay with Visa · EGP {orderTotal.toFixed(2)}</span>
                   </>
                 )}
               </button>
 
               <div className="text-[11px] text-center text-[#736B63] space-y-1 font-light">
                 <p className="flex items-center justify-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#3C1322] inline" />
-                  <span>Artisan small batch · Dispatched fresh</span>
+                  <Lock className="w-3.5 h-3.5 text-[#3C1322] inline" />
+                  <span>256-Bit SSL Encrypted Checkout Powered by Paymob</span>
                 </p>
-                <p>Official invoice and tracking link will be sent immediately.</p>
+                <p>Official order receipt & tracking details sent immediately upon payment.</p>
               </div>
             </div>
           </div>
         </form>
+
+        {/* ======================================================== */}
+        {/* PAYMOB SECURE VISA PAYMENT MODAL                         */}
+        {/* ======================================================== */}
+        {paymobIframeUrl && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-xs">
+            <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh]">
+              <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E8E2D7] bg-[#FAF7F2]">
+                <div className="flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-[#3C1322]" />
+                  <span className="font-serif text-sm font-semibold text-[#1A1A1A]">
+                    Paymob 3D-Secure Visa Payment
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPaymobIframeUrl(null);
+                    if (pendingOrder) {
+                      clearCart();
+                      onOrderSuccess(pendingOrder);
+                    }
+                  }}
+                  className="p-1 rounded-full text-[#736B63] hover:text-[#1A1A1A] hover:bg-black/5 cursor-pointer"
+                  title="Close payment window"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex-1 w-full bg-[#FAF7F2]">
+                <iframe
+                  src={paymobIframeUrl}
+                  title="Paymob Visa Payment Gateway"
+                  className="w-full h-full border-0"
+                  allow="payment"
+                />
+              </div>
+
+              <div className="p-3.5 border-t border-[#E8E2D7] bg-white flex items-center justify-between text-xs">
+                <span className="text-[#736B63] font-light">
+                  Order #{pendingOrder?.order_number} • Total: <strong className="text-[#1A1A1A] font-semibold">{orderTotal.toFixed(2)} EGP</strong>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPaymobIframeUrl(null);
+                    if (pendingOrder) {
+                      clearCart();
+                      onOrderSuccess(pendingOrder);
+                    }
+                  }}
+                  className="btn-primary py-2 px-5 text-xs font-medium cursor-pointer"
+                >
+                  I Completed Card Payment
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

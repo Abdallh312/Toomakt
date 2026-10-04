@@ -56,7 +56,12 @@ export const PRODUCTS: Product[] = [
     pieces_per_pack: 24,
     stock_quantity: 85,
     in_stock: true,
-    available_flavors: ['Alphonso Mango', 'Passion Mango Twist', 'Golden Honey Mango']
+    available_flavors: ['Alphonso Mango', 'Passion Mango Twist', 'Golden Honey Mango'],
+    flavor_images: {
+      'Alphonso Mango': '/images/products/mango_sunbeam.jpg',
+      'Passion Mango Twist': '/images/products/gallery/confection_img_1.jpg',
+      'Golden Honey Mango': '/images/products/gallery/confection_img_4.jpg'
+    }
   },
   {
     id: 'berry-afterglow',
@@ -99,7 +104,12 @@ export const PRODUCTS: Product[] = [
     pieces_per_pack: 24,
     stock_quantity: 60,
     in_stock: true,
-    available_flavors: ['Wild Alpine Strawberry', 'Tart Forest Raspberry', 'Dark Forest Blackberry']
+    available_flavors: ['Wild Alpine Strawberry', 'Tart Forest Raspberry', 'Dark Forest Blackberry'],
+    flavor_images: {
+      'Wild Alpine Strawberry': '/images/products/gallery/confection_img_2.jpg',
+      'Tart Forest Raspberry': '/images/products/gallery/confection_img_3.jpg',
+      'Dark Forest Blackberry': '/images/products/gallery/confection_img_5.jpg'
+    }
   },
   {
     id: 'citrus-comet',
@@ -140,9 +150,12 @@ export const PRODUCTS: Product[] = [
     cardBgColor: '#FAF7F2',
     isPopular: false,
     pieces_per_pack: 24,
-    stock_quantity: 95,
-    in_stock: true,
-    available_flavors: ['Sicilian Lemon Zest', 'Mediterranean Lime', 'Yuzu Butter Chew']
+    available_flavors: ['Sicilian Lemon Zest', 'Mediterranean Lime', 'Yuzu Butter Chew'],
+    flavor_images: {
+      'Sicilian Lemon Zest': '/images/products/citrus_comet.jpg',
+      'Mediterranean Lime': '/images/products/gallery/confection_img_6.jpg',
+      'Yuzu Butter Chew': '/images/products/gallery/confection_img_7.jpg'
+    }
   },
   {
     id: 'sun-chaser-box',
@@ -183,9 +196,12 @@ export const PRODUCTS: Product[] = [
     cardBgColor: '#FAF7F2',
     isPopular: true,
     pieces_per_pack: 48,
-    stock_quantity: 40,
-    in_stock: true,
-    available_flavors: ['Harvest Trio (Mango, Berry, Citrus)', 'Orchard Gold (Mango & Apricot)', 'Berry & Butter Harmony']
+    available_flavors: ['Harvest Trio (Mango, Berry, Citrus)', 'Orchard Gold (Mango & Apricot)', 'Berry & Butter Harmony'],
+    flavor_images: {
+      'Harvest Trio (Mango, Berry, Citrus)': '/images/products/sun_chaser_box.jpg',
+      'Orchard Gold (Mango & Apricot)': '/images/products/gallery/confection_img_1.jpg',
+      'Berry & Butter Harmony': '/images/products/gallery/confection_img_8.jpg'
+    }
   },
   {
     id: 'orchard-reserve',
@@ -226,9 +242,12 @@ export const PRODUCTS: Product[] = [
     cardBgColor: '#FAF7F2',
     isPopular: false,
     pieces_per_pack: 36,
-    stock_quantity: 35,
-    in_stock: true,
-    available_flavors: ['Sun-Dried Apricot & Plum', 'Damson Honey Glaze', 'Velvet Fig & Butter']
+    available_flavors: ['Sun-Dried Apricot & Plum', 'Damson Honey Glaze', 'Velvet Fig & Butter'],
+    flavor_images: {
+      'Sun-Dried Apricot & Plum': '/images/products/orchard_reserve.jpg',
+      'Damson Honey Glaze': '/images/products/gallery/confection_img_9.jpg',
+      'Velvet Fig & Butter': '/images/products/gallery/confection_img_10.jpg'
+    }
   },
   {
     id: 'evening-citrus',
@@ -271,7 +290,12 @@ export const PRODUCTS: Product[] = [
     pieces_per_pack: 24,
     stock_quantity: 50,
     in_stock: true,
-    available_flavors: ['Sicilian Blood Orange', 'Calabrian Bergamot', 'Molasses Blood Orange']
+    available_flavors: ['Sicilian Blood Orange', 'Calabrian Bergamot', 'Molasses Blood Orange'],
+    flavor_images: {
+      'Sicilian Blood Orange': '/images/products/evening_citrus.jpg',
+      'Calabrian Bergamot': '/images/products/gallery/confection_img_12.jpg',
+      'Molasses Blood Orange': '/images/products/gallery/confection_img_13.jpg'
+    }
   }
 ];
 

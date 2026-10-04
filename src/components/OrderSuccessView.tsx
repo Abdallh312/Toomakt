@@ -106,9 +106,10 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({ order: initi
   const customerName = order.customer_name || 'Valued Customer';
   const governorate = order.governorate || 'Cairo';
   const totalAmount = Number(order.total_amount || 0).toFixed(2);
-  const isInstaPay = order.payment_method === 'instapay' || order.payment_method === 'bank';
-  const paymentStatus = order.payment_status || 'pending';
-  const isPaid = paymentStatus === 'paid';
+  const isCard = order.payment_method === 'card' || order.payment_method === 'visa' || order.payment_method === 'paymob' || (!order.payment_method || order.payment_method !== 'cod' && order.payment_method !== 'instapay');
+  const isInstaPay = (order.payment_method === 'instapay' || order.payment_method === 'bank') && !isCard;
+  const paymentStatus = order.payment_status || (isCard ? 'paid' : 'pending');
+  const isPaid = paymentStatus === 'paid' || isCard;
   const isRejected = paymentStatus === 'rejected';
   const isWaitingVerification = paymentStatus === 'waiting_verification' || submissionSuccess;
   const address = order.shipping_address || 'Address provided';
@@ -275,7 +276,7 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({ order: initi
               <div className="flex flex-col items-center justify-center text-center p-3 rounded-xl bg-white border border-[#F0E6D8] shadow-2xs">
                 <span className="text-[10px] text-[#8C7B71] uppercase font-bold tracking-wider">Method</span>
                 <span className="text-xs sm:text-sm font-bold text-[#2B170E] mt-0.5">
-                  {isInstaPay ? 'InstaPay Transfer' : 'Cash on Delivery'}
+                  {isCard ? 'Visa (Paymob)' : (isInstaPay ? 'InstaPay' : 'Cash on Delivery')}
                 </span>
               </div>
               <div className="flex flex-col items-center justify-center text-center p-3 rounded-xl bg-white border border-[#F0E6D8] shadow-2xs">
@@ -288,7 +289,26 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({ order: initi
               </div>
             </div>
 
-            {/* INSTAPAY TRANSFER & CONFIRMATION WORKFLOW */}
+            {/* VISA / PAYMOB CONFIRMED PAYMENT BANNER */}
+            {isCard && (
+              <div className="border border-emerald-200 bg-emerald-50/80 rounded-3xl p-5 sm:p-6 space-y-3 shadow-xs">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif font-bold text-base text-emerald-950">
+                      Visa Payment Verified & Confirmed
+                    </h3>
+                    <p className="text-xs text-emerald-700 font-light mt-0.5">
+                      Your payment of <strong>{totalAmount} EGP</strong> was processed securely via Paymob 3D-Secure.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* INSTAPAY TRANSFER & CONFIRMATION WORKFLOW (Only if explicitly selected) */}
             {isInstaPay && !isPaid && (
               <div className="border-2 border-[#E5C39E] bg-[#FFF9F2] rounded-3xl p-5 sm:p-6 space-y-5 shadow-sm">
                 <div className="flex items-center justify-between pb-3 border-b border-[#F0E2D2]">

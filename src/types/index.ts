@@ -53,6 +53,7 @@ export interface Product {
   category_name?: string;
   available_flavors?: string[];
   selected_flavor?: string;
+  flavor_images?: Record<string, string>;
 }
 
 export interface BundleItem {

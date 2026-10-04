@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   X,
-  Star,
   ShoppingBag,
   Plus,
   Minus,
   Check,
-  ShieldCheck,
-  Leaf,
-  Truck,
   ChevronLeft,
   ChevronRight,
-  Boxes,
-  Package,
-  Scale,
-  Sparkles
+  Boxes
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '../types';
@@ -60,9 +53,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   if (!product) return null;
 
-  const images = Array.isArray(product.images) && product.images.length > 0
+  const baseImages = Array.isArray(product.images) && product.images.length > 0
     ? product.images
     : [product.image || '/images/products/mango_sunbeam.jpg'];
+
+  // Ensure any flavor images are included in gallery
+  const flavorImageUrls = product.flavor_images ? Object.values(product.flavor_images) : [];
+  const images = Array.from(new Set([...baseImages, ...flavorImageUrls]));
 
   const activeImage = images[selectedImageIndex] || images[0];
 
@@ -72,12 +69,46 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const boxQuantity = product.box_quantity ?? 10;
   const boxQuantityLabel = product.box_quantity_label || `${boxQuantity} Boxes / Carton`;
   const packQuantity = product.pack_quantity || `${product.weight || '250g'} Pouch`;
-  const weightStr = product.weight || '250g';
   const sku = product.sku || `TMK-${(product.slug || product.name || 'CONFECTION').slice(0, 8).toUpperCase()}`;
 
   const tastingNotes = Array.isArray(product.tasting_notes) && product.tasting_notes.length > 0
     ? product.tasting_notes
     : (Array.isArray(product.fruitNotes) && product.fruitNotes.length > 0 ? product.fruitNotes : ['Wild Orchard Fruits', 'European Sweet Butter']);
+
+  // Dynamic flavor selection: update image automatically
+  const handleSelectFlavor = (flv: string) => {
+    setSelectedFlavor(flv);
+    if (product.flavor_images && product.flavor_images[flv]) {
+      const targetImg = product.flavor_images[flv];
+      const imgIdx = images.indexOf(targetImg);
+      if (imgIdx !== -1) {
+        setSelectedImageIndex(imgIdx);
+        return;
+      }
+    }
+    const flvIdx = flavorsList.indexOf(flv);
+    if (flvIdx !== -1 && images[flvIdx]) {
+      setSelectedImageIndex(flvIdx);
+    }
+  };
+
+  // Thumbnail selection: sync flavor if mapped
+  const handleSelectThumbnail = (idx: number) => {
+    setSelectedImageIndex(idx);
+    const clickedImg = images[idx];
+    if (product.flavor_images) {
+      const matchingFlavor = Object.keys(product.flavor_images).find(
+        (f) => product.flavor_images![f] === clickedImg
+      );
+      if (matchingFlavor) {
+        setSelectedFlavor(matchingFlavor);
+        return;
+      }
+    }
+    if (flavorsList[idx]) {
+      setSelectedFlavor(flavorsList[idx]);
+    }
+  };
 
   const handleAddToCart = () => {
     if (isOutOfStock) return;
@@ -132,7 +163,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             {/* ======================================================== */}
             {/* LEFT: MULTI-IMAGE GALLERY WITH THUMBNAILS & TRANSITION  */}
             {/* ======================================================== */}
-            <div className="md:col-span-6 bg-white dark:bg-[#140C12] p-5 sm:p-7 flex flex-col justify-between border-b md:border-b-0 md:border-r border-[#E8E2D7] dark:border-[#2A1622]">
+            <div className="md:col-span-6 bg-white dark:bg-[#140C12] p-5 sm:p-7 flex flex-col justify-center border-b md:border-b-0 md:border-r border-[#E8E2D7] dark:border-[#2A1622]">
               <div className="space-y-4">
                 {/* Main Showcase Image */}
                 <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#FAF7F2] dark:bg-[#0C080A] border border-[#E8E2D7]/80 dark:border-[#2A1622] group shadow-xs flex items-center justify-center">
@@ -190,7 +221,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         <button
                           key={idx}
                           type="button"
-                          onClick={() => setSelectedImageIndex(idx)}
+                          onClick={() => handleSelectThumbnail(idx)}
                           className={`flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border cursor-pointer transition-all bg-white dark:bg-[#0C080A] ${
                             isSelected
                               ? 'border-[#8B2D5C] ring-2 ring-[#8B2D5C]/30 scale-102'
@@ -204,18 +235,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </div>
                 )}
               </div>
-
-              {/* Quality Badges */}
-              <div className="flex items-center justify-between text-[11px] text-[#736B63] dark:text-[#B0A396] pt-4 mt-4 border-t border-[#E8E2D7]/60 dark:border-[#2A1622]">
-                <div className="flex items-center gap-1">
-                  <Truck className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BDD4]" />
-                  <span>{isRtl ? 'شحن سريع للقاهرة والمحافظات' : 'Fast Courier Delivery'}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Leaf className="w-3.5 h-3.5 text-[#88C057]" />
-                  <span>{isRtl ? 'بيوريه فاكهة طبيعي 100%' : '100% Real Fruit Purée'}</span>
-                </div>
-              </div>
             </div>
 
             {/* ======================================================== */}
@@ -223,7 +242,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             {/* ======================================================== */}
             <div className="md:col-span-6 p-5 sm:p-7 flex flex-col justify-between space-y-5">
               <div className="space-y-4">
-                {/* Category, Rating & SKU */}
+                {/* Category & SKU */}
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold uppercase tracking-wider text-[#3C1322] dark:text-[#E8BDD4]">
@@ -233,11 +252,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     <span className="font-mono text-[10px] text-[#736B63] dark:text-[#B0A396]">
                       {sku}
                     </span>
-                  </div>
-                  <div className="flex items-center gap-1 text-[#736B63] dark:text-[#B0A396]">
-                    <Star className="w-3.5 h-3.5 text-[#FFD147] fill-current" />
-                    <span className="font-medium text-[#1A1A1A] dark:text-[#FAF5EE]">{product.rating || 4.98}</span>
-                    <span>({product.reviewsCount || 1420})</span>
                   </div>
                 </div>
 
@@ -262,12 +276,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <div className="p-3 rounded-xl bg-white dark:bg-[#140C12] border border-[#E8E2D7] dark:border-[#2A1622] space-y-2">
                   <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#3C1322] dark:text-[#E8BDD4]">
                     <Boxes className="w-3.5 h-3.5" />
-                    <span>{isRtl ? 'المواصفات وهيكل التعبئة والتغليف' : 'Packaging & Quantity Specifications'}</span>
+                    <span>{isRtl ? 'مواصفات التعبئة' : 'Packaging Specifications'}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className="p-2 rounded-lg bg-[#FAF5EE] dark:bg-[#1A0E18] border border-[#E8E2D7]/60 dark:border-[#2E1826]">
                       <span className="text-[10px] text-[#736B63] dark:text-[#B0A396] block uppercase tracking-wider">
-                        {isRtl ? 'الكرتونة (Box Qty)' : 'Box Quantity'}
+                        {isRtl ? 'الكرتونة' : 'Box Quantity'}
                       </span>
                       <span className="font-semibold text-[#1A1A1A] dark:text-[#FAF5EE]">
                         {boxQuantityLabel}
@@ -276,7 +290,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
                     <div className="p-2 rounded-lg bg-[#FAF5EE] dark:bg-[#1A0E18] border border-[#E8E2D7]/60 dark:border-[#2E1826]">
                       <span className="text-[10px] text-[#736B63] dark:text-[#B0A396] block uppercase tracking-wider">
-                        {isRtl ? 'محتوى العبوة (Pack Qty)' : 'Pack Content / Weight'}
+                        {isRtl ? 'محتوى العبوة' : 'Pack Content'}
                       </span>
                       <span className="font-semibold text-[#1A1A1A] dark:text-[#FAF5EE]">
                         {packQuantity}
@@ -295,7 +309,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <div className="pt-1">
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-[10px] font-semibold text-[#736B63] dark:text-[#B0A396] uppercase tracking-wider">
-                        {isRtl ? 'اختر النكهة' : 'FLAVOR / VARIANT'}
+                        {isRtl ? 'النكهة' : 'Flavor'}
                       </span>
                       <span className="text-[11px] font-medium text-[#3C1322] dark:text-[#E8BDD4] bg-[#FFD147]/30 dark:bg-[#FFD147]/20 px-2 py-0.5 rounded-full">
                         {selectedFlavor}
@@ -308,7 +322,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                           <button
                             key={flv}
                             type="button"
-                            onClick={() => setSelectedFlavor(flv)}
+                            onClick={() => handleSelectFlavor(flv)}
                             className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer ${
                               isSelected
                                 ? 'bg-[#3C1322] text-[#FAF7F2] dark:bg-[#FAF5EE] dark:text-[#1A1A1A] shadow-soft scale-[1.02]'
@@ -328,7 +342,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 {tastingNotes.length > 0 && (
                   <div className="pt-1">
                     <span className="text-[10px] font-semibold text-[#736B63] dark:text-[#B0A396] uppercase tracking-wider block mb-1.5">
-                      {isRtl ? 'ملاحظات التذوق' : 'TASTING NOTES'}
+                      {isRtl ? 'ملاحظات النكهة' : 'Tasting Notes'}
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {tastingNotes.map((note, idx) => (
@@ -350,10 +364,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="text-xs text-[#1A1A1A] dark:text-[#FAF5EE] font-medium block">
-                      {isRtl ? 'الكمية المطلوبة' : 'Customer Order Quantity'}
+                      {isRtl ? 'الكمية' : 'Quantity'}
                     </span>
                     <span className="text-[10px] text-[#736B63] dark:text-[#B0A396]">
-                      {isRtl ? `طلب ${customerQuantity} عبوة (${packQuantity})` : `Order ${customerQuantity} units (${packQuantity})`}
+                      {customerQuantity} × {packQuantity}
                     </span>
                   </div>
                   <div className="flex items-center gap-3 bg-white dark:bg-[#140C12] border border-[#E8E2D7] dark:border-[#2A1622] rounded-full px-3 py-1">
