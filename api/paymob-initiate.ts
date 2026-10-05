@@ -27,7 +27,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     items,
   } = req.body || {};
 
-  const apiKey = process.env.PAYMOB_API_KEY || process.env.VITE_PAYMOB_API_KEY;
+  const fallbackApiKey = 'ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiR0Z6Y3lJNklrMWxjbU5vWVc1MElpd2ljSEp2Wm1sc1pWOXdheUk2TVRJek9EQXlOU3dpYm1GdFpTSTZJbWx1YVhScFlXd2lmUS5GeXJJdUgtS1RsMWN3RnJoSUJRZ0psYjJ5MFJQR3paM251dHY2aVRmZDFxSEdxNTdaYUhvZGNNZ1JxRWpzVVlGUVpLOE9aVWZCUWExaGt0ZEZuYUNDdw==';
+  const apiKey = process.env.PAYMOB_API_KEY || process.env.VITE_PAYMOB_API_KEY || fallbackApiKey;
   const publicKey = process.env.PAYMOB_PUBLIC_KEY || process.env.VITE_PAYMOB_PUBLIC_KEY;
   const secretKey = process.env.PAYMOB_SECRET_KEY || process.env.VITE_PAYMOB_SECRET_KEY;
   const rawCardIntegrationId = process.env.PAYMOB_CARD_INTEGRATION_ID || process.env.VITE_PAYMOB_CARD_INTEGRATION_ID || '5963962';

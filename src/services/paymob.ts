@@ -62,8 +62,9 @@ export class PaymobService {
   private static getConfig(): PaymobConfig {
     const rawCardId = import.meta.env.VITE_PAYMOB_CARD_INTEGRATION_ID || '5963962';
     const rawIframeId = import.meta.env.VITE_PAYMOB_IFRAME_ID || '1084110';
+    const fallbackApiKey = 'ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiR0Z6Y3lJNklrMWxjbU5vWVc1MElpd2ljSEp2Wm1sc1pWOXdheUk2TVRJek9EQXlOU3dpYm1GdFpTSTZJbWx1YVhScFlXd2lmUS5GeXJJdUgtS1RsMWN3RnJoSUJRZ0psYjJ5MFJQR3paM251dHY2aVRmZDFxSEdxNTdaYUhvZGNNZ1JxRWpzVVlGUVpLOE9aVWZCUWExaGt0ZEZuYUNDdw==';
     return {
-      apiKey: import.meta.env.VITE_PAYMOB_API_KEY || '',
+      apiKey: import.meta.env.VITE_PAYMOB_API_KEY || fallbackApiKey,
       publicKey: import.meta.env.VITE_PAYMOB_PUBLIC_KEY || '',
       secretKey: import.meta.env.VITE_PAYMOB_SECRET_KEY || '',
       cardIntegrationId: String(rawCardId).replace(/[^0-9]/g, '') || '5963962',
