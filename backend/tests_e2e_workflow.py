@@ -15,7 +15,7 @@ django.setup()
 from django.test import RequestFactory
 from django.contrib.auth.models import User
 from rest_framework.test import APIClient
-from store.models import Order, OrderItem, Product, Category, PaymentConfirmation, AdminNotification
+from store.models import Order, OrderItem, Product, Category, PaymentConfirmation, AdminNotification, ShippingRate
 from store.views import (
     CheckoutView,
     PaymentConfirmationSubmitView,
@@ -34,6 +34,10 @@ def run_tests():
     admin_user, _ = User.objects.get_or_create(username='admin_tester', defaults={'is_staff': True, 'is_superuser': True})
     client.force_authenticate(user=admin_user)
 
+    # Setup Shipping Rates
+    ShippingRate.objects.get_or_create(governorate='Cairo', defaults={'price': 50.00, 'estimated_delivery': '1–2 Days', 'active': True})
+    ShippingRate.objects.get_or_create(governorate='Giza', defaults={'price': 50.00, 'estimated_delivery': '1–2 Days', 'active': True})
+
     # 2. Setup Category and Product
     cat, _ = Category.objects.get_or_create(slug='fruit-chews', defaults={'name': 'Fruit Chews'})
     prod, _ = Product.objects.get_or_create(
@@ -49,6 +53,7 @@ def run_tests():
     )
     initial_stock = prod.stock_quantity
     print(f"Product initialized: {prod.name}, Stock: {initial_stock}, Price: {prod.price} EGP")
+
 
     # 3. Test Shipping Calculation Endpoint
     print("\n--- Testing Shipping Calculation (Server-side) ---")

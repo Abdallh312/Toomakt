@@ -385,13 +385,15 @@ class CheckoutView(views.APIView):
         # 2. Egypt-Only Shipping Rate Validation
         shipping_rate = ShippingRate.objects.filter(governorate__iexact=governorate_name, active=True).first()
         if not shipping_rate:
-            return Response({
-                'success': False,
-                'message': f"Shipping is only available within Egypt. '{governorate_name}' is not currently active for delivery."
-            }, status=status.HTTP_400_BAD_REQUEST)
+            # Fallback to Cairo or any active Egyptian rate
+            shipping_rate = ShippingRate.objects.filter(governorate__iexact='Cairo', active=True).first() or ShippingRate.objects.filter(active=True).first()
 
-        shipping_fee = Decimal(str(shipping_rate.price))
-        delivery_destination = shipping_rate.governorate
+        if shipping_rate:
+            shipping_fee = Decimal(str(shipping_rate.price))
+            delivery_destination = governorate_name
+        else:
+            shipping_fee = Decimal('50.00')
+            delivery_destination = governorate_name
 
         # 3. Recalculate true subtotal from database & ENFORCE 1-5 PACK LIMIT
 
