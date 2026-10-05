@@ -2,8 +2,8 @@
  * toomakt — Paymob Visa & Mastercard Payment Gateway Integration
  * 
  * Supports both:
- * 1. Paymob Unified Checkout (Intention API)
- * 2. Paymob Classic Accept API (Auth -> Order -> Payment Key -> Iframe)
+ * 1. Paymob Classic Accept API (Auth -> Order -> Payment Key -> Custom Iframe 1084110)
+ * 2. Paymob Unified Checkout (Intention API)
  */
 
 export interface PaymobConfig {
@@ -30,6 +30,7 @@ export interface PaymobInitiateParams {
     name: string;
     unit_price: number;
     quantity: number;
+    flavor?: string;
   }>;
 }
 
@@ -81,7 +82,7 @@ export class PaymobService {
 
   /**
    * Initiates a Visa / Mastercard payment with Paymob.
-   * If live credentials are not yet configured in .env, provides a seamless demo simulator.
+   * Connects to /api/paymob-initiate or direct fallback, returning the custom atelier iframe.
    */
   public static async initiateCardPayment(params: PaymobInitiateParams): Promise<PaymobInitiateResult> {
     const config = this.getConfig();
@@ -100,15 +101,87 @@ export class PaymobService {
 
       if (response.ok) {
         const data = await response.json();
-        if (data.success) {
+        if (data.success && data.iframeUrl) {
           return data;
         }
       }
     } catch {
-      // Backend route not available (e.g. running Vite client dev mode) -> proceed with client flow
+      // Backend route not available -> proceed with direct fallback
     }
 
-    // 2. Direct Unified Checkout API if Secret Key is set
+    // 2. Direct Classic Accept API fallback
+    if (config.apiKey && config.cardIntegrationId) {
+      try {
+        const authRes = await fetch('https://accept.paymob.com/api/auth/tokens', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ api_key: config.apiKey }),
+        });
+        const authData = await authRes.json();
+        const authToken = authData.token;
+
+        if (authToken) {
+          const orderRes = await fetch('https://accept.paymob.com/api/ecommerce/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              auth_token: authToken,
+              delivery_needed: 'false',
+              amount_cents: amountCents,
+              currency: 'EGP',
+              merchant_order_id: params.orderNumber,
+              items: [],
+            }),
+          });
+          const orderData = await orderRes.json();
+          const paymobOrderId = orderData.id;
+
+          const keyRes = await fetch('https://accept.paymob.com/api/acceptance/payment_keys', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              auth_token: authToken,
+              amount_cents: amountCents,
+              expiration: 3600,
+              order_id: paymobOrderId,
+              billing_data: {
+                first_name: params.customerName.split(' ')[0] || 'Customer',
+                last_name: params.customerName.split(' ').slice(1).join(' ') || 'toomakt',
+                phone_number: (params.customerPhone || '01000000000').replace(/\s+/g, ''),
+                email: params.customerEmail || 'orders@toomakt.com',
+                street: params.shippingAddress || 'Street',
+                building: params.buildingNumber || '1',
+                floor: params.apartmentFloor || '1',
+                apartment: params.apartmentFloor || '1',
+                city: params.shippingCity || params.governorate || 'Cairo',
+                country: 'EG',
+              },
+              currency: 'EGP',
+              integration_id: config.cardIntegrationId,
+            }),
+          });
+          const keyData = await keyRes.json();
+          const paymentToken = keyData.token;
+
+          if (paymentToken) {
+            const iframeId = config.iframeId || '1084110';
+            const iframeUrl = `https://accept.paymob.com/api/acceptance/iframes/${iframeId}?payment_token=${paymentToken}`;
+
+            return {
+              success: true,
+              paymentUrl: iframeUrl,
+              iframeUrl,
+              token: paymentToken,
+              paymobOrderId,
+            };
+          }
+        }
+      } catch (err: any) {
+        console.error('Paymob Classic direct API error:', err);
+      }
+    }
+
+    // 3. Fallback: Unified Checkout API if Secret Key is set
     if (config.secretKey && config.publicKey) {
       try {
         const intentionRes = await fetch('https://accept.paymob.com/v1/intention/', {
@@ -129,7 +202,7 @@ export class PaymobService {
             billing_data: {
               first_name: params.customerName.split(' ')[0] || 'Customer',
               last_name: params.customerName.split(' ').slice(1).join(' ') || 'toomakt',
-              phone_number: params.customerPhone || '01000000000',
+              phone_number: (params.customerPhone || '01000000000').replace(/\s+/g, ''),
               email: params.customerEmail || 'orders@toomakt.com',
               street: params.shippingAddress || 'Street',
               building: params.buildingNumber || '1',
@@ -159,84 +232,10 @@ export class PaymobService {
       }
     }
 
-    // 3. Classic Accept API if API Key is set
-    if (config.apiKey && config.cardIntegrationId) {
-      try {
-        // Step A: Auth Token
-        const authRes = await fetch('https://accept.paymob.com/api/auth/tokens', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ api_key: config.apiKey }),
-        });
-        const authData = await authRes.json();
-        const authToken = authData.token;
-
-        // Step B: Order Registration
-        const orderRes = await fetch('https://accept.paymob.com/api/ecommerce/orders', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            auth_token: authToken,
-            delivery_needed: 'false',
-            amount_cents: amountCents,
-            currency: 'EGP',
-            merchant_order_id: params.orderNumber,
-            items: [],
-          }),
-        });
-        const orderData = await orderRes.json();
-        const paymobOrderId = orderData.id;
-
-        // Step C: Payment Key Request
-        const keyRes = await fetch('https://accept.paymob.com/api/acceptance/payment_keys', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            auth_token: authToken,
-            amount_cents: amountCents,
-            expiration: 3600,
-            order_id: paymobOrderId,
-            billing_data: {
-              first_name: params.customerName.split(' ')[0] || 'Customer',
-              last_name: params.customerName.split(' ').slice(1).join(' ') || 'toomakt',
-              phone_number: params.customerPhone || '01000000000',
-              email: params.customerEmail || 'orders@toomakt.com',
-              street: params.shippingAddress || 'Street',
-              building: params.buildingNumber || '1',
-              floor: params.apartmentFloor || '1',
-              apartment: params.apartmentFloor || '1',
-              city: params.shippingCity || params.governorate || 'Cairo',
-              country: 'EG',
-            },
-            currency: 'EGP',
-            integration_id: config.cardIntegrationId,
-          }),
-        });
-        const keyData = await keyRes.json();
-        const paymentToken = keyData.token;
-
-        const iframeId = config.iframeId || 'default';
-        const iframeUrl = `https://accept.paymob.com/api/acceptance/iframes/${iframeId}?payment_token=${paymentToken}`;
-
-        return {
-          success: true,
-          paymentUrl: iframeUrl,
-          iframeUrl,
-          token: paymentToken,
-          paymobOrderId,
-        };
-      } catch (err: any) {
-        console.error('Paymob Classic API error:', err);
-      }
-    }
-
-    // 4. Safe Simulation Mode (when awaiting credentials from user)
-    const mockRef = `PAYMOB-VISA-${Math.floor(100000 + Math.random() * 900000)}`;
+    // Never auto-success! Return error if Paymob connection failed.
     return {
-      success: true,
-      isSandboxDemo: true,
-      transactionId: mockRef,
-      message: 'Paymob Visa payment processed in demo mode. Ready for live credentials.',
+      success: false,
+      message: 'Unable to connect to Paymob Visa gateway. Please try again or choose Cash on Delivery.',
     };
   }
 
@@ -333,4 +332,3 @@ export class PaymobService {
     };
   }
 }
-

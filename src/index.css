@@ -345,3 +345,85 @@ html.dark input::placeholder,
 html.dark textarea::placeholder {
   color: #7A6F65 !important;
 }
+
+/* =========================================================================
+   OFFICIAL ATELIER PRINT & INVOICE MEDIA STYLES
+   ========================================================================= */
+@media print {
+  /* Hide all website navigation, headers, footers, interactive buttons, and floating widgets */
+  header,
+  nav,
+  footer,
+  .no-print,
+  #concierge,
+  [aria-label="WhatsApp Concierge"],
+  .btn-primary,
+  .btn-secondary,
+  button:not(.print-include) {
+    display: none !important;
+  }
+
+  /* Force background to white and text to crisp black/plum */
+  html, body {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #1A1A1A !important;
+    font-size: 11pt !important;
+    line-height: 1.4 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Page setup: A4 portrait with proper print margins */
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm;
+  }
+
+  /* Ensure colors and borders are printed faithfully */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Avoid awkward page break splits */
+  .print-avoid-break,
+  .official-invoice,
+  .receipt-table,
+  tr, td, th {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Hide on-screen celebration elements during print */
+  .screen-only {
+    display: none !important;
+  }
+
+  /* Display dedicated printable invoice */
+  .printable-invoice {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+}
+
+/* Hide printable-only invoice on normal screen */
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
+

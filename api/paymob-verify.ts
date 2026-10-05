@@ -4,6 +4,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
  * Serverless API handler to verify Paymob transaction status
  * Vercel Route: POST /api/paymob-verify
  */
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
@@ -13,7 +14,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const apiKey = process.env.PAYMOB_API_KEY || process.env.VITE_PAYMOB_API_KEY;
 
   if (!apiKey) {
-    return res.status(400).json({ success: false, isPaid: false, message: 'Paymob API key not configured' });
+    return res.status(400).json({ success: false, isPaid: false, message: 'Paymob API key not configured in environment variables' });
   }
 
   try {
@@ -91,7 +92,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    // 3. Fallback check by merchant_order_id
+    // 4. Fallback check by merchant_order_id
     if (orderNumber) {
       const inqRes = await fetch('https://accept.paymob.com/api/ecommerce/orders/transaction_inquiry', {
         method: 'POST',

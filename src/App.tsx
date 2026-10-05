@@ -103,6 +103,9 @@ export const AppContent: React.FC = () => {
       };
 
       verifyAndLoad();
+    } else if (successParam === 'false') {
+      setCurrentView('checkout');
+      window.history.replaceState({}, '', '/checkout');
     }
   }, []);
 
@@ -240,18 +243,22 @@ export const AppContent: React.FC = () => {
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#FAF7F2] dark:bg-[#0C080A] text-[#1A1A1A] dark:text-[#FAF5EE] flex flex-col font-sans selection:bg-[#3C1322] selection:text-white dark:selection:bg-[#FFD147] dark:selection:text-[#1A1A1A] transition-colors duration-300">
       {/* 1. Global Announcement Header Bar */}
-      <AnnouncementBar onNavigateView={handleNavigateView} />
+      <div className="no-print">
+        <AnnouncementBar onNavigateView={handleNavigateView} />
+      </div>
 
       {/* 2. Brand Sticky Navbar (Redesigned, Professional, Inline Search, No Wishlist) */}
-      <Navbar
-        onNavigateSection={handleNavigateSection}
-        onNavigateView={handleNavigateView}
-        currentView={currentView}
-        onSearchQuery={(q) => {
-          handleNavigateView('shop');
-          window.dispatchEvent(new CustomEvent('toomakt:search', { detail: q }));
-        }}
-      />
+      <div className="no-print">
+        <Navbar
+          onNavigateSection={handleNavigateSection}
+          onNavigateView={handleNavigateView}
+          currentView={currentView}
+          onSearchQuery={(q) => {
+            handleNavigateView('shop');
+            window.dispatchEvent(new CustomEvent('toomakt:search', { detail: q }));
+          }}
+        />
+      </div>
 
       {/* 3. Main Dynamic Content Switcher */}
       <main className="flex-1 w-full max-w-full overflow-x-hidden">
@@ -370,17 +377,23 @@ export const AppContent: React.FC = () => {
       </main>
 
       {/* 4. Luxury Dark Cacao Footer */}
-      <Footer onNavigateView={handleNavigateView} />
+      <div className="no-print">
+        <Footer onNavigateView={handleNavigateView} />
+      </div>
 
       {/* Slide-over Tasting Bag / Cart Drawer */}
-      <CartDrawer onNavigateView={handleNavigateView} />
+      <div className="no-print">
+        <CartDrawer onNavigateView={handleNavigateView} />
+      </div>
 
       {/* Modals: Product Detail Modal ONLY (No Wishlist, No Search Modal Window) */}
-      <ProductDetailModal
-        product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-        onNavigateView={handleNavigateView}
-      />
+      <div className="no-print">
+        <ProductDetailModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onNavigateView={handleNavigateView}
+        />
+      </div>
 
       {/* Floating Animated WhatsApp Concierge Button */}
       <motion.a
@@ -389,7 +402,7 @@ export const AppContent: React.FC = () => {
         rel="noopener noreferrer"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed bottom-6 right-6 z-40 bg-[#3C1322] hover:bg-[#280A15] text-[#FAF7F2] p-3 sm:px-4 sm:py-2.5 rounded-full shadow-soft-lg flex items-center gap-2 transition-all cursor-pointer group select-none border border-[#FAF7F2]/20"
+        className="no-print fixed bottom-6 right-6 z-40 bg-[#3C1322] hover:bg-[#280A15] text-[#FAF7F2] p-3 sm:px-4 sm:py-2.5 rounded-full shadow-soft-lg flex items-center gap-2 transition-all cursor-pointer group select-none border border-[#FAF7F2]/20"
         title="Chat with toomakt Concierge"
         aria-label="WhatsApp Concierge"
       >

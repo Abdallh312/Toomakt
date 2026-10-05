@@ -106,12 +106,25 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   useEffect(() => {
     const handleMessage = async (event: MessageEvent) => {
       if (!event.data || !paymobIframeUrl) return;
+
+      // Filter out non-Paymob and browser extension messages
+      const isPaymobOrigin = event.origin && (event.origin.includes('paymob.com') || event.origin.includes(window.location.hostname));
+      
       try {
         const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-        if (data.type === 'transaction_status' || data.success !== undefined) {
-          if (data.success === true || data.status === 'success') {
+        if (!data || typeof data !== 'object') return;
+
+        // Paymob iframe height auto-sync
+        if (data.type === 'paymob_iframe_resize' && data.height) {
+          // Handled smoothly
+          return;
+        }
+
+        // Only process legitimate transaction status events from Paymob
+        if (isPaymobOrigin && (data.type === 'transaction_status' || data.paymob_transaction || data.success !== undefined)) {
+          if (data.success === true || data.status === 'success' || data.is_paid === true) {
             await handleVerifyAndFinalizePayment();
-          } else if (data.success === false) {
+          } else if (data.success === false || data.status === 'declined') {
             setPaymentDeclinedError(
               'Paymob reported this card transaction as DECLINED. In test mode, make sure to use the Paymob Test Card, or switch to Cash on Delivery.'
             );
@@ -318,24 +331,16 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
           })),
         });
 
-        if (paymobResult.iframeUrl) {
+        if (paymobResult.success && paymobResult.iframeUrl) {
           setPaymobOrderId(paymobResult.paymobOrderId || null);
           setPaymobIframeUrl(paymobResult.iframeUrl);
-        } else if (paymobResult.isSandboxDemo) {
-          // Fallback simulation when no live Paymob credentials are configured
-          const res = await api.checkout({
-            ...orderPayload,
-            payment_method: 'card',
-            payment_status: 'paid',
-          });
-          if (res.success && res.order) {
-            clearCart();
-            onOrderSuccess(res.order);
-          } else {
-            setApiError(res.message || res.error || 'Error processing card checkout.');
-          }
         } else {
-          setApiError('Unable to connect to Paymob card gateway. Please try again or choose Cash on Delivery.');
+          setApiError(
+            paymobResult.message ||
+            (isRtl
+              ? 'تعذر الاتصال ببوابة الدفع بالفيزا حالياً. يرجى المحاولة مرة أخرى أو اختيار الدفع عند الاستلام (COD).'
+              : 'Unable to connect to Paymob Visa gateway. Please try again or choose Cash on Delivery (COD).')
+          );
         }
       }
     } catch (err: any) {
