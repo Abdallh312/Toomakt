@@ -924,17 +924,44 @@ export const api = {
     return await this.getAdminStats();
   },
 
-  async trackOrder(orderNumber: string): Promise<any> {
+  async trackOrder(query: string): Promise<any> {
     try {
-      const cleanNum = orderNumber.trim();
-      const res = await fetch(
-        `${PUBLIC_BASE}/toomakt_orders?order_number=eq.${encodeURIComponent(cleanNum)}&select=*,items:toomakt_order_items(*)&limit=1`,
+      const clean = query.trim().replace(/^#/, '');
+      if (!clean) return null;
+
+      // 1. Direct exact or case-insensitive search by order_number
+      let res = await fetch(
+        `${PUBLIC_BASE}/toomakt_orders?order_number=ilike.${encodeURIComponent(clean)}&select=*,items:toomakt_order_items(*)&limit=1`,
         { headers: getHeaders(false) }
       );
       if (res.ok) {
         const data = await res.json();
-        return data[0] || null;
+        if (data && data[0]) return data[0];
       }
+
+      // 2. Flexible search by partial order number, phone number, tracking number, or email
+      res = await fetch(
+        `${PUBLIC_BASE}/toomakt_orders?or=(order_number.ilike.*${encodeURIComponent(clean)}*,customer_phone.ilike.*${encodeURIComponent(clean)}*,customer_email.ilike.*${encodeURIComponent(clean)}*,tracking_number.ilike.*${encodeURIComponent(clean)}*)&select=*,items:toomakt_order_items(*)&order=created_at.desc&limit=1`,
+        { headers: getHeaders(false) }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data[0]) return data[0];
+      }
+
+      // 3. Fallback to localStorage last order if matching
+      try {
+        const saved = localStorage.getItem('toomakt_last_order');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (
+            parsed.order_number?.toLowerCase().includes(clean.toLowerCase()) ||
+            parsed.customer_phone?.includes(clean)
+          ) {
+            return parsed;
+          }
+        }
+      } catch {}
     } catch (e) {
       console.error('Error tracking order:', e);
     }
