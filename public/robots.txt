@@ -7,4 +7,5 @@ Disallow: /api/
 
 # Canonical Sitemaps
 Sitemap: https://www.toomakt.com/sitemap.xml
+Sitemap: https://www.toomakt.com/sitemap.txt
 Host: https://www.toomakt.com
