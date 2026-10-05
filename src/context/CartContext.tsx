@@ -44,35 +44,33 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Enforce 1-5 limit on loaded items
-          return parsed.map((item: CartItem) => ({
-            ...item,
-            quantity: Math.min(5, Math.max(1, item.quantity || 1)),
-            product: {
-              ...item.product,
-              pieces_per_pack: item.product.pieces_per_pack || 20
-            }
-          }));
+          // Check if it's the old auto-seeded default starter pack
+          const isLegacyStarter =
+            parsed.length === 1 &&
+            parsed[0]?.product?.id === 'mango-sunbeam' &&
+            !localStorage.getItem('toomakt_cart_user_added');
+
+          if (!isLegacyStarter) {
+            // Enforce 1-5 limit on loaded items
+            return parsed.map((item: CartItem) => ({
+              ...item,
+              quantity: Math.min(5, Math.max(1, item.quantity || 1)),
+              product: {
+                ...item.product,
+                pieces_per_pack: item.product.pieces_per_pack || 20
+              }
+            }));
+          } else {
+            // Clean legacy mock item from storage
+            localStorage.removeItem('toomakt_cart_items');
+          }
         }
       }
     } catch {
       // Fallback
     }
-    // Default starter pack for smooth first glance
-    return [
-      {
-        product: {
-          id: 'mango-sunbeam',
-          name: 'Mango Sunbeam',
-          price: 260.00,
-          weight: '250g Pouch',
-          image: '/images/products/mango_sunbeam.jpg',
-          badge: 'BEST SELLER',
-          pieces_per_pack: 24
-        },
-        quantity: 1
-      }
-    ];
+    // Cart is empty by default until customer explicitly adds items
+    return [];
   });
 
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -116,6 +114,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addToCart = (product: any, quantity = 1, selectedFlavor?: string): boolean => {
     let limitReached = false;
     const targetFlavor = selectedFlavor || product.selected_flavor || (Array.isArray(product.available_flavors) && product.available_flavors.length > 0 ? product.available_flavors[0] : undefined);
+
+    try {
+      localStorage.setItem('toomakt_cart_user_added', 'true');
+    } catch {}
 
     setItems(prev => {
       const existing = prev.find(item =>

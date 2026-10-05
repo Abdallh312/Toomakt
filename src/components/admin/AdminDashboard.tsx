@@ -2088,7 +2088,79 @@ Thank you for choosing toomakt!`;
                 </div>
               </div>
 
-              {/* Part B: Marketing Pixels & Analytics Tracking */}
+              {/* Part B: Google Search Console & XML Sitemaps */}
+              <div className="bg-white rounded-2xl border border-[#E8E2D7] p-5 shadow-soft space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[#E8E2D7]">
+                  <div className="flex items-center gap-2">
+                    <Search className="w-4 h-4 text-[#3C1322]" />
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A]">
+                      Google Search Console & XML Sitemaps
+                    </h3>
+                  </div>
+                  <span className="text-[11px] text-[#2E7D32] flex items-center gap-1 font-medium">
+                    <Check className="w-3.5 h-3.5" />
+                    Sitemap & Robots Ready
+                  </span>
+                </div>
+
+                <div className="space-y-4 text-xs">
+                  <div>
+                    <label className="block text-[#736B63] mb-1 font-medium">
+                      Google Search Console Verification Token / Tag
+                    </label>
+                    <input
+                      type="text"
+                      value={seoConfig.googleSiteVerification || ''}
+                      onChange={(e) => setSeoConfig({ ...seoConfig, googleSiteVerification: e.target.value })}
+                      placeholder="e.g. google-site-verification token or code"
+                      className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-3.5 py-2 font-mono text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                    />
+                    <p className="mt-1 text-[11px] text-[#736B63]">
+                      Used to verify site ownership in Google Search Console. Injects &lt;meta name="google-site-verification" content="..."&gt;.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E8E2D7] flex items-center justify-between">
+                      <div className="truncate mr-2">
+                        <span className="text-[10px] uppercase font-bold text-[#736B63] block">XML Sitemap URL</span>
+                        <span className="font-mono text-xs text-[#1A1A1A]">https://www.toomakt.com/sitemap.xml</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText('https://www.toomakt.com/sitemap.xml');
+                          showToast('Copied sitemap.xml URL to clipboard!');
+                        }}
+                        className="btn-secondary py-1.5 px-3 text-[11px] shrink-0 cursor-pointer flex items-center gap-1"
+                      >
+                        <Copy className="w-3 h-3" />
+                        <span>Copy URL</span>
+                      </button>
+                    </div>
+
+                    <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E8E2D7] flex items-center justify-between">
+                      <div className="truncate mr-2">
+                        <span className="text-[10px] uppercase font-bold text-[#736B63] block">Robots Directives</span>
+                        <span className="font-mono text-xs text-[#1A1A1A]">https://www.toomakt.com/robots.txt</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText('https://www.toomakt.com/robots.txt');
+                          showToast('Copied robots.txt URL to clipboard!');
+                        }}
+                        className="btn-secondary py-1.5 px-3 text-[11px] shrink-0 cursor-pointer flex items-center gap-1"
+                      >
+                        <Copy className="w-3 h-3" />
+                        <span>Copy URL</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Part C: Marketing Pixels & Analytics Tracking */}
               <div className="bg-white rounded-2xl border border-[#E8E2D7] p-5 shadow-soft space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-[#E8E2D7]">
                   <div className="flex items-center gap-2">

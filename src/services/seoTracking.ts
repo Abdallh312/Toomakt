@@ -15,15 +15,17 @@ export interface SeoPixelConfig {
   gtmActive: boolean;
   snapchatPixelId: string;
   snapchatPixelActive: boolean;
+  googleSiteVerification?: string;
 }
 
 export const DEFAULT_SEO_CONFIG: SeoPixelConfig = {
   metaTitle: 'toomakt — Fruit, slowly made. | Artisanal Fruit Toffee',
   metaDescription: 'Artisanal fruit toffee crafted slowly with real whole fruit purée and European sweet cream butter in Cairo, Egypt.',
   focusKeywords: 'fruit toffee, artisanal confectionery, Cairo toffee, gourmet sweets egypt, handcrafted caramel, mango sunbeam',
-  canonicalUrl: 'https://toomakt.com',
+  canonicalUrl: 'https://www.toomakt.com',
   ogImageUrl: '/images/hero/hero_spec.jpg',
   robotsIndex: true,
+  googleSiteVerification: '',
   metaPixelId: '',
   metaPixelActive: false,
   tiktokPixelId: '',
@@ -80,12 +82,15 @@ export function applySeoAndTracking(config: SeoPixelConfig = getStoredSeoConfig(
   updateMetaTag('name', 'description', config.metaDescription);
   updateMetaTag('name', 'keywords', config.focusKeywords);
   updateMetaTag('name', 'robots', config.robotsIndex ? 'index, follow' : 'noindex, nofollow');
-  updateLinkTag('canonical', config.canonicalUrl || 'https://toomakt.com');
+  updateLinkTag('canonical', config.canonicalUrl || 'https://www.toomakt.com');
+  if (config.googleSiteVerification && config.googleSiteVerification.trim()) {
+    updateMetaTag('name', 'google-site-verification', config.googleSiteVerification.trim());
+  }
 
   // Open Graph Social Share Tags
   updateMetaTag('property', 'og:title', config.metaTitle);
   updateMetaTag('property', 'og:description', config.metaDescription);
-  updateMetaTag('property', 'og:url', config.canonicalUrl || 'https://toomakt.com');
+  updateMetaTag('property', 'og:url', config.canonicalUrl || 'https://www.toomakt.com');
   updateMetaTag('property', 'og:image', config.ogImageUrl || '/images/hero/hero_spec.jpg');
   updateMetaTag('property', 'og:type', 'website');
 

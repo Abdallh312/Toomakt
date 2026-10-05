@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  <!-- Homepage -->
+  <url>
+    <loc>https://www.toomakt.com/</loc>
+    <lastmod>2026-10-05T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.00</priority>
+  </url>
+
+  <!-- Shop Collection -->
+  <url>
+    <loc>https://www.toomakt.com/shop</loc>
+    <lastmod>2026-10-05T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- Bundles & Gift Sets -->
+  <url>
+    <loc>https://www.toomakt.com/bundles</loc>
+    <lastmod>2026-10-05T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <!-- Our Story & Craft Heritage -->
+  <url>
+    <loc>https://www.toomakt.com/our-story</loc>
+    <lastmod>2026-10-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <!-- Natural Ingredients & Pure Formula -->
+  <url>
+    <loc>https://www.toomakt.com/ingredients</loc>
+    <lastmod>2026-10-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <!-- Wholesale Inquiries & Hospitality -->
+  <url>
+    <loc>https://www.toomakt.com/wholesale</loc>
+    <lastmod>2026-10-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <!-- Direct Atelier Concierge & Contact -->
+  <url>
+    <loc>https://www.toomakt.com/contact</loc>
+    <lastmod>2026-10-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <!-- Order Telemetry Tracking -->
+  <url>
+    <loc>https://www.toomakt.com/track</loc>
+    <lastmod>2026-10-05T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <!-- Frequently Asked Questions -->
+  <url>
+    <loc>https://www.toomakt.com/faq</loc>
+    <lastmod>2026-10-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.50</priority>
+  </url>
+
+  <!-- Climate Shipping Policy -->
+  <url>
+    <loc>https://www.toomakt.com/shipping</loc>
+    <lastmod>2026-10-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.50</priority>
+  </url>
+</urlset>

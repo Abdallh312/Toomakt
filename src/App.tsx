@@ -39,7 +39,15 @@ export const AppContent: React.FC = () => {
   const [lastOrder, setLastOrder] = useState<any | null>(() => {
     try {
       const saved = localStorage.getItem('toomakt_last_order');
-      return saved ? JSON.parse(saved) : null;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.order_number && (parsed.order_number.includes('838446') || parsed.order_number.includes('mock') || parsed.order_number.includes('348395'))) {
+          localStorage.removeItem('toomakt_last_order');
+          return null;
+        }
+        return parsed;
+      }
+      return null;
     } catch {
       return null;
     }
@@ -361,7 +369,6 @@ export const AppContent: React.FC = () => {
 
         {currentView === 'track' && (
           <TrackOrderView
-            initialOrderNumber={lastOrder?.order_number}
             onBackToShop={() => handleNavigateView('shop')}
           />
         )}

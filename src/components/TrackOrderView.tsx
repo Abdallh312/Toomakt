@@ -32,7 +32,7 @@ interface TrackOrderViewProps {
 export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumber, onBackToShop }) => {
   const { isRtl } = useLanguage();
   
-  // Extract initial query from props, URL search params, or localStorage
+  // Extract initial query only if explicitly provided in URL search params (?order=... or ?id=...)
   const getInitialQuery = () => {
     if (initialOrderNumber && initialOrderNumber.trim()) {
       return initialOrderNumber.trim();
@@ -50,27 +50,12 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [recentOrder, setRecentOrder] = useState<any | null>(null);
 
-  // Check for recent order in localStorage
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('toomakt_last_order');
-      if (saved) {
-        setRecentOrder(JSON.parse(saved));
-      }
-    } catch {}
-  }, []);
-
-  // Auto-fetch if order query is present on mount
+  // Auto-fetch ONLY if a valid explicit query exists in the URL params
   useEffect(() => {
     const q = getInitialQuery();
     if (q) {
       fetchOrder(q);
-    } else if (recentOrder?.order_number) {
-      // Pre-fill with recent order if available
-      setOrderQuery(recentOrder.order_number);
-      fetchOrder(recentOrder.order_number);
     }
   }, [initialOrderNumber]);
 
@@ -95,8 +80,8 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
         setOrderData(null);
         setErrorMsg(
           isRtl
-            ? 'لم يتم العثور على أي طلب مطابق. يرجى التأكد من رقم الطلب (مثال: ORD-2026-348395) أو رقم الهاتف المستخدم.'
-            : 'No matching order found. Please verify your order number (e.g. ORD-2026-348395) or registered phone number.'
+            ? 'لم يتم العثور على أي طلب مطابق. يرجى التحقق من رقم الطلب أو رقم الهاتف المسجل والمحاولة مرة أخرى.'
+            : 'No matching order found. Please verify your order number or registered phone number.'
         );
       }
     } catch {
@@ -199,7 +184,7 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
               </div>
               <input
                 type="text"
-                placeholder={isRtl ? 'رقم الطلب (مثال: ORD-2026-348395) أو رقم الهاتف...' : 'Order # (e.g. ORD-2026-348395) or Phone #...'}
+                placeholder={isRtl ? 'أدخل رقم الطلب أو رقم الهاتف المسجل...' : 'Enter your order number or phone number...'}
                 value={orderQuery}
                 onChange={e => setOrderQuery(e.target.value)}
                 className="flex-1 bg-transparent px-2 py-2 text-xs sm:text-sm text-[#1A1A1A] font-mono focus:outline-none"
@@ -213,24 +198,6 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
               </button>
             </div>
           </form>
-
-          {/* Quick-Access Recent Order Chip */}
-          {recentOrder && !orderData && (
-            <div className="flex items-center justify-center gap-2 text-xs text-[#736B63]">
-              <span>{isRtl ? 'آخر طلب لك:' : 'Recent order:'}</span>
-              <button
-                type="button"
-                onClick={() => {
-                  setOrderQuery(recentOrder.order_number);
-                  fetchOrder(recentOrder.order_number);
-                }}
-                className="font-mono font-bold text-[#3C1322] underline hover:text-[#1A1A1A] cursor-pointer flex items-center gap-1"
-              >
-                <span>#{recentOrder.order_number}</span>
-                <ChevronRight className="w-3 h-3" />
-              </button>
-            </div>
-          )}
         </div>
 
         {/* Error Alert */}
