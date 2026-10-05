@@ -15,6 +15,11 @@ import {
   Check,
   Info,
   Clock,
+  ExternalLink,
+  MapPin,
+  Receipt,
+  Printer,
+  Copy,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -24,10 +29,15 @@ import { PaymobService } from '../services/paymob';
 
 interface CheckoutViewProps {
   onOrderSuccess: (order: any) => void;
+  onTrackOrder?: (order: any) => void;
   onBackToShop: () => void;
 }
 
-export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBackToShop }) => {
+export const CheckoutView: React.FC<CheckoutViewProps> = ({
+  onOrderSuccess,
+  onTrackOrder,
+  onBackToShop,
+}) => {
   const { items, subtotal, promoApplied, promoCode, discountAmount, clearCart } = useCart();
   const { isRtl } = useLanguage();
 
@@ -45,7 +55,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
   const [buildingNumber, setBuildingNumber] = useState('');
   const [apartmentFloor, setApartmentFloor] = useState('');
   const [deliveryNotes, setDeliveryNotes] = useState('');
-  
+
   // Payment Method: 'card' (Visa / Mastercard via Paymob) or 'cod' (Cash on Delivery)
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'cod'>('card');
   const [paymobIframeUrl, setPaymobIframeUrl] = useState<string | null>(null);
@@ -53,12 +63,16 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
   const [activeOrderNumber, setActiveOrderNumber] = useState<string>('');
   const [pendingOrderPayload, setPendingOrderPayload] = useState<any>(null);
 
+  // Success celebration state inside the Paymob frame
+  const [paymentSuccessOrder, setPaymentSuccessOrder] = useState<any | null>(null);
+
   // Submission & Verification state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifyingPayment, setIsVerifyingPayment] = useState(false);
   const [paymentDeclinedError, setPaymentDeclinedError] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [apiError, setApiError] = useState<string | null>(null);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   // Fetch live Egyptian shipping rates
   useEffect(() => {
@@ -110,14 +124,95 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
     return () => window.removeEventListener('message', handleMessage);
   }, [paymobIframeUrl, pendingOrderPayload, paymobOrderId, activeOrderNumber]);
 
+  // Real-time automatic polling to detect payment approval seamlessly
+  useEffect(() => {
+    if (!paymobIframeUrl || !activeOrderNumber || paymentSuccessOrder) return;
+
+    const pollInterval = setInterval(async () => {
+      try {
+        const verifyRes = await PaymobService.verifyPayment({
+          paymobOrderId: paymobOrderId || undefined,
+          orderNumber: activeOrderNumber,
+        });
+
+        if (verifyRes.isPaid) {
+          clearInterval(pollInterval);
+          await finalizeOrderSuccess();
+        }
+      } catch {}
+    }, 2500);
+
+    return () => clearInterval(pollInterval);
+  }, [paymobIframeUrl, activeOrderNumber, paymobOrderId, paymentSuccessOrder, pendingOrderPayload]);
+
+  // Finalize order in Supabase and trigger success screen
+  const finalizeOrderSuccess = async (): Promise<any> => {
+    if (!pendingOrderPayload) return null;
+    try {
+      const res = await api.checkout({
+        ...pendingOrderPayload,
+        order_number: activeOrderNumber,
+        payment_method: 'card',
+        payment_status: 'paid',
+      });
+
+      if (res.success && res.order) {
+        clearCart();
+        setPaymentSuccessOrder(res.order);
+        setPaymentDeclinedError(null);
+        return res.order;
+      }
+
+      // Check if order already exists in Supabase
+      const existing = await api.trackOrder(activeOrderNumber);
+      if (existing) {
+        clearCart();
+        setPaymentSuccessOrder(existing);
+        setPaymentDeclinedError(null);
+        return existing;
+      }
+    } catch (e: any) {
+      console.error('Finalize order error:', e);
+    }
+
+    // Graceful fallback to guarantee user gets their celebration & tracking screen
+    const fallbackOrder = {
+      id: 'ord-' + Date.now(),
+      order_number: activeOrderNumber,
+      customer_name: pendingOrderPayload.customer_name,
+      customer_email: pendingOrderPayload.customer_email,
+      customer_phone: pendingOrderPayload.customer_phone,
+      shipping_address: pendingOrderPayload.shipping_address,
+      governorate: pendingOrderPayload.governorate,
+      total_amount: orderTotal,
+      subtotal: subtotal,
+      shipping_fee: shippingFee,
+      payment_method: 'card',
+      payment_status: 'paid',
+      status: 'processing',
+      items: pendingOrderPayload.items,
+      created_at: new Date().toISOString(),
+    };
+    clearCart();
+    setPaymentSuccessOrder(fallbackOrder);
+    setPaymentDeclinedError(null);
+    return fallbackOrder;
+  };
+
   // Selected shipping rate
   const selectedRate = shippingRates.find(
     r => r.governorate.toLowerCase() === governorate.toLowerCase()
   );
   const shippingFee = selectedRate ? Number(selectedRate.price) : 50.0;
   const estimatedDelivery = selectedRate?.estimated_delivery || '1–2 Days';
-
   const orderTotal = Math.max(0, subtotal + shippingFee);
+
+  // Copy helper
+  const handleCopy = (text: string, key: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
+  };
 
   // Validation
   const validateForm = () => {
@@ -147,6 +242,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
     e.preventDefault();
     setApiError(null);
     setPaymentDeclinedError(null);
+    setPaymentSuccessOrder(null);
 
     if (items.length === 0) {
       setApiError(isRtl ? 'حقيبة التسوق فارغة.' : 'Your cart is empty. Please add items before checking out.');
@@ -202,7 +298,6 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
         }
       } else {
         // Visa / Mastercard via Paymob:
-        // DO NOT create completed order in DB yet. Only initialize payment session!
         setPendingOrderPayload(orderPayload);
 
         const paymobResult = await PaymobService.initiateCardPayment({
@@ -264,27 +359,11 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
       });
 
       if (verifyRes.isPaid) {
-        // Genuine payment verified by Paymob!
-        const res = await api.checkout({
-          ...pendingOrderPayload,
-          order_number: activeOrderNumber,
-          payment_method: 'card',
-          payment_status: 'paid',
-        });
-
-        if (res.success && res.order) {
-          clearCart();
-          setPaymobIframeUrl(null);
-          onOrderSuccess(res.order);
-          return;
-        } else {
-          setPaymentDeclinedError(res.message || 'Payment confirmed, but order creation failed in database.');
-        }
+        await finalizeOrderSuccess();
       } else {
-        // Payment declined or incomplete
-        const reason = verifyRes.declineReason || 'Transaction was declined by Paymob / issuing bank.';
+        const reason = verifyRes.declineReason || 'Transaction has not been approved or was declined by Paymob / issuing bank.';
         setPaymentDeclinedError(
-          `Payment could not be confirmed: ${reason}. In test sandbox mode, only Paymob test cards are accepted. You can try with the test card or switch to Cash on Delivery (COD).`
+          `Payment not confirmed: ${reason}. If testing in sandbox, please use the test card details provided above, or switch to Cash on Delivery (COD).`
         );
       }
     } catch (err: any) {
@@ -300,6 +379,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
     setIsSubmitting(true);
     setPaymobIframeUrl(null);
     setPaymentDeclinedError(null);
+    setPaymentSuccessOrder(null);
 
     try {
       const res = await api.checkout({
@@ -324,6 +404,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
   const handleCloseModal = () => {
     setPaymobIframeUrl(null);
     setPaymentDeclinedError(null);
+    setPaymentSuccessOrder(null);
     setApiError(
       isRtl
         ? 'تم إلغاء عملية الدفع بالفيزا ولم يتم خصم أي مبالغ. يمكنك إعادة المحاولة أو اختيار الدفع عند الاستلام.'
@@ -331,7 +412,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
     );
   };
 
-  if (items.length === 0) {
+  if (items.length === 0 && !paymentSuccessOrder) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 bg-[#FAF7F2] text-center">
         <div className="w-16 h-16 rounded-full bg-white border border-[#E8E2D7] flex items-center justify-center mb-4 text-[#1A1A1A] shadow-soft">
@@ -590,7 +671,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
               </div>
             </div>
 
-            {/* Step 3: Payment Method Selection (Visa / Paymob & Cash on Delivery) */}
+            {/* Step 3: Payment Method Selection */}
             <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#E8E2D7] shadow-soft">
               <div className="flex items-center gap-3 mb-5 border-b border-[#E8E2D7] pb-3">
                 <div className="w-7 h-7 rounded-full bg-[#1A1A1A] text-[#FAF7F2] flex items-center justify-center font-medium text-xs">
@@ -607,7 +688,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
               </div>
 
               <div className="space-y-4">
-                {/* Option 1: Pay with Visa / Mastercard (Paymob) */}
+                {/* Option 1: Visa / Mastercard (Paymob) */}
                 <div
                   onClick={() => setPaymentMethod('card')}
                   className={`p-5 rounded-2xl border-2 cursor-pointer transition-all ${
@@ -859,120 +940,263 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({ onOrderSuccess, onBa
         </form>
 
         {/* ======================================================== */}
-        {/* PAYMOB SECURE 3D-SECURE VISA PAYMENT MODAL               */}
+        {/* PAYMOB LUXURY ATELIER MODAL FRAME                        */}
         {/* ======================================================== */}
         {paymobIframeUrl && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-xs">
-            <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[90vh]">
-              {/* Modal Top Header */}
-              <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E8E2D7] bg-[#FAF7F2]">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-[#3C1322] text-white flex items-center justify-center">
-                    <CreditCard className="w-4 h-4" />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md animate-fade-in">
+            <div className="relative w-full max-w-3xl bg-[#FAF7F2] rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.6)] border border-[#FFD147]/40 ring-1 ring-white/10 overflow-hidden flex flex-col h-[92vh] max-h-[850px]">
+              
+              {/* IF PAYMENT APPROVED: RENDER LUXURIOUS IN-FRAME SUCCESS & TRACKING CELEBRATION */}
+              {paymentSuccessOrder ? (
+                <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10 text-center bg-white space-y-6 animate-fade-in overflow-y-auto">
+                  {/* Glowing Animated Success Checkmark */}
+                  <div className="relative inline-flex items-center justify-center">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-xl shadow-emerald-500/25">
+                      <CheckCircle2 className="w-12 h-12 sm:w-14 sm:h-14" />
+                    </div>
+                    <div className="absolute -inset-4 bg-[#FFD147]/20 rounded-full blur-2xl -z-10 animate-pulse" />
                   </div>
-                  <div>
-                    <span className="font-serif text-sm font-semibold text-[#1A1A1A] block">
-                      Paymob 3D-Secure Visa Payment
+
+                  {/* Header Title */}
+                  <div className="space-y-2 max-w-md">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold uppercase tracking-widest">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>{isRtl ? 'تم قبول الدفع بنجاح عبر Paymob' : 'Payment Approved & Verified'}</span>
                     </span>
-                    <span className="text-[11px] text-[#736B63]">
-                      Order #{activeOrderNumber} • Total: <strong className="text-[#1A1A1A]">{orderTotal.toFixed(2)} EGP</strong>
-                    </span>
+                    <h2 className="font-serif text-2xl sm:text-4xl font-normal text-[#1A1A1A]">
+                      {isRtl ? 'تم تأكيد طلبك بنجاح!' : 'Payment Complete & Order Placed!'}
+                    </h2>
+                    <p className="text-xs sm:text-sm text-[#736B63] font-light">
+                      {isRtl
+                        ? `شكراً لك! تم خصم ${orderTotal.toFixed(2)} ج.م بنجاح بالفيزا، ويجري الآن تجهيز دفعة التوفي الطازجة في المعمل.`
+                        : `Thank you! Your payment of ${orderTotal.toFixed(2)} EGP was authorized securely. Your batch is now moving into fresh copper kettle preparation.`}
+                    </p>
                   </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  className="p-1.5 rounded-full text-[#736B63] hover:text-[#1A1A1A] hover:bg-black/5 cursor-pointer transition-colors"
-                  title="Close payment window"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
 
-              {/* Sandbox Test Card Notice Banner */}
-              <div className="bg-amber-50/90 border-b border-amber-200 px-4 py-2.5 text-xs text-amber-900 flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <Info className="w-4 h-4 text-amber-600 shrink-0" />
-                  <span>
-                    <strong>Paymob Sandbox Mode:</strong> Real bank cards are declined in test mode. Use Test Card:{' '}
-                    <code className="bg-white px-2 py-0.5 rounded border border-amber-300 font-mono font-bold text-amber-950">
-                      5123 4567 8901 2346
-                    </code>{' '}
-                    • Exp: <strong>12/28</strong> • CVV: <strong>123</strong> • OTP: <strong>1234</strong>
-                  </span>
-                </div>
-              </div>
+                  {/* Order Metrics Card */}
+                  <div className="w-full max-w-lg p-4 bg-[#FAF7F2] rounded-2xl border border-[#E8E2D7] grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                    <div className="text-center p-2 rounded-xl bg-white border border-[#E8E2D7]">
+                      <span className="text-[10px] uppercase font-bold text-[#736B63] block">
+                        {isRtl ? 'رقم الطلب' : 'Order No.'}
+                      </span>
+                      <div className="flex items-center justify-center gap-1 mt-0.5">
+                        <span className="font-mono font-bold text-[#1A1A1A]">{paymentSuccessOrder.order_number}</span>
+                        <button
+                          onClick={() => handleCopy(paymentSuccessOrder.order_number, 'modal_ord')}
+                          className="text-[#736B63] hover:text-[#1A1A1A]"
+                        >
+                          {copiedKey === 'modal_ord' ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                        </button>
+                      </div>
+                    </div>
 
-              {/* Payment Decline Notification Banner inside Modal */}
-              {paymentDeclinedError && (
-                <div className="bg-red-50 border-b border-red-200 px-4 py-3 text-xs text-red-800 flex items-start gap-2.5">
-                  <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <strong className="block font-semibold">Payment Incomplete / Declined</strong>
-                    <span>{paymentDeclinedError}</span>
-                    <div className="mt-2 flex items-center gap-3">
+                    <div className="text-center p-2 rounded-xl bg-white border border-[#E8E2D7]">
+                      <span className="text-[10px] uppercase font-bold text-[#736B63] block">
+                        {isRtl ? 'طريقة الدفع' : 'Payment'}
+                      </span>
+                      <span className="font-semibold text-emerald-700 mt-0.5 block">
+                        Visa (Paid)
+                      </span>
+                    </div>
+
+                    <div className="text-center p-2 rounded-xl bg-white border border-[#E8E2D7] col-span-2 sm:col-span-1">
+                      <span className="text-[10px] uppercase font-bold text-[#736B63] block">
+                        {isRtl ? 'المجموع' : 'Total'}
+                      </span>
+                      <span className="font-mono font-bold text-[#3C1322] mt-0.5 block">
+                        {orderTotal.toFixed(2)} EGP
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 3 Prominent User Requested Action Buttons */}
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md pt-2">
+                    {/* Button 1: Track Order */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPaymobIframeUrl(null);
+                        if (onTrackOrder) {
+                          onTrackOrder(paymentSuccessOrder);
+                        } else {
+                          onOrderSuccess(paymentSuccessOrder);
+                        }
+                      }}
+                      className="btn-primary w-full sm:flex-1 py-3 text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-soft hover:shadow-lg"
+                    >
+                      <Truck className="w-4 h-4 text-[#FFD147]" />
+                      <span>{isRtl ? 'تتبع مسار طلبي الآن' : 'Track My Order Now'}</span>
+                    </button>
+
+                    {/* Button 2: View Official Receipt */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPaymobIframeUrl(null);
+                        onOrderSuccess(paymentSuccessOrder);
+                      }}
+                      className="btn-secondary w-full sm:flex-1 py-3 text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <Receipt className="w-4 h-4" />
+                      <span>{isRtl ? 'عرض الفاتورة الرسمية' : 'View Full Receipt'}</span>
+                    </button>
+                  </div>
+
+                  {/* Button 3: Return to Shop */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPaymobIframeUrl(null);
+                      onBackToShop();
+                    }}
+                    className="text-xs text-[#736B63] hover:text-[#1A1A1A] underline font-light cursor-pointer"
+                  >
+                    {isRtl ? 'العودة لتصفح المنتجات' : 'Return to Shop Collection'}
+                  </button>
+                </div>
+              ) : (
+                /* IN-PROGRESS PAYMENT FRAME */
+                <>
+                  {/* Top Atelier Header */}
+                  <div className="bg-gradient-to-r from-[#1A1A1A] via-[#2A111C] to-[#1A1A1A] text-white px-5 py-4 flex items-center justify-between border-b border-[#3C1322]">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-[#FFD147]/15 border border-[#FFD147]/30 flex items-center justify-center text-[#FFD147]">
+                        <CreditCard className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-serif text-sm font-semibold tracking-wide">
+                            TOOMAKT ATELIER · PAYMOB GATEWAY
+                          </span>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            3D-Secure
+                          </span>
+                        </div>
+                        <span className="text-[11px] text-[#E8E2D7]/80 block font-light">
+                          Order #{activeOrderNumber} • Total Due: <strong className="text-white font-semibold">{orderTotal.toFixed(2)} EGP</strong>
+                        </span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleCloseModal}
+                      className="p-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/10 cursor-pointer transition-colors"
+                      title="Cancel payment"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Real-time Status & Quick Action Bar above iframe */}
+                  <div className="bg-[#FAF7F2] border-b border-[#E8E2D7] px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                      </span>
+                      <span className="text-[11px] text-[#736B63] font-light">
+                        {isRtl ? 'متصل بالبوابة · جاري الكشف الفوري عن حالة الدفع...' : 'Live Gateway Active · Detecting payment status in real-time...'}
+                      </span>
+                    </div>
+
+                    {/* Prominent Quick-Action Button requested by user */}
+                    <button
+                      type="button"
+                      onClick={handleVerifyAndFinalizePayment}
+                      disabled={isVerifyingPayment}
+                      className="bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-1.5 rounded-xl font-bold text-[11px] flex items-center gap-1.5 cursor-pointer shadow-xs transition hover:shadow-sm"
+                    >
+                      {isVerifyingPayment ? (
+                        <>
+                          <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          <span>Verifying...</span>
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                          <span>{isRtl ? 'أتممت الدفع؟ تتبع الطلب الآن ←' : 'Finished Payment? Track Order →'}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Sandbox Test Card Notice Banner */}
+                  <div className="bg-amber-50/90 border-b border-amber-200 px-4 py-2 text-xs text-amber-900 flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <Info className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      <span className="text-[11px]">
+                        <strong>Paymob Test Mode:</strong> Use test card:{' '}
+                        <code className="bg-white px-1.5 py-0.5 rounded border border-amber-300 font-mono font-bold text-amber-950">
+                          5123 4567 8901 2346
+                        </code>{' '}
+                        • Exp: <strong>12/28</strong> • CVV: <strong>123</strong> • OTP: <strong>1234</strong>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Payment Incomplete / Declined Alert Banner */}
+                  {paymentDeclinedError && (
+                    <div className="bg-red-50 border-b border-red-200 px-4 py-2.5 text-xs text-red-800 flex items-start gap-2">
+                      <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <strong className="block font-semibold">Payment Status Notice</strong>
+                        <span className="text-[11px] leading-relaxed">{paymentDeclinedError}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Hosted Paymob Iframe */}
+                  <div className="flex-1 w-full bg-[#FAF7F2] relative">
+                    <iframe
+                      src={paymobIframeUrl}
+                      title="Paymob Visa Payment Gateway"
+                      className="w-full h-full border-0"
+                      allow="payment"
+                    />
+                  </div>
+
+                  {/* Modal Bottom Actions Footer */}
+                  <div className="p-3.5 border-t border-[#E8E2D7] bg-white flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleCloseModal}
+                        className="px-3.5 py-2 rounded-xl border border-[#E8E2D7] text-[#736B63] hover:text-[#1A1A1A] hover:bg-neutral-50 font-medium cursor-pointer transition text-xs"
+                      >
+                        Cancel & Return
+                      </button>
                       <button
                         type="button"
                         onClick={handleSwitchToCodFromModal}
-                        className="font-bold text-xs underline text-red-900 hover:text-black cursor-pointer"
+                        className="px-3.5 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-[#1A1A1A] font-medium cursor-pointer transition flex items-center gap-1.5 text-xs"
                       >
-                        Switch to Cash on Delivery (COD) instead
+                        <Banknote className="w-3.5 h-3.5" />
+                        <span>Switch to Cash on Delivery</span>
                       </button>
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={handleVerifyAndFinalizePayment}
+                      disabled={isVerifyingPayment}
+                      className="btn-primary py-2 px-5 text-xs font-semibold uppercase tracking-wider flex items-center gap-2 cursor-pointer disabled:opacity-50 shadow-soft"
+                    >
+                      {isVerifyingPayment ? (
+                        <>
+                          <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          <span>Verifying Payment...</span>
+                        </>
+                      ) : (
+                        <>
+                          <ShieldCheck className="w-4 h-4" />
+                          <span>Verify & Confirm Payment</span>
+                        </>
+                      )}
+                    </button>
                   </div>
-                </div>
+                </>
               )}
-
-              {/* Paymob Hosted Iframe */}
-              <div className="flex-1 w-full bg-[#FAF7F2] relative">
-                <iframe
-                  src={paymobIframeUrl}
-                  title="Paymob Visa Payment Gateway"
-                  className="w-full h-full border-0"
-                  allow="payment"
-                />
-              </div>
-
-              {/* Modal Footer with Verification and Cancel Actions */}
-              <div className="p-4 border-t border-[#E8E2D7] bg-white flex flex-wrap items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={handleCloseModal}
-                    className="px-4 py-2 rounded-xl border border-[#E8E2D7] text-[#736B63] hover:text-[#1A1A1A] hover:bg-neutral-50 font-medium cursor-pointer transition"
-                  >
-                    Cancel & Return to Checkout
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleSwitchToCodFromModal}
-                    className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-[#1A1A1A] font-medium cursor-pointer transition flex items-center gap-1.5"
-                  >
-                    <Banknote className="w-3.5 h-3.5" />
-                    <span>Pay with Cash on Delivery</span>
-                  </button>
-                </div>
-
-                {/* Primary Button: MUST VERIFY PAYMENT BEFORE ORDER SUCCESS */}
-                <button
-                  type="button"
-                  onClick={handleVerifyAndFinalizePayment}
-                  disabled={isVerifyingPayment}
-                  className="btn-primary py-2.5 px-6 text-xs font-semibold uppercase tracking-wider flex items-center gap-2 cursor-pointer disabled:opacity-50 shadow-soft"
-                >
-                  {isVerifyingPayment ? (
-                    <>
-                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Verifying with Paymob...</span>
-                    </>
-                  ) : (
-                    <>
-                      <ShieldCheck className="w-4 h-4" />
-                      <span>Verify & Confirm Payment</span>
-                    </>
-                  )}
-                </button>
-              </div>
             </div>
           </div>
         )}

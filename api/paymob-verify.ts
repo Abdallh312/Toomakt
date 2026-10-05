@@ -9,7 +9,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
 
-  const { orderNumber, paymobOrderId } = req.body || {};
+  const { orderNumber, paymobOrderId, transactionId } = req.body || {};
   const apiKey = process.env.PAYMOB_API_KEY || process.env.VITE_PAYMOB_API_KEY;
 
   if (!apiKey) {
@@ -30,7 +30,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).json({ success: false, isPaid: false, message: 'Paymob auth failed' });
     }
 
-    // 2. Check Order Status if paymobOrderId is provided
+    // 2. Direct check by transactionId (from Paymob post_pay or return URL ?id=...)
+    if (transactionId) {
+      try {
+        const txRes = await fetch(`https://accept.paymob.com/api/acceptance/transactions/${transactionId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (txRes.ok) {
+          const tx = await txRes.json();
+          const isPaid = tx.success === true && !tx.is_voided && !tx.is_refunded;
+          return res.status(200).json({
+            success: true,
+            isPaid,
+            status: isPaid ? 'PAID' : (tx.data?.message || 'DECLINED'),
+            orderNumber: tx.order?.merchant_order_id,
+            paymobOrderId: tx.order?.id,
+            paidAmountCents: tx.amount_cents,
+            transactionId: tx.id,
+            isDeclined: !isPaid,
+            declineReason: !isPaid ? (tx.data?.message || 'Transaction not approved') : undefined,
+          });
+        }
+      } catch (err: any) {
+        console.error('Error fetching transaction by ID:', err);
+      }
+    }
+
+    // 3. Check Order Status if paymobOrderId is provided
     if (paymobOrderId) {
       const orderRes = await fetch(`https://accept.paymob.com/api/ecommerce/orders/${paymobOrderId}`, {
         headers: { 'Authorization': `Bearer ${token}` }

@@ -28,9 +28,14 @@ import { WhatsAppService } from '../services/whatsapp';
 interface OrderSuccessViewProps {
   order: any;
   onContinueShopping: () => void;
+  onTrackOrder?: (orderNumber: string) => void;
 }
 
-export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({ order, onContinueShopping }) => {
+export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
+  order,
+  onContinueShopping,
+  onTrackOrder,
+}) => {
   const { isRtl } = useLanguage();
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
@@ -390,13 +395,25 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({ order, onCon
         {/* ACTIONS & CONTACT                                        */}
         {/* ======================================================== */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
-          <button
-            onClick={onContinueShopping}
-            className="btn-secondary w-full sm:w-auto text-xs py-3 px-6 flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <ShoppingBag className="w-4 h-4" />
-            <span>{isRtl ? 'العودة للتسوق والمزيد' : 'CONTINUE SHOPPING'}</span>
-          </button>
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            {onTrackOrder && (
+              <button
+                onClick={() => onTrackOrder(orderNumber)}
+                className="btn-primary w-full sm:w-auto text-xs py-3 px-6 flex items-center justify-center gap-2 cursor-pointer shadow-soft hover:shadow-lg"
+              >
+                <Truck className="w-4 h-4 text-[#FFD147]" />
+                <span>{isRtl ? 'تتبع مسار الطلب مباشرة' : 'TRACK THIS ORDER LIVE'}</span>
+              </button>
+            )}
+
+            <button
+              onClick={onContinueShopping}
+              className="btn-secondary w-full sm:w-auto text-xs py-3 px-6 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              <span>{isRtl ? 'العودة للتسوق والمزيد' : 'CONTINUE SHOPPING'}</span>
+            </button>
+          </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <button

@@ -50,6 +50,9 @@ export interface PaymobVerifyResult {
   isDeclined?: boolean;
   status?: string;
   declineReason?: string;
+  orderNumber?: string;
+  paidAmountCents?: number;
+  transactionId?: string | number;
   message?: string;
 }
 
@@ -244,6 +247,7 @@ export class PaymobService {
   public static async verifyPayment(params: {
     paymobOrderId?: number | string;
     orderNumber?: string;
+    transactionId?: number | string;
   }): Promise<PaymobVerifyResult> {
     // 1. Try serverless verification endpoint first (/api/paymob-verify)
     try {
@@ -264,7 +268,7 @@ export class PaymobService {
     const config = this.getConfig();
 
     // 2. Direct client verification with Paymob API if API Key is available
-    if (config.apiKey && params.paymobOrderId) {
+    if (config.apiKey) {
       try {
         const authRes = await fetch('https://accept.paymob.com/api/auth/tokens', {
           method: 'POST',
@@ -275,19 +279,45 @@ export class PaymobService {
         const token = authData.token;
 
         if (token) {
-          const orderRes = await fetch(`https://accept.paymob.com/api/ecommerce/orders/${params.paymobOrderId}`, {
-            headers: { 'Authorization': `Bearer ${token}` },
-          });
-          if (orderRes.ok) {
-            const orderData = await orderRes.json();
-            const isPaid = (orderData.paid_amount_cents && Number(orderData.paid_amount_cents) > 0) || orderData.payment_status === 'PAID';
-            return {
-              success: true,
-              isPaid,
-              status: orderData.payment_status,
-              isDeclined: !isPaid && orderData.payment_status !== 'UNPAID',
-              message: isPaid ? 'Payment verified successfully.' : 'Payment is pending or unpaid.',
-            };
+          // Check by transactionId
+          if (params.transactionId) {
+            const txRes = await fetch(`https://accept.paymob.com/api/acceptance/transactions/${params.transactionId}`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (txRes.ok) {
+              const tx = await txRes.json();
+              const isPaid = tx.success === true && !tx.is_voided && !tx.is_refunded;
+              return {
+                success: true,
+                isPaid,
+                status: isPaid ? 'PAID' : (tx.data?.message || 'DECLINED'),
+                orderNumber: tx.order?.merchant_order_id,
+                paidAmountCents: tx.amount_cents,
+                transactionId: tx.id,
+                isDeclined: !isPaid,
+                message: isPaid ? 'Payment verified successfully.' : 'Payment declined.',
+              };
+            }
+          }
+
+          // Check by paymobOrderId
+          if (params.paymobOrderId) {
+            const orderRes = await fetch(`https://accept.paymob.com/api/ecommerce/orders/${params.paymobOrderId}`, {
+              headers: { 'Authorization': `Bearer ${token}` },
+            });
+            if (orderRes.ok) {
+              const orderData = await orderRes.json();
+              const isPaid = (orderData.paid_amount_cents && Number(orderData.paid_amount_cents) > 0) || orderData.payment_status === 'PAID';
+              return {
+                success: true,
+                isPaid,
+                status: orderData.payment_status,
+                orderNumber: orderData.merchant_order_id,
+                paidAmountCents: orderData.paid_amount_cents,
+                isDeclined: !isPaid && orderData.payment_status !== 'UNPAID',
+                message: isPaid ? 'Payment verified successfully.' : 'Payment is pending or unpaid.',
+              };
+            }
           }
         }
       } catch (err: any) {
@@ -303,3 +333,4 @@ export class PaymobService {
     };
   }
 }
+

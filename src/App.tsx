@@ -30,6 +30,8 @@ import { AdminDashboard } from './components/admin/AdminDashboard';
 import { Product } from './types';
 import { initSeoAndTracking } from './services/seoTracking';
 import { getCleanRoute, navigateTo } from './utils/navigation';
+import { api } from './services/api';
+import { PaymobService } from './services/paymob';
 
 export const AppContent: React.FC = () => {
   const [currentView, setCurrentView] = useState<string>('home');
@@ -47,6 +49,61 @@ export const AppContent: React.FC = () => {
   useEffect(() => {
     const cleanup = initSeoAndTracking();
     return cleanup;
+  }, []);
+
+  // Detect Paymob transaction response return parameters (e.g. ?success=true&id=548042800)
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const successParam = searchParams.get('success');
+    const txnId = searchParams.get('id');
+    const paymobOrderId = searchParams.get('order');
+    const merchantOrderId = searchParams.get('merchant_order_id') || searchParams.get('special_reference');
+
+    if (successParam === 'true' || (txnId && searchParams.has('pending'))) {
+      const verifyAndLoad = async () => {
+        try {
+          const verifyRes = await PaymobService.verifyPayment({
+            transactionId: txnId || undefined,
+            paymobOrderId: paymobOrderId || undefined,
+            orderNumber: merchantOrderId || undefined,
+          });
+
+          if (verifyRes.isPaid) {
+            const targetOrderNum = verifyRes.orderNumber || merchantOrderId;
+            let loadedOrder: any = null;
+            if (targetOrderNum) {
+              loadedOrder = await api.trackOrder(targetOrderNum);
+            }
+
+            if (!loadedOrder) {
+              // Construct order summary from verification data
+              loadedOrder = {
+                order_number: targetOrderNum || `ORD-PAYMOB-${txnId || 'PAID'}`,
+                total_amount: verifyRes.paidAmountCents ? (verifyRes.paidAmountCents / 100) : 0,
+                payment_method: 'card',
+                payment_status: 'paid',
+                status: 'processing',
+                customer_name: 'Valued Customer',
+                created_at: new Date().toISOString(),
+              };
+            }
+
+            setLastOrder(loadedOrder);
+            try {
+              localStorage.setItem('toomakt_last_order', JSON.stringify(loadedOrder));
+            } catch (e) {}
+
+            // Navigate to order-success and clean URL
+            setCurrentView('order-success');
+            window.history.replaceState({}, '', '/order-success');
+          }
+        } catch (e) {
+          console.error('Error verifying Paymob return URL:', e);
+        }
+      };
+
+      verifyAndLoad();
+    }
   }, []);
 
   const checkAdminAuth = () => {
@@ -274,6 +331,13 @@ export const AppContent: React.FC = () => {
               } catch (e) {}
               handleNavigateView('order-success');
             }}
+            onTrackOrder={(ord) => {
+              setLastOrder(ord);
+              try {
+                localStorage.setItem('toomakt_last_order', JSON.stringify(ord));
+              } catch (e) {}
+              handleNavigateView('track');
+            }}
             onBackToShop={() => handleNavigateView('shop')}
           />
         )}
@@ -282,11 +346,17 @@ export const AppContent: React.FC = () => {
           <OrderSuccessView
             order={lastOrder}
             onContinueShopping={() => handleNavigateView('shop')}
+            onTrackOrder={(_orderNum) => {
+              handleNavigateView('track');
+            }}
           />
         )}
 
         {currentView === 'track' && (
-          <TrackOrderView />
+          <TrackOrderView
+            initialOrderNumber={lastOrder?.order_number}
+            onBackToShop={() => handleNavigateView('shop')}
+          />
         )}
 
         {currentView === '404' && (

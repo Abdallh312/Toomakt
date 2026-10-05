@@ -171,6 +171,33 @@ function paymobDevPlugin(env: Record<string, string>) {
               return;
             }
 
+            if (data.transactionId) {
+              try {
+                const txRes = await fetch(`https://accept.paymob.com/api/acceptance/transactions/${data.transactionId}`, {
+                  headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (txRes.ok) {
+                  const tx = await txRes.json();
+                  const isPaid = tx.success === true && !tx.is_voided && !tx.is_refunded;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.end(JSON.stringify({
+                    success: true,
+                    isPaid,
+                    status: isPaid ? 'PAID' : (tx.data?.message || 'DECLINED'),
+                    orderNumber: tx.order?.merchant_order_id,
+                    paymobOrderId: tx.order?.id,
+                    paidAmountCents: tx.amount_cents,
+                    transactionId: tx.id,
+                    isDeclined: !isPaid,
+                    declineReason: !isPaid ? (tx.data?.message || 'Transaction not approved') : undefined,
+                  }));
+                  return;
+                }
+              } catch (e: any) {
+                console.error('Error verifying transactionId:', e);
+              }
+            }
+
             if (data.paymobOrderId) {
               const orderRes = await fetch(`https://accept.paymob.com/api/ecommerce/orders/${data.paymobOrderId}`, {
                 headers: { 'Authorization': `Bearer ${token}` },
