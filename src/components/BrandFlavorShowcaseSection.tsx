@@ -23,8 +23,7 @@ export const BrandFlavorShowcaseSection: React.FC<BrandFlavorShowcaseSectionProp
       description: isRtl
         ? 'بونبون قهوة وكابتشينو فاخر محشو بسائل القهوة الطبيعية المركزة مع حبوب البن الإيطالية المحمصة.'
         : 'Protein and Extracts of Coffee Liquid. Premium cappuccino bonbon filled with natural roasted Italian coffee extract.',
-      image: '/images/products/cappuccino_candies_thumb.jpg',
-      logo: '/images/logos/toomakt_logo_main.png',
+      image: '/images/drive_products/01_cappuccino_candies_shop.jpg',
       badge: isRtl ? 'الأكثر طلباً' : 'Bestseller',
       accent: '#4A2E18',
     },
@@ -36,8 +35,7 @@ export const BrandFlavorShowcaseSection: React.FC<BrandFlavorShowcaseSectionProp
       description: isRtl
         ? 'توفي حليب ناعم بجودة أوربية محشو باللبن الطبيعي وكريمة الفانيليا الفاخرة.'
         : 'Toomakt Milk Center Milk Europe Quality. Soft toffee stuffed with natural whole milk and delicate vanilla cream.',
-      image: '/images/products/milk_toffee_thumb.jpg',
-      logo: '/images/logos/toomakt_logo_cherry.png',
+      image: '/images/drive_products/02_milk_toffee_shop.jpg',
       badge: isRtl ? 'جودة أوروبا' : 'Europe Quality',
       accent: '#1E4B8A',
     },
@@ -49,8 +47,7 @@ export const BrandFlavorShowcaseSection: React.FC<BrandFlavorShowcaseSectionProp
       description: isRtl
         ? 'توفي اكلير مصنوع من الزبدة الطبيعية الفاخرة ومحشو بشوكولاتة سائلة ناعمة تذوب في الفم.'
         : 'Artisanal butter eclair toffee filled with velvety chocolate cream and whole milk.',
-      image: '/images/products/butter_eclairs_1_thumb.jpg',
-      logo: '/images/logos/toomakt_logo_orange.png',
+      image: '/images/drive_products/03_butter_eclairs_chocolate_shop.jpg',
       badge: isRtl ? 'شوكولاتة فاخرة' : 'Rich Chocolate',
       accent: '#D4AF37',
     },
@@ -62,8 +59,7 @@ export const BrandFlavorShowcaseSection: React.FC<BrandFlavorShowcaseSectionProp
       description: isRtl
         ? 'توفي ناعم متعدد النكهات (فراولة، ليمون، تفاح أخضر) محشو بعسل وسيرب الفواكه الطبيعي.'
         : 'Soft chewy toffee with vibrant fruit extracts filled with liquid natural fruit honey.',
-      image: '/images/products/fruit_toffee_05_thumb.jpg',
-      logo: '/images/logos/toomakt_logo_strawberry.png',
+      image: '/images/drive_products/04_fruit_toffee_shop.jpg',
       badge: isRtl ? 'فواكه منعشة' : 'Fresh Fruits',
       accent: '#E63946',
     },
@@ -128,17 +124,9 @@ export const BrandFlavorShowcaseSection: React.FC<BrandFlavorShowcaseSectionProp
                 {/* Card Body */}
                 <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <span className="text-[11px] font-mono tracking-wider uppercase text-[#736B63] block">
-                        {fam.family}
-                      </span>
-                      <img
-                        src={fam.logo}
-                        alt="TooMakt"
-                        className="h-5 sm:h-6 w-auto object-contain filter drop-shadow-xs"
-                        loading="lazy"
-                      />
-                    </div>
+                    <span className="text-[11px] font-mono tracking-wider uppercase text-[#736B63] block mb-1">
+                      {fam.family}
+                    </span>
                     <h3 className="font-serif text-lg sm:text-xl font-normal text-[#1A1A1A] mb-2 group-hover:text-[#3C1322] transition-colors">
                       {fam.title}
                     </h3>

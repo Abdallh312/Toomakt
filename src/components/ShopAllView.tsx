@@ -122,10 +122,9 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
           <div className="flex items-center gap-2 text-xs font-mono text-[#736B63] dark:text-[#A89C90] uppercase tracking-wider mb-4">
             <button
               onClick={onNavigateHome}
-              className="hover:text-[#1A1A1A] dark:hover:text-[#FFD147] transition-colors cursor-pointer flex items-center gap-1.5"
+              className="hover:text-[#1A1A1A] dark:hover:text-[#FFD147] transition-colors cursor-pointer"
             >
-              <img src="/images/logos/toomakt_logo_main.png" alt="toomakt" className="h-4.5 w-auto object-contain inline-block" />
-              <span>TOOMAKT</span>
+              TOOMAKT
             </button>
             <span>/</span>
             <span className="text-[#1A1A1A] dark:text-[#FAF5EE] font-semibold">COLLECTION</span>

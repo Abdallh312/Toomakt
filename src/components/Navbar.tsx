@@ -116,7 +116,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       className={`sticky top-0 z-40 w-full transition-all duration-300 ${
         isScrolled
           ? 'bg-[#FAF7F2]/90 dark:bg-[#0C080A]/90 backdrop-blur-xl shadow-[0_8px_30px_rgba(26,21,18,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.6)] border-b border-[#E8E2D7]/70 dark:border-[#2A1622] py-2.5 sm:py-3'
-          : 'bg-gradient-to-b from-[#FAF7F2] to-[#FAF7F2]/95 dark:from-[#0C080A] dark:to-[#0C080A]/95 border-b border-transparent dark:border-[#20101A] py-3.5 sm:py-4.5'
+          : 'bg-gradient-to-b from-[#FAF7F2] to-[#FAF7F2]/95 dark:from-[#0C080A] dark:to-[#0C080A]/95 border-b border-transparent dark:border-[#20101A] py-3.5 sm:py-4'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -125,22 +125,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={() => handleLinkClick('home')}
-            className="cursor-pointer group flex items-center gap-2.5 sm:gap-3 select-none shrink-0 text-left rtl:text-right"
+            className="cursor-pointer group flex flex-col items-start select-none shrink-0 text-left rtl:text-right"
             aria-label="toomakt home"
           >
-            <img
-              src="/images/logos/toomakt_logo_main.png"
-              alt="TooMakt"
-              className="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105 filter drop-shadow-xs"
-            />
-            <div className="flex flex-col items-start rtl:items-end">
-              <span className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-[#1A1A1A] dark:text-[#FAF5EE] lowercase group-hover:text-[#3C1322] dark:group-hover:text-[#FFD147] transition-colors duration-300 leading-none">
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-[#1A1A1A] dark:text-[#FAF5EE] lowercase group-hover:text-[#3C1322] dark:group-hover:text-[#FFD147] transition-colors duration-300">
                 toomakt
               </span>
-              <span className="text-[9px] font-mono tracking-[0.22em] uppercase text-[#736B63]/75 dark:text-[#A89C90] mt-1 hidden sm:block">
-                {isRtl ? 'معمل التوفي الحرفي' : 'ATELIER DU TOFFEE'}
-              </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#3C1322] dark:bg-[#FFD147] inline-block mb-1 group-hover:scale-125 transition-transform" />
             </div>
+            <span className="text-[9px] font-mono tracking-[0.22em] uppercase text-[#736B63]/75 dark:text-[#A89C90] -mt-0.5 hidden sm:block">
+              {isRtl ? 'معمل التوفي الحرفي' : 'ATELIER DU TOFFEE'}
+            </span>
           </button>
 
           {/* Desktop links */}
@@ -317,11 +313,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             transition={{ duration: 0.25, ease: 'easeOut' }}
             className="md:hidden bg-[#FAF7F2] dark:bg-[#120A0E] border-b border-[#E8E2D7] dark:border-[#2C1824] px-4 py-4 space-y-2"
           >
-            <div className="flex items-center gap-2.5 px-3 pb-3 border-b border-[#E8E2D7] dark:border-[#2C1824] mb-2">
-              <img src="/images/logos/toomakt_logo_main.png" alt="TooMakt" className="h-8 w-auto object-contain" />
-              <span className="font-serif text-lg text-[#1A1A1A] dark:text-[#FAF5EE] lowercase">toomakt</span>
-              <span className="text-[9px] font-mono tracking-widest text-[#736B63] dark:text-[#A89C90] uppercase ml-auto rtl:ml-0 rtl:mr-auto">
-                {isRtl ? 'القاهرة' : 'CAIRO'}
+            <div className="flex items-center justify-between px-3 pb-3 border-b border-[#E8E2D7] dark:border-[#2C1824] mb-2">
+              <span className="font-serif text-xl font-normal text-[#1A1A1A] dark:text-[#FAF5EE] lowercase">toomakt</span>
+              <span className="text-[9px] font-mono tracking-widest text-[#736B63] dark:text-[#A89C90] uppercase">
+                {isRtl ? 'معمل التوفي · القاهرة' : 'ATELIER DU TOFFEE · CAIRO'}
               </span>
             </div>
             {navLinks.map((link) => {

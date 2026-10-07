@@ -271,7 +271,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 {/* Category & SKU */}
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
-                    <img src="/images/logos/toomakt_logo_main.png" alt="toomakt" className="h-4.5 w-auto object-contain" />
                     <span className="font-semibold uppercase tracking-wider text-[#3C1322] dark:text-[#E8BDD4]">
                       {typeof product.category === 'object' && product.category !== null
                         ? ((product.category as any).name || (product.category as any).slug)

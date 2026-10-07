@@ -69,10 +69,9 @@ export const BundlesView: React.FC<BundlesViewProps> = ({ onNavigateHome }) => {
             <button
               type="button"
               onClick={onNavigateHome}
-              className="hover:text-[#1A1A1A] transition-colors cursor-pointer flex items-center gap-1.5"
+              className="hover:text-[#1A1A1A] transition-colors cursor-pointer"
             >
-              <img src="/images/logos/toomakt_logo_main.png" alt="toomakt" className="h-4.5 w-auto object-contain inline-block" />
-              <span>TOOMAKT</span>
+              TOOMAKT
             </button>
             <span>/</span>
             <span className="text-[#1A1A1A] font-semibold">

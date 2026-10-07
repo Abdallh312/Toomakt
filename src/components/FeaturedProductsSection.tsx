@@ -48,7 +48,7 @@ export const FeaturedProductsSection: React.FC<FeaturedProductsSectionProps> = (
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 sm:mb-12 text-left rtl:text-right">
             <div>
               <div className="inline-flex items-center gap-2 mb-3">
-                <img src="/images/logos/toomakt_logo_main.png" alt="toomakt" className="h-5 w-auto object-contain" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#8B2D5C]" />
                 <span className="text-[11px] sm:text-xs font-semibold tracking-widest uppercase text-[#736B63] dark:text-[#B0A396]">
                   {isRtl ? 'تشكيلة منتجات توماكت الأصلية' : 'OFFICIAL TOOMAKT COLLECTION'}
                 </span>

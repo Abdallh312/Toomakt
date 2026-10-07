@@ -29,7 +29,7 @@ export const BrandInvitationSection: React.FC<BrandInvitationSectionProps> = ({
               <div className="lg:col-span-7">
                 {/* Eyebrow */}
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E8E2D7] text-xs font-semibold text-[#736B63] mb-6 shadow-soft">
-                  <img src="/images/logos/toomakt_logo_main.png" alt="toomakt" className="h-4.5 w-auto object-contain" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#3C1322]" />
                   <span>{isRtl ? 'حلوى صنعت لتؤكل بتمهل' : 'CONSIDERED CONFECTIONERY'}</span>
                 </div>
 
@@ -95,22 +95,22 @@ export const BrandInvitationSection: React.FC<BrandInvitationSectionProps> = ({
                 </div>
               </div>
 
-              {/* Right Column: TooMakt Signature Design Artwork */}
+              {/* Right Column: Real Drive Confections Showcase */}
               <div className="lg:col-span-5 hidden lg:flex justify-center items-center">
                 <motion.div
-                  whileHover={{ scale: 1.03, rotate: 0.5 }}
+                  whileHover={{ scale: 1.02 }}
                   transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-                  className="relative group p-3 bg-gradient-to-br from-amber-100/70 via-white/50 to-orange-100/50 rounded-3xl border border-amber-200/80 shadow-soft-lg backdrop-blur-xs"
+                  className="relative group p-2.5 bg-white rounded-3xl border border-[#E8E2D7] shadow-soft-lg overflow-hidden max-w-[380px]"
                 >
                   <img
-                    src="/images/logos/toomakt_logo_design.png"
-                    alt="TooMakt Confectionery Emblem"
-                    className="w-full max-w-[340px] h-auto object-contain rounded-2xl filter drop-shadow-md group-hover:drop-shadow-xl transition-all duration-500"
+                    src="/images/drive_products/01_cappuccino_candies_shop.jpg"
+                    alt="TooMakt Confectionery Collection"
+                    className="w-full h-auto object-cover rounded-2xl filter group-hover:scale-102 transition-all duration-500"
                     loading="lazy"
                   />
-                  <div className="absolute -bottom-3 right-4 rtl:right-auto rtl:left-4 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full border border-amber-200 text-[10px] font-mono uppercase tracking-widest text-[#3C1322] shadow-soft flex items-center gap-1.5">
+                  <div className="absolute bottom-5 right-5 rtl:right-auto rtl:left-5 bg-[#FAF7F2]/95 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#E8E2D7] text-[11px] font-mono uppercase tracking-wider text-[#3C1322] shadow-soft flex items-center gap-1.5">
                     <Sparkles className="w-3 h-3 text-[#FFD147]" />
-                    <span>{isRtl ? 'العلامة الأصلية' : 'Authentic Atelier'}</span>
+                    <span>{isRtl ? 'دفعات طازجة من المعمل' : 'Fresh Cairo Batches'}</span>
                   </div>
                 </motion.div>
               </div>
