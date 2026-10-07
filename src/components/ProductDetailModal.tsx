@@ -228,7 +228,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                               : 'border-[#E8E2D7] dark:border-[#2A1622] hover:border-[#736B63] opacity-70 hover:opacity-100'
                           }`}
                         >
-                          <img src={img} alt="" className="w-full h-full object-cover" />
+                          <img src={img} alt={`${product?.name || 'Confectionery'} view ${idx + 1}`} className="w-full h-full object-cover" />
                         </button>
                       );
                     })}

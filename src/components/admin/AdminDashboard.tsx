@@ -525,7 +525,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
         <body>
           <div style="border-bottom: 2px solid #1a1a1a; padding-bottom: 15px; margin-bottom: 20px;">
             <h1>toomakt Atelier</h1>
-            <p style="margin: 0; font-size: 12px; color: #666;">Artisanal Fruit Toffee • Cairo, Egypt • WhatsApp +20 101 686 9608</p>
+            <p style="margin: 0; font-size: 12px; color: #666;">Artisanal Fruit Toffee • Cairo, Egypt • WhatsApp +20 10 2454 2139</p>
           </div>
           <div>
             <strong>Order #${order.order_number}</strong> &nbsp;
@@ -950,13 +950,13 @@ Thank you for choosing toomakt!`;
               Official WhatsApp support connected for real-time Cairo confectionery orders.
             </p>
             <a
-              href="https://wa.me/201016869608"
+              href="https://wa.me/201024542139"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#3C1322] font-semibold flex items-center gap-1 hover:underline text-[11px]"
             >
               <MessageCircle className="w-3.5 h-3.5" />
-              <span>+20 101 686 9608</span>
+              <span>+20 10 2454 2139</span>
             </a>
           </div>
         </aside>

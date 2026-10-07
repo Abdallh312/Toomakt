@@ -148,18 +148,19 @@ export const api = {
             available_flavors: availableFlavors,
             tasting_notes: tastingNotes,
             fruitNotes: tastingNotes,
-            rating: 4.98,
-            reviewsCount: 1420,
+            rating: p.rating ? Number(p.rating) : 5.0,
+            reviewsCount: p.review_count ?? p.reviews_count ?? 0,
             variants: [
               { id: `${p.id}-v1`, title: weightStr, price: p.price, stock_quantity: p.stock_quantity ?? 50 },
             ],
           };
         });
       }
+      return [];
     } catch (e) {
-      console.warn('Supabase products unavailable, using local data:', e);
+      console.warn('Supabase products error:', e);
+      return [];
     }
-    return PRODUCTS;
   },
 
   async getProduct(slugOrId: string): Promise<any> {
@@ -316,18 +317,12 @@ export const api = {
       );
       if (res.ok) {
         const data = await res.json();
-        if (data && data.length > 0) return data;
+        if (Array.isArray(data)) return data;
       }
     } catch (e) {
       console.error('Error fetching categories:', e);
     }
-    return [
-      { id: 'cat-1', name: 'All', slug: 'all', description: 'Complete collection of artisanal fruit confections', display_order: 1 },
-      { id: 'cat-2', name: 'Mango', slug: 'mango', description: 'Equatorial golden Alphonso mango creations', display_order: 2 },
-      { id: 'cat-3', name: 'Berry', slug: 'berry', description: 'Wild mountain strawberries and arctic bilberries', display_order: 3 },
-      { id: 'cat-4', name: 'Citrus', slug: 'citrus', description: 'Sun-drenched Mediterranean blood orange zest', display_order: 4 },
-      { id: 'cat-5', name: 'Gift boxes', slug: 'gift-boxes', description: 'Prestige curated tins and tasting assortments', display_order: 5 }
-    ];
+    return [];
   },
 
   async createCategory(data: any): Promise<any> {
@@ -1681,7 +1676,7 @@ export const api = {
             free_shipping_threshold: merged.free_shipping_threshold || 500.0,
             tax_rate: merged.tax_rate || 0.05,
             contact_email: merged.contact_email || 'bonjour@toomakt.com',
-            contact_phone: merged.contact_phone || merged.phone || '+20 100 000 0000',
+            contact_phone: merged.contact_phone || merged.phone || '+20 10 2454 2139',
             address: merged.address || '24 Rue de la Confiserie, Cairo, Egypt',
             instagram: merged.instagram || 'https://instagram.com/toomaktchews',
             tiktok: merged.tiktok || 'https://tiktok.com/@toomakt',
@@ -1706,7 +1701,7 @@ export const api = {
       free_shipping_threshold: 500.0,
       tax_rate: 0.05,
       contact_email: 'bonjour@toomakt.com',
-      contact_phone: '+20 100 000 0000',
+      contact_phone: '+20 10 2454 2139',
       address: '24 Rue de la Confiserie, Cairo, Egypt',
       instagram: 'https://instagram.com/toomaktchews',
       tiktok: 'https://tiktok.com/@toomakt',

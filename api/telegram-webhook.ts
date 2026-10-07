@@ -5,7 +5,10 @@
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.VITE_TELEGRAM_BOT_TOKEN || '8984704321:AAGDZrlLBD-a407Kj9Sxr7-gpa0EDHnsD94';
 const MASTER_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || '1686960840';
-const VALID_AUTH_SECRETS = ['toomakt2026', 'toomakt', 'toomakt_2026', 'toomakt_atelier_2026'];
+const VALID_AUTH_SECRETS = [
+  ...(process.env.TELEGRAM_AUTH_SECRET ? [process.env.TELEGRAM_AUTH_SECRET.trim()] : []),
+  'toomakt2026', 'toomakt', 'toomakt_2026', 'toomakt_atelier_2026'
+];
 
 const SUPABASE_URL = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://fpabvfwjbxqsrpdglvgt.supabase.co').replace(/\/$/, '');
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_P1RKNGKkCkD4PbauoaFZpA_6GwgJ-Od';

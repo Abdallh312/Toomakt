@@ -214,7 +214,7 @@ def generate_order_invoice_pdf(order):
     elements.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor('#EADCCB'), spaceBefore=5, spaceAfter=10))
 
     footer_text = Paragraph(
-        "<font size='8' color='#705335'>Thank you for choosing toomakt! All toffee confections are freshly prepared using pure fruit purées and French butter.<br/>Questions or wholesale inquiries? Contact us at bonjour@toomakt.com or call +20 100 000 0000.<br/>Terms: Cash on Delivery strictly in Egyptian Pounds (EGP). Please inspect goods upon courier arrival.</font>",
+        "<font size='8' color='#705335'>Thank you for choosing toomakt! All toffee confections are freshly prepared using pure fruit purées and French butter.<br/>Questions or wholesale inquiries? Contact us at bonjour@toomakt.com or call +20 10 2454 2139.<br/>Terms: Cash on Delivery strictly in Egyptian Pounds (EGP). Please inspect goods upon courier arrival.</font>",
         ParagraphStyle('Footer', parent=styles['Normal'], alignment=1)
     )
     elements.append(footer_text)

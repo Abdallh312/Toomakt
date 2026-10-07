@@ -169,7 +169,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView }) => {
             </h4>
             <p className="text-[#FAF7F2]/70 leading-relaxed mb-4">
               {isRtl ? 'القاهرة · جمهورية مصر العربية' : 'Cairo, Egypt'}<br />
-              <span className="text-[11px] text-[#FAF7F2]/50">WhatsApp: +20 101 686 9608</span>
+              <span className="text-[11px] text-[#FAF7F2]/50">WhatsApp: +20 10 2454 2139</span>
             </p>
           </div>
         </div>

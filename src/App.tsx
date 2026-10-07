@@ -29,6 +29,7 @@ import { AdminLoginView } from './components/admin/AdminLoginView';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { Product } from './types';
 import { initSeoAndTracking } from './services/seoTracking';
+import { seo } from './services/seo';
 import { getCleanRoute, navigateTo } from './utils/navigation';
 import { api } from './services/api';
 import { PaymobService } from './services/paymob';
@@ -58,6 +59,104 @@ export const AppContent: React.FC = () => {
     const cleanup = initSeoAndTracking();
     return cleanup;
   }, []);
+
+  // Dynamic Page-level and Product-level SEO Metadata
+  useEffect(() => {
+    if (selectedProduct) {
+      seo.updateMeta({
+        title: `${selectedProduct.name} — Handcrafted Fruit Toffee Egypt`,
+        description: selectedProduct.tagline || selectedProduct.description || 'Artisanal French fruit toffee handcrafted slowly with real fruit purée and European butter.',
+        image: selectedProduct.image || '/images/hero/hero_spec.jpg',
+        url: `https://www.toomakt.com/shop?product=${selectedProduct.slug || selectedProduct.id}`,
+        type: 'product',
+        productData: {
+          name: selectedProduct.name,
+          description: selectedProduct.description || selectedProduct.tagline || '',
+          image: selectedProduct.image || '/images/hero/hero_spec.jpg',
+          price: selectedProduct.price,
+          sku: selectedProduct.sku,
+          inStock: selectedProduct.in_stock !== false,
+          brand: 'toomakt'
+        },
+        breadcrumbs: [
+          { name: 'Home', url: 'https://www.toomakt.com/' },
+          { name: 'Collection', url: 'https://www.toomakt.com/shop' },
+          { name: selectedProduct.name, url: `https://www.toomakt.com/shop?product=${selectedProduct.slug || selectedProduct.id}` }
+        ]
+      });
+      return;
+    }
+
+    const pageMetaMap: Record<string, { title: string; desc: string; path: string }> = {
+      home: {
+        title: 'toomakt — Fruit, slowly made. | Artisanal Fruit Toffee Egypt | توماكت',
+        desc: 'toomakt (توماكت) creates artisanal French fruit toffee in Cairo, Egypt. Handcrafted with 100% natural fruit purées, browned butter, and sea salt.',
+        path: ''
+      },
+      shop: {
+        title: 'The Collection — Handcrafted Fruit Toffees | toomakt Egypt',
+        desc: 'Browse toomakt artisanal soft fruit toffees. Handcrafted in small batches with real Alphonso mango, wild berries, and Mediterranean citrus.',
+        path: 'shop'
+      },
+      bundles: {
+        title: 'Curated Gift Boxes & Tins — toomakt Atelier Cairo',
+        desc: 'Explore luxury presentation gift boxes, holiday tasting collections, and artisanal toffee canisters from toomakt Cairo atelier.',
+        path: 'bundles'
+      },
+      'our-story': {
+        title: 'Our Craft Heritage & Story — toomakt Confectionery Atelier',
+        desc: 'Discover the story behind toomakt: slow copper-kettle caramelization, pure fruit purées, and European butter in Cairo.',
+        path: 'our-story'
+      },
+      ingredients: {
+        title: 'Botanical Quality & Pure Ingredients — toomakt Egypt',
+        desc: 'Learn about our 100% real fruit purées, European cultured butter, and clean formula without synthetic preservatives.',
+        path: 'ingredients'
+      },
+      wholesale: {
+        title: 'Wholesale & Corporate Gifting Concierge — toomakt Cairo',
+        desc: 'Partner with toomakt for boutique hospitality supply, bespoke corporate gifting, weddings, and luxury events in Egypt.',
+        path: 'wholesale'
+      },
+      faq: {
+        title: 'Frequently Asked Questions — toomakt Confectionery',
+        desc: 'Answers to frequently asked questions about shipping, storage, temperature care, ingredients, and allergen information.',
+        path: 'faq'
+      },
+      shipping: {
+        title: 'Climate-Controlled Shipping & Delivery — toomakt Egypt',
+        desc: 'Fast, temperature-protected delivery across all 27 Egyptian governorates. Cash on delivery and InstaPay supported.',
+        path: 'shipping'
+      },
+      track: {
+        title: 'Track Your Confectionery Order — toomakt Egypt',
+        desc: 'Track your toomakt order status, courier dispatch updates, and delivery schedule across Egypt.',
+        path: 'track'
+      },
+      checkout: {
+        title: 'Secure Checkout — toomakt Confectionery',
+        desc: 'Complete your order with Cash on Delivery or InstaPay. Direct dispatch from our Cairo atelier.',
+        path: 'checkout'
+      },
+      'order-success': {
+        title: 'Order Confirmed — toomakt Confectionery',
+        desc: 'Thank you for your order! Your freshly prepared toffee parcel is being packed at our Cairo atelier.',
+        path: 'order-success'
+      }
+    };
+
+    const currentMeta = pageMetaMap[currentView] || pageMetaMap.home;
+    seo.updateMeta({
+      title: currentMeta.title,
+      description: currentMeta.desc,
+      url: `https://www.toomakt.com/${currentMeta.path}`,
+      type: 'website',
+      breadcrumbs: currentMeta.path ? [
+        { name: 'Home', url: 'https://www.toomakt.com/' },
+        { name: currentMeta.title.split('—')[0].trim(), url: `https://www.toomakt.com/${currentMeta.path}` }
+      ] : [{ name: 'Home', url: 'https://www.toomakt.com/' }]
+    });
+  }, [currentView, selectedProduct]);
 
   // Detect Paymob transaction response return parameters (e.g. ?success=true&id=548042800)
   useEffect(() => {
@@ -404,7 +503,7 @@ export const AppContent: React.FC = () => {
 
       {/* Floating Animated WhatsApp Concierge Button */}
       <motion.a
-        href="https://wa.me/201016869608?text=Hello%20toomakt%20Atelier!%20I%20have%20an%20inquiry."
+        href="https://wa.me/201024542139?text=Hello%20toomakt%20Atelier!%20I%20have%20an%20inquiry."
         target="_blank"
         rel="noopener noreferrer"
         whileHover={{ scale: 1.05 }}

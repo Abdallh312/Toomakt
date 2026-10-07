@@ -101,7 +101,7 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
 
   // WhatsApp Support Link
   const whatsappMsg = `Hello Toomakt! I just placed order #${orderNumber} (${totalAmount} EGP via ${isCard ? 'Visa' : 'Cash on Delivery'}). Please let me know when it dispatches!`;
-  const whatsappUrl = `https://wa.me/201016869608?text=${encodeURIComponent(whatsappMsg)}`;
+  const whatsappUrl = `https://wa.me/201024542139?text=${encodeURIComponent(whatsappMsg)}`;
 
   // Print invoice handler
   const handlePrintReceipt = () => {
@@ -596,7 +596,7 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
             </div>
             <div className="text-right space-y-0.5">
               <div className="font-serif text-[#3C1322] font-semibold text-xs">TOOMAKT CONFECTIONERY ATELIER</div>
-              <div>support@toomakt.com · WhatsApp: +20 10 1686 9608</div>
+              <div>support@toomakt.com · WhatsApp: +20 10 2454 2139</div>
               <div>www.toomakt.com · Cairo, Egypt</div>
             </div>
           </div>

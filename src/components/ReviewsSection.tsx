@@ -1,12 +1,34 @@
-import React, { useState } from 'react';
-import { Star, ShieldCheck, ZoomIn, X, Check } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Star, ShieldCheck, ZoomIn, X, Check, MessageSquareHeart } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { REVIEWS } from '../data/toomaktData';
+import { api } from '../services/api';
 import { ScrollReveal } from './ScrollReveal';
 
 export const ReviewsSection: React.FC = () => {
   const { isRtl } = useLanguage();
   const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const data = await api.getReviews();
+        if (active) {
+          const approved = (data || []).filter((r: any) => r.is_featured || r.status === 'approved');
+          setReviews(approved);
+        }
+      } catch (err) {
+        if (active) setReviews([]);
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <section id="reviews" className="py-16 sm:py-20 md:py-28 bg-[#FAF7F2] border-b border-[#E8E2D7]">
@@ -26,49 +48,73 @@ export const ReviewsSection: React.FC = () => {
 
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8E2D7] text-xs text-[#736B63] shadow-soft shrink-0">
               <ShieldCheck className="w-4 h-4 text-[#88C057]" />
-              <span>{isRtl ? 'أكثر من 2,400 عميل موثق في مصر' : 'Over 2,400 verified client reviews'}</span>
+              <span>{isRtl ? 'تجربة حلويات طبيعية موثقة' : 'Verified Natural Confectionery'}</span>
             </div>
           </div>
         </ScrollReveal>
 
-        {/* 3 Verified Client Reviews with Staggered Scroll Reveal */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12">
-          {REVIEWS.map((rev, idx) => (
-            <ScrollReveal key={rev.id} delay={idx * 0.12} yOffset={25}>
-              <div
-                className="bg-white rounded-2xl p-6 sm:p-7 border border-[#E8E2D7] hover:border-[#1A1A1A] hover:shadow-soft transition-all flex flex-col justify-between h-full"
-              >
-                <div>
-                  {/* 5 Stars */}
-                  <div className="flex items-center gap-1 text-[#FFD147] mb-4">
-                    {[...Array(rev.rating)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                    ))}
-                  </div>
-
-                  <p className="text-sm sm:text-base text-[#1A1A1A] font-light leading-relaxed mb-6">
-                    "{rev.content}"
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-[#E8E2D7] flex items-center justify-between">
+        {/* Dynamic Reviews Grid (or Authentic Commitment if none yet) */}
+        {reviews.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12">
+            {reviews.slice(0, 3).map((rev, idx) => (
+              <ScrollReveal key={rev.id || idx} delay={idx * 0.12} yOffset={25}>
+                <div
+                  className="bg-white rounded-2xl p-6 sm:p-7 border border-[#E8E2D7] hover:border-[#1A1A1A] hover:shadow-soft transition-all flex flex-col justify-between h-full"
+                >
                   <div>
-                    <h4 className="font-serif text-sm font-normal text-[#1A1A1A]">
-                      {rev.author}
-                    </h4>
-                    <span className="text-xs text-[#736B63]">
-                      {rev.location}
-                    </span>
+                    {/* Stars */}
+                    <div className="flex items-center gap-1 text-[#FFD147] mb-4">
+                      {[...Array(Number(rev.rating || 5))].map((_, i) => (
+                        <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                      ))}
+                    </div>
+
+                    <p className="text-sm sm:text-base text-[#1A1A1A] font-light leading-relaxed mb-6">
+                      "{rev.content || rev.comment}"
+                    </p>
                   </div>
 
-                  <span className="text-[11px] text-[#736B63] bg-[#F4EFEA] px-2.5 py-1 rounded-full border border-[#E8E2D7]">
-                    {rev.productTag}
-                  </span>
+                  <div className="pt-4 border-t border-[#E8E2D7] flex items-center justify-between">
+                    <div>
+                      <h4 className="font-serif text-sm font-normal text-[#1A1A1A]">
+                        {rev.author || rev.customer_name || 'Verified Guest'}
+                      </h4>
+                      <span className="text-xs text-[#736B63]">
+                        {rev.location || 'Cairo, Egypt'}
+                      </span>
+                    </div>
+
+                    {(rev.productTag || rev.product_tag) && (
+                      <span className="text-[11px] text-[#736B63] bg-[#F4EFEA] px-2.5 py-1 rounded-full border border-[#E8E2D7]">
+                        {rev.productTag || rev.product_tag}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        ) : !loading && (
+          <ScrollReveal yOffset={20}>
+            <div className="bg-white rounded-2xl p-8 border border-[#E8E2D7] shadow-soft mb-12 text-center max-w-3xl mx-auto">
+              <MessageSquareHeart className="w-8 h-8 text-[#3C1322] mx-auto mb-3" />
+              <h3 className="font-serif text-xl sm:text-2xl text-[#1A1A1A] mb-2 font-normal">
+                {isRtl ? 'وعد المعمل الحرفي بالجودة والنقاء' : 'The Atelier Craft & Quality Pledge'}
+              </h3>
+              <p className="text-xs sm:text-sm text-[#736B63] font-light leading-relaxed max-w-xl mx-auto mb-6">
+                {isRtl
+                  ? 'كل دفعة توفي نطهوها من بيوريه فواكه حقيقي 100% وزبدة أوروبية نقية دون مواد حافظة. شاركنا تجربتك بعد استلام طلبك لتظهر في هذه المساحة.'
+                  : 'Every toffee batch is gently boiled using 100% natural fruit purées and pure butter without preservatives. Unbox your parcel and share your tasting experience with our kitchen.'}
+              </p>
+              <button
+                onClick={() => window.open('https://wa.me/201024542139?text=Hello%20toomakt%20Atelier!%20I%20would%20like%20to%20share%20my%20tasting%20review.', '_blank')}
+                className="btn-secondary text-xs"
+              >
+                {isRtl ? 'شارك تجربتك مع المعمل ←' : 'Share Your Tasting Note →'}
+              </button>
+            </div>
+          </ScrollReveal>
+        )}
 
         {/* Social Proof Banner with Scroll Reveal */}
         <ScrollReveal delay={0.2} yOffset={25}>
@@ -97,7 +143,7 @@ export const ReviewsSection: React.FC = () => {
 
               <div className="lg:col-span-7 text-left rtl:text-right">
                 <span className="text-[10px] font-semibold tracking-widest uppercase text-[#736B63] block mb-2">
-                  {isRtl ? 'شهادات حقيقية' : 'UNFILTERED FEEDBACK'}
+                  {isRtl ? 'تجربة حقيقية' : 'DIRECT ATELIER CARE'}
                 </span>
                 <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#1A1A1A] mb-3">
                   {isRtl

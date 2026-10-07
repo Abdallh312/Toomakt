@@ -137,7 +137,7 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
   const whatsappMsg = orderData
     ? `Hello Toomakt! I am tracking my order #${orderData.order_number} (${orderData.customer_name}). Could you please update me on delivery status?`
     : `Hello Toomakt! I have an inquiry about tracking my order.`;
-  const whatsappUrl = `https://wa.me/201016869608?text=${encodeURIComponent(whatsappMsg)}`;
+  const whatsappUrl = `https://wa.me/201024542139?text=${encodeURIComponent(whatsappMsg)}`;
 
   return (
     <div className="min-h-screen bg-[#FAF7F2] py-10 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 font-sans">

@@ -135,7 +135,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 sm:mb-16">
           {/* WhatsApp Direct */}
           <a
-            href="https://wa.me/201016869608?text=Hello%20toomakt%20Atelier!%20I%20have%20an%20inquiry."
+            href="https://wa.me/201024542139?text=Hello%20toomakt%20Atelier!%20I%20have%20an%20inquiry."
             target="_blank"
             rel="noopener noreferrer"
             className="bg-white rounded-2xl p-6 border border-[#E8E2D7] shadow-soft hover:border-[#1A1A1A] transition-all flex flex-col justify-between group"
@@ -155,7 +155,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
               </p>
             </div>
             <div className="pt-4 mt-4 border-t border-[#E8E2D7] flex items-center justify-between text-xs text-[#3C1322] font-medium">
-              <span>+20 101 686 9608</span>
+              <span>+20 10 2454 2139</span>
               <span>→</span>
             </div>
           </a>

@@ -17,7 +17,7 @@ class WhatsAppService:
         from .models import GlobalSetting
         setting = GlobalSetting.objects.filter(key='whatsapp_settings').first()
         config = {
-            'phone': os.getenv('WHATSAPP_PHONE', '201000000000'),
+            'phone': os.getenv('WHATSAPP_PHONE', '201024542139'),
             'business_name': os.getenv('WHATSAPP_BUSINESS_NAME', 'toomakt Atelier'),
             'api_token': os.getenv('WHATSAPP_API_TOKEN', ''),
             'api_url': os.getenv('WHATSAPP_API_URL', ''),
@@ -34,7 +34,7 @@ class WhatsAppService:
         defaults = {
             'address': os.getenv('INSTAPAY_ADDRESS', 'toomakt@instapay'),
             'account_name': os.getenv('INSTAPAY_ACCOUNT_NAME', 'toomakt Confectionery'),
-            'phone': os.getenv('INSTAPAY_PHONE', '01000000000'),
+            'phone': os.getenv('INSTAPAY_PHONE', '01024542139'),
             'bank_name': os.getenv('INSTAPAY_BANK_NAME', 'CIB Egypt'),
             'instructions': 'Transfer the exact order total via the InstaPay mobile app, then send a screenshot of the transaction receipt.'
         }
