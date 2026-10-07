@@ -121,6 +121,15 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
             <div className={`h-2 w-full ${isCard ? 'bg-[#3C1322]' : 'bg-[#FFD147]'}`} />
 
             <div className="p-8 sm:p-12 relative z-10">
+              {/* Brand Logo */}
+              <div className="mb-5">
+                <img
+                  src="/images/logos/toomakt_logo_main.png"
+                  alt="TooMakt"
+                  className="h-10 sm:h-12 w-auto object-contain mx-auto filter drop-shadow-xs"
+                />
+              </div>
+
               {/* Glowing Icon Badge */}
               <div className="relative inline-flex items-center justify-center mb-6">
                 <div
@@ -466,16 +475,23 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
           
           {/* Atelier Invoice Header */}
           <div className="flex items-start justify-between border-b-2 border-[#1A1A1A] pb-5">
-            <div>
-              <span className="font-serif text-3xl font-bold tracking-tight text-[#3C1322] block">
-                TOOMAKT
-              </span>
-              <span className="text-[10px] tracking-widest uppercase font-semibold text-[#736B63] block mt-0.5">
-                Atelier du Toffee · Paris & Cairo
-              </span>
-              <span className="text-xs text-[#1A1A1A] font-medium block mt-1.5">
-                Official Purchase & Delivery Invoice · فاتورة رسمية
-              </span>
+            <div className="flex items-center gap-3">
+              <img
+                src="/images/logos/toomakt_logo_main.png"
+                alt="TOOMAKT"
+                className="h-10 w-auto object-contain"
+              />
+              <div>
+                <span className="font-serif text-3xl font-bold tracking-tight text-[#3C1322] block leading-none">
+                  TOOMAKT
+                </span>
+                <span className="text-[10px] tracking-widest uppercase font-semibold text-[#736B63] block mt-1">
+                  Atelier du Toffee · Cairo
+                </span>
+                <span className="text-xs text-[#1A1A1A] font-medium block mt-1">
+                  Official Purchase & Delivery Invoice · فاتورة رسمية
+                </span>
+              </div>
             </div>
 
             <div className="text-right space-y-1">
@@ -645,16 +661,23 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
                 
                 {/* Header */}
                 <div className="flex items-start justify-between border-b-2 border-[#1A1A1A] pb-4">
-                  <div>
-                    <span className="font-serif text-2xl font-bold tracking-tight text-[#3C1322] block">
-                      TOOMAKT
-                    </span>
-                    <span className="text-[10px] tracking-widest uppercase font-semibold text-[#736B63] block">
-                      Atelier du Toffee · Paris & Cairo
-                    </span>
-                    <span className="text-xs text-[#1A1A1A] font-medium block mt-1">
-                      Official Tax & Delivery Receipt · فاتورة رسمية
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <img
+                      src="/images/logos/toomakt_logo_main.png"
+                      alt="TOOMAKT"
+                      className="h-9 w-auto object-contain"
+                    />
+                    <div>
+                      <span className="font-serif text-2xl font-bold tracking-tight text-[#3C1322] block leading-none">
+                        TOOMAKT
+                      </span>
+                      <span className="text-[10px] tracking-widest uppercase font-semibold text-[#736B63] block mt-1">
+                        Atelier du Toffee · Cairo
+                      </span>
+                      <span className="text-xs text-[#1A1A1A] font-medium block mt-1">
+                        Official Tax & Delivery Receipt · فاتورة رسمية
+                      </span>
+                    </div>
                   </div>
 
                   <div className="text-right space-y-1">

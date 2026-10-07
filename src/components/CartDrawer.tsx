@@ -84,7 +84,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
         >
           {/* Header */}
           <div className="p-6 border-b border-[#E8E2D7] flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
+              <img
+                src="/images/logos/toomakt_logo_main.png"
+                alt="TooMakt"
+                className="h-8 w-auto object-contain filter drop-shadow-xs"
+              />
+              <div className="h-4 w-px bg-[#E8E2D7]" />
               <h2 className="font-serif text-2xl font-normal text-[#1A1A1A]">
                 {isRtl ? 'حقيبة التسوق' : 'Your bag'}
               </h2>

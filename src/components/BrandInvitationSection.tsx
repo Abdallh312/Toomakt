@@ -25,74 +25,95 @@ export const BrandInvitationSection: React.FC<BrandInvitationSectionProps> = ({
             {/* Subtle Ambient Background Gradient */}
             <div className="absolute top-0 right-0 w-96 h-96 bg-[#FFECCC]/30 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="max-w-2xl relative z-10">
-              {/* Eyebrow */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E8E2D7] text-xs font-semibold text-[#736B63] mb-6 shadow-soft">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#3C1322]" />
-                <span>{isRtl ? 'حلوى صنعت لتؤكل بتمهل' : 'CONSIDERED CONFECTIONERY'}</span>
-              </div>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
+              <div className="lg:col-span-7">
+                {/* Eyebrow */}
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E8E2D7] text-xs font-semibold text-[#736B63] mb-6 shadow-soft">
+                  <img src="/images/logos/toomakt_logo_main.png" alt="toomakt" className="h-4.5 w-auto object-contain" />
+                  <span>{isRtl ? 'حلوى صنعت لتؤكل بتمهل' : 'CONSIDERED CONFECTIONERY'}</span>
+                </div>
 
-              {/* Headline */}
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-[#1A1A1A] tracking-tight leading-tight mb-4">
-                {isRtl ? (
-                  <>
-                    طعم الفاكهة الحقيقية،<br />
-                    <span className="italic font-normal">في أهدأ وأرقى صورة.</span>
-                  </>
-                ) : (
-                  <>
-                    Confectionery made for<br />
-                    <span className="italic font-normal">considered moments.</span>
-                  </>
-                )}
-              </h2>
+                {/* Headline */}
+                <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-[#1A1A1A] tracking-tight leading-tight mb-4">
+                  {isRtl ? (
+                    <>
+                      طعم الفاكهة الحقيقية،<br />
+                      <span className="italic font-normal">في أهدأ وأرقى صورة.</span>
+                    </>
+                  ) : (
+                    <>
+                      Confectionery made for<br />
+                      <span className="italic font-normal">considered moments.</span>
+                    </>
+                  )}
+                </h2>
 
-              {/* Description */}
-              <p className="text-sm sm:text-base md:text-lg text-[#736B63] font-light leading-relaxed max-w-xl mb-8">
-                {isRtl
-                  ? 'استمتع بتجربة التوفي الفاخر المصنوع ببطء من بيوريه الفاكهة الطبيعية وزبدة النورماندي. دفعات طازجة تُشحن مباشرة من معملنا في القاهرة.'
-                  : 'Experience the quiet luxury of pure fruit purée and European butter slow-simmered in small copper batches in Cairo, Egypt.'}
-              </p>
+                {/* Description */}
+                <p className="text-sm sm:text-base md:text-lg text-[#736B63] font-light leading-relaxed max-w-xl mb-8">
+                  {isRtl
+                    ? 'استمتع بتجربة التوفي الفاخر المصنوع ببطء من بيوريه الفاكهة الطبيعية وزبدة النورماندي. دفعات طازجة تُشحن مباشرة من معملنا في القاهرة.'
+                    : 'Experience the quiet luxury of pure fruit purée and European butter slow-simmered in small copper batches in Cairo, Egypt.'}
+                </p>
 
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                <button
-                  type="button"
-                  onClick={onShopProducts}
-                  className="btn-primary group flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto shadow-soft hover:shadow-soft-md"
-                >
-                  <span>{isRtl ? 'تسوق المنتجات الآن' : 'Shop Products Collection'}</span>
-                  <ArrowIcon className="w-4 h-4 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
-                </button>
-
-                {onContactWholesale && (
+                {/* CTAs */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                   <button
                     type="button"
-                    onClick={onContactWholesale}
-                    className="btn-secondary flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto text-xs"
+                    onClick={onShopProducts}
+                    className="btn-primary group flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto shadow-soft hover:shadow-soft-md"
                   >
-                    <Building2 className="w-4 h-4 text-[#736B63]" />
-                    <span>{isRtl ? 'هدايا الشركات والطلبات الخاصة' : 'Corporate Gifting & Inquiries'}</span>
+                    <span>{isRtl ? 'تسوق المنتجات الآن' : 'Shop Products Collection'}</span>
+                    <ArrowIcon className="w-4 h-4 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
                   </button>
-                )}
+
+                  {onContactWholesale && (
+                    <button
+                      type="button"
+                      onClick={onContactWholesale}
+                      className="btn-secondary flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto text-xs"
+                    >
+                      <Building2 className="w-4 h-4 text-[#736B63]" />
+                      <span>{isRtl ? 'هدايا الشركات والطلبات الخاصة' : 'Corporate Gifting & Inquiries'}</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Guarantees */}
+                <div className="mt-10 pt-6 border-t border-[#E8E2D7] grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-[#736B63] font-light">
+                  <div className="flex items-center gap-2 justify-center sm:justify-start">
+                    <Truck className="w-4 h-4 text-[#3C1322] shrink-0" />
+                    <span>{isRtl ? 'شحن مبرد لكل محافظات مصر' : 'Climate delivery across Egypt'}</span>
+                  </div>
+                  <div className="flex items-center gap-2 justify-center sm:justify-start">
+                    <Package className="w-4 h-4 text-[#3C1322] shrink-0" />
+                    <span>{isRtl ? 'تغليف هدايا فاخر ومحكم' : 'Individually sealed pieces'}</span>
+                  </div>
+                  <div className="flex items-center gap-2 justify-center sm:justify-start">
+                    <ShieldCheck className="w-4 h-4 text-[#3C1322] shrink-0" />
+                    <span>{isRtl ? 'ضمان رضا العملاء 100%' : '100% Quality guarantee'}</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Guarantees */}
-              <div className="mt-12 pt-8 border-t border-[#E8E2D7] grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-[#736B63] font-light">
-                <div className="flex items-center gap-2 justify-center sm:justify-start">
-                  <Truck className="w-4 h-4 text-[#3C1322] shrink-0" />
-                  <span>{isRtl ? 'شحن مبرد لكل محافظات مصر' : 'Climate delivery across Egypt'}</span>
-                </div>
-                <div className="flex items-center gap-2 justify-center sm:justify-start">
-                  <Package className="w-4 h-4 text-[#3C1322] shrink-0" />
-                  <span>{isRtl ? 'تغليف هدايا فاخر ومحكم' : 'Individually sealed pieces'}</span>
-                </div>
-                <div className="flex items-center gap-2 justify-center sm:justify-start">
-                  <ShieldCheck className="w-4 h-4 text-[#3C1322] shrink-0" />
-                  <span>{isRtl ? 'ضمان رضا العملاء 100%' : '100% Quality guarantee'}</span>
-                </div>
+              {/* Right Column: TooMakt Signature Design Artwork */}
+              <div className="lg:col-span-5 hidden lg:flex justify-center items-center">
+                <motion.div
+                  whileHover={{ scale: 1.03, rotate: 0.5 }}
+                  transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+                  className="relative group p-3 bg-gradient-to-br from-amber-100/70 via-white/50 to-orange-100/50 rounded-3xl border border-amber-200/80 shadow-soft-lg backdrop-blur-xs"
+                >
+                  <img
+                    src="/images/logos/toomakt_logo_design.png"
+                    alt="TooMakt Confectionery Emblem"
+                    className="w-full max-w-[340px] h-auto object-contain rounded-2xl filter drop-shadow-md group-hover:drop-shadow-xl transition-all duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute -bottom-3 right-4 rtl:right-auto rtl:left-4 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full border border-amber-200 text-[10px] font-mono uppercase tracking-widest text-[#3C1322] shadow-soft flex items-center gap-1.5">
+                    <Sparkles className="w-3 h-3 text-[#FFD147]" />
+                    <span>{isRtl ? 'العلامة الأصلية' : 'Authentic Atelier'}</span>
+                  </div>
+                </motion.div>
               </div>
-
             </div>
           </div>
         </ScrollReveal>

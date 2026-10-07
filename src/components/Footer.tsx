@@ -37,9 +37,21 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView }) => {
         {/* Top Manifesto & Newsletter */}
         <div className="pb-16 border-b border-[#2A221C] grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           <div className="lg:col-span-6">
-            <span className="font-serif text-3xl sm:text-4xl text-[#FAF7F2] font-semibold tracking-tight lowercase block mb-4">
-              toomakt
-            </span>
+            <div className="flex items-center gap-3.5 mb-4">
+              <img
+                src="/images/logos/toomakt_logo_main.png"
+                alt="toomakt"
+                className="h-11 sm:h-13 w-auto object-contain filter drop-shadow-md brightness-105"
+              />
+              <div>
+                <span className="font-serif text-2xl sm:text-3xl text-[#FAF7F2] font-semibold tracking-tight lowercase block leading-none">
+                  toomakt
+                </span>
+                <span className="text-[10px] font-mono tracking-[0.2em] text-[#FAF7F2]/60 uppercase block mt-1">
+                  {isRtl ? 'معمل التوفي الحرفي • القاهرة' : 'ATELIER DU TOFFEE • CAIRO'}
+                </span>
+              </div>
+            </div>
             <p className="text-sm sm:text-base text-[#FAF7F2]/70 font-light max-w-md leading-relaxed">
               {isRtl
                 ? 'حلوى توفي مصنوعة ببطء من بيوريه الفاكهة الطبيعية والزبدة الأوروبية. دفعات صغيرة طازجة من معملنا بالقاهرة.'

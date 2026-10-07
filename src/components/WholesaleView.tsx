@@ -117,7 +117,12 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
         </div>
 
         {/* Page Header */}
-        <div className="text-center mb-12 sm:mb-16">
+        <div className="text-center mb-12 sm:mb-16 flex flex-col items-center">
+          <img
+            src="/images/logos/toomakt_logo_main.png"
+            alt="TooMakt"
+            className="h-12 w-auto object-contain mb-3 filter drop-shadow-xs"
+          />
           <span className="text-[11px] font-semibold text-[#736B63] uppercase tracking-widest block mb-2">
             {isRtl ? 'تواصل معنا' : 'CONTACT & CONCIERGE'}
           </span>

@@ -460,14 +460,19 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
           </div>
         </div>
 
-        <div className="text-center mb-10">
+        <div className="text-center mb-10 flex flex-col items-center">
+          <img
+            src="/images/logos/toomakt_logo_main.png"
+            alt="TooMakt"
+            className="h-12 sm:h-14 w-auto object-contain mb-3 filter drop-shadow-xs"
+          />
           <span className="text-[11px] font-semibold text-[#736B63] uppercase tracking-widest block mb-2">
-            TOOMAKT ATELIER
+            TOOMAKT ATELIER · CAIRO
           </span>
           <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#1A1A1A] tracking-tight">
             {isRtl ? 'إتمام الطلب والشحن' : 'Checkout & Delivery'}
           </h1>
-          <p className="mt-2 text-xs sm:text-sm text-[#736B63] font-light">
+          <p className="mt-2 text-xs sm:text-sm text-[#736B63] font-light max-w-md mx-auto">
             {isRtl
               ? 'يتم تجهيز الطلب طازجاً في معملنا ويصلك في صناديق مبردة لحماية النكهة والملمس.'
               : 'Crafted slowly and dispatched directly from our Cairo kitchen in protective climate boxes.'}

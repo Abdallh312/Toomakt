@@ -125,18 +125,22 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={() => handleLinkClick('home')}
-            className="cursor-pointer group flex flex-col items-start select-none shrink-0 text-left rtl:text-right"
+            className="cursor-pointer group flex items-center gap-2.5 sm:gap-3 select-none shrink-0 text-left rtl:text-right"
             aria-label="toomakt home"
           >
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-[#1A1A1A] dark:text-[#FAF5EE] lowercase group-hover:text-[#3C1322] dark:group-hover:text-[#FFD147] transition-colors duration-300">
+            <img
+              src="/images/logos/toomakt_logo_main.png"
+              alt="TooMakt"
+              className="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105 filter drop-shadow-xs"
+            />
+            <div className="flex flex-col items-start rtl:items-end">
+              <span className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-[#1A1A1A] dark:text-[#FAF5EE] lowercase group-hover:text-[#3C1322] dark:group-hover:text-[#FFD147] transition-colors duration-300 leading-none">
                 toomakt
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#3C1322] dark:bg-[#FFD147] inline-block mb-1 group-hover:scale-125 transition-transform" />
+              <span className="text-[9px] font-mono tracking-[0.22em] uppercase text-[#736B63]/75 dark:text-[#A89C90] mt-1 hidden sm:block">
+                {isRtl ? 'معمل التوفي الحرفي' : 'ATELIER DU TOFFEE'}
+              </span>
             </div>
-            <span className="text-[9px] font-mono tracking-[0.22em] uppercase text-[#736B63]/75 dark:text-[#A89C90] -mt-0.5 hidden sm:block">
-              {isRtl ? 'معمل التوفي الحرفي' : 'ATELIER DU TOFFEE'}
-            </span>
           </button>
 
           {/* Desktop links */}
@@ -313,6 +317,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             transition={{ duration: 0.25, ease: 'easeOut' }}
             className="md:hidden bg-[#FAF7F2] dark:bg-[#120A0E] border-b border-[#E8E2D7] dark:border-[#2C1824] px-4 py-4 space-y-2"
           >
+            <div className="flex items-center gap-2.5 px-3 pb-3 border-b border-[#E8E2D7] dark:border-[#2C1824] mb-2">
+              <img src="/images/logos/toomakt_logo_main.png" alt="TooMakt" className="h-8 w-auto object-contain" />
+              <span className="font-serif text-lg text-[#1A1A1A] dark:text-[#FAF5EE] lowercase">toomakt</span>
+              <span className="text-[9px] font-mono tracking-widest text-[#736B63] dark:text-[#A89C90] uppercase ml-auto rtl:ml-0 rtl:mr-auto">
+                {isRtl ? 'القاهرة' : 'CAIRO'}
+              </span>
+            </div>
             {navLinks.map((link) => {
               const active = isLinkActive(link.target);
               return (
