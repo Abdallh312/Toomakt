@@ -86,11 +86,19 @@ export async function readAndOptimizeImage(
  * Built-in Atelier Library Presets for quick fallback selection
  */
 export const ATELIER_LIBRARY_IMAGES = [
-  { label: 'Mango Sunbeam', url: '/images/products/mango_sunbeam.jpg' },
-  { label: 'Berry Afterglow', url: '/images/products/berry_afterglow.jpg' },
-  { label: 'Citrus Comet', url: '/images/products/citrus_comet.jpg' },
-  { label: 'Evening Citrus', url: '/images/products/evening_citrus.jpg' },
-  { label: 'Orchard Reserve', url: '/images/products/orchard_reserve.jpg' },
-  { label: 'Sun Chaser Box', url: '/images/products/sun_chaser_box.jpg' },
+  { label: 'Cappuccino Candies (1 EGP)', url: '/images/products/cappuccino_candies_thumb.jpg' },
+  { label: 'Milk Toffee (1 EGP)', url: '/images/products/milk_toffee_thumb.jpg' },
+  { label: 'Eclairs Chocolate (0.5 EGP)', url: '/images/products/eclairs_05_thumb.jpg' },
+  { label: 'Butter Eclairs (1 EGP)', url: '/images/products/butter_eclairs_1_thumb.jpg' },
+  { label: 'Fruit Toffee (0.5 EGP)', url: '/images/products/fruit_toffee_05_thumb.jpg' },
+  { label: 'Fruit Toffee (1 EGP)', url: '/images/products/fruit_toffee_1_thumb.jpg' },
+  { label: 'Peanut & Chocolate (0.5 EGP)', url: '/images/products/peanut_chocolate_05_thumb.jpg' },
+  { label: 'Peanut Eclairs (1 EGP)', url: '/images/products/peanut_eclairs_1_thumb.jpg' },
+  { label: 'Butterm Caramel (0.5 EGP)', url: '/images/products/butterm_caramel_thumb.jpg' },
+  { label: 'Coconut Chocolate (1 EGP)', url: '/images/products/coconut_chocolate_thumb.jpg' },
+  { label: 'Mint Fruit Candy (0.5 EGP)', url: '/images/products/mint_fruit_thumb.jpg' },
+  { label: 'Fruity Milk Cream (0.5 EGP)', url: '/images/products/fruity_milk_thumb.jpg' },
+  { label: 'Royal Blue Butter Chocolate (0.5 EGP)', url: '/images/products/butter_chocolate_royalblue_thumb.jpg' },
+  { label: 'Zahra Butter Bonbon', url: '/images/products/zahra_butter_bonbon_thumb.jpg' },
   { label: 'Brand Hero Spec', url: '/images/hero/hero_spec.jpg' },
 ];

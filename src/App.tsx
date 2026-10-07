@@ -16,6 +16,7 @@ import { BrandInvitationSection } from './components/BrandInvitationSection';
 import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
 import { ProductDetailModal } from './components/ProductDetailModal';
+import { FeaturedProductsSection } from './components/FeaturedProductsSection';
 import { ShopAllView } from './components/ShopAllView';
 import { BundlesView } from './components/BundlesView';
 import { TrackOrderView } from './components/TrackOrderView';
@@ -384,6 +385,12 @@ export const AppContent: React.FC = () => {
             {/* Tasting Palette: 4 Flavor Family Showcase with CTA to Products Page */}
             <BrandFlavorShowcaseSection
               onExploreProducts={() => handleNavigateView('shop')}
+            />
+
+            {/* Official Products Collection Directly on Home Page */}
+            <FeaturedProductsSection
+              onSelectProduct={(p) => setSelectedProduct(p)}
+              onExploreAll={() => handleNavigateView('shop')}
             />
 
             {/* Atelier Process & The Toomakt Ritual with Autoplaying Video */}

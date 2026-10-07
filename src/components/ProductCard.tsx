@@ -17,11 +17,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   showDescription = true,
 }) => {
   const { addToCart } = useCart();
-  const { isRtl } = useLanguage();
+  const { isRtl, formatPrice } = useLanguage();
   const [justAdded, setJustAdded] = useState(false);
 
   const stock = product.stock_quantity ?? (product.in_stock ? 50 : 0);
   const isOutOfStock = stock <= 0 || product.in_stock === false;
+
+  const displayName = isRtl
+    ? (product.name_ar || product.name)
+    : (product.name_en || product.name);
+
+  const displayTagline = isRtl
+    ? (product.tagline_ar || product.tagline || product.description_ar || product.description)
+    : (product.tagline_en || product.tagline || product.description_en || product.description);
+
+  const displayBadge = isRtl
+    ? (product.badge_ar || product.badge)
+    : (product.badge_en || product.badge);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -36,22 +48,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       whileHover={{ y: -4 }}
       transition={{ duration: 0.25, ease: 'easeOut' }}
       onClick={() => onSelectProduct(product)}
-      className="group bg-white border border-[#E8E2D7] rounded-2xl overflow-hidden hover:border-[#1A1A1A] hover:shadow-soft-md transition-all flex flex-col justify-between cursor-pointer select-none"
+      className="group bg-white dark:bg-[#140C12] border border-[#E8E2D7] dark:border-[#2A1622] rounded-2xl overflow-hidden hover:border-[#1A1A1A] dark:hover:border-[#FAF5EE] hover:shadow-soft-md transition-all flex flex-col justify-between cursor-pointer select-none"
     >
       {/* Product Image Stage */}
-      <div className="relative aspect-square w-full overflow-hidden bg-[#FAF7F2] border-b border-[#E8E2D7]/60">
+      <div className="relative aspect-square w-full overflow-hidden bg-[#FAF7F2] dark:bg-[#0C080A] border-b border-[#E8E2D7]/60 dark:border-[#2A1622]">
         <img
           src={product.image}
-          alt={product.name}
+          alt={displayName}
           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
           loading="lazy"
         />
 
         {/* Optional Tag / Badge */}
-        {product.badge && (
+        {displayBadge && (
           <div className="absolute top-3 left-3 rtl:left-auto rtl:right-3">
-            <span className="bg-[#FAF7F2]/90 backdrop-blur-sm text-[#1A1A1A] border border-[#E8E2D7] text-[10px] font-medium uppercase tracking-wider px-2.5 py-1 rounded-full">
-              {product.badge}
+            <span className="bg-[#FAF7F2]/90 dark:bg-[#140C12]/90 backdrop-blur-sm text-[#1A1A1A] dark:text-[#FAF5EE] border border-[#E8E2D7] dark:border-[#2A1622] text-[10px] font-medium uppercase tracking-wider px-2.5 py-1 rounded-full">
+              {displayBadge}
             </span>
           </div>
         )}
@@ -61,28 +73,28 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between gap-2">
-            <h3 className="font-serif text-lg sm:text-xl font-normal text-[#1A1A1A] group-hover:text-[#3C1322] transition-colors line-clamp-1">
-              {product.name}
+            <h3 className="font-serif text-lg sm:text-xl font-normal text-[#1A1A1A] dark:text-[#FAF5EE] group-hover:text-[#3C1322] dark:group-hover:text-[#E8BDD4] transition-colors line-clamp-1">
+              {displayName}
             </h3>
             {product.available_flavors && product.available_flavors.length > 1 && (
-              <span className="text-[10px] font-medium text-[#3C1322] bg-[#FFD147]/30 border border-[#FFD147]/50 px-2 py-0.5 rounded-full shrink-0">
+              <span className="text-[10px] font-medium text-[#3C1322] dark:text-[#FFD147] bg-[#FFD147]/30 dark:bg-[#FFD147]/20 border border-[#FFD147]/50 px-2 py-0.5 rounded-full shrink-0">
                 {product.available_flavors.length} {isRtl ? 'نكهات' : 'Flavors'}
               </span>
             )}
           </div>
           
           {showDescription && (
-            <p className="text-xs sm:text-sm text-[#736B63] mt-1 font-light line-clamp-2 leading-relaxed">
-              {product.tagline || product.description}
+            <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#B0A396] mt-1 font-light line-clamp-2 leading-relaxed">
+              {displayTagline}
             </p>
           )}
         </div>
 
         {/* Price & Add to Bag Row */}
-        <div className="pt-4 mt-4 border-t border-[#E8E2D7] flex items-center justify-between gap-3">
+        <div className="pt-4 mt-4 border-t border-[#E8E2D7] dark:border-[#2A1622] flex items-center justify-between gap-3">
           <div>
-            <span className="text-sm sm:text-base font-medium text-[#1A1A1A]">
-              EGP {product.price.toLocaleString()}
+            <span className="text-sm sm:text-base font-medium text-[#1A1A1A] dark:text-[#FAF5EE]">
+              {formatPrice(product.price)}
             </span>
           </div>
 

@@ -16,52 +16,52 @@ export const BrandFlavorShowcaseSection: React.FC<BrandFlavorShowcaseSectionProp
 
   const flavorFamilies = [
     {
-      id: 'mango',
-      family: isRtl ? 'نكهات المانجو' : 'Golden Mango',
-      title: isRtl ? 'مانجو صن بيم' : 'Mango Sunbeam',
-      tagline: isRtl ? 'حلاوة مشمسة وقوام زبدي غني' : 'Creamy, bright, buttery finish',
+      id: 'coffee',
+      family: isRtl ? 'قهوة وكابتشينو' : 'Coffee & Cappuccino',
+      title: isRtl ? 'بونبون كابتشينو سائل القهوة' : 'Cappuccino Candies',
+      tagline: isRtl ? 'مستخلصات سائل القهوة الطبيعية مع حبوب إيطالية' : 'Natural Italian coffee liquid center',
       description: isRtl
-        ? 'بيوريه مانجو ألفونسو طبيعي يُطهى ببطء مع زبدة النورماندي الحلوة وفانيليا تاهيتي.'
-        : 'Pure Alphonso mango purée slow-simmered with Normandy sweet cream butter into an explosive sunny chew.',
-      image: '/images/products/mango_sunbeam.jpg',
+        ? 'بونبون قهوة وكابتشينو فاخر محشو بسائل القهوة الطبيعية المركزة مع حبوب البن الإيطالية المحمصة.'
+        : 'Protein and Extracts of Coffee Liquid. Premium cappuccino bonbon filled with natural roasted Italian coffee extract.',
+      image: '/images/products/cappuccino_candies_thumb.jpg',
       badge: isRtl ? 'الأكثر طلباً' : 'Bestseller',
-      accent: '#FFD147',
+      accent: '#4A2E18',
     },
     {
-      id: 'berry',
-      family: isRtl ? 'توت الغابات' : 'Wild Berries',
-      title: isRtl ? 'بيري أفترجلو' : 'Berry Afterglow',
-      tagline: isRtl ? 'طبقات التوت البري مع الكريمة الفاخرة' : 'Layered berries, delicate cream',
+      id: 'toffee',
+      family: isRtl ? 'توفي الحليب الفاخر' : 'European Milk Toffee',
+      title: isRtl ? 'توفي حليب جودة أوروبا' : 'Milk Toffee Center Milk',
+      tagline: isRtl ? 'حليب طبيعي كامل الدسم وكريمة الفانيليا' : 'Full cream milk & natural vanilla cream',
       description: isRtl
-        ? 'فراولة ألبية برية وتوت بري داكن ممزوجان بنعومة مع الكريمة الأوروبية الغنية.'
-        : 'Cold-macerated wild alpine strawberries and raspberries swirling in velvety cultured sweet cream.',
-      image: '/images/products/berry_afterglow.jpg',
-      badge: isRtl ? 'مخملي' : 'Velvety',
-      accent: '#C84B5B',
+        ? 'توفي حليب ناعم بجودة أوربية محشو باللبن الطبيعي وكريمة الفانيليا الفاخرة.'
+        : 'Toomakt Milk Center Milk Europe Quality. Soft toffee stuffed with natural whole milk and delicate vanilla cream.',
+      image: '/images/products/milk_toffee_thumb.jpg',
+      badge: isRtl ? 'جودة أوروبا' : 'Europe Quality',
+      accent: '#1E4B8A',
     },
     {
-      id: 'citrus',
-      family: isRtl ? 'الحمضيات الإيطالية' : 'Zesty Citrus',
-      title: isRtl ? 'سيتروس كوميت' : 'Citrus Comet',
-      tagline: isRtl ? 'حموضة متلألئة وانتعاش طبيعي' : 'Bright citrus, sparkling acidity',
+      id: 'chocolate',
+      family: isRtl ? 'اكلير الزبدة والشوكولاتة' : 'Butter & Chocolate Eclairs',
+      title: isRtl ? 'اكلير زبدة محشو بالشوكولاتة' : 'Butter Eclairs Chocolate',
+      tagline: isRtl ? 'زبدة طبيعية نقية مع قلب شوكولاتة ذائب' : 'Rich butter toffee with melting chocolate',
       description: isRtl
-        ? 'ليمون صقلية معصور على البارد وليمون حامض يمتزجان بتناغم مع التوفي الكراميلي.'
-        : 'Cold-pressed Mediterranean lemons, sun-warmed limes, and slow-churned butter toffee.',
-      image: '/images/products/citrus_comet.jpg',
-      badge: isRtl ? 'منعش' : 'Sparkling',
-      accent: '#88C057',
-    },
-    {
-      id: 'gift-boxes',
-      family: isRtl ? 'مجموعات الإهداء' : 'Gift Collections',
-      title: isRtl ? 'صناديق الهدايا الفاخرة' : 'Sun Chaser & Reserve',
-      tagline: isRtl ? 'تشكيلة مختارة في صناديق كتانية راقية' : 'Curated presentation boxes',
-      description: isRtl
-        ? 'مجموعات مختارة من إبداعاتنا ملفوفة يدوياً بعناية في صناديق كتانية مذهبة تليق بأرقى المناسبات.'
-        : 'Curated gift boxes featuring our finest fruit toffees in embossed linen keepsake boxes.',
-      image: '/images/products/sun_chaser_box.jpg',
-      badge: isRtl ? 'فاخر للإهداء' : 'Deluxe Keepsake',
+        ? 'توفي اكلير مصنوع من الزبدة الطبيعية الفاخرة ومحشو بشوكولاتة سائلة ناعمة تذوب في الفم.'
+        : 'Artisanal butter eclair toffee filled with velvety chocolate cream and whole milk.',
+      image: '/images/products/butter_eclairs_1_thumb.jpg',
+      badge: isRtl ? 'شوكولاتة فاخرة' : 'Rich Chocolate',
       accent: '#D4AF37',
+    },
+    {
+      id: 'fruit',
+      family: isRtl ? 'فواكه طبيعية' : 'Natural Fruit Toffee',
+      title: isRtl ? 'توفي فواكه بعسل الفواكه' : 'Fruit Toffee Honey Filled',
+      tagline: isRtl ? 'تشكيلة نكهات الفواكه مع عسل الفاكهة النقي' : 'Assorted natural fruits with fruit honey core',
+      description: isRtl
+        ? 'توفي ناعم متعدد النكهات (فراولة، ليمون، تفاح أخضر) محشو بعسل وسيرب الفواكه الطبيعي.'
+        : 'Soft chewy toffee with vibrant fruit extracts filled with liquid natural fruit honey.',
+      image: '/images/products/fruit_toffee_05_thumb.jpg',
+      badge: isRtl ? 'فواكه منعشة' : 'Fresh Fruits',
+      accent: '#E63946',
     },
   ];
 

@@ -28,7 +28,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onNavigateView,
 }) => {
   const { addToCart } = useCart();
-  const { isRtl } = useLanguage();
+  const { isRtl, formatPrice } = useLanguage();
   const [customerQuantity, setCustomerQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [justAdded, setJustAdded] = useState(false);
@@ -53,9 +53,25 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   if (!product) return null;
 
+  const displayName = isRtl
+    ? (product.name_ar || product.name)
+    : (product.name_en || product.name);
+
+  const displayTagline = isRtl
+    ? (product.tagline_ar || product.tagline)
+    : (product.tagline_en || product.tagline);
+
+  const displayDescription = isRtl
+    ? (product.description_ar || product.description || displayTagline)
+    : (product.description_en || product.description || displayTagline);
+
+  const displayBadge = isRtl
+    ? (product.badge_ar || product.badge)
+    : (product.badge_en || product.badge);
+
   const baseImages = Array.isArray(product.images) && product.images.length > 0
     ? product.images
-    : [product.image || '/images/products/mango_sunbeam.jpg'];
+    : [product.image || '/images/products/cappuccino_candies_thumb.jpg'];
 
   // Ensure any flavor images are included in gallery
   const flavorImageUrls = product.flavor_images ? Object.values(product.flavor_images) : [];
@@ -66,14 +82,24 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const stock = product.stock_quantity ?? (product.in_stock ? 50 : 0);
   const isOutOfStock = stock <= 0 || product.in_stock === false || product.status === 'out_of_stock';
 
-  const boxQuantity = product.box_quantity ?? 10;
-  const boxQuantityLabel = product.box_quantity_label || `${boxQuantity} Boxes / Carton`;
-  const packQuantity = product.pack_quantity || `${product.weight || '250g'} Pouch`;
+  const boxQuantity = product.box_quantity ?? 12;
+  const displayBoxQuantityLabel = isRtl
+    ? (product.box_quantity_label_ar || product.box_quantity_label || `${boxQuantity} كيس / كرتونة`)
+    : (product.box_quantity_label_en || product.box_quantity_label || `${boxQuantity} Bags / Carton`);
+
+  const displayPackQuantity = isRtl
+    ? (product.pack_quantity_ar || product.pack_quantity || `${product.weight || '250g'} كيس`)
+    : (product.pack_quantity_en || product.pack_quantity || `${product.weight || '250g'} Bag`);
+
   const sku = product.sku || `TMK-${(product.slug || product.name || 'CONFECTION').slice(0, 8).toUpperCase()}`;
 
-  const tastingNotes = Array.isArray(product.tasting_notes) && product.tasting_notes.length > 0
+  const defaultTastingNotes = Array.isArray(product.tasting_notes) && product.tasting_notes.length > 0
     ? product.tasting_notes
-    : (Array.isArray(product.fruitNotes) && product.fruitNotes.length > 0 ? product.fruitNotes : ['Wild Orchard Fruits', 'European Sweet Butter']);
+    : (Array.isArray(product.fruitNotes) && product.fruitNotes.length > 0 ? product.fruitNotes : ['Natural Ingredients', 'Pure Sweet Butter']);
+
+  const displayTastingNotes = isRtl
+    ? (Array.isArray(product.tasting_notes_ar) && product.tasting_notes_ar.length > 0 ? product.tasting_notes_ar : defaultTastingNotes)
+    : (Array.isArray(product.tasting_notes_en) && product.tasting_notes_en.length > 0 ? product.tasting_notes_en : defaultTastingNotes);
 
   // Dynamic flavor selection: update image automatically
   const handleSelectFlavor = (flv: string) => {
@@ -171,7 +197,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     <motion.img
                       key={activeImage}
                       src={activeImage}
-                      alt={product.name}
+                      alt={displayName}
                       initial={{ opacity: 0.2, scale: 0.98 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0.2 }}
@@ -181,10 +207,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </AnimatePresence>
 
                   {/* Ribbon Badge */}
-                  {product.badge && (
+                  {displayBadge && (
                     <div className="absolute top-3 left-3 rtl:left-auto rtl:right-3">
                       <span className="bg-[#FAF7F2]/95 dark:bg-[#140C12]/95 backdrop-blur-sm text-[#1A1A1A] dark:text-[#FAF5EE] border border-[#E8E2D7] dark:border-[#381B2D] text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-xs">
-                        {product.badge}
+                        {displayBadge}
                       </span>
                     </div>
                   )}
@@ -228,7 +254,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                               : 'border-[#E8E2D7] dark:border-[#2A1622] hover:border-[#736B63] opacity-70 hover:opacity-100'
                           }`}
                         >
-                          <img src={img} alt={`${product?.name || 'Confectionery'} view ${idx + 1}`} className="w-full h-full object-cover" />
+                          <img src={img} alt={`${displayName} view ${idx + 1}`} className="w-full h-full object-cover" />
                         </button>
                       );
                     })}
@@ -246,7 +272,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold uppercase tracking-wider text-[#3C1322] dark:text-[#E8BDD4]">
-                      {product.category || 'Atelier Collection'}
+                      {typeof product.category === 'object' && product.category !== null
+                        ? ((product.category as any).name || (product.category as any).slug)
+                        : (product.category_name || product.category || 'Atelier Collection')}
                     </span>
                     <span className="text-[10px] text-[#A89F91]">•</span>
                     <span className="font-mono text-[10px] text-[#736B63] dark:text-[#B0A396]">
@@ -257,16 +285,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
                 {/* Title */}
                 <h2 className="text-2xl sm:text-3xl font-serif font-normal text-[#1A1A1A] dark:text-[#FAF5EE]">
-                  {product.name}
+                  {displayName}
                 </h2>
 
                 {/* Price & Unit */}
                 <div className="flex items-baseline gap-2">
                   <span className="text-2xl sm:text-3xl font-normal text-[#1A1A1A] dark:text-[#FAF5EE]">
-                    EGP {product.price.toLocaleString()}
+                    {formatPrice(product.price)}
                   </span>
                   <span className="text-xs text-[#736B63] dark:text-[#B0A396]">
-                    / {packQuantity}
+                    / {displayPackQuantity}
                   </span>
                 </div>
 
@@ -276,7 +304,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <div className="p-3 rounded-xl bg-white dark:bg-[#140C12] border border-[#E8E2D7] dark:border-[#2A1622] space-y-2">
                   <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#3C1322] dark:text-[#E8BDD4]">
                     <Boxes className="w-3.5 h-3.5" />
-                    <span>{isRtl ? 'مواصفات التعبئة' : 'Packaging Specifications'}</span>
+                    <span>{isRtl ? 'مواصفات التعبئة والتغليف' : 'Packaging Specifications'}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className="p-2 rounded-lg bg-[#FAF5EE] dark:bg-[#1A0E18] border border-[#E8E2D7]/60 dark:border-[#2E1826]">
@@ -284,7 +312,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         {isRtl ? 'الكرتونة' : 'Box Quantity'}
                       </span>
                       <span className="font-semibold text-[#1A1A1A] dark:text-[#FAF5EE]">
-                        {boxQuantityLabel}
+                        {displayBoxQuantityLabel}
                       </span>
                     </div>
 
@@ -293,7 +321,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         {isRtl ? 'محتوى العبوة' : 'Pack Content'}
                       </span>
                       <span className="font-semibold text-[#1A1A1A] dark:text-[#FAF5EE]">
-                        {packQuantity}
+                        {displayPackQuantity}
                       </span>
                     </div>
                   </div>
@@ -301,7 +329,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
                 {/* Description */}
                 <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#B0A396] font-light leading-relaxed">
-                  {product.description || product.tagline}
+                  {displayDescription}
                 </p>
 
                 {/* Flavor / Variant Selector */}
@@ -339,13 +367,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 )}
 
                 {/* Tasting Notes */}
-                {tastingNotes.length > 0 && (
+                {displayTastingNotes.length > 0 && (
                   <div className="pt-1">
                     <span className="text-[10px] font-semibold text-[#736B63] dark:text-[#B0A396] uppercase tracking-wider block mb-1.5">
-                      {isRtl ? 'ملاحظات النكهة' : 'Tasting Notes'}
+                      {isRtl ? 'ملاحظات النكهة والمذاق' : 'Tasting Notes'}
                     </span>
                     <div className="flex flex-wrap gap-1.5">
-                      {tastingNotes.map((note, idx) => (
+                      {displayTastingNotes.map((note, idx) => (
                         <span
                           key={idx}
                           className="text-[11px] px-2.5 py-1 rounded-full bg-[#FAF5EE] dark:bg-[#1A0E18] border border-[#E8E2D7] dark:border-[#2A1622] text-[#1A1A1A] dark:text-[#FAF5EE]"
@@ -367,7 +395,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       {isRtl ? 'الكمية' : 'Quantity'}
                     </span>
                     <span className="text-[10px] text-[#736B63] dark:text-[#B0A396]">
-                      {customerQuantity} × {packQuantity}
+                      {customerQuantity} × {displayPackQuantity}
                     </span>
                   </div>
                   <div className="flex items-center gap-3 bg-white dark:bg-[#140C12] border border-[#E8E2D7] dark:border-[#2A1622] rounded-full px-3 py-1">

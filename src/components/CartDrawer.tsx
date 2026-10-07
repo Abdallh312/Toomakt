@@ -11,7 +11,7 @@ interface CartDrawerProps {
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
-  const { isRtl } = useLanguage();
+  const { isRtl, formatPrice } = useLanguage();
   const {
     items,
     isCartOpen,
@@ -162,13 +162,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                 >
                   <div className="flex items-center gap-3">
                     <img
-                      src={item.product.image || '/images/products/mango_sunbeam.jpg'}
-                      alt={item.product.name}
+                      src={item.product.image || '/images/products/cappuccino_candies_thumb.jpg'}
+                      alt={isRtl ? (item.product.name_ar || item.product.name) : (item.product.name_en || item.product.name)}
                       className="w-16 h-16 object-cover rounded-lg border border-[#E8E2D7] bg-[#FAF7F2] shrink-0"
                     />
                     <div>
                       <h4 className="font-serif text-base font-normal text-[#1A1A1A] line-clamp-1">
-                        {item.product.name}
+                        {isRtl ? (item.product.name_ar || item.product.name) : (item.product.name_en || item.product.name)}
                       </h4>
                       {item.selected_flavor && (
                         <span className="text-[11px] font-medium text-[#3C1322] bg-[#FFD147]/25 border border-[#FFD147]/40 px-2 py-0.5 rounded-full inline-block mt-0.5">
@@ -176,7 +176,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                         </span>
                       )}
                       <span className="text-xs text-[#736B63] block mt-0.5">
-                        {item.product.weight || '250g Pouch'} · EGP {item.product.price}
+                        {(isRtl ? item.product.pack_quantity_ar : item.product.pack_quantity_en) || item.product.pack_quantity || item.product.weight || '250g'} · {formatPrice(item.product.price)}
                       </span>
 
                       {/* Quantity Stepper */}
@@ -185,7 +185,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                           onClick={() => updateQuantity(item.product.id, -1, item.selected_flavor)}
                           className="w-6 h-6 rounded-md border border-[#E8E2D7] hover:border-[#1A1A1A] flex items-center justify-center text-xs transition-colors"
                         >
-                          <Minus className="w-3 h-3" />
+                          <Minus className="w-3.5 h-3.5" />
                         </button>
                         <span className="font-mono text-xs font-medium w-4 text-center">
                           {item.quantity}
@@ -194,7 +194,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                           onClick={() => updateQuantity(item.product.id, 1, item.selected_flavor)}
                           className="w-6 h-6 rounded-md border border-[#E8E2D7] hover:border-[#1A1A1A] flex items-center justify-center text-xs transition-colors"
                         >
-                          <Plus className="w-3 h-3" />
+                          <Plus className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
@@ -209,7 +209,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                       <Trash2 className="w-4 h-4" />
                     </button>
                     <span className="font-medium text-sm text-[#1A1A1A]">
-                      EGP {(item.product.price * item.quantity).toLocaleString()}
+                      {formatPrice(item.product.price * item.quantity)}
                     </span>
                   </div>
                 </div>

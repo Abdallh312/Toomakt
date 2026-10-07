@@ -19,8 +19,8 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   yOffset = 24,
   xOffset = 0,
   className = '',
-  viewportAmount = 0.12,
-  once = false, // Bidirectional: animates both on scroll down and scroll up!
+  viewportAmount = 0.05,
+  once = true, // Keep visible once scrolled into view
 }) => {
   return (
     <motion.div
@@ -52,7 +52,7 @@ export const TextReveal: React.FC<TextRevealProps> = ({
   className = '',
   delay = 0,
   as: Component = 'span',
-  once = false, // Bidirectional: animates on scroll down and scroll up!
+  once = true, // Keep visible once scrolled into view
 }) => {
   const words = text.split(' ');
 

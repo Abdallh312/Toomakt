@@ -92,10 +92,16 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
     if (searchQuery.trim() !== '') {
       const q = searchQuery.toLowerCase();
       const match =
-        p.name.toLowerCase().includes(q) ||
-        (p.tagline || '').toLowerCase().includes(q) ||
-        (p.description || '').toLowerCase().includes(q) ||
-        (Array.isArray(p.fruitNotes) && p.fruitNotes.some(n => n.toLowerCase().includes(q)));
+        (p.name_ar || p.name).toLowerCase().includes(q) ||
+        (p.name_en || p.name).toLowerCase().includes(q) ||
+        (p.tagline_ar || p.tagline || '').toLowerCase().includes(q) ||
+        (p.tagline_en || p.tagline || '').toLowerCase().includes(q) ||
+        (p.description_ar || p.description || '').toLowerCase().includes(q) ||
+        (p.description_en || p.description || '').toLowerCase().includes(q) ||
+        (p.flavor_ar || p.flavor || '').toLowerCase().includes(q) ||
+        (p.flavor_en || p.flavor || '').toLowerCase().includes(q) ||
+        (Array.isArray(p.fruitNotes) && p.fruitNotes.some(n => n.toLowerCase().includes(q))) ||
+        (Array.isArray(p.tasting_notes_en) && p.tasting_notes_en.some(n => n.toLowerCase().includes(q)));
       if (!match) return false;
     }
 

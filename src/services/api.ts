@@ -1,7 +1,7 @@
 // ============================================================================
 // toomakt Unified API Client — 100% Supabase PostgreSQL (No Django Backend)
 // ============================================================================
-import { PRODUCTS } from '../data/toomaktData';
+import { PRODUCTS, CATEGORIES } from '../data/toomaktData';
 
 const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL || 'https://fpabvfwjbxqsrpdglvgt.supabase.co').replace(/\/$/, '');
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_P1RKNGKkCkD4PbauoaFZpA_6GwgJ-Od';
@@ -105,61 +105,86 @@ export const api = {
       const data = await res.json();
       if (data && data.length > 0) {
         return data.map((p: any) => {
+          const localMatch = PRODUCTS.find((lp) => lp.id === p.slug || lp.slug === p.slug || lp.name === p.name);
           const defaultFlavors = (PRODUCT_DEFAULT_FLAVORS as Record<string, string[]>)[p.slug] || (PRODUCT_DEFAULT_FLAVORS as Record<string, string[]>)[p.id] || (Array.isArray(p.fruit_notes) && p.fruit_notes.length > 0 ? p.fruit_notes : [p.name]);
           const availableFlavors = p.available_flavors && Array.isArray(p.available_flavors) && p.available_flavors.length > 0
             ? p.available_flavors
-            : defaultFlavors;
+            : (localMatch?.available_flavors || defaultFlavors);
 
           const tastingNotes = Array.isArray(p.tasting_notes) && p.tasting_notes.length > 0
             ? p.tasting_notes
-            : (Array.isArray(p.fruit_notes) && p.fruit_notes.length > 0 ? p.fruit_notes : ['Orchard Fruits', 'Creamy Butter']);
+            : (Array.isArray(p.fruit_notes) && p.fruit_notes.length > 0 ? p.fruit_notes : (localMatch?.tasting_notes || ['Orchard Fruits', 'Creamy Butter']));
 
-          const imagesList = Array.isArray(p.images) && p.images.length > 0
+          const imagesList = (Array.isArray(p.images) && p.images.length > 0)
             ? p.images
-            : (p.image_url ? [p.image_url] : ['/images/products/mango_sunbeam.jpg']);
+            : (localMatch?.images && localMatch.images.length > 0
+              ? localMatch.images
+              : (p.image_url ? [p.image_url] : ['/images/products/cappuccino_candies_thumb.jpg']));
 
-          const weightStr = p.weight || '250g';
-          const weightNum = p.weight_value ? Number(p.weight_value) : (parseInt(weightStr) || 250);
+          const weightStr = p.weight || localMatch?.weight || '250g';
+          const weightNum = p.weight_value ? Number(p.weight_value) : (localMatch?.weight_value || (parseInt(weightStr) || 250));
+
+          const rawCat = p.category;
+          const catSlug = typeof rawCat === 'object' && rawCat !== null ? (rawCat.slug || rawCat.name) : (rawCat || localMatch?.category || 'all');
+          const catName = typeof rawCat === 'object' && rawCat !== null ? (rawCat.name || rawCat.slug) : (localMatch?.category || 'Confectionery');
 
           return {
             ...p,
-            sku: p.sku || `TMK-${(p.slug || p.name || 'ITEM').slice(0, 8).toUpperCase()}`,
-            category_name: p.category?.name || 'Confectionery',
-            category_slug: p.category?.slug || 'confectionery',
-            flavor_name: p.flavor || p.name,
-            flavor: p.flavor || p.name,
-            flavor_color: p.accent_color || '#FFD147',
+            category: catSlug,
+            category_name: catName,
+            category_slug: catSlug,
+            flavor_name: p.flavor || localMatch?.flavor || p.name,
+            flavor: p.flavor || localMatch?.flavor || p.name,
+            flavor_color: p.accent_color || localMatch?.accentColor || '#FFD147',
             status: p.product_status || (p.in_stock ? 'available' : 'out_of_stock'),
-            stock_quantity: p.stock_quantity ?? 50,
+            stock_quantity: p.stock_quantity ?? localMatch?.stock_quantity ?? 50,
             in_stock: (p.stock_quantity ?? 50) > 0,
-            price: Number(p.price || 0),
+            price: Number(p.price || localMatch?.price || 0),
             weight: weightStr,
             weight_value: weightNum,
-            weight_unit: p.weight_unit || 'g',
-            box_quantity: p.box_quantity ?? 10,
-            box_quantity_label: p.box_quantity_label || `${p.box_quantity ?? 10} Boxes / Carton`,
-            pack_quantity: p.pack_quantity || `${weightStr} Pouch`,
-            pack_quantity_pieces: p.pieces_per_pack || 24,
-            pieces_per_pack: p.pieces_per_pack || 24,
-            image: imagesList[0] || p.image_url || '/images/products/mango_sunbeam.jpg',
+            weight_unit: p.weight_unit || localMatch?.weight_unit || 'g',
+            box_quantity: p.box_quantity ?? localMatch?.box_quantity ?? 12,
+            box_quantity_label: p.box_quantity_label ?? localMatch?.box_quantity_label ?? `${p.box_quantity ?? 12} كيس / كرتونة`,
+            pack_quantity: p.pack_quantity ?? localMatch?.pack_quantity ?? `${weightStr} كيس`,
+            pack_quantity_pieces: p.pieces_per_pack ?? localMatch?.pieces_per_pack ?? 50,
+            pieces_per_pack: p.pieces_per_pack ?? localMatch?.pieces_per_pack ?? 50,
+            image: imagesList[0] || p.image_url || '/images/products/cappuccino_candies_thumb.jpg',
             images: imagesList,
-            tagline: p.tagline || '',
-            description: p.description || '',
+            name_ar: p.name_ar || localMatch?.name_ar || p.name,
+            name_en: p.name_en || localMatch?.name_en || p.name,
+            tagline: p.tagline || localMatch?.tagline || '',
+            tagline_ar: p.tagline_ar || localMatch?.tagline_ar || p.tagline || '',
+            tagline_en: p.tagline_en || localMatch?.tagline_en || p.tagline || '',
+            description: p.description || localMatch?.description || '',
+            description_ar: p.description_ar || localMatch?.description_ar || p.description || '',
+            description_en: p.description_en || localMatch?.description_en || p.description || '',
+            badge: p.badge || localMatch?.badge,
+            badge_ar: p.badge_ar || localMatch?.badge_ar || p.badge,
+            badge_en: p.badge_en || localMatch?.badge_en || p.badge,
+            box_quantity_label_ar: p.box_quantity_label_ar || localMatch?.box_quantity_label_ar,
+            box_quantity_label_en: p.box_quantity_label_en || localMatch?.box_quantity_label_en,
+            pack_quantity_ar: p.pack_quantity_ar || localMatch?.pack_quantity_ar,
+            pack_quantity_en: p.pack_quantity_en || localMatch?.pack_quantity_en,
+            flavor_ar: p.flavor_ar || localMatch?.flavor_ar,
+            flavor_en: p.flavor_en || localMatch?.flavor_en,
+            tasting_notes_ar: p.tasting_notes_ar || localMatch?.tasting_notes_ar,
+            tasting_notes_en: p.tasting_notes_en || localMatch?.tasting_notes_en,
             available_flavors: availableFlavors,
+            flavor_images: localMatch?.flavor_images,
             tasting_notes: tastingNotes,
             fruitNotes: tastingNotes,
-            rating: p.rating ? Number(p.rating) : 5.0,
-            reviewsCount: p.review_count ?? p.reviews_count ?? 0,
+            rating: p.rating ? Number(p.rating) : (localMatch?.rating || 4.95),
+            reviewsCount: p.review_count ?? p.reviews_count ?? (localMatch?.reviewsCount || 250),
             variants: [
               { id: `${p.id}-v1`, title: weightStr, price: p.price, stock_quantity: p.stock_quantity ?? 50 },
             ],
           };
         });
       }
-      return [];
+      return PRODUCTS;
     } catch (e) {
       console.warn('Supabase products error:', e);
-      return [];
+      return PRODUCTS;
     }
   },
 
@@ -317,12 +342,18 @@ export const api = {
       );
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data)) return data;
+        if (Array.isArray(data) && data.length > 0) return data;
       }
     } catch (e) {
       console.error('Error fetching categories:', e);
     }
-    return [];
+    return CATEGORIES.map((c) => ({
+      id: c.id,
+      slug: c.id,
+      name: c.name,
+      name_ar: c.arabicName,
+      display_order: 0
+    }));
   },
 
   async createCategory(data: any): Promise<any> {

@@ -835,13 +835,13 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       className="flex gap-3.5 pb-4 border-b border-[#E8E2D7] last:border-b-0"
                     >
                       <img
-                        src={item.product.image || '/images/products/mango_sunbeam.jpg'}
-                        alt={item.product.name}
+                        src={item.product.image || '/images/products/cappuccino_candies_thumb.jpg'}
+                        alt={isRtl ? (item.product.name_ar || item.product.name) : (item.product.name_en || item.product.name)}
                         className="w-16 h-16 rounded-xl object-cover bg-[#FAF7F2] border border-[#E8E2D7] shrink-0"
                       />
                       <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-medium text-[#1A1A1A] truncate">
-                          {item.product.name}
+                          {isRtl ? (item.product.name_ar || item.product.name) : (item.product.name_en || item.product.name)}
                         </h4>
                         {item.selected_flavor && (
                           <span className="text-[11px] font-medium text-[#3C1322] bg-[#FFD147]/25 border border-[#FFD147]/40 px-2 py-0.5 rounded-full inline-block mt-0.5">
@@ -849,16 +849,16 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                           </span>
                         )}
                         <div className="flex items-center gap-2 mt-0.5 text-xs text-[#736B63] font-light">
-                          <span>Qty: {item.quantity}</span>
+                          <span>{isRtl ? 'الكمية: ' : 'Qty: '}{item.quantity}</span>
                           <span>•</span>
-                          <span>EGP {Number(item.product.price).toFixed(2)}</span>
+                          <span>{isRtl ? `${Number(item.product.price).toFixed(0)} ج.م` : `EGP ${Number(item.product.price).toFixed(0)}`}</span>
                         </div>
                         <div className="flex justify-between items-center mt-1">
                           <span className="text-xs text-[#736B63]">
                             {isRtl ? 'الإجمالي' : 'Line Total'}
                           </span>
                           <span className="text-sm font-medium text-[#1A1A1A]">
-                            EGP {(Number(item.product.price) * item.quantity).toFixed(2)}
+                            {isRtl ? `${(Number(item.product.price) * item.quantity).toFixed(0)} ج.م` : `EGP ${(Number(item.product.price) * item.quantity).toFixed(0)}`}
                           </span>
                         </div>
                       </div>
