@@ -51,40 +51,50 @@ export const BrandStorySection: React.FC<BrandStorySectionProps> = ({ onReadMore
             >
               <div
                 onClick={togglePlay}
-                className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-[#E8E2D7] bg-[#1A1A1A] shadow-soft-lg group cursor-pointer aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] max-h-[480px] w-full"
+                className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-[#E8E2D7] dark:border-[#2A1622] bg-[#0E0A0C] shadow-soft-lg group cursor-pointer aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] max-h-[480px] w-full flex items-center justify-center"
               >
-                {/* HTML5 Autoplaying Video */}
+                {/* Ambient backdrop video */}
                 <video
-                  ref={videoRef}
-                  src="/videos/atelier_craft.mp4"
+                  src="/videos/toomakt_factory_tour.mp4"
                   autoPlay
                   loop
                   muted
                   playsInline
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-40 pointer-events-none select-none"
+                />
+
+                {/* Main Factory Tour Video */}
+                <video
+                  ref={videoRef}
+                  src="/videos/toomakt_factory_tour.mp4"
+                  autoPlay
+                  loop
+                  muted={isMuted}
+                  playsInline
+                  className="relative z-10 max-h-full max-w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.7)] group-hover:scale-102 transition-transform duration-700 ease-out"
                 />
 
                 {/* Subtle vignette gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/25 pointer-events-none z-20" />
 
                 {/* Play/Pause state indicator overlay on hover */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 pointer-events-none">
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 pointer-events-none z-30">
                   <div className="w-14 h-14 rounded-full bg-[#FAF7F2]/90 backdrop-blur-sm text-[#1A1A1A] flex items-center justify-center shadow-soft">
                     {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current translate-x-0.5" />}
                   </div>
                 </div>
 
                 {/* Bottom Bar: Badge and Sound Toggle */}
-                <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 flex items-center justify-between pointer-events-auto">
-                  <div className="bg-[#FAF7F2]/95 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-medium text-[#1A1A1A] border border-[#E8E2D7] shadow-soft flex items-center gap-2">
+                <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 flex items-center justify-between pointer-events-auto z-30">
+                  <div className="bg-[#FAF7F2]/95 dark:bg-[#1A1512]/95 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-medium text-[#1A1A1A] dark:text-[#FAF7F2] border border-[#E8E2D7] dark:border-white/10 shadow-soft flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#88C057] animate-pulse" />
-                    <span>{isRtl ? 'في معمل الحلويات · القاهرة' : 'Atelier craft · Cairo · Slow Cook'}</span>
+                    <span>{isRtl ? 'جولة حصرية داخل مصنع الزهرة وتوماكت · العاشر من رمضان' : 'Factory Tour & Atelier Craft · Cairo'}</span>
                   </div>
 
                   <button
                     onClick={toggleMute}
                     aria-label={isMuted ? 'Unmute video' : 'Mute video'}
-                    className="p-2 sm:p-2.5 rounded-full bg-[#FAF7F2]/95 backdrop-blur-md text-[#1A1A1A] hover:bg-[#3C1322] hover:text-[#FAF7F2] border border-[#E8E2D7] transition-all cursor-pointer shadow-soft"
+                    className="p-2 sm:p-2.5 rounded-full bg-[#FAF7F2]/95 dark:bg-[#1A1512]/95 backdrop-blur-md text-[#1A1A1A] dark:text-white hover:bg-[#3C1322] hover:text-[#FAF7F2] border border-[#E8E2D7] dark:border-white/10 transition-all cursor-pointer shadow-soft"
                   >
                     {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                   </button>

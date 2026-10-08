@@ -20,6 +20,36 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [activeMediaTab, setActiveMediaTab] = useState<'video' | 'gallery'>('video');
+  const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
+
+  const heroVideos = [
+    {
+      id: 'confection',
+      src: '/videos/toomakt_confection_film.mp4',
+      labelAr: 'فيلم التوفي الفاخر',
+      labelEn: 'Confection Film',
+      badgeAr: 'حلوى التوفي الفاخرة · من تصوير المعمل',
+      badgeEn: 'Artisanal Toffee · Studio Reel',
+    },
+    {
+      id: 'tasting',
+      src: '/videos/toomakt_tasting_ritual.mp4',
+      labelAr: 'طقوس التذوق',
+      labelEn: 'Tasting Ritual',
+      badgeAr: 'طقوس تقديم وتذوق التوفي · كريستال فاخر',
+      badgeEn: 'Tasting Ritual · Crystal Service',
+    },
+    {
+      id: 'factory',
+      src: '/videos/toomakt_factory_tour.mp4',
+      labelAr: 'جولة المصنع',
+      labelEn: 'Factory Tour',
+      badgeAr: 'جولة داخل خطوط الإنتاج · القاهرة',
+      badgeEn: 'Factory Tour · Cairo Production',
+    },
+  ];
+
+  const currentVideo = heroVideos[selectedVideoIndex];
 
   const togglePlay = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -151,11 +181,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* Right Column: Hero Video & Drive Confections Showcase */}
           <div className="lg:col-span-6 relative w-full">
             <ScrollReveal delay={0.15} yOffset={25}>
-              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-[#E8E2D7] dark:border-[#2A1622] bg-[#1A1512] shadow-soft-lg group">
+              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-[#E8E2D7] dark:border-[#2A1622] bg-[#0E0A0C] shadow-soft-lg group">
                 
                 {/* Media Switcher Tab Header */}
-                <div className="absolute top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 z-20 flex items-center justify-between pointer-events-auto">
-                  <div className="flex items-center gap-1.5 p-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 shadow-soft">
+                <div className="absolute top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 z-30 flex flex-wrap items-center justify-between gap-2 pointer-events-auto">
+                  <div className="flex items-center gap-1.5 p-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 shadow-soft">
                     <button
                       type="button"
                       onClick={() => setActiveMediaTab('video')}
@@ -166,7 +196,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       }`}
                     >
                       <Film className="w-3.5 h-3.5" />
-                      <span>{isRtl ? 'فيديو المعمل' : 'Atelier Film'}</span>
+                      <span>{isRtl ? 'أفلام المعمل' : 'Atelier Films'}</span>
                     </button>
 
                     <button
@@ -188,7 +218,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       <button
                         type="button"
                         onClick={togglePlay}
-                        className="w-8 h-8 rounded-full bg-black/60 backdrop-blur-md text-white hover:bg-white hover:text-[#1A1A1A] border border-white/10 transition-colors flex items-center justify-center cursor-pointer shadow-soft"
+                        className="w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-white hover:bg-white hover:text-[#1A1A1A] border border-white/10 transition-colors flex items-center justify-center cursor-pointer shadow-soft"
                         aria-label={isPlaying ? 'Pause video' : 'Play video'}
                       >
                         {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}
@@ -197,7 +227,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       <button
                         type="button"
                         onClick={toggleMute}
-                        className="w-8 h-8 rounded-full bg-black/60 backdrop-blur-md text-white hover:bg-white hover:text-[#1A1A1A] border border-white/10 transition-colors flex items-center justify-center cursor-pointer shadow-soft"
+                        className="w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-white hover:bg-white hover:text-[#1A1A1A] border border-white/10 transition-colors flex items-center justify-center cursor-pointer shadow-soft"
                         aria-label={isMuted ? 'Unmute video' : 'Mute video'}
                       >
                         {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
@@ -206,29 +236,66 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   )}
                 </div>
 
+                {/* Sub-bar with video clips selector */}
+                {activeMediaTab === 'video' && (
+                  <div className="absolute top-14 sm:top-16 left-3 right-3 sm:left-4 sm:right-4 z-30 flex items-center gap-1.5 overflow-x-auto no-scrollbar pointer-events-auto py-1">
+                    {heroVideos.map((item, idx) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedVideoIndex(idx);
+                          setIsPlaying(true);
+                        }}
+                        className={`text-[10px] sm:text-[11px] font-medium px-2.5 py-1 rounded-full whitespace-nowrap transition-all cursor-pointer backdrop-blur-md border ${
+                          selectedVideoIndex === idx
+                            ? 'bg-white/95 text-[#1A1A1A] border-white font-semibold shadow-xs'
+                            : 'bg-black/50 text-white/80 hover:text-white border-white/10 hover:bg-black/70'
+                        }`}
+                      >
+                        {isRtl ? item.labelAr : item.labelEn}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
                 {/* Main Media Viewport */}
-                <div className="relative aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] max-h-[500px] w-full bg-[#1A1512] overflow-hidden flex items-center justify-center">
+                <div className="relative aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] max-h-[520px] w-full bg-[#0E0A0C] overflow-hidden flex items-center justify-center">
                   <AnimatePresence mode="wait">
                     {activeMediaTab === 'video' ? (
                       <motion.div
-                        key="video-tab"
+                        key={`video-${currentVideo.id}`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.35 }}
-                        className="w-full h-full relative cursor-pointer"
+                        className="w-full h-full relative cursor-pointer flex items-center justify-center overflow-hidden"
                         onClick={() => togglePlay()}
                       >
+                        {/* Ambient backdrop video */}
+                        <video
+                          key={`ambient-${currentVideo.id}`}
+                          src={currentVideo.src}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-40 pointer-events-none select-none"
+                        />
+
+                        {/* Foreground crisp HD video */}
                         <video
                           ref={videoRef}
-                          src="/videos/atelier_craft.mp4"
+                          key={`main-${currentVideo.id}`}
+                          src={currentVideo.src}
                           autoPlay
                           loop
                           muted={isMuted}
                           playsInline
-                          className="w-full h-full object-cover object-center"
+                          className="relative z-10 max-h-full max-w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.7)]"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none z-20" />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -251,12 +318,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </div>
 
                 {/* Bottom Bar: Contextual Quality Badge */}
-                <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 z-20 flex items-center justify-between pointer-events-none">
+                <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 z-30 flex items-center justify-between pointer-events-none">
                   <div className="bg-[#FAF7F2]/95 dark:bg-[#1A1512]/95 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#E8E2D7] dark:border-white/10 shadow-soft-md flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#88C057] animate-pulse" />
                     <span className="text-xs font-medium text-[#1A1A1A] dark:text-[#FAF7F2]">
                       {activeMediaTab === 'video'
-                        ? (isRtl ? 'معمل التوفي الحرفي · القاهرة' : 'Atelier Craft Film · Cairo')
+                        ? (isRtl ? currentVideo.badgeAr : currentVideo.badgeEn)
                         : (isRtl ? 'تشكيلة منتجات توماكت الأصلية' : 'Official TooMakt Collection')}
                     </span>
                   </div>
