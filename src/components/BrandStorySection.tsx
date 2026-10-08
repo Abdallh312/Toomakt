@@ -53,20 +53,24 @@ export const BrandStorySection: React.FC<BrandStorySectionProps> = ({ onReadMore
                 onClick={togglePlay}
                 className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-[#E8E2D7] dark:border-[#2A1622] bg-[#0E0A0C] shadow-soft-lg group cursor-pointer aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] max-h-[480px] w-full flex items-center justify-center"
               >
-                {/* Ambient backdrop video */}
+                {/* Ambient backdrop video (Desktop only) */}
                 <video
                   src="/videos/toomakt_factory_tour.mp4"
+                  poster="/images/hero/hero_factory_poster.webp"
+                  preload="none"
                   autoPlay
                   loop
                   muted
                   playsInline
-                  className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-40 pointer-events-none select-none"
+                  className="hidden md:block absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-40 pointer-events-none select-none"
                 />
 
                 {/* Main Factory Tour Video */}
                 <video
                   ref={videoRef}
                   src="/videos/toomakt_factory_tour.mp4"
+                  poster="/images/hero/hero_factory_poster.webp"
+                  preload="none"
                   autoPlay
                   loop
                   muted={isMuted}

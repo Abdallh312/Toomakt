@@ -117,10 +117,10 @@ export const AnnouncementBar: React.FC<AnnouncementBarProps> = ({ onNavigateView
   return (
     <AnimatePresence>
       <motion.aside
-        initial={{ height: 0, opacity: 0 }}
-        animate={{ height: 'auto', opacity: 1 }}
+        initial={false}
+        animate={{ opacity: 1 }}
         exit={{ height: 0, opacity: 0 }}
-        transition={{ duration: 0.25, ease: 'easeOut' }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
         aria-label="Announcement"
         className={`w-full relative z-50 overflow-hidden select-none border-b transition-colors duration-300 ${
           isDark

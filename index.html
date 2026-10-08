@@ -43,10 +43,17 @@
     <meta name="twitter:description" content="حلويات توفي فاخرة مطهوة ببطء مع بيوريه الفواكه الطبيعية والزبدة الأوروبية في القاهرة، مصر." />
     <meta name="twitter:image" content="https://www.toomakt.com/images/hero/hero_spec.jpg" />
 
-    <!-- Google Fonts: Cairo, Fraunces, Playfair Display, Plus Jakarta Sans -->
+    <!-- Google Fonts: Cairo, Fraunces, Playfair Display, Plus Jakarta Sans (Non-render-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+    </noscript>
+
+    <!-- Critical LCP Hero Preload -->
+    <link rel="preload" as="image" href="/images/hero/hero_confection_poster.webp" type="image/webp" fetchpriority="high">
 
     <!-- Schema.org Initial Graph for Crawlers -->
     <script type="application/ld+json">

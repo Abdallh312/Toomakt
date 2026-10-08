@@ -26,6 +26,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     {
       id: 'confection',
       src: '/videos/toomakt_confection_film.mp4',
+      poster: '/images/hero/hero_confection_poster.webp',
       labelAr: 'فيلم التوفي الفاخر',
       labelEn: 'Confection Film',
       badgeAr: 'حلوى التوفي الفاخرة · من تصوير المعمل',
@@ -34,6 +35,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     {
       id: 'tasting',
       src: '/videos/toomakt_tasting_ritual.mp4',
+      poster: '/images/hero/hero_tasting_poster.webp',
       labelAr: 'طقوس التذوق',
       labelEn: 'Tasting Ritual',
       badgeAr: 'طقوس تقديم وتذوق التوفي · كريستال فاخر',
@@ -42,6 +44,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     {
       id: 'factory',
       src: '/videos/toomakt_factory_tour.mp4',
+      poster: '/images/hero/hero_factory_poster.webp',
       labelAr: 'جولة المصنع',
       labelEn: 'Factory Tour',
       badgeAr: 'جولة داخل خطوط الإنتاج · القاهرة',
@@ -90,40 +93,34 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* Left Column: Editorial Headline & Actions */}
           <div className="lg:col-span-6 flex flex-col justify-center text-left rtl:text-right">
             {/* Elegant Minimal Eyebrow */}
-            <ScrollReveal delay={0.05} yOffset={15}>
-              <div className="inline-flex items-center gap-2 mb-3 sm:mb-4 px-3 py-1.5 rounded-full bg-white/90 dark:bg-[#181014] border border-[#E8E2D7] dark:border-[#341F2B] shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-[#8B2D5C] animate-pulse" />
-                <span className="text-[11px] sm:text-xs font-semibold tracking-widest uppercase text-[#736B63] dark:text-[#B0A396]">
-                  {isRtl ? 'معمل حلوى التوفي الحرفي بالقاهرة' : 'ARTISANAL FRUIT TOFFEE ATELIER'}
-                </span>
-              </div>
-            </ScrollReveal>
+            <div className="inline-flex items-center gap-2 mb-3 sm:mb-4 px-3 py-1.5 rounded-full bg-white/90 dark:bg-[#181014] border border-[#E8E2D7] dark:border-[#341F2B] shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-[#8B2D5C] animate-pulse" />
+              <span className="text-[11px] sm:text-xs font-semibold tracking-widest uppercase text-[#736B63] dark:text-[#B0A396]">
+                {isRtl ? 'معمل حلوى التوفي الحرفي بالقاهرة' : 'ARTISANAL FRUIT TOFFEE ATELIER'}
+              </span>
+            </div>
 
-            {/* Editorial Serif Heading */}
-            <ScrollReveal delay={0.12} yOffset={20}>
-              <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-[68px] leading-[1.1] font-normal text-[#1A1A1A] dark:text-[#FAF5EE] tracking-tight mb-4 sm:mb-6">
-                {isRtl ? (
-                  <>
-                    فاكهة طبيعية،<br />
-                    <span className="italic font-normal">صُنعت ببطء.</span>
-                  </>
-                ) : (
-                  <>
-                    Fruit,<br />
-                    <span className="italic font-normal">slowly made.</span>
-                  </>
-                )}
-              </h1>
-            </ScrollReveal>
+            {/* Editorial Serif Heading - Instant paint for Core Web Vitals (FCP / LCP) */}
+            <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-[68px] leading-[1.1] font-normal text-[#1A1A1A] dark:text-[#FAF5EE] tracking-tight mb-4 sm:mb-6">
+              {isRtl ? (
+                <>
+                  فاكهة طبيعية،<br />
+                  <span className="italic font-normal">صُنعت ببطء.</span>
+                </>
+              ) : (
+                <>
+                  Fruit,<br />
+                  <span className="italic font-normal">slowly made.</span>
+                </>
+              )}
+            </h1>
 
             {/* Thoughtful Description */}
-            <ScrollReveal delay={0.2} yOffset={20}>
-              <p className="text-sm sm:text-base md:text-lg text-[#736B63] dark:text-[#B0A396] max-w-xl leading-relaxed mb-6 sm:mb-8 font-light">
-                {isRtl
-                  ? 'حلوى توفي غنية بطبقات الفواكه الحقيقية والزبدة الأوروبية النقية. تُصنع في قدور نحاسية بدفعات صغيرة طازجة لتذوب بنعومة مع كل قضمة.'
-                  : 'Layered fruit toffee with a clean finish. Made slowly in small batches for considered snacking.'}
-              </p>
-            </ScrollReveal>
+            <p className="text-sm sm:text-base md:text-lg text-[#736B63] dark:text-[#B0A396] max-w-xl leading-relaxed mb-6 sm:mb-8 font-light">
+              {isRtl
+                ? 'حلوى توفي غنية بطبقات الفواكه الحقيقية والزبدة الأوروبية النقية. تُصنع في قدور نحاسية بدفعات صغيرة طازجة لتذوب بنعومة مع كل قضمة.'
+                : 'Layered fruit toffee with a clean finish. Made slowly in small batches for considered snacking.'}
+            </p>
 
             {/* Action Buttons */}
             <ScrollReveal delay={0.28} yOffset={15}>
@@ -273,22 +270,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         className="w-full h-full relative cursor-pointer flex items-center justify-center overflow-hidden"
                         onClick={() => togglePlay()}
                       >
-                        {/* Ambient backdrop video */}
+                        {/* Ambient backdrop video - desktop only to prevent mobile CPU/bandwidth choke */}
                         <video
                           key={`ambient-${currentVideo.id}`}
                           src={currentVideo.src}
+                          poster={currentVideo.poster}
+                          preload="none"
                           autoPlay
                           loop
                           muted
                           playsInline
-                          className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-40 pointer-events-none select-none"
+                          className="hidden md:block absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-40 pointer-events-none select-none"
                         />
 
-                        {/* Foreground crisp HD video */}
+                        {/* Foreground crisp HD video with poster and metadata preload */}
                         <video
                           ref={videoRef}
                           key={`main-${currentVideo.id}`}
                           src={currentVideo.src}
+                          poster={currentVideo.poster}
+                          preload="metadata"
                           autoPlay
                           loop
                           muted={isMuted}
@@ -306,11 +307,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         transition={{ duration: 0.35 }}
                         className="w-full h-full relative"
                       >
-                        <img
-                          src="/images/toomakt/hero_family_showcase.png"
-                          alt="Toomakt artisanal fruit toffees & confections"
-                          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                        />
+                        <picture>
+                          <source srcSet="/images/toomakt/hero_family_showcase.webp" type="image/webp" />
+                          <img
+                            src="/images/toomakt/hero_family_showcase.png"
+                            alt="Toomakt artisanal fruit toffees & confections"
+                            width="600"
+                            height="450"
+                            decoding="async"
+                            loading="lazy"
+                            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                          />
+                        </picture>
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
                       </motion.div>
                     )}

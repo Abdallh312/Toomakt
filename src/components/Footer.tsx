@@ -41,6 +41,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView }) => {
               <img
                 src="/images/logos/toomakt_logo_main.png"
                 alt="toomakt"
+                width="52"
+                height="52"
+                loading="lazy"
+                decoding="async"
                 className="h-11 sm:h-13 w-auto object-contain filter drop-shadow-md brightness-105"
               />
               <div>

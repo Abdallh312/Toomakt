@@ -52,12 +52,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     >
       {/* Product Image Stage */}
       <div className="relative aspect-square w-full overflow-hidden bg-[#FAF7F2] dark:bg-[#0C080A] border-b border-[#E8E2D7]/60 dark:border-[#2A1622]">
-        <img
-          src={product.image}
-          alt={displayName}
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
-          loading="lazy"
-        />
+        {(() => {
+          const webpSrc = product.image ? product.image.replace(/\.(jpe?g|png)$/i, '.webp') : '';
+          return (
+            <picture className="w-full h-full block">
+              {webpSrc && <source srcSet={webpSrc} type="image/webp" />}
+              <img
+                src={product.image}
+                alt={displayName}
+                width="400"
+                height="400"
+                decoding="async"
+                loading="lazy"
+                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+              />
+            </picture>
+          );
+        })()}
 
         {/* Optional Tag / Badge */}
         {displayBadge && (
