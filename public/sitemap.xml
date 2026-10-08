@@ -1,82 +1,366 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Homepage -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- ========================================== -->
+  <!-- 1. HOMEPAGE                                -->
+  <!-- ========================================== -->
   <url>
     <loc>https://www.toomakt.com/</loc>
-    <lastmod>2026-10-05</lastmod>
+    <lastmod>2026-10-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/hero/hero_spec.jpg</image:loc>
+      <image:title>toomakt Artisanal Fruit Toffee Atelier Cairo</image:title>
+      <image:caption>Handcrafted copper kettle toffee and real orchard fruit purées in Cairo, Egypt</image:caption>
+    </image:image>
   </url>
 
-  <!-- Shop Collection -->
+  <!-- ========================================== -->
+  <!-- 2. CATALOG & CATEGORY COLLECTIONS          -->
+  <!-- ========================================== -->
   <url>
     <loc>https://www.toomakt.com/shop</loc>
-    <lastmod>2026-10-05</lastmod>
+    <lastmod>2026-10-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/shop" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/shop" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/shop" />
   </url>
 
-  <!-- Bundles & Gift Sets -->
   <url>
-    <loc>https://www.toomakt.com/bundles</loc>
-    <lastmod>2026-10-05</lastmod>
+    <loc>https://www.toomakt.com/categories/toffee</loc>
+    <lastmod>2026-10-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/categories/toffee" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/categories/toffee" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/categories/toffee" />
   </url>
 
-  <!-- Our Story & Craft Heritage -->
+  <url>
+    <loc>https://www.toomakt.com/categories/bonbon</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/categories/bonbon" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/categories/bonbon" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/categories/bonbon" />
+  </url>
+
+  <url>
+    <loc>https://www.toomakt.com/categories/coffee</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/categories/coffee" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/categories/coffee" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/categories/coffee" />
+  </url>
+
+  <url>
+    <loc>https://www.toomakt.com/categories/chocolate</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/categories/chocolate" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/categories/chocolate" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/categories/chocolate" />
+  </url>
+
+  <url>
+    <loc>https://www.toomakt.com/categories/fruit</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/categories/fruit" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/categories/fruit" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/categories/fruit" />
+  </url>
+
+  <!-- ========================================== -->
+  <!-- 3. CURATED BUNDLES & GIFT BOXES            -->
+  <!-- ========================================== -->
+  <url>
+    <loc>https://www.toomakt.com/bundles</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/bundles" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/bundles" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/bundles" />
+  </url>
+
+  <!-- ========================================== -->
+  <!-- 4. INDIVIDUAL PRODUCT SPECIFICATION PAGES  -->
+  <!-- ========================================== -->
+  <!-- 1. Cappuccino Candies (1 EGP) -->
+  <url>
+    <loc>https://www.toomakt.com/products/cappuccino-candies-1egp</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/cappuccino-candies-1egp" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/cappuccino-candies-1egp" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/cappuccino-candies-1egp" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/cappuccino_candies_thumb.jpg</image:loc>
+      <image:title>Cappuccino &amp; Coffee Bonbon Stuffed with Coffee Liquid</image:title>
+    </image:image>
+  </url>
+
+  <!-- 2. Milk Toffee Center Milk (1 EGP) -->
+  <url>
+    <loc>https://www.toomakt.com/products/milk-toffee-1egp</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/milk-toffee-1egp" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/milk-toffee-1egp" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/milk-toffee-1egp" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/milk_toffee_thumb.jpg</image:loc>
+      <image:title>Milk Toffee Stuffed with Natural Milk and Vanilla Cream</image:title>
+    </image:image>
+  </url>
+
+  <!-- 3. Eclairs Chocolate (0.5 EGP) -->
+  <url>
+    <loc>https://www.toomakt.com/products/eclairs-chocolate-05egp</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/eclairs-chocolate-05egp" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/eclairs-chocolate-05egp" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/eclairs-chocolate-05egp" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/eclairs_chocolate_05_thumb.jpg</image:loc>
+      <image:title>Eclairs Chocolate with Natural Caramel and Cocoa</image:title>
+    </image:image>
+  </url>
+
+  <!-- 4. Butter Eclairs (1 EGP) -->
+  <url>
+    <loc>https://www.toomakt.com/products/butter-eclairs-1egp</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/butter-eclairs-1egp" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/butter-eclairs-1egp" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/butter-eclairs-1egp" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/butter_eclairs_1_thumb.jpg</image:loc>
+      <image:title>Butter Eclairs Filled with Caramel and Belgian Chocolate</image:title>
+    </image:image>
+  </url>
+
+  <!-- 5. Fruit Toffee (0.5 EGP) -->
+  <url>
+    <loc>https://www.toomakt.com/products/fruit-toffee-05egp</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/fruit-toffee-05egp" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/fruit-toffee-05egp" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/fruit-toffee-05egp" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/fruit_toffee_05_thumb.jpg</image:loc>
+      <image:title>Mixed Fruit Toffee with 100% Natural Puree</image:title>
+    </image:image>
+  </url>
+
+  <!-- 6. Fruit Toffee Super Premium (1 EGP) -->
+  <url>
+    <loc>https://www.toomakt.com/products/fruit-toffee-1egp</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/fruit-toffee-1egp" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/fruit-toffee-1egp" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/fruit-toffee-1egp" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/fruit_toffee_1_thumb.jpg</image:loc>
+      <image:title>Super Premium Fruit Toffee with Strawberry and Mango</image:title>
+    </image:image>
+  </url>
+
+  <!-- 7. Peanut Chocolate (0.5 EGP) -->
+  <url>
+    <loc>https://www.toomakt.com/products/peanut-chocolate-05egp</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/peanut-chocolate-05egp" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/peanut-chocolate-05egp" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/peanut-chocolate-05egp" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/peanut_chocolate_05_thumb.jpg</image:loc>
+      <image:title>Chocolate with Natural Roasted Peanuts</image:title>
+    </image:image>
+  </url>
+
+  <!-- 8. Peanut Eclairs (1 EGP) -->
+  <url>
+    <loc>https://www.toomakt.com/products/peanut-eclairs-1egp</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/peanut-eclairs-1egp" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/peanut-eclairs-1egp" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/peanut-eclairs-1egp" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/peanut_eclairs_1_thumb.jpg</image:loc>
+      <image:title>Premium Peanut Eclairs with Natural Crunchy Peanuts</image:title>
+    </image:image>
+  </url>
+
+  <!-- 9. Butter & Milk Caramel (0.5 EGP) -->
+  <url>
+    <loc>https://www.toomakt.com/products/butterm-caramel-05egp</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/butterm-caramel-05egp" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/butterm-caramel-05egp" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/butterm-caramel-05egp" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/butterm_caramel_05_thumb.jpg</image:loc>
+      <image:title>Butter and Milk Caramel Sweet</image:title>
+    </image:image>
+  </url>
+
+  <!-- 10. Coconut Chocolate (1 EGP) -->
+  <url>
+    <loc>https://www.toomakt.com/products/coconut-chocolate-1egp</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/coconut-chocolate-1egp" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/coconut-chocolate-1egp" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/coconut-chocolate-1egp" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/coconut_chocolate_1_thumb.jpg</image:loc>
+      <image:title>Chocolate with Natural Shredded Coconut</image:title>
+    </image:image>
+  </url>
+
+  <!-- 11. Mint & Fruit Candy (0.5 EGP) -->
+  <url>
+    <loc>https://www.toomakt.com/products/mint-fruit-candy-05egp</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/mint-fruit-candy-05egp" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/mint-fruit-candy-05egp" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/mint-fruit-candy-05egp" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/mint_fruit_candy_05_thumb.jpg</image:loc>
+      <image:title>Refreshing Mint and Fruit Candy</image:title>
+    </image:image>
+  </url>
+
+  <!-- 12. Fruity Milk Cream (0.5 EGP) -->
+  <url>
+    <loc>https://www.toomakt.com/products/fruity-milk-cream-05egp</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/fruity-milk-cream-05egp" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/fruity-milk-cream-05egp" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/fruity-milk-cream-05egp" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/fruity_milk_cream_05_thumb.jpg</image:loc>
+      <image:title>Fruity Milk and Cream Sweet</image:title>
+    </image:image>
+  </url>
+
+  <!-- 13. Royal Blue Chocolate (0.5 EGP) -->
+  <url>
+    <loc>https://www.toomakt.com/products/butter-chocolate-royalblue-05egp</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/butter-chocolate-royalblue-05egp" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/butter-chocolate-royalblue-05egp" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/butter-chocolate-royalblue-05egp" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/butter_chocolate_royalblue_05_thumb.jpg</image:loc>
+      <image:title>Royal Blue Chocolate with Pure Butter</image:title>
+    </image:image>
+  </url>
+
+  <!-- 14. Zahra Butter Bonbon Chocolate -->
+  <url>
+    <loc>https://www.toomakt.com/products/zahra-butter-bonbon-chocolate</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/products/zahra-butter-bonbon-chocolate" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/products/zahra-butter-bonbon-chocolate" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/products/zahra-butter-bonbon-chocolate" />
+    <image:image>
+      <image:loc>https://www.toomakt.com/images/products/zahra_butter_bonbon_chocolate_thumb.jpg</image:loc>
+      <image:title>Zahra Butter Bonbon with Chocolate Crisps</image:title>
+    </image:image>
+  </url>
+
+  <!-- ========================================== -->
+  <!-- 5. EDITORIAL & CRAFT STORY PAGES           -->
+  <!-- ========================================== -->
   <url>
     <loc>https://www.toomakt.com/our-story</loc>
-    <lastmod>2026-10-05</lastmod>
+    <lastmod>2026-10-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/our-story" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/our-story" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/our-story" />
   </url>
 
-  <!-- Natural Ingredients & Pure Formula -->
   <url>
     <loc>https://www.toomakt.com/ingredients</loc>
-    <lastmod>2026-10-05</lastmod>
+    <lastmod>2026-10-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/ingredients" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/ingredients" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/ingredients" />
   </url>
 
-  <!-- Wholesale Inquiries & Hospitality -->
   <url>
     <loc>https://www.toomakt.com/wholesale</loc>
-    <lastmod>2026-10-05</lastmod>
+    <lastmod>2026-10-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/wholesale" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/wholesale" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/wholesale" />
   </url>
 
-  <!-- Direct Atelier Concierge & Contact -->
-  <url>
-    <loc>https://www.toomakt.com/contact</loc>
-    <lastmod>2026-10-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <!-- Order Telemetry Tracking -->
-  <url>
-    <loc>https://www.toomakt.com/track</loc>
-    <lastmod>2026-10-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <!-- Frequently Asked Questions -->
   <url>
     <loc>https://www.toomakt.com/faq</loc>
-    <lastmod>2026-10-05</lastmod>
+    <lastmod>2026-10-08</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/faq" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/faq" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/faq" />
   </url>
 
-  <!-- Climate Shipping Policy -->
   <url>
     <loc>https://www.toomakt.com/shipping</loc>
-    <lastmod>2026-10-05</lastmod>
+    <lastmod>2026-10-08</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://www.toomakt.com/shipping" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.toomakt.com/shipping" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.toomakt.com/shipping" />
   </url>
+
 </urlset>

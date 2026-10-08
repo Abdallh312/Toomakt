@@ -83,8 +83,10 @@ export function applySeoAndTracking(config: SeoPixelConfig = getStoredSeoConfig(
   updateMetaTag('name', 'keywords', config.focusKeywords);
   updateMetaTag('name', 'robots', config.robotsIndex ? 'index, follow' : 'noindex, nofollow');
   updateLinkTag('canonical', config.canonicalUrl || 'https://www.toomakt.com');
-  if (config.googleSiteVerification && config.googleSiteVerification.trim()) {
-    updateMetaTag('name', 'google-site-verification', config.googleSiteVerification.trim());
+  const envGsc = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GOOGLE_SITE_VERIFICATION) || '';
+  const gscCode = config.googleSiteVerification?.trim() || envGsc.trim();
+  if (gscCode) {
+    updateMetaTag('name', 'google-site-verification', gscCode);
   }
 
   // Open Graph Social Share Tags

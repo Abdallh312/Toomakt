@@ -1,11 +1,38 @@
-# https://www.robotstxt.org/robotstxt.html
+# ==========================================
+# toomakt Confectionery Atelier - Robots.txt
+# https://www.toomakt.com
+# ==========================================
+
 User-agent: *
 Allow: /
+Allow: /images/
+Allow: /assets/
+Allow: /videos/
+Allow: /shop
+Allow: /products/
+Allow: /categories/
+Allow: /bundles/
+Allow: /our-story
+Allow: /ingredients
+Allow: /wholesale
+Allow: /faq
+Allow: /shipping
+
+# Disallow private/admin/transactional routes
 Disallow: /admin
 Disallow: /admin/
+Disallow: /admin/login
+Disallow: /checkout
+Disallow: /checkout/
+Disallow: /order-success
+Disallow: /order-success/
+Disallow: /track
+Disallow: /track/
+Disallow: /alerts
+Disallow: /alerts/
 Disallow: /api/
 
-# Canonical Sitemaps
+# Sitemaps
 Sitemap: https://www.toomakt.com/sitemap.xml
 Sitemap: https://www.toomakt.com/sitemap.txt
 Host: https://www.toomakt.com

@@ -1039,3 +1039,43 @@ export const CROWD_FAVORITES_ITEMS: BundleItem[] = [
     pieces_per_pack: 89
   }
 ];
+
+export interface FAQItem {
+  id: string;
+  q_ar: string;
+  q_en: string;
+  a_ar: string;
+  a_en: string;
+}
+
+export const AUTHENTIC_FAQS: FAQItem[] = [
+  {
+    id: 'difference',
+    q_ar: 'ما الذي يجعل توفي توماكت مختلفاً عن الحلوى العادية؟',
+    q_en: 'What makes toomakt fundamentally different from commercial candy?',
+    a_ar: 'حلوى توماكت مصنوعة ببطء من بيوريه الفاكهة الطبيعية الكاملة والزبدة الأوروبية، دون أي قطرة من شراب الذرة عالي الفركتوز أو الزيوت المهدرجة أو النكهات المصنعة. النتيجة هي حلوى نظيفة تذوب برفق دون أن تلتصق بالأسنان.',
+    a_en: 'toomakt is handcrafted slowly in copper cauldrons with 100% whole fruit purée and 84% European butterfat. We never use corn syrup, palm oil, or artificial flavorings. The result is a clean, non-sticky chew that honors true fruit acidity.'
+  },
+  {
+    id: 'shelf-life',
+    q_ar: 'كم تبلغ مدة صلاحية الحلوى وكيف يتم تخزينها؟',
+    q_en: 'What is the shelf life and how should toomakt confections be stored?',
+    a_ar: 'نظراً لاعتمادنا على الزبدة الطبيعية والفواكه النقية، فإن صلاحية المنتج هي 6 أشهر من تاريخ التحضير المطبوع على العبوة. ننصح بحفظها في مكان بارد وجاف بعيداً عن أشعة الشمس المباشرة (18-22 درجة مئوية).',
+    a_en: 'Because we use fresh European butter and real fruit, our sealed pouches are best enjoyed within 6 months. Store in a cool, dry place away from direct sunlight (18-22°C).'
+  },
+  {
+    id: 'shipping',
+    q_ar: 'هل تشحنون لجميع المحافظات وكيف تضمنون وصولها طازجة؟',
+    q_en: 'Do you ship to all Egyptian governorates, and how is quality preserved in transit?',
+    a_ar: 'نعم، نشحن إلى جميع محافظات مصر الـ 27 عبر صناديق شحن مبردة ومعزولة حرارياً تحتوي على عبوات تبريد آمنة. يصل طلبك خلال 24-48 ساعة داخل القاهرة والإسكندرية، وخلال 2-3 أيام لباقي المحافظات.',
+    a_en: 'Yes, we deliver to all 27 Egyptian governorates in custom insulated climate boxes with frozen non-toxic gel packs. Delivery takes 24-48 hours in Cairo, Giza, and Alexandria, and 2-3 days nationwide.'
+  },
+  {
+    id: 'corporate-gifting',
+    q_ar: 'هل توجد لديكم خيارات مخصصة لهدايا الشركات وحفلات الزفاف؟',
+    q_en: 'Do you offer bespoke gift packaging for weddings or corporate events?',
+    a_ar: 'بالتأكيد! نوفر خدمة التغليف المخصص مع وضع شعار شركتك أو بطاقات إهداء مطبوعة يدوياً، وصناديق هدايا كتانية فاخرة. يمكنك التواصل مع مستشار الحلويات عبر صفحة اتصل بنا أو عبر واتساب مباشرة.',
+    a_en: 'Yes! We create bespoke packaging with custom sleeves, embossed linen boxes, and personalized gift notes for corporate clients, weddings, and VIP events. Connect with us on our Contact page or directly on WhatsApp.'
+  }
+];
+

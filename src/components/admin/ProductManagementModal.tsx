@@ -16,7 +16,10 @@ import {
   Scale,
   Sparkles,
   Save,
-  RotateCcw
+  RotateCcw,
+  Globe,
+  Search,
+  ChevronDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product, ProductStatus } from '../../types';
@@ -87,6 +90,7 @@ export const ProductManagementModal: React.FC<ProductManagementModalProps> = ({
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [previewZoomUrl, setPreviewZoomUrl] = useState<string | null>(null);
+  const [showSeoSettings, setShowSeoSettings] = useState(false);
 
   // Initialize or reset form when product opens
   useEffect(() => {
@@ -105,6 +109,10 @@ export const ProductManagementModal: React.FC<ProductManagementModalProps> = ({
 
       setFormData({
         id: product.id,
+        slug: product.slug || product.id || '',
+        seo_title: product.seo_title || '',
+        seo_description: product.seo_description || '',
+        seo_keywords: product.seo_keywords || '',
         name: product.name || '',
         sku: product.sku || `TMK-${(product.name || 'CONFECTION').slice(0, 6).toUpperCase()}-001`,
         price: Number(product.price) || 220,
@@ -132,6 +140,10 @@ export const ProductManagementModal: React.FC<ProductManagementModalProps> = ({
     } else if (isNew) {
       setFormData({
         name: '',
+        slug: '',
+        seo_title: '',
+        seo_description: '',
+        seo_keywords: '',
         sku: `TMK-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
         price: 220,
         weight: '250g',
@@ -807,6 +819,111 @@ export const ProductManagementModal: React.FC<ProductManagementModalProps> = ({
                   className="w-full text-xs px-3 py-2 rounded-xl bg-white dark:bg-[#140C12] border border-[#E8E2D7] dark:border-[#2A1622] text-[#1A1A1A] dark:text-[#FAF5EE] focus:outline-hidden focus:border-[#8B2D5C] resize-none"
                 />
               </div>
+
+              {/* ======================================================== */}
+              {/* ADVANCED SEO & SEARCH ENGINE CONTROLS                     */}
+              {/* ======================================================== */}
+              <div className="rounded-xl border border-[#E8E2D7] dark:border-[#2E1826] bg-[#FAF5EE]/60 dark:bg-[#1A0E18]/60 overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setShowSeoSettings(!showSeoSettings)}
+                  className="w-full px-3.5 py-2.5 flex items-center justify-between text-left cursor-pointer hover:bg-[#FAF5EE] dark:hover:bg-[#1A0E18] transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-3.5 h-3.5 text-[#8B2D5C] dark:text-[#E8BDD4]" />
+                    <span className="text-xs font-semibold text-[#1A1A1A] dark:text-[#FAF5EE]">
+                      SEO &amp; Search Engine Optimization
+                    </span>
+                    <span className="text-[10px] text-[#736B63] dark:text-[#B0A396]">
+                      (Google, Social &amp; Rich Snippets)
+                    </span>
+                  </div>
+                  <ChevronDown
+                    className={`w-4 h-4 text-[#736B63] transition-transform duration-200 ${
+                      showSeoSettings ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+
+                {showSeoSettings && (
+                  <div className="p-3.5 border-t border-[#E8E2D7] dark:border-[#2E1826] space-y-3 bg-white dark:bg-[#140C12]">
+                    {/* Live Google Search Preview Card */}
+                    <div className="p-3 rounded-lg bg-[#F8F9FA] dark:bg-[#0D080B] border border-[#E8E2D7] dark:border-[#2A1622] space-y-1">
+                      <div className="text-[10px] font-mono text-[#736B63] dark:text-[#B0A396] flex items-center gap-1">
+                        <Search className="w-3 h-3 text-[#1A73E8]" />
+                        <span>Google Search Snippet Preview</span>
+                      </div>
+                      <div className="text-[11px] text-[#202124] dark:text-[#9AA0A6] truncate">
+                        https://www.toomakt.com &gt; products &gt; {formData.slug || (formData.name ? formData.name.toLowerCase().replace(/\s+/g, '-') : 'confection-slug')}
+                      </div>
+                      <div className="text-sm font-medium text-[#1A0DAB] dark:text-[#8AB4F8] hover:underline cursor-pointer truncate">
+                        {formData.seo_title || (formData.name ? `${formData.name} — Handcrafted Fruit Toffee Egypt | toomakt` : 'toomakt Confectionery')}
+                      </div>
+                      <div className="text-xs text-[#4D5156] dark:text-[#BDC1C6] line-clamp-2">
+                        {formData.seo_description || formData.description || 'Artisanal French fruit toffee handcrafted slowly in copper kettles with real fruit purée and European butter in Cairo, Egypt.'}
+                      </div>
+                    </div>
+
+                    {/* Slug */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-[#1A1A1A] dark:text-[#FAF5EE] flex items-center justify-between">
+                        <span>URL Slug (Canonical Route)</span>
+                        <span className="text-[10px] text-[#736B63] dark:text-[#B0A396]">/products/[slug]</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.slug || ''}
+                        onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, '-') })}
+                        placeholder="e.g. cappuccino-candies-1egp"
+                        className="w-full text-xs font-mono px-3 py-1.5 rounded-lg bg-white dark:bg-[#140C12] border border-[#E8E2D7] dark:border-[#2A1622] text-[#1A1A1A] dark:text-[#FAF5EE]"
+                      />
+                    </div>
+
+                    {/* Custom SEO Title */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-[#1A1A1A] dark:text-[#FAF5EE]">
+                        Custom SEO Title Tag
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.seo_title || ''}
+                        onChange={(e) => setFormData({ ...formData, seo_title: e.target.value })}
+                        placeholder="Leave blank to use automatic optimal title"
+                        className="w-full text-xs px-3 py-1.5 rounded-lg bg-white dark:bg-[#140C12] border border-[#E8E2D7] dark:border-[#2A1622] text-[#1A1A1A] dark:text-[#FAF5EE]"
+                      />
+                    </div>
+
+                    {/* Custom SEO Meta Description */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-[#1A1A1A] dark:text-[#FAF5EE]">
+                        Custom Meta Description
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={formData.seo_description || ''}
+                        onChange={(e) => setFormData({ ...formData, seo_description: e.target.value })}
+                        placeholder="Leave blank to use product description snippet"
+                        className="w-full text-xs px-3 py-1.5 rounded-lg bg-white dark:bg-[#140C12] border border-[#E8E2D7] dark:border-[#2A1622] text-[#1A1A1A] dark:text-[#FAF5EE] resize-none"
+                      />
+                    </div>
+
+                    {/* Focus Keywords */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-[#736B63] dark:text-[#B0A396]">
+                        SEO Focus Keywords (Comma separated)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.seo_keywords || ''}
+                        onChange={(e) => setFormData({ ...formData, seo_keywords: e.target.value })}
+                        placeholder="fruit toffee, cappuccino bonbon, cairo sweets, artisanal toffee"
+                        className="w-full text-xs px-3 py-1.5 rounded-lg bg-white dark:bg-[#140C12] border border-[#E8E2D7] dark:border-[#2A1622] text-[#1A1A1A] dark:text-[#FAF5EE]"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
 
             </div>
           </div>

@@ -34,8 +34,11 @@ import { seo } from './services/seo';
 import { getCleanRoute, navigateTo } from './utils/navigation';
 import { api } from './services/api';
 import { PaymobService } from './services/paymob';
+import { useLanguage } from './context/LanguageContext';
+import { PRODUCTS, AUTHENTIC_FAQS } from './data/toomaktData';
 
 export const AppContent: React.FC = () => {
+  const { language, isRtl } = useLanguage();
   const [currentView, setCurrentView] = useState<string>('home');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [lastOrder, setLastOrder] = useState<any | null>(() => {
@@ -64,100 +67,200 @@ export const AppContent: React.FC = () => {
   // Dynamic Page-level and Product-level SEO Metadata
   useEffect(() => {
     if (selectedProduct) {
+      const prodName = isRtl
+        ? (selectedProduct.name_ar || selectedProduct.name)
+        : (selectedProduct.name_en || selectedProduct.name);
+      const prodDesc = isRtl
+        ? (selectedProduct.description_ar || selectedProduct.description || selectedProduct.tagline_ar || selectedProduct.tagline)
+        : (selectedProduct.description_en || selectedProduct.description || selectedProduct.tagline_en || selectedProduct.tagline);
+      const prodSlug = selectedProduct.slug || selectedProduct.id;
+
       seo.updateMeta({
-        title: `${selectedProduct.name} — Handcrafted Fruit Toffee Egypt`,
-        description: selectedProduct.tagline || selectedProduct.description || 'Artisanal French fruit toffee handcrafted slowly with real fruit purée and European butter.',
+        title: isRtl
+          ? `${prodName} — حلويات توفي فاخرة | توماكت مصر`
+          : `${prodName} — Handcrafted Fruit Toffee Egypt | toomakt`,
+        description: prodDesc,
+        keywords: isRtl
+          ? `${prodName}, توفي فاخر, حلويات القاهرة, ${selectedProduct.flavor_ar || selectedProduct.flavor || ''}, حلويات مصر`
+          : `${prodName}, fruit toffee egypt, gourmet confectionery cairo, ${selectedProduct.flavor_en || selectedProduct.flavor || ''}`,
         image: selectedProduct.image || '/images/hero/hero_spec.jpg',
-        url: `https://www.toomakt.com/shop?product=${selectedProduct.slug || selectedProduct.id}`,
+        url: `/products/${prodSlug}`,
         type: 'product',
+        language,
         productData: {
-          name: selectedProduct.name,
-          description: selectedProduct.description || selectedProduct.tagline || '',
+          name: prodName,
+          description: prodDesc,
           image: selectedProduct.image || '/images/hero/hero_spec.jpg',
           price: selectedProduct.price,
           sku: selectedProduct.sku,
           inStock: selectedProduct.in_stock !== false,
-          brand: 'toomakt'
+          brand: 'toomakt',
+          category: selectedProduct.category,
+          rating: selectedProduct.rating,
+          reviewCount: selectedProduct.reviewsCount,
         },
         breadcrumbs: [
-          { name: 'Home', url: 'https://www.toomakt.com/' },
-          { name: 'Collection', url: 'https://www.toomakt.com/shop' },
-          { name: selectedProduct.name, url: `https://www.toomakt.com/shop?product=${selectedProduct.slug || selectedProduct.id}` }
-        ]
+          { name: isRtl ? 'الرئيسية' : 'Home', url: '/' },
+          { name: isRtl ? 'التشكيلة' : 'Collection', url: '/shop' },
+          { name: prodName, url: `/products/${prodSlug}` },
+        ],
       });
       return;
     }
 
-    const pageMetaMap: Record<string, { title: string; desc: string; path: string }> = {
+    const pageMetaMap: Record<
+      string,
+      { title: string; desc: string; path: string; noindex?: boolean; isCategory?: boolean }
+    > = {
       home: {
-        title: 'toomakt — Fruit, slowly made. | Artisanal Fruit Toffee Egypt | توماكت',
-        desc: 'toomakt (توماكت) creates artisanal French fruit toffee in Cairo, Egypt. Handcrafted with 100% natural fruit purées, browned butter, and sea salt.',
-        path: ''
+        title: isRtl
+          ? 'توماكت — فاكهة طبيعية مطهوة ببطء | أرقى حلوى توفي فرنسية بمصر'
+          : 'toomakt — Fruit, slowly made. | Artisanal Fruit Toffee Egypt | توماكت',
+        desc: isRtl
+          ? 'توماكت (toomakt) تصنع أفخر حلوى توفي فرنسية في القاهرة، مصر. مطهوة ببطء في مراجل نحاسية من بيوريه الفاكهة الطبيعية 100% والزبدة الأوروبية الفاخرة. شحن مبرد لجميع محافظات مصر.'
+          : 'toomakt (توماكت) creates artisanal French fruit toffee in Cairo, Egypt. Handcrafted with 100% natural fruit purées, browned butter, and sea salt. Express climate delivery across Egypt.',
+        path: '',
       },
       shop: {
-        title: 'The Collection — Handcrafted Fruit Toffees | toomakt Egypt',
-        desc: 'Browse toomakt artisanal soft fruit toffees. Handcrafted in small batches with real Alphonso mango, wild berries, and Mediterranean citrus.',
-        path: 'shop'
+        title: isRtl
+          ? 'تشكيلة الحلويات الفاخرة — توفي وبونبون وإكلير | توماكت مصر'
+          : 'The Collection — Handcrafted Fruit Toffees & Bonbons | toomakt Egypt',
+        desc: isRtl
+          ? 'استكشف تشكيلة توماكت الكاملة: توفي الفواكه الطبيعية، توفي زبدة نورماندي، بونبون كابتشينو، وإكلير الشوكولاتة البلجيكية. شحن لـ 27 محافظة.'
+          : 'Browse toomakt artisanal confections. Handcrafted in small batches with real Alphonso mango, wild berries, and Mediterranean citrus.',
+        path: 'shop',
+        isCategory: true,
       },
       bundles: {
-        title: 'Curated Gift Boxes & Tins — toomakt Atelier Cairo',
-        desc: 'Explore luxury presentation gift boxes, holiday tasting collections, and artisanal toffee canisters from toomakt Cairo atelier.',
-        path: 'bundles'
+        title: isRtl
+          ? 'صناديق الهدايا والمجموعات الحصرية — معمل توماكت القاهرة'
+          : 'Curated Gift Boxes & Keepsake Tins — toomakt Atelier Cairo',
+        desc: isRtl
+          ? 'صناديق هدايا فاخرة ومجموعات تذوق راقية في علب أنيقة محفورة، مثالية للإهداء والمناسبات السعيدة في مصر.'
+          : 'Explore luxury presentation gift boxes, holiday tasting collections, and artisanal toffee canisters from toomakt Cairo atelier.',
+        path: 'bundles',
       },
       'our-story': {
-        title: 'Our Craft Heritage & Story — toomakt Confectionery Atelier',
-        desc: 'Discover the story behind toomakt: slow copper-kettle caramelization, pure fruit purées, and European butter in Cairo.',
-        path: 'our-story'
+        title: isRtl
+          ? 'قصتنا وحرفتنا وتاريخ النشأة — معمل حلويات توماكت القاهرة'
+          : 'Our Craft Heritage & Story — toomakt Confectionery Atelier',
+        desc: isRtl
+          ? 'اكتشف قصة توماكت: طهي هادئ في مراجل نحاسية فرنسية، بيوريه فواكه البساتين 100%، والزبدة الأوروبية الطبيعية بالقاهرة.'
+          : 'Discover the story behind toomakt: slow copper-kettle caramelization, pure fruit purées, and European butter in Cairo.',
+        path: 'our-story',
       },
       ingredients: {
-        title: 'Botanical Quality & Pure Ingredients — toomakt Egypt',
-        desc: 'Learn about our 100% real fruit purées, European cultured butter, and clean formula without synthetic preservatives.',
-        path: 'ingredients'
+        title: isRtl
+          ? 'المكونات النقية والنقاء الطبيعي — معمل حلويات توماكت'
+          : 'Botanical Quality & Pure Ingredients — toomakt Egypt',
+        desc: isRtl
+          ? 'تعرف على مكوناتنا النقية: بيوريه الفاكهة الطبيعية 100%، زبدة القشطة الأوروبية بنسبة 84% دسم، وبدون شراب الذرة المصنع.'
+          : 'Learn about our 100% real fruit purées, European cultured butter, and clean formula without synthetic preservatives.',
+        path: 'ingredients',
       },
       wholesale: {
-        title: 'Wholesale & Corporate Gifting Concierge — toomakt Cairo',
-        desc: 'Partner with toomakt for boutique hospitality supply, bespoke corporate gifting, weddings, and luxury events in Egypt.',
-        path: 'wholesale'
+        title: isRtl
+          ? 'توريد الشركات والفنادق وهدايا كبار العملاء — توماكت مصر'
+          : 'Wholesale & Corporate Gifting Concierge — toomakt Cairo',
+        desc: isRtl
+          ? 'برامج توريد حصرية للفنادق الفاخرة، كافيهات البوتيك، هدايا الشركات الكبرى وحفلات الزفاف في مصر.'
+          : 'Partner with toomakt for boutique hospitality supply, bespoke corporate gifting, weddings, and luxury events in Egypt.',
+        path: 'wholesale',
       },
       faq: {
-        title: 'Frequently Asked Questions — toomakt Confectionery',
-        desc: 'Answers to frequently asked questions about shipping, storage, temperature care, ingredients, and allergen information.',
-        path: 'faq'
+        title: isRtl
+          ? 'الأسئلة الشائعة — صلاحية التوفي والشحن والتخزين | توماكت'
+          : 'Frequently Asked Questions — toomakt Confectionery',
+        desc: isRtl
+          ? 'إجابات شاملة عن صلاحية التوفي الفاخر، طريقة التخزين المثالية، الشحن المبرد، ومكونات حلويات توماكت.'
+          : 'Answers to frequently asked questions about shipping, storage, temperature care, ingredients, and allergen information.',
+        path: 'faq',
       },
       shipping: {
-        title: 'Climate-Controlled Shipping & Delivery — toomakt Egypt',
-        desc: 'Fast, temperature-protected delivery across all 27 Egyptian governorates. Cash on delivery and InstaPay supported.',
-        path: 'shipping'
+        title: isRtl
+          ? 'الشحن المبرد وسياسة التوصيل لـ 27 محافظة — توماكت'
+          : 'Climate-Controlled Shipping & Delivery — toomakt Egypt',
+        desc: isRtl
+          ? 'شحن مبرد ومعزول حرارياً مع عبوات جل تبريد يغطي جميع المحافظات المصرية. توصيل سريع والدفع عند الاستلام.'
+          : 'Fast, temperature-protected delivery across all 27 Egyptian governorates. Cash on delivery and InstaPay supported.',
+        path: 'shipping',
       },
       track: {
-        title: 'Track Your Confectionery Order — toomakt Egypt',
-        desc: 'Track your toomakt order status, courier dispatch updates, and delivery schedule across Egypt.',
-        path: 'track'
+        title: isRtl
+          ? 'تتبع شحنة الطلب — معمل حلويات توماكت'
+          : 'Track Your Confectionery Order — toomakt Egypt',
+        desc: isRtl
+          ? 'تابع مسار توصيل طلبك ورقم الشحنة وموعد وصول مندوب التوصيل في مصر.'
+          : 'Track your toomakt order status, courier dispatch updates, and delivery schedule across Egypt.',
+        path: 'track',
+        noindex: true,
       },
       checkout: {
-        title: 'Secure Checkout — toomakt Confectionery',
-        desc: 'Complete your order with Cash on Delivery or InstaPay. Direct dispatch from our Cairo atelier.',
-        path: 'checkout'
+        title: isRtl
+          ? 'إتمام الطلب والدفع الآمن — معمل حلويات توماكت'
+          : 'Secure Checkout — toomakt Confectionery',
+        desc: isRtl
+          ? 'أكمل طلبك بالدفع عند الاستلام أو عبر إنستاباي. شحن مباشر من معمل القاهرة.'
+          : 'Complete your order with Cash on Delivery or InstaPay. Direct dispatch from our Cairo atelier.',
+        path: 'checkout',
+        noindex: true,
       },
       'order-success': {
-        title: 'Order Confirmed — toomakt Confectionery',
-        desc: 'Thank you for your order! Your freshly prepared toffee parcel is being packed at our Cairo atelier.',
-        path: 'order-success'
-      }
+        title: isRtl
+          ? 'تم تأكيد طلبك بنجاح — معمل حلويات توماكت'
+          : 'Order Confirmed — toomakt Confectionery',
+        desc: isRtl
+          ? 'شكراً لطلبك! يتم تحضير شحنتك الطازجة في معملنا بالقاهرة.'
+          : 'Thank you for your order! Your freshly prepared toffee parcel is being packed at our Cairo atelier.',
+        path: 'order-success',
+        noindex: true,
+      },
+      alerts: {
+        title: isRtl ? 'إدارة التنبيهات والإشعارات' : 'Alerts & Announcements Manager',
+        desc: 'Internal announcements telemetry manager.',
+        path: 'alerts',
+        noindex: true,
+      },
+      '404': {
+        title: isRtl
+          ? 'الصفحة غير موجودة (404) — معمل حلويات توماكت'
+          : 'Page Not Found (404) — toomakt Confectionery',
+        desc: isRtl
+          ? 'عذراً، الصفحة المطلوبة غير متوفرة. تصفح تشكيلة الحلويات الفاخرة أو عد للصفحة الرئيسية.'
+          : 'The page you requested could not be found. Explore our confections or return to the atelier homepage.',
+        path: '404',
+        noindex: true,
+      },
     };
 
-    const currentMeta = pageMetaMap[currentView] || pageMetaMap.home;
+    const currentMeta = pageMetaMap[currentView] || pageMetaMap['404'] || pageMetaMap.home;
+    const pageTitle = currentMeta.title;
+    const pageBreadcrumbs = currentMeta.path && currentMeta.path !== '404'
+      ? [
+          { name: isRtl ? 'الرئيسية' : 'Home', url: '/' },
+          { name: pageTitle.split('—')[0].trim(), url: `/${currentMeta.path}` },
+        ]
+      : [{ name: isRtl ? 'الرئيسية' : 'Home', url: '/' }];
+
     seo.updateMeta({
-      title: currentMeta.title,
+      title: pageTitle,
       description: currentMeta.desc,
-      url: `https://www.toomakt.com/${currentMeta.path}`,
+      url: currentMeta.path ? `/${currentMeta.path}` : '/',
       type: 'website',
-      breadcrumbs: currentMeta.path ? [
-        { name: 'Home', url: 'https://www.toomakt.com/' },
-        { name: currentMeta.title.split('—')[0].trim(), url: `https://www.toomakt.com/${currentMeta.path}` }
-      ] : [{ name: 'Home', url: 'https://www.toomakt.com/' }]
+      language,
+      noindex: currentMeta.noindex || false,
+      categoryData: currentMeta.isCategory ? {
+        name: isRtl ? 'تشكيلة الحلويات الفاخرة' : 'The Confectionery Collection',
+        description: currentMeta.desc,
+        url: '/shop'
+      } : undefined,
+      faqs: currentView === 'faq' ? AUTHENTIC_FAQS.map(f => ({
+        question: isRtl ? f.q_ar : f.q_en,
+        answer: isRtl ? f.a_ar : f.a_en
+      })) : undefined,
+      breadcrumbs: pageBreadcrumbs,
     });
-  }, [currentView, selectedProduct]);
+  }, [currentView, selectedProduct, language, isRtl]);
 
   // Detect Paymob transaction response return parameters (e.g. ?success=true&id=548042800)
   useEffect(() => {
@@ -225,6 +328,74 @@ export const AppContent: React.FC = () => {
   useEffect(() => {
     const handleRoute = () => {
       const route = getCleanRoute();
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryProduct = urlParams.get('product');
+
+      // 1. Deep Product Route Handling (/products/:slug, /product/:slug, or ?product=:slug)
+      if (
+        route.startsWith('products/') ||
+        route.startsWith('product/') ||
+        (queryProduct && (route === 'shop' || route === 'products'))
+      ) {
+        const slug = (queryProduct || route.replace(/^(products|product)\//, '')).trim();
+
+        // 301 Canonical redirect from /product/ to /products/
+        if (route.startsWith('product/') || queryProduct) {
+          try {
+            window.history.replaceState(null, '', `/products/${slug}`);
+          } catch {}
+        }
+
+        const found = PRODUCTS.find(
+          (p) =>
+            p.id === slug ||
+            p.slug === slug ||
+            (p.sku && p.sku.toLowerCase() === slug.toLowerCase())
+        );
+
+        if (found) {
+          setSelectedProduct(found);
+          setCurrentView('shop');
+          return;
+        } else {
+          // Check asynchronous products from API if needed
+          api.getProducts().then((list) => {
+            const asyncFound = (list || []).find(
+              (p) =>
+                p.id === slug ||
+                p.slug === slug ||
+                (p.sku && p.sku.toLowerCase() === slug.toLowerCase())
+            );
+            if (asyncFound) {
+              setSelectedProduct(asyncFound);
+              setCurrentView('shop');
+            } else {
+              setSelectedProduct(null);
+              setCurrentView('404');
+            }
+          }).catch(() => {
+            setSelectedProduct(null);
+            setCurrentView('404');
+          });
+          return;
+        }
+      }
+
+      // 2. Category Route Handling (/categories/:slug or /category/:slug)
+      if (route.startsWith('categories/') || route.startsWith('category/')) {
+        const catSlug = route.replace(/^(categories|category)\//, '').trim();
+        if (route.startsWith('category/')) {
+          try {
+            window.history.replaceState(null, '', `/categories/${catSlug}`);
+          } catch {}
+        }
+        setSelectedProduct(null);
+        setCurrentView('shop');
+        return;
+      }
+
+      // If user navigated away from product modal, clear selectedProduct
+      setSelectedProduct(null);
 
       const knownViews = [
         'checkout',
@@ -242,7 +413,7 @@ export const AppContent: React.FC = () => {
         'faq',
         'shipping',
         'alerts',
-        'announcements'
+        'announcements',
       ];
 
       if (route === 'admin/login') {
@@ -280,7 +451,24 @@ export const AppContent: React.FC = () => {
     };
   }, []);
 
+  const handleSelectProduct = (product: Product) => {
+    setSelectedProduct(product);
+    const slug = product.slug || product.id;
+    if (window.location.pathname !== `/products/${slug}`) {
+      window.history.pushState(null, '', `/products/${slug}`);
+    }
+  };
+
+  const handleCloseProductModal = () => {
+    setSelectedProduct(null);
+    const target = currentView === 'home' ? '/' : `/${currentView}`;
+    if (window.location.pathname.startsWith('/products/') || window.location.pathname.startsWith('/product/')) {
+      window.history.pushState(null, '', target);
+    }
+  };
+
   const handleNavigateView = (view: string) => {
+    setSelectedProduct(null);
     let target = view;
     if (view === 'products') target = 'shop';
     if (view === 'gifts') target = 'bundles';
@@ -389,7 +577,7 @@ export const AppContent: React.FC = () => {
 
             {/* Official Products Collection Directly on Home Page */}
             <FeaturedProductsSection
-              onSelectProduct={(p) => setSelectedProduct(p)}
+              onSelectProduct={handleSelectProduct}
               onExploreAll={() => handleNavigateView('shop')}
             />
 
@@ -410,7 +598,7 @@ export const AppContent: React.FC = () => {
         {/* PAGE 2: SEPARATE DEDICATED PRODUCTS EXPERIENCE */}
         {(currentView === 'shop' || currentView === 'products') && (
           <ShopAllView
-            onSelectProduct={(p) => setSelectedProduct(p)}
+            onSelectProduct={handleSelectProduct}
             onNavigateHome={() => handleNavigateView('home')}
           />
         )}
@@ -503,7 +691,7 @@ export const AppContent: React.FC = () => {
       <div className="no-print">
         <ProductDetailModal
           product={selectedProduct}
-          onClose={() => setSelectedProduct(null)}
+          onClose={handleCloseProductModal}
           onNavigateView={handleNavigateView}
         />
       </div>

@@ -70,6 +70,9 @@ export interface Product {
   available_flavors?: string[];
   selected_flavor?: string;
   flavor_images?: Record<string, string>;
+  seo_title?: string;
+  seo_description?: string;
+  seo_keywords?: string;
 }
 
 export interface BundleItem {

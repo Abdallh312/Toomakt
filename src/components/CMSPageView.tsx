@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
+import { AUTHENTIC_FAQS } from '../data/toomaktData';
 
 interface CMSPageViewProps {
   slug: string;
@@ -117,32 +118,11 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
     }
   ];
 
-  const faqs = [
-    {
-      q: isRtl ? 'ما الذي يجعل توفي توماكت مختلفاً عن الحلوى العادية؟' : 'What makes toomakt fundamentally different from commercial candy?',
-      a: isRtl
-        ? 'حلوى توماكت مصنوعة ببطء من بيوريه الفاكهة الطبيعية الكاملة والزبدة الأوروبية، دون أي قطرة من شراب الذرة عالي الفركتوز أو الزيوت المهدرجة أو النكهات المصنعة. النتيجة هي حلوى نظيفة تذوب برفق دون أن تلتصق بالأسنان.'
-        : 'toomakt is handcrafted slowly in copper cauldrons with 100% whole fruit purée and 84% European butterfat. We never use corn syrup, palm oil, or artificial flavorings. The result is a clean, non-sticky chew that honors true fruit acidity.'
-    },
-    {
-      q: isRtl ? 'كم تبلغ مدة صلاحية الحلوى وكيف يتم تخزينها؟' : 'What is the shelf life and how should toomakt confections be stored?',
-      a: isRtl
-        ? 'نظراً لاعتمادنا على الزبدة الطبيعية والفواكه النقية، فإن صلاحية المنتج هي 6 أشهر من تاريخ التحضير المطبوع على العبوة. ننصح بحفظها في مكان بارد وجاف بعيداً عن أشعة الشمس المباشرة (18-22 درجة مئوية).'
-        : 'Because we use fresh European butter and real fruit, our sealed pouches are best enjoyed within 6 months. Store in a cool, dry place away from direct sunlight (18-22°C).'
-    },
-    {
-      q: isRtl ? 'هل تشحنون لجميع المحافظات وكيف تضمنون وصولها طازجة؟' : 'Do you ship to all Egyptian governorates, and how is quality preserved in transit?',
-      a: isRtl
-        ? 'نعم، نشحن إلى جميع محافظات مصر الـ 27 عبر صناديق شحن مبردة ومعزولة حرارياً تحتوي على عبوات تبريد آمنة. يصل طلبك خلال 24-48 ساعة داخل القاهرة والإسكندرية، وخلال 2-3 أيام لباقي المحافظات.'
-        : 'Yes, we deliver to all 27 Egyptian governorates in custom insulated climate boxes with frozen non-toxic gel packs. Delivery takes 24-48 hours in Cairo, Giza, and Alexandria, and 2-3 days nationwide.'
-    },
-    {
-      q: isRtl ? 'هل توجد لديكم خيارات مخصصة لهدايا الشركات وحفلات الزفاف؟' : 'Do you offer bespoke gift packaging for weddings or corporate events?',
-      a: isRtl
-        ? 'بالتأكيد! نوفر خدمة التغليف المخصص مع وضع شعار شركتك أو بطاقات إهداء مطبوعة يدوياً، وصناديق هدايا كتانية فاخرة. يمكنك التواصل مع مستشار الحلويات عبر صفحة اتصل بنا أو عبر واتساب مباشرة.'
-        : 'Yes! We create bespoke packaging with custom sleeves, embossed linen boxes, and personalized gift notes for corporate clients, weddings, and VIP events. Connect with us on our Contact page or directly on WhatsApp.'
-    }
-  ];
+  const faqs = AUTHENTIC_FAQS.map(f => ({
+    q: isRtl ? f.q_ar : f.q_en,
+    a: isRtl ? f.a_ar : f.a_en
+  }));
+
 
   return (
     <div className="bg-[#FAF7F2] text-[#1A1A1A] min-h-screen py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
