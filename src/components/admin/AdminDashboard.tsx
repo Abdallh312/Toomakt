@@ -28,6 +28,7 @@ import {
   CheckCircle2,
   Clock,
   ArrowUpRight,
+  ArrowRight,
   Filter,
   DollarSign,
   ChevronRight,
@@ -997,8 +998,9 @@ Thank you for choosing toomakt!`;
                   <div className="font-serif text-xl sm:text-2xl text-[#1A1A1A] font-normal">
                     EGP {totalRevenue.toLocaleString()}
                   </div>
-                  <span className="text-[11px] text-[#2E7D32] mt-1 block">
-                    ✓ All confirmed orders
+                  <span className="text-[11px] text-[#2E7D32] mt-1 flex items-center gap-1">
+                    <Check className="w-3 h-3" />
+                    <span>All confirmed orders</span>
                   </span>
                 </div>
 
@@ -1100,9 +1102,10 @@ Thank you for choosing toomakt!`;
                   </h3>
                   <button
                     onClick={() => setActiveTab('orders')}
-                    className="text-xs text-[#3C1322] font-semibold hover:underline cursor-pointer"
+                    className="text-xs text-[#3C1322] font-semibold hover:underline cursor-pointer inline-flex items-center gap-1 group"
                   >
-                    View All Orders →
+                    <span>View All Orders</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                   </button>
                 </div>
 
@@ -1461,7 +1464,15 @@ Thank you for choosing toomakt!`;
                                 : 'bg-rose-50 text-rose-800 border border-rose-200'
                             }`}
                           >
-                            {inStock ? '✓ Available' : '✕ Sold Out'}
+                            {inStock ? (
+                              <span className="inline-flex items-center gap-1">
+                                <Check className="w-3 h-3" /> Available
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1">
+                                <X className="w-3 h-3" /> Sold Out
+                              </span>
+                            )}
                           </button>
                         </div>
 
@@ -1661,7 +1672,15 @@ Thank you for choosing toomakt!`;
                                   : 'bg-rose-50 text-rose-800 border border-rose-200'
                               }`}
                             >
-                              {active ? '✓ Active' : '✕ Hidden'}
+                              {active ? (
+                                <span className="inline-flex items-center gap-1">
+                                  <Check className="w-3 h-3" /> Active
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1">
+                                  <X className="w-3 h-3" /> Hidden
+                                </span>
+                              )}
                             </button>
                             <button
                               type="button"
@@ -1672,7 +1691,13 @@ Thank you for choosing toomakt!`;
                                   : 'bg-[#FAF7F2] text-[#736B63] border-[#E8E2D7]'
                               }`}
                             >
-                              {bundle.is_grand_feature ? '★ Featured' : 'Set featured'}
+                              {bundle.is_grand_feature ? (
+                                <span className="inline-flex items-center gap-1">
+                                  <Star className="w-3 h-3 fill-current" /> Featured
+                                </span>
+                              ) : (
+                                <span>Set featured</span>
+                              )}
                             </button>
                           </div>
 

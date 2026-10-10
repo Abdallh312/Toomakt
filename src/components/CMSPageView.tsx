@@ -125,7 +125,7 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
 
 
   return (
-    <div className="bg-[#FAF7F2] text-[#1A1A1A] min-h-screen py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
+    <div className="bg-[#FAF7F2] dark:bg-[#120D11] text-[#1A1A1A] dark:text-[#F7F3EC] min-h-screen py-10 sm:py-14 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="max-w-5xl mx-auto">
         
         {/* Navigation Breadcrumb */}
@@ -138,20 +138,20 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
             <span>{isRtl ? 'العودة للرئيسية' : 'RETURN TO ATELIER'}</span>
           </button>
           
-          <span className="text-xs text-[#736B63] font-light">
+          <span className="text-xs text-[#736B63] dark:text-[#9C8E83] font-light">
             {isRtl ? 'معمل توماكت · القاهرة' : 'toomakt Confectionery Atelier · Cairo'}
           </span>
         </div>
 
         {/* Page Editorial Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <span className="text-[11px] font-semibold text-[#736B63] uppercase tracking-widest block mb-2">
+          <span className="text-[11px] font-semibold text-[#736B63] dark:text-[#9C8E83] uppercase tracking-widest block mb-2">
             {isRtl ? 'عن توماكت' : 'ABOUT TOOMAKT'}
           </span>
-          <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal text-[#1A1A1A] tracking-tight mb-4">
+          <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] tracking-tight mb-4">
             {isRtl ? 'حلاوة أهدأ، صُنعت ببطء.' : 'A quieter kind of sweet.'}
           </h1>
-          <p className="text-sm sm:text-base md:text-lg text-[#736B63] font-light max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg text-[#736B63] dark:text-[#C8BEB5] font-light max-w-2xl mx-auto leading-relaxed">
             {isRtl
               ? 'تأسست توماكت في القاهرة انطلاقاً من رغبة واحدة: إعادة ابتكار حلوى التوفي باستخدام الفواكه الطبيعية والزبدة النقية دون أي اختصارات صناعية.'
               : 'Born in Cairo from a singular obsession: to slow down confectionery, replacing corn syrup and artificial dyes with real fruit purée and European butter.'}
@@ -159,7 +159,7 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
         </div>
 
         {/* Responsive Tab Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-12 sm:mb-16 p-1.5 rounded-full bg-[#F4EFEA] border border-[#E8E2D7] max-w-2xl mx-auto">
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-12 sm:mb-16 p-1.5 rounded-full bg-[#F4EFEA] dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E] max-w-2xl mx-auto">
           {tabs.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -170,8 +170,8 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
                 onClick={() => handleTabClick(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-[#1A1A1A] text-[#FAF7F2] shadow-soft'
-                    : 'text-[#736B63] hover:text-[#1A1A1A] hover:bg-white/60'
+                    ? 'bg-[#1A1A1A] dark:bg-[#E8BD6D] text-[#FAF7F2] dark:text-[#120D11] shadow-soft'
+                    : 'text-[#736B63] dark:text-[#C8BEB5] hover:text-[#1A1A1A] dark:hover:text-[#F7F3EC] hover:bg-white/60 dark:hover:bg-[#241A21]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -190,14 +190,14 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
             className="space-y-12 sm:space-y-16"
           >
             {/* Story Narrative Box */}
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-10 border border-[#E8E2D7] shadow-soft">
-              <span className="text-[11px] font-mono tracking-widest uppercase text-[#736B63] block mb-2">
+            <div className="bg-white dark:bg-[#1B1419] rounded-2xl sm:rounded-3xl p-6 sm:p-10 border border-[#E8E2D7] dark:border-[#33242E] shadow-soft">
+              <span className="text-[11px] font-mono tracking-widest uppercase text-[#736B63] dark:text-[#9C8E83] block mb-2">
                 {isRtl ? 'الفلسفة التأسيسية' : 'FOUNDING PHILOSOPHY'}
               </span>
-              <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#1A1A1A] mb-6 font-normal">
+              <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#1A1A1A] dark:text-[#F7F3EC] mb-6 font-normal">
                 {isRtl ? 'لماذا رفضنا الطريقة السهلة؟' : 'Why we rejected the shortcuts.'}
               </h2>
-              <div className="space-y-4 text-sm sm:text-base text-[#736B63] font-light leading-relaxed">
+              <div className="space-y-4 text-sm sm:text-base text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed">
                 <p>
                   {isRtl
                     ? 'في عالم امتلأت فيه الحلوى بشراب الذرة عالي الفركتوز، وزيت النخيل المهدرج، والنكهات الاصطناعية التي تلتصق بالأسنان، بدأنا في معملنا بالقاهرة برؤية مغايرة: العودة إلى قدور النحاس الثقيلة، والفاكهة الطبيعية الكاملة، وزبدة النورماندي ذات النسبة العالية من الدسم.'
@@ -212,27 +212,27 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
             </div>
 
             {/* The 4-Stage Tasting Evolution */}
-            <div className="bg-[#F4EFEA] rounded-2xl sm:rounded-3xl p-6 sm:p-10 border border-[#E8E2D7]">
+            <div className="bg-[#F4EFEA] dark:bg-[#1B1419] rounded-2xl sm:rounded-3xl p-6 sm:p-10 border border-[#E8E2D7] dark:border-[#33242E]">
               <div className="max-w-2xl mb-8">
-                <span className="text-[11px] font-mono tracking-widest uppercase text-[#736B63] block mb-2">
+                <span className="text-[11px] font-mono tracking-widest uppercase text-[#736B63] dark:text-[#9C8E83] block mb-2">
                   {isRtl ? 'علم التذوق' : 'THE 45-SECOND TASTING EVOLUTION'}
                 </span>
-                <h3 className="font-serif text-2xl sm:text-3xl text-[#1A1A1A] font-normal">
+                <h3 className="font-serif text-2xl sm:text-3xl text-[#1A1A1A] dark:text-[#F7F3EC] font-normal">
                   {isRtl ? 'كيف تتفتح النكهة في فمك' : 'How the chew unfolds.'}
                 </h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {chewStages.map((stg) => (
-                  <div key={stg.sec} className="bg-white rounded-2xl p-5 border border-[#E8E2D7] shadow-soft flex flex-col justify-between">
+                  <div key={stg.sec} className="bg-white dark:bg-[#241A21] rounded-2xl p-5 border border-[#E8E2D7] dark:border-[#33242E] shadow-soft flex flex-col justify-between">
                     <div>
-                      <span className="font-mono text-xs font-semibold text-[#3C1322] block mb-2">
+                      <span className="font-mono text-xs font-semibold text-[#3C1322] dark:text-[#E8BD6D] block mb-2">
                         {stg.sec}
                       </span>
-                      <h4 className="font-serif text-sm font-medium text-[#1A1A1A] mb-2">
+                      <h4 className="font-serif text-sm font-medium text-[#1A1A1A] dark:text-[#F7F3EC] mb-2">
                         {stg.title}
                       </h4>
-                      <p className="text-xs text-[#736B63] font-light leading-relaxed">
+                      <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed">
                         {stg.desc}
                       </p>
                     </div>
@@ -253,20 +253,20 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {ingredientsList.map((ing) => (
-                <div key={ing.name} className="bg-white rounded-2xl p-6 sm:p-8 border border-[#E8E2D7] shadow-soft flex flex-col justify-between">
+                <div key={ing.name} className="bg-white dark:bg-[#1B1419] rounded-2xl p-6 sm:p-8 border border-[#E8E2D7] dark:border-[#33242E] shadow-soft flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="text-xs font-mono font-medium text-[#736B63] uppercase">
+                      <span className="text-xs font-mono font-medium text-[#736B63] dark:text-[#9C8E83] uppercase">
                         {ing.source}
                       </span>
-                      <span className="text-[10px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-[#FAF7F2] text-[#3C1322] border border-[#E8E2D7]">
+                      <span className="text-[10px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-[#FAF7F2] dark:bg-[#241A21] text-[#3C1322] dark:text-[#E8BD6D] border border-[#E8E2D7] dark:border-[#33242E]">
                         {ing.badge}
                       </span>
                     </div>
-                    <h3 className="font-serif text-xl text-[#1A1A1A] mb-2 font-normal">
+                    <h3 className="font-serif text-xl text-[#1A1A1A] dark:text-[#F7F3EC] mb-2 font-normal">
                       {ing.name}
                     </h3>
-                    <p className="text-xs sm:text-sm text-[#736B63] font-light leading-relaxed">
+                    <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed">
                       {ing.desc}
                     </p>
                   </div>
@@ -275,25 +275,25 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
             </div>
 
             {/* Zero Promise Banner */}
-            <div className="bg-[#F4EFEA] rounded-2xl p-6 sm:p-8 border border-[#E8E2D7] text-center max-w-2xl mx-auto">
-              <h4 className="font-serif text-lg text-[#1A1A1A] mb-3 font-normal">
+            <div className="bg-[#F4EFEA] dark:bg-[#1B1419] rounded-2xl p-6 sm:p-8 border border-[#E8E2D7] dark:border-[#33242E] text-center max-w-2xl mx-auto">
+              <h4 className="font-serif text-lg text-[#1A1A1A] dark:text-[#F7F3EC] mb-3 font-normal">
                 {isRtl ? 'عهد النقاء من معمل توماكت' : 'Our Clean Label Promise'}
               </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs text-[#736B63] font-light">
-                <div className="p-3 bg-white rounded-xl border border-[#E8E2D7]">
-                  <span className="block font-medium text-[#1A1A1A] mb-0.5">0%</span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs text-[#736B63] dark:text-[#C8BEB5] font-light">
+                <div className="p-3 bg-white dark:bg-[#241A21] rounded-xl border border-[#E8E2D7] dark:border-[#33242E]">
+                  <span className="block font-medium text-[#1A1A1A] dark:text-[#F7F3EC] mb-0.5">0%</span>
                   <span>{isRtl ? 'شراب ذرة' : 'Corn Syrup'}</span>
                 </div>
-                <div className="p-3 bg-white rounded-xl border border-[#E8E2D7]">
-                  <span className="block font-medium text-[#1A1A1A] mb-0.5">0%</span>
+                <div className="p-3 bg-white dark:bg-[#241A21] rounded-xl border border-[#E8E2D7] dark:border-[#33242E]">
+                  <span className="block font-medium text-[#1A1A1A] dark:text-[#F7F3EC] mb-0.5">0%</span>
                   <span>{isRtl ? 'زيت نخيل' : 'Palm Oil'}</span>
                 </div>
-                <div className="p-3 bg-white rounded-xl border border-[#E8E2D7]">
-                  <span className="block font-medium text-[#1A1A1A] mb-0.5">0%</span>
+                <div className="p-3 bg-white dark:bg-[#241A21] rounded-xl border border-[#E8E2D7] dark:border-[#33242E]">
+                  <span className="block font-medium text-[#1A1A1A] dark:text-[#F7F3EC] mb-0.5">0%</span>
                   <span>{isRtl ? 'ملونات صناعية' : 'Artificial Dyes'}</span>
                 </div>
-                <div className="p-3 bg-white rounded-xl border border-[#E8E2D7]">
-                  <span className="block font-medium text-[#1A1A1A] mb-0.5">0%</span>
+                <div className="p-3 bg-white dark:bg-[#241A21] rounded-xl border border-[#E8E2D7] dark:border-[#33242E]">
+                  <span className="block font-medium text-[#1A1A1A] dark:text-[#F7F3EC] mb-0.5">0%</span>
                   <span>{isRtl ? 'مواد حافظة' : 'Preservatives'}</span>
                 </div>
               </div>
@@ -309,41 +309,41 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
             transition={{ duration: 0.4 }}
             className="space-y-8"
           >
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-10 border border-[#E8E2D7] shadow-soft">
-              <span className="text-[11px] font-mono tracking-widest uppercase text-[#736B63] block mb-2">
+            <div className="bg-white dark:bg-[#1B1419] rounded-2xl sm:rounded-3xl p-6 sm:p-10 border border-[#E8E2D7] dark:border-[#33242E] shadow-soft">
+              <span className="text-[11px] font-mono tracking-widest uppercase text-[#736B63] dark:text-[#9C8E83] block mb-2">
                 {isRtl ? 'الشحن المبرد المعزول' : 'CLIMATE-PROTECTED LOGISTICS'}
               </span>
-              <h2 className="font-serif text-2xl sm:text-3xl text-[#1A1A1A] mb-4 font-normal">
+              <h2 className="font-serif text-2xl sm:text-3xl text-[#1A1A1A] dark:text-[#F7F3EC] mb-4 font-normal">
                 {isRtl ? 'نصلك بحالة مثالية في أي مكان بمصر.' : 'Pristine delivery to all 27 governorates.'}
               </h2>
-              <p className="text-sm sm:text-base text-[#736B63] font-light leading-relaxed mb-8 max-w-2xl">
+              <p className="text-sm sm:text-base text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed mb-8 max-w-2xl">
                 {isRtl
                   ? 'بسبب احتوائها على زبدة نقية وفواكه طبيعية، نضع كل عبوة داخل صناديق شحن حرارية معزولة مع عبوات تبريد آمنة لضمان وصول التوفي بالقوام الأصلي نفسه حتى في أشد أيام الصيف حرارة.'
                   : 'Because our confections are rich in genuine butter and fruit purée, every shipment leaves our Cairo kitchen in insulated thermal boxes with food-safe cooling packs, ensuring factory-fresh texture upon arrival.'}
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-[#E8E2D7]">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-[#E8E2D7] dark:border-[#33242E]">
                 <div>
-                  <h4 className="font-serif text-base text-[#1A1A1A] mb-1 font-normal">
+                  <h4 className="font-serif text-base text-[#1A1A1A] dark:text-[#F7F3EC] mb-1 font-normal">
                     {isRtl ? 'القاهرة والجيزة' : 'Cairo & Giza'}
                   </h4>
-                  <p className="text-xs text-[#736B63] font-light">
+                  <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light">
                     {isRtl ? 'توصيل خلال 24 - 48 ساعة بواسطة مندوب المعمل' : '24-48h direct courier delivery.'}
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-serif text-base text-[#1A1A1A] mb-1 font-normal">
+                  <h4 className="font-serif text-base text-[#1A1A1A] dark:text-[#F7F3EC] mb-1 font-normal">
                     {isRtl ? 'الإسكندرية والدلتا' : 'Alexandria & Delta'}
                   </h4>
-                  <p className="text-xs text-[#736B63] font-light">
+                  <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light">
                     {isRtl ? 'توصيل خلال 48 ساعة في صناديق معزولة' : '48h express climate shipping.'}
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-serif text-base text-[#1A1A1A] mb-1 font-normal">
+                  <h4 className="font-serif text-base text-[#1A1A1A] dark:text-[#F7F3EC] mb-1 font-normal">
                     {isRtl ? 'الصعيد والقناة وسيناء' : 'Upper Egypt, Canal & Sinai'}
                   </h4>
-                  <p className="text-xs text-[#736B63] font-light">
+                  <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light">
                     {isRtl ? 'توصيل خلال 2-3 أيام مع ضمان الجودة' : '2-3 business days guaranteed.'}
                   </p>
                 </div>
@@ -366,18 +366,18 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
               return (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl border border-[#E8E2D7] overflow-hidden transition-all shadow-soft"
+                  className="bg-white dark:bg-[#1B1419] rounded-2xl border border-[#E8E2D7] dark:border-[#33242E] overflow-hidden transition-all shadow-soft"
                 >
                   <button
                     onClick={() => setActiveAccordion(isOpen ? null : idx)}
                     className="w-full p-5 sm:p-6 text-left rtl:text-right flex items-center justify-between gap-4 cursor-pointer"
                   >
-                    <span className="font-serif text-base sm:text-lg font-normal text-[#1A1A1A]">
+                    <span className="font-serif text-base sm:text-lg font-normal text-[#1A1A1A] dark:text-[#F7F3EC]">
                       {faq.q}
                     </span>
                     <ChevronDown
-                      className={`w-4 h-4 text-[#736B63] shrink-0 transition-transform duration-200 ${
-                        isOpen ? 'rotate-180 text-[#3C1322]' : ''
+                      className={`w-4 h-4 text-[#736B63] dark:text-[#9C8E83] shrink-0 transition-transform duration-200 ${
+                        isOpen ? 'rotate-180 text-[#3C1322] dark:text-[#E8BD6D]' : ''
                       }`}
                     />
                   </button>
@@ -388,7 +388,7 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="px-5 pb-5 sm:px-6 sm:pb-6 text-xs sm:text-sm text-[#736B63] font-light leading-relaxed border-t border-[#E8E2D7]/60 pt-4"
+                        className="px-5 pb-5 sm:px-6 sm:pb-6 text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed border-t border-[#E8E2D7]/60 dark:border-[#33242E] pt-4"
                       >
                         {faq.a}
                       </motion.div>
@@ -401,8 +401,8 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
         )}
 
         {/* Bottom CTA to Shop */}
-        <div className="mt-16 text-center pt-8 border-t border-[#E8E2D7]">
-          <p className="text-xs text-[#736B63] mb-4 font-light">
+        <div className="mt-16 text-center pt-8 border-t border-[#E8E2D7] dark:border-[#33242E]">
+          <p className="text-xs text-[#736B63] dark:text-[#9C8E83] mb-4 font-light">
             {isRtl ? 'هل ترغب في تذوق حلوى توماكت بنفسك؟' : 'Ready to taste the slow craft difference?'}
           </p>
           <button
@@ -417,3 +417,4 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
     </div>
   );
 };
+

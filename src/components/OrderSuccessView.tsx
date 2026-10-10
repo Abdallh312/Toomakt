@@ -113,12 +113,12 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
       {/* ========================================================================= */}
       {/* 1. ON-SCREEN INTERACTIVE SHOPPING & CELEBRATION VIEW (.screen-only)        */}
       {/* ========================================================================= */}
-      <div className="screen-only min-h-screen bg-[#FAF7F2] py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="screen-only min-h-screen bg-[#FAF7F2] dark:bg-[#120D11] py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
         <div className="max-w-4xl mx-auto space-y-8">
           
           {/* HERO SUCCESS HEADER CARD */}
-          <div className="bg-white rounded-3xl border border-[#E8E2D7] shadow-soft overflow-hidden text-center relative">
-            <div className={`h-2 w-full ${isCard ? 'bg-[#3C1322]' : 'bg-[#FFD147]'}`} />
+          <div className="bg-white dark:bg-[#1B1419] rounded-3xl border border-[#E8E2D7] dark:border-[#33242E] shadow-soft overflow-hidden text-center relative">
+            <div className={`h-2 w-full ${isCard ? 'bg-[#3C1322] dark:bg-[#E8BD6D]' : 'bg-[#E8BD6D]'}`} />
 
             <div className="p-8 sm:p-12 relative z-10">
               {/* Brand Logo */}
@@ -136,31 +136,31 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
                   className={`w-20 h-20 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 ${
                     isCard
                       ? 'bg-emerald-600 text-white shadow-emerald-500/20'
-                      : 'bg-[#3C1322] text-[#FAF7F2] shadow-[#3C1322]/20'
+                      : 'bg-[#3C1322] dark:bg-[#241A21] text-[#FAF7F2] dark:text-[#E8BD6D] shadow-[#3C1322]/20'
                   }`}
                 >
                   {isCard ? (
                     <CheckCircle2 className="w-10 h-10" />
                   ) : (
-                    <Package className="w-10 h-10 text-[#FFD147]" />
+                    <Package className="w-10 h-10 text-[#E8BD6D]" />
                   )}
                 </div>
-                <div className="absolute -inset-3 bg-[#FFD147]/15 rounded-full blur-xl -z-10" />
+                <div className="absolute -inset-3 bg-[#E8BD6D]/20 rounded-full blur-xl -z-10" />
               </div>
 
               {/* Status Pill */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest mb-3 border bg-[#FAF7F2]">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest mb-3 border bg-[#FAF7F2] dark:bg-[#241A21] border-[#E8E2D7] dark:border-[#33242E]">
                 {isCard ? (
                   <>
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    <span className="text-emerald-800">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                    <span className="text-emerald-800 dark:text-emerald-300">
                       {isRtl ? 'تم الدفع بالفيزا عبر Paymob 3D-Secure' : 'Visa Payment Verified · Paymob 3D-Secure'}
                     </span>
                   </>
                 ) : (
                   <>
-                    <Package className="w-3.5 h-3.5 text-[#3C1322]" />
-                    <span className="text-[#3C1322]">
+                    <Package className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D]" />
+                    <span className="text-[#3C1322] dark:text-[#E8BD6D]">
                       {isRtl ? 'الدفع عند الاستلام (كاش للمندوب)' : 'Cash on Delivery · Due Upon Arrival'}
                     </span>
                   </>
@@ -168,14 +168,14 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
               </div>
 
               {/* Main Title */}
-              <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#1A1A1A] tracking-tight mb-3">
+              <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] tracking-tight mb-3">
                 {isCard
                   ? (isRtl ? 'تم تأكيد الدفع واستلام طلبك!' : 'Payment Verified & Order Confirmed!')
                   : (isRtl ? 'تم استلام طلبك بنجاح!' : 'Thank you for your order!')}
               </h1>
 
               {/* Subtitle */}
-              <p className="text-sm sm:text-base text-[#736B63] font-light max-w-xl mx-auto leading-relaxed">
+              <p className="text-sm sm:text-base text-[#736B63] dark:text-[#C8BEB5] font-light max-w-xl mx-auto leading-relaxed">
                 {isCard
                   ? (isRtl
                       ? `شكراً لك ${customerName}! تم التحقق من سداد مبلغ ${totalAmount} ج.م بالفيزا بنجاح، وبدأ صانعو الحلوى في تجهيز دفعتك الطازجة.`
@@ -186,48 +186,48 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
               </p>
 
               {/* Quick Metrics Bar */}
-              <div className="mt-8 pt-8 border-t border-[#E8E2D7] grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                <div className="p-3 bg-[#FAF7F2] rounded-2xl border border-[#E8E2D7]">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#736B63] block">
+              <div className="mt-8 pt-8 border-t border-[#E8E2D7] dark:border-[#33242E] grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                <div className="p-3 bg-[#FAF7F2] dark:bg-[#241A21] rounded-2xl border border-[#E8E2D7] dark:border-[#33242E]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#736B63] dark:text-[#9C8E83] block">
                     {isRtl ? 'رقم الطلب' : 'Order No.'}
                   </span>
                   <div className="flex items-center justify-center gap-1.5 mt-1">
-                    <span className="font-mono text-xs sm:text-sm font-semibold text-[#1A1A1A]">
+                    <span className="font-mono text-xs sm:text-sm font-semibold text-[#1A1A1A] dark:text-[#F7F3EC]">
                       {orderNumber}
                     </span>
                     <button
                       onClick={() => handleCopy(orderNumber, 'ord')}
-                      className="text-[#736B63] hover:text-[#1A1A1A] cursor-pointer"
+                      className="text-[#736B63] dark:text-[#9C8E83] hover:text-[#1A1A1A] dark:hover:text-[#E8BD6D] cursor-pointer"
                       title="Copy Order Number"
                     >
-                      {copiedKey === 'ord' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      {copiedKey === 'ord' ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                     </button>
                   </div>
                 </div>
 
-                <div className="p-3 bg-[#FAF7F2] rounded-2xl border border-[#E8E2D7]">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#736B63] block">
+                <div className="p-3 bg-[#FAF7F2] dark:bg-[#241A21] rounded-2xl border border-[#E8E2D7] dark:border-[#33242E]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#736B63] dark:text-[#9C8E83] block">
                     {isRtl ? 'طريقة الدفع' : 'Payment Method'}
                   </span>
-                  <span className="text-xs sm:text-sm font-medium text-[#1A1A1A] mt-1 block">
+                  <span className="text-xs sm:text-sm font-medium text-[#1A1A1A] dark:text-[#F7F3EC] mt-1 block">
                     {isCard ? 'Visa (Paymob)' : 'Cash on Delivery'}
                   </span>
                 </div>
 
-                <div className="p-3 bg-[#FAF7F2] rounded-2xl border border-[#E8E2D7]">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#736B63] block">
+                <div className="p-3 bg-[#FAF7F2] dark:bg-[#241A21] rounded-2xl border border-[#E8E2D7] dark:border-[#33242E]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#736B63] dark:text-[#9C8E83] block">
                     {isRtl ? 'المحافظة' : 'Governorate'}
                   </span>
-                  <span className="text-xs sm:text-sm font-medium text-[#1A1A1A] mt-1 block">
+                  <span className="text-xs sm:text-sm font-medium text-[#1A1A1A] dark:text-[#F7F3EC] mt-1 block">
                     {governorate}
                   </span>
                 </div>
 
-                <div className="p-3 bg-[#FAF7F2] rounded-2xl border border-[#E8E2D7]">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#736B63] block">
+                <div className="p-3 bg-[#FAF7F2] dark:bg-[#241A21] rounded-2xl border border-[#E8E2D7] dark:border-[#33242E]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#736B63] dark:text-[#9C8E83] block">
                     {isRtl ? 'المبلغ الإجمالي' : 'Total Amount'}
                   </span>
-                  <span className="text-xs sm:text-sm font-semibold text-[#3C1322] mt-1 block">
+                  <span className="text-xs sm:text-sm font-semibold text-[#3C1322] dark:text-[#E8BD6D] mt-1 block">
                     {totalAmount} EGP
                   </span>
                 </div>
@@ -306,11 +306,11 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
           </div>
 
           {/* OFFICIAL ORDER RECEIPT & SUMMARY CARD */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E8E2D7] shadow-soft space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#E8E2D7]">
+          <div className="bg-white dark:bg-[#1B1419] rounded-3xl p-6 sm:p-8 border border-[#E8E2D7] dark:border-[#33242E] shadow-soft space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#E8E2D7] dark:border-[#33242E]">
               <div className="flex items-center gap-3">
-                <Receipt className="w-5 h-5 text-[#3C1322]" />
-                <h2 className="font-serif text-lg font-normal text-[#1A1A1A]">
+                <Receipt className="w-5 h-5 text-[#3C1322] dark:text-[#E8BD6D]" />
+                <h2 className="font-serif text-lg font-normal text-[#1A1A1A] dark:text-[#F7F3EC]">
                   {isRtl ? 'تفاصيل الفاتورة الرسمية' : 'Official Order Receipt'}
                 </h2>
               </div>
@@ -339,10 +339,10 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
               {items.map((item, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between gap-4 pb-4 border-b border-[#E8E2D7] last:border-b-0"
+                  className="flex items-center justify-between gap-4 pb-4 border-b border-[#E8E2D7] dark:border-[#33242E] last:border-b-0"
                 >
                   <div className="flex items-center gap-3.5">
-                    <div className="w-14 h-14 rounded-xl bg-[#FAF7F2] border border-[#E8E2D7] flex items-center justify-center overflow-hidden shrink-0">
+                    <div className="w-14 h-14 rounded-xl bg-[#FAF7F2] dark:bg-[#241A21] border border-[#E8E2D7] dark:border-[#33242E] flex items-center justify-center overflow-hidden shrink-0">
                       <img
                         src={item.image || '/images/products/mango_sunbeam.jpg'}
                         alt={item.name}
@@ -350,21 +350,21 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
                       />
                     </div>
                     <div>
-                      <h4 className="text-sm font-medium text-[#1A1A1A]">
+                      <h4 className="text-sm font-medium text-[#1A1A1A] dark:text-[#F7F3EC]">
                         {item.name}
                       </h4>
                       {item.flavor && (
-                        <span className="text-[11px] font-medium text-[#3C1322] bg-[#FFD147]/25 border border-[#FFD147]/40 px-2 py-0.5 rounded-full inline-block mt-0.5">
+                        <span className="text-[11px] font-medium text-[#3C1322] dark:text-[#E8BD6D] bg-[#FFD147]/25 dark:bg-[#E8BD6D]/20 border border-[#FFD147]/40 dark:border-[#E8BD6D]/30 px-2 py-0.5 rounded-full inline-block mt-0.5">
                           {isRtl ? 'النكهة: ' : 'Flavor: '}{item.flavor}
                         </span>
                       )}
-                      <span className="text-xs text-[#736B63] font-light block mt-0.5">
+                      <span className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light block mt-0.5">
                         Qty: {item.quantity} × EGP {Number(item.unit_price).toFixed(2)}
                       </span>
                     </div>
                   </div>
 
-                  <span className="font-mono text-sm font-semibold text-[#1A1A1A]">
+                  <span className="font-mono text-sm font-semibold text-[#1A1A1A] dark:text-[#F7F3EC]">
                     EGP {(Number(item.unit_price) * Number(item.quantity)).toFixed(2)}
                   </span>
                 </div>
@@ -372,49 +372,49 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
             </div>
 
             {/* Pricing Math & Destination */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#E8E2D7]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#E8E2D7] dark:border-[#33242E]">
               {/* Delivery Details */}
-              <div className="space-y-2 text-xs text-[#736B63]">
-                <span className="font-bold text-[10px] uppercase tracking-wider text-[#1A1A1A] block mb-1">
+              <div className="space-y-2 text-xs text-[#736B63] dark:text-[#C8BEB5]">
+                <span className="font-bold text-[10px] uppercase tracking-wider text-[#1A1A1A] dark:text-[#F7F3EC] block mb-1">
                   {isRtl ? 'بيانات المستلم والشحن' : 'Recipient & Delivery Details'}
                 </span>
-                <p className="flex items-center gap-1.5 text-[#1A1A1A]">
-                  <MapPin className="w-3.5 h-3.5 text-[#3C1322] shrink-0" />
+                <p className="flex items-center gap-1.5 text-[#1A1A1A] dark:text-[#F7F3EC]">
+                  <MapPin className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D] shrink-0" />
                   <span>{shippingAddress} {buildingNumber ? `· Bldg ${buildingNumber}` : ''} {apartmentFloor ? `· Apt ${apartmentFloor}` : ''}</span>
                 </p>
                 {customerPhone && (
                   <p className="flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-[#3C1322] shrink-0" />
+                    <Phone className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D] shrink-0" />
                     <span>{customerPhone}</span>
                   </p>
                 )}
                 {customerEmail && (
                   <p className="flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-[#3C1322] shrink-0" />
+                    <Mail className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D] shrink-0" />
                     <span>{customerEmail}</span>
                   </p>
                 )}
               </div>
 
               {/* Financial Summary */}
-              <div className="space-y-2 text-xs text-[#736B63]">
+              <div className="space-y-2 text-xs text-[#736B63] dark:text-[#C8BEB5]">
                 <div className="flex justify-between">
                   <span>{isRtl ? 'قيمة المنتجات' : 'Subtotal'}</span>
-                  <span className="font-medium text-[#1A1A1A]">EGP {subtotal}</span>
+                  <span className="font-medium text-[#1A1A1A] dark:text-[#F7F3EC]">EGP {subtotal}</span>
                 </div>
                 {Number(discountAmount) > 0 && (
-                  <div className="flex justify-between text-emerald-600 font-medium">
+                  <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
                     <span>{isRtl ? 'الخصم' : 'Discount'}</span>
                     <span>-EGP {discountAmount}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
                   <span>{isRtl ? 'الشحن' : 'Shipping'} ({governorate})</span>
-                  <span className="font-medium text-[#1A1A1A]">EGP {shippingFee}</span>
+                  <span className="font-medium text-[#1A1A1A] dark:text-[#F7F3EC]">EGP {shippingFee}</span>
                 </div>
-                <div className="flex justify-between text-base font-serif font-normal text-[#1A1A1A] pt-3 border-t border-[#E8E2D7]">
+                <div className="flex justify-between text-base font-serif font-normal text-[#1A1A1A] dark:text-[#F7F3EC] pt-3 border-t border-[#E8E2D7] dark:border-[#33242E]">
                   <span>{isRtl ? 'المجموع النهائي' : 'Total Amount'}</span>
-                  <span className="font-semibold text-[#3C1322]">EGP {totalAmount}</span>
+                  <span className="font-semibold text-[#3C1322] dark:text-[#E8BD6D]">EGP {totalAmount}</span>
                 </div>
               </div>
             </div>
@@ -428,7 +428,7 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
                   onClick={() => onTrackOrder(orderNumber)}
                   className="btn-primary w-full sm:w-auto text-xs py-3.5 px-6 flex items-center justify-center gap-2 cursor-pointer shadow-soft hover:shadow-lg"
                 >
-                  <Truck className="w-4 h-4 text-[#FFD147]" />
+                  <Truck className="w-4 h-4 text-[#E8BD6D] dark:text-[#120D11]" />
                   <span>{isRtl ? 'تتبع مسار الطلب مباشرة' : 'TRACK THIS ORDER LIVE'}</span>
                 </button>
               )}

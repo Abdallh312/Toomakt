@@ -537,7 +537,7 @@ export const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#FAF7F2] dark:bg-[#0C080A] text-[#1A1A1A] dark:text-[#FAF5EE] flex flex-col font-sans selection:bg-[#3C1322] selection:text-white dark:selection:bg-[#FFD147] dark:selection:text-[#1A1A1A] transition-colors duration-300">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#FAF7F2] dark:bg-[#120D11] text-[#1A1A1A] dark:text-[#F7F3EC] flex flex-col font-sans selection:bg-[#3C1322] selection:text-white dark:selection:bg-[#E8BD6D] dark:selection:text-[#120D11] transition-colors duration-300">
       {/* 1. Global Announcement Header Bar */}
       <div className="no-print">
         <AnnouncementBar onNavigateView={handleNavigateView} />
@@ -561,33 +561,45 @@ export const AppContent: React.FC = () => {
         {/* PAGE 1: DEDICATED BRAND INTRODUCTION LANDING PAGE */}
         {currentView === 'home' && (
           <div id="brand-landing" className="relative w-full">
-            {/* Brand Hero Introduction */}
+            {/* 1. Brand Hero Introduction with Silent Cinema & Instant Products Quick-Shelf */}
             <HeroSection
-              onShopNow={() => handleNavigateView('shop')}
-              onExploreProcess={() => handleNavigateSection('our-approach')}
+              onShopNow={() => {
+                const el = document.getElementById('featured-products');
+                if (el) {
+                  if ((window as any).scrollToSmooth) {
+                    (window as any).scrollToSmooth(el, -30);
+                  } else {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                  }
+                } else {
+                  handleNavigateView('shop');
+                }
+              }}
+              onExploreProcess={() => handleNavigateSection('story-ritual')}
+              onSelectProduct={handleSelectProduct}
             />
 
-            {/* Our Approach (3 Numbered Craft Pillars) */}
-            <BrandMissionSection onNavigateStory={() => handleNavigateView('our-story')} />
-
-            {/* Tasting Palette: 4 Flavor Family Showcase with CTA to Products Page */}
-            <BrandFlavorShowcaseSection
-              onExploreProducts={() => handleNavigateView('shop')}
-            />
-
-            {/* Official Products Collection Directly on Home Page */}
+            {/* 2. Official Products Collection Elevated Directly Below Hero (Instant Visibility) */}
             <FeaturedProductsSection
               onSelectProduct={handleSelectProduct}
               onExploreAll={() => handleNavigateView('shop')}
             />
 
-            {/* Atelier Process & The Toomakt Ritual with Autoplaying Video */}
+            {/* 3. Atelier Process & The Toomakt Ritual with Silent Cinema Video */}
             <BrandStorySection onReadMore={() => handleNavigateView('our-story')} />
 
-            {/* Verified Client Feedback & Social Proof */}
+            {/* 4. Tasting Palette: 4 Flavor Family Showcase with Instant Smooth Scroll to Products */}
+            <BrandFlavorShowcaseSection
+              onExploreProducts={() => handleNavigateView('shop')}
+            />
+
+            {/* 5. Our Approach (3 Numbered Craft Pillars) */}
+            <BrandMissionSection onNavigateStory={() => handleNavigateView('our-story')} />
+
+            {/* 6. Verified Client Feedback & Social Proof */}
             <ReviewsSection />
 
-            {/* Closing Brand Invitation & Direct Shop CTA */}
+            {/* 7. Closing Brand Invitation & Direct Shop CTA */}
             <BrandInvitationSection
               onShopProducts={() => handleNavigateView('shop')}
               onContactWholesale={() => handleNavigateView('wholesale')}

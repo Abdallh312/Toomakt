@@ -66,23 +66,23 @@ export const BrandFlavorShowcaseSection: React.FC<BrandFlavorShowcaseSectionProp
   ];
 
   return (
-    <section className="py-16 sm:py-20 md:py-28 bg-[#FAF7F2] border-b border-[#E8E2D7]">
+    <section className="py-16 sm:py-20 md:py-28 bg-[#FAF7F2] dark:bg-[#120D11] border-b border-[#E8E2D7] dark:border-[#33242E] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header with Scroll Reveal */}
         <ScrollReveal yOffset={20}>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16 text-left rtl:text-right">
             <div className="max-w-2xl">
-              <span className="text-[11px] sm:text-xs font-semibold tracking-widest uppercase text-[#736B63] block mb-3">
+              <span className="text-[11px] sm:text-xs font-semibold tracking-widest uppercase text-[#736B63] dark:text-[#C8BEB5] block mb-3">
                 {isRtl ? 'لوحة التذوق الحرفية' : 'THE TASTING PALETTE'}
               </span>
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-[#1A1A1A] tracking-tight leading-tight">
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] tracking-tight leading-tight">
                 {isRtl ? 'أربعة عوالم من الفاكهة الطبيعية.' : 'Four expressions of pure fruit.'}
               </h2>
-              <p className="mt-3 text-sm sm:text-base text-[#736B63] font-light leading-relaxed">
+              <p className="mt-3 text-sm sm:text-base text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed">
                 {isRtl
-                  ? 'من مانجو الألفونسو المشمسة إلى توت الغابات البرية وحمضيات صقلية، كل نكهة تحكي قصة بطء الصنعة وجودة المكونات.'
-                  : 'From sunlit Alphonso mangoes to layered mountain berries, each confection is crafted slowly to celebrate its raw fruit origin.'}
+                  ? 'من قهوة الإسبريسو الإيطالية وتوفي الحليب الأوربي، إلى اكلير الشوكولاتة الذائبة وفواكه البساتين الطبيعية.'
+                  : 'From roasted Italian espresso and European milk toffee, to melting Belgian chocolate eclairs and wild fruit purées.'}
               </p>
             </div>
 
@@ -103,11 +103,22 @@ export const BrandFlavorShowcaseSection: React.FC<BrandFlavorShowcaseSectionProp
           {flavorFamilies.map((fam, idx) => (
             <ScrollReveal key={fam.id} delay={idx * 0.12} yOffset={30}>
               <div
-                className="bg-white rounded-2xl border border-[#E8E2D7] overflow-hidden hover:border-[#1A1A1A] hover:shadow-soft-md transition-all duration-300 flex flex-col group cursor-pointer h-full"
-                onClick={onExploreProducts}
+                className="bg-white dark:bg-[#1B1419] rounded-2xl border border-[#E8E2D7] dark:border-[#33242E] overflow-hidden hover:border-[#1A1A1A] dark:hover:border-[#E8BD6D] hover:shadow-soft-md transition-all duration-300 flex flex-col group cursor-pointer h-full"
+                onClick={() => {
+                  const el = document.getElementById('featured-products');
+                  if (el) {
+                    if ((window as any).scrollToSmooth) {
+                      (window as any).scrollToSmooth(el, -30);
+                    } else {
+                      el.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  } else {
+                    onExploreProducts();
+                  }
+                }}
               >
                 {/* Image Frame */}
-                <div className="relative aspect-[4/3] sm:aspect-square overflow-hidden bg-[#FAF7F2]">
+                <div className="relative aspect-[4/3] sm:aspect-square overflow-hidden bg-[#FAF7F2] dark:bg-[#120D11]">
                   <img
                     src={fam.image}
                     alt={fam.title}
@@ -119,7 +130,7 @@ export const BrandFlavorShowcaseSection: React.FC<BrandFlavorShowcaseSectionProp
                   />
                   
                   {/* Badge */}
-                  <div className="absolute top-3 left-3 rtl:left-auto rtl:right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-medium tracking-wider uppercase text-[#1A1A1A] border border-[#E8E2D7]">
+                  <div className="absolute top-3 left-3 rtl:left-auto rtl:right-3 bg-white/90 dark:bg-[#1B1419]/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-medium tracking-wider uppercase text-[#1A1A1A] dark:text-[#F7F3EC] border border-[#E8E2D7] dark:border-[#33242E]">
                     {fam.badge}
                   </div>
                 </div>
@@ -127,22 +138,20 @@ export const BrandFlavorShowcaseSection: React.FC<BrandFlavorShowcaseSectionProp
                 {/* Card Body */}
                 <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
                   <div>
-                    <span className="text-[11px] font-mono tracking-wider uppercase text-[#736B63] block mb-1">
+                    <span className="text-[11px] font-mono tracking-wider uppercase text-[#736B63] dark:text-[#C8BEB5] block mb-1">
                       {fam.family}
                     </span>
-                    <h3 className="font-serif text-lg sm:text-xl font-normal text-[#1A1A1A] mb-2 group-hover:text-[#3C1322] transition-colors">
+                    <h3 className="font-serif text-lg sm:text-xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] mb-2 group-hover:text-[#3C1322] dark:group-hover:text-[#E8BD6D] transition-colors">
                       {fam.title}
                     </h3>
-                    <p className="text-xs text-[#736B63] font-light leading-relaxed mb-4">
+                    <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed mb-4">
                       {fam.description}
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-[#E8E2D7] flex items-center justify-between text-xs text-[#1A1A1A] font-medium">
-                    <span className="text-[#736B63] font-light text-[11px]">{fam.tagline}</span>
-                    <span className="group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform text-[#3C1322]">
-                      →
-                    </span>
+                  <div className="pt-3 border-t border-[#E8E2D7] dark:border-[#33242E] flex items-center justify-between text-xs text-[#1A1A1A] dark:text-[#F7F3EC] font-medium">
+                    <span className="text-[#736B63] dark:text-[#C8BEB5] font-light text-[11px]">{fam.tagline}</span>
+                    <ArrowIcon className="w-3.5 h-3.5 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform text-[#3C1322] dark:text-[#E8BD6D]" />
                   </div>
                 </div>
               </div>
@@ -152,18 +161,18 @@ export const BrandFlavorShowcaseSection: React.FC<BrandFlavorShowcaseSectionProp
 
         {/* Bottom Banner Invitation */}
         <ScrollReveal delay={0.2} yOffset={20}>
-          <div className="mt-12 sm:mt-16 p-6 sm:p-8 rounded-2xl bg-[#F4EFEA] border border-[#E8E2D7] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left rtl:sm:text-right">
+          <div className="mt-12 sm:mt-16 p-6 sm:p-8 rounded-2xl bg-[#F4EFEA] dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left rtl:sm:text-right">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#1A1A1A] text-[#FAF7F2] flex items-center justify-center shrink-0">
-                <Sparkles className="w-5 h-5 text-[#FFD147]" />
+              <div className="w-10 h-10 rounded-full bg-[#1A1A1A] dark:bg-[#241A21] text-[#FAF7F2] dark:text-[#E8BD6D] border border-transparent dark:border-[#E8BD6D]/30 flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5 text-[#FFD147] dark:text-[#E8BD6D]" />
               </div>
               <div>
-                <h4 className="font-serif text-base sm:text-lg font-normal text-[#1A1A1A]">
-                  {isRtl ? 'جاهز لاستكشاف التشكيلة الكاملة؟' : 'Ready to experience all six confections?'}
+                <h4 className="font-serif text-base sm:text-lg font-normal text-[#1A1A1A] dark:text-[#F7F3EC]">
+                  {isRtl ? 'جاهز لاستكشاف التشكيلة الكاملة؟' : 'Ready to experience all confections?'}
                 </h4>
-                <p className="text-xs text-[#736B63] font-light">
+                <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light">
                   {isRtl
-                    ? 'اختر نكهاتك المفضلة أو ركّب صندوقك الخاص من متجرنا المخصص.'
+                    ? 'اختر نكهاتك المفضلة وتعرف على مواصفات التغليف والعلب مع شحن مبرد لجميع المحافظات.'
                     : 'Browse weights, piece counts, tasting notes, and order directly to your door.'}
                 </p>
               </div>

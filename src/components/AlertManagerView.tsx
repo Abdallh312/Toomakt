@@ -6,6 +6,7 @@ import {
   RotateCcw,
   Sparkles,
   ArrowRight,
+  ArrowLeft,
   Check,
   AlertCircle,
   Palette,
@@ -199,9 +200,10 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
 
           <button
             onClick={() => onBackToStore ? onBackToStore() : navigateTo('')}
-            className="text-xs font-medium text-[#736B63] hover:text-[#1A1A1A] underline underline-offset-4 cursor-pointer"
+            className="text-xs font-medium text-[#736B63] hover:text-[#1A1A1A] flex items-center gap-1.5 cursor-pointer"
           >
-            ← Return to Store
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Return to Store</span>
           </button>
         </div>
 

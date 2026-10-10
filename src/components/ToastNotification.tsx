@@ -56,11 +56,11 @@ export const ToastNotification: React.FC<ToastNotificationProps> = ({ toast, onC
     },
     info: {
       lightBadge: 'bg-plum-50 text-[#3C1322] border-[#E8E2D7]',
-      darkBadge: 'bg-[#2A1620] text-[#FFD147] border-[#4A2D3C]',
-      iconColor: 'text-[#3C1322] dark:text-[#FFD147]',
-      glow: 'from-[#FFD147]/15 via-transparent to-transparent',
-      progress: 'bg-gradient-to-r from-[#3C1322] to-[#FFD147]',
-      actionBg: 'bg-[#1A1A1A] dark:bg-[#FFD147] dark:text-[#1A1A1A] hover:bg-[#3C1322] text-[#FAF7F2]',
+      darkBadge: 'bg-[#241A21] text-[#E8BD6D] border-[#33242E]',
+      iconColor: 'text-[#3C1322] dark:text-[#E8BD6D]',
+      glow: 'from-[#E8BD6D]/15 via-transparent to-transparent',
+      progress: 'bg-gradient-to-r from-[#3C1322] to-[#E8BD6D]',
+      actionBg: 'bg-[#1A1A1A] dark:bg-[#E8BD6D] dark:text-[#120D11] hover:bg-[#3C1322] text-[#FAF7F2]',
       tagText: isRtl ? 'معلومات' : 'Atelier Info',
     },
   }[toast.type];
@@ -81,7 +81,7 @@ export const ToastNotification: React.FC<ToastNotificationProps> = ({ toast, onC
           transition={{ type: 'spring', stiffness: 500, damping: 32 }}
           className={`pointer-events-auto relative overflow-hidden rounded-2xl p-4 sm:p-5 backdrop-blur-2xl transition-all duration-300 shadow-2xl ${
             isDark
-              ? 'bg-[#150F13]/95 border border-[#3A222F] text-[#FAF5EE] shadow-[0_20px_50px_rgba(0,0,0,0.6)]'
+              ? 'bg-[#1B1419]/95 border border-[#33242E] text-[#F7F3EC] shadow-[0_20px_50px_rgba(0,0,0,0.6)]'
               : 'bg-white/95 border border-[#E8E2D7] text-[#1A1A1A] shadow-[0_20px_45px_-10px_rgba(60,19,34,0.12)]'
           }`}
         >

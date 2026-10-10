@@ -31,11 +31,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView }) => {
   };
 
   return (
-    <footer className="bg-[#1A1512] text-[#FAF7F2] pt-16 sm:pt-20 pb-12 border-t border-[#2A221C] select-none">
+    <footer className="bg-[#1A1512] dark:bg-[#0E090D] text-[#FAF7F2] dark:text-[#F7F3EC] pt-16 sm:pt-20 pb-12 border-t border-[#2A221C] dark:border-[#261A23] select-none transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Manifesto & Newsletter */}
-        <div className="pb-16 border-b border-[#2A221C] grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        <div className="pb-16 border-b border-[#2A221C] dark:border-[#261A23] grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           <div className="lg:col-span-6">
             <div className="flex items-center gap-3.5 mb-4">
               <img
@@ -48,7 +48,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView }) => {
                 className="h-11 sm:h-13 w-auto object-contain filter drop-shadow-md brightness-105"
               />
               <div>
-                <span className="font-serif text-2xl sm:text-3xl text-[#FAF7F2] font-semibold tracking-tight lowercase block leading-none">
+                <span className="font-serif text-2xl sm:text-3xl text-[#FAF7F2] dark:text-[#F7F3EC] font-semibold tracking-tight lowercase block leading-none">
                   toomakt
                 </span>
                 <span className="text-[10px] font-mono tracking-[0.2em] text-[#FAF7F2]/60 uppercase block mt-1">
@@ -64,7 +64,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView }) => {
           </div>
 
           <div className="lg:col-span-6 flex flex-col lg:items-end">
-            <span className="text-xs font-semibold text-[#FAF7F2] uppercase tracking-wider mb-2 block">
+            <span className="text-xs font-semibold text-[#FAF7F2] dark:text-[#F7F3EC] uppercase tracking-wider mb-2 block">
               {isRtl ? 'النشرة الحرفية' : 'THE ATELIER JOURNAL'}
             </span>
             <p className="text-xs text-[#FAF7F2]/60 mb-4 font-light lg:text-right rtl:lg:text-left">
@@ -86,11 +86,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView }) => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={isRtl ? 'بريدك الإلكتروني...' : 'your.email@example.com'}
                   required
-                  className="flex-1 bg-[#261E1A] text-[#FAF7F2] placeholder-[#FAF7F2]/40 text-xs px-4 py-2.5 rounded-full border border-[#3A2D27] focus:outline-none focus:border-[#FAF7F2]/60 font-light"
+                  className="flex-1 bg-[#261E1A] dark:bg-[#1A1318] text-[#FAF7F2] dark:text-[#F7F3EC] placeholder-[#FAF7F2]/40 text-xs px-4 py-2.5 rounded-full border border-[#3A2D27] dark:border-[#33242E] focus:outline-none focus:border-[#E8BD6D] font-light"
                 />
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-[#FAF7F2] text-[#1A1512] hover:bg-[#FFD147] rounded-full text-xs font-medium transition-colors cursor-pointer shrink-0"
+                  className="px-5 py-2.5 bg-[#FAF7F2] text-[#1A1512] hover:bg-[#E8BD6D] hover:text-[#120D11] rounded-full text-xs font-medium transition-colors cursor-pointer shrink-0"
                 >
                   {isRtl ? 'اشتراك' : 'Subscribe'}
                 </button>

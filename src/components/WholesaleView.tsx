@@ -12,6 +12,7 @@ import {
   Building2,
   Gift,
   ArrowLeft,
+  ArrowRight,
   Sparkles,
   Check
 } from 'lucide-react';
@@ -42,6 +43,7 @@ interface WholesaleViewProps {
 
 export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) => {
   const { isRtl } = useLanguage();
+  const ArrowIcon = isRtl ? ArrowLeft : ArrowRight;
 
   // Form State
   const [fullName, setFullName] = useState('');
@@ -98,7 +100,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
   };
 
   return (
-    <div className="bg-[#FAF7F2] text-[#1A1A1A] min-h-screen py-10 sm:py-14 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="bg-[#FAF7F2] dark:bg-[#120D11] text-[#1A1A1A] dark:text-[#F7F3EC] min-h-screen py-10 sm:py-14 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
       <div className="max-w-5xl mx-auto">
         
         {/* Navigation Breadcrumb */}
@@ -111,7 +113,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
             <span>{isRtl ? 'العودة للرئيسية' : 'RETURN TO ATELIER'}</span>
           </button>
           
-          <span className="text-xs text-[#736B63] font-light">
+          <span className="text-xs text-[#736B63] dark:text-[#9C8E83] font-light">
             {isRtl ? 'خدمة العملاء والطلبات الخاصة' : 'Concierge & Inquiries'}
           </span>
         </div>
@@ -123,13 +125,13 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
             alt="TooMakt"
             className="h-12 w-auto object-contain mb-3 filter drop-shadow-xs"
           />
-          <span className="text-[11px] font-semibold text-[#736B63] uppercase tracking-widest block mb-2">
+          <span className="text-[11px] font-semibold text-[#736B63] dark:text-[#9C8E83] uppercase tracking-widest block mb-2">
             {isRtl ? 'تواصل معنا' : 'CONTACT & CONCIERGE'}
           </span>
-          <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal text-[#1A1A1A] tracking-tight mb-4">
+          <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] tracking-tight mb-4">
             {isRtl ? 'يسعدنا دائماً التحدث معك.' : 'We would love to hear from you.'}
           </h1>
-          <p className="text-sm sm:text-base md:text-lg text-[#736B63] font-light max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg text-[#736B63] dark:text-[#C8BEB5] font-light max-w-2xl mx-auto leading-relaxed">
             {isRtl
               ? 'تواصل مباشرة مع معملنا في القاهرة للاستفسار عن هدايا الشركات، وحفلات الزفاف، والطلبات الخاصة المخصصة.'
               : 'Direct connection to our Cairo kitchen for custom batch orders, wedding favors, corporate gifting, or general tasting inquiries.'}
@@ -143,82 +145,82 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
             href="https://wa.me/201024542139?text=Hello%20toomakt%20Atelier!%20I%20have%20an%20inquiry."
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white rounded-2xl p-6 border border-[#E8E2D7] shadow-soft hover:border-[#1A1A1A] transition-all flex flex-col justify-between group"
+            className="bg-white dark:bg-[#1B1419] rounded-2xl p-6 border border-[#E8E2D7] dark:border-[#33242E] shadow-soft hover:border-[#1A1A1A] dark:hover:border-[#E8BD6D] transition-all flex flex-col justify-between group"
           >
             <div>
-              <div className="w-10 h-10 rounded-full bg-[#3C1322]/10 text-[#3C1322] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <MessageCircle className="w-5 h-5 text-[#3C1322]" />
+              <div className="w-10 h-10 rounded-full bg-[#3C1322]/10 dark:bg-[#E8BD6D]/15 text-[#3C1322] dark:text-[#E8BD6D] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <MessageCircle className="w-5 h-5 text-[#3C1322] dark:text-[#E8BD6D]" />
               </div>
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[#736B63] block mb-1">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[#736B63] dark:text-[#9C8E83] block mb-1">
                 {isRtl ? 'محادثة فورية' : 'INSTANT CHAT'}
               </span>
-              <h3 className="font-serif text-lg font-normal text-[#1A1A1A] mb-1">
+              <h3 className="font-serif text-lg font-normal text-[#1A1A1A] dark:text-[#F7F3EC] mb-1">
                 WhatsApp Concierge
               </h3>
-              <p className="text-xs text-[#736B63] font-light leading-relaxed">
+              <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed">
                 {isRtl ? 'تواصل فوري مع فريق التحضير والطلبات اليومية.' : 'Direct response from our atelier concierge team.'}
               </p>
             </div>
-            <div className="pt-4 mt-4 border-t border-[#E8E2D7] flex items-center justify-between text-xs text-[#3C1322] font-medium">
+            <div className="pt-4 mt-4 border-t border-[#E8E2D7] dark:border-[#33242E] flex items-center justify-between text-xs text-[#3C1322] dark:text-[#E8BD6D] font-medium group">
               <span>+20 10 2454 2139</span>
-              <span>→</span>
+              <ArrowIcon className="w-3.5 h-3.5 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
             </div>
           </a>
 
           {/* Email Inquiries */}
-          <div className="bg-white rounded-2xl p-6 border border-[#E8E2D7] shadow-soft flex flex-col justify-between">
+          <div className="bg-white dark:bg-[#1B1419] rounded-2xl p-6 border border-[#E8E2D7] dark:border-[#33242E] shadow-soft flex flex-col justify-between">
             <div>
-              <div className="w-10 h-10 rounded-full bg-[#1A1A1A]/5 text-[#1A1A1A] flex items-center justify-center mb-4">
-                <Mail className="w-5 h-5 text-[#1A1A1A]" />
+              <div className="w-10 h-10 rounded-full bg-[#1A1A1A]/5 dark:bg-[#241A21] text-[#1A1A1A] dark:text-[#F7F3EC] flex items-center justify-center mb-4">
+                <Mail className="w-5 h-5 text-[#1A1A1A] dark:text-[#F7F3EC]" />
               </div>
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[#736B63] block mb-1">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[#736B63] dark:text-[#9C8E83] block mb-1">
                 {isRtl ? 'البريد الإلكتروني' : 'EMAIL'}
               </span>
-              <h3 className="font-serif text-lg font-normal text-[#1A1A1A] mb-1">
+              <h3 className="font-serif text-lg font-normal text-[#1A1A1A] dark:text-[#F7F3EC] mb-1">
                 Atelier Inquiries
               </h3>
-              <p className="text-xs text-[#736B63] font-light leading-relaxed">
+              <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed">
                 {isRtl ? 'لطلبات التعاون وعروض الأسعار الرسمية.' : 'For corporate proposals, press inquiries, and invoices.'}
               </p>
             </div>
-            <div className="pt-4 mt-4 border-t border-[#E8E2D7] text-xs text-[#1A1A1A] font-medium">
+            <div className="pt-4 mt-4 border-t border-[#E8E2D7] dark:border-[#33242E] text-xs text-[#1A1A1A] dark:text-[#F7F3EC] font-medium">
               <span>atelier@toomakt.com</span>
             </div>
           </div>
 
           {/* Location & Kitchen */}
-          <div className="bg-white rounded-2xl p-6 border border-[#E8E2D7] shadow-soft flex flex-col justify-between">
+          <div className="bg-white dark:bg-[#1B1419] rounded-2xl p-6 border border-[#E8E2D7] dark:border-[#33242E] shadow-soft flex flex-col justify-between">
             <div>
-              <div className="w-10 h-10 rounded-full bg-[#1A1A1A]/5 text-[#1A1A1A] flex items-center justify-center mb-4">
-                <MapPin className="w-5 h-5 text-[#1A1A1A]" />
+              <div className="w-10 h-10 rounded-full bg-[#1A1A1A]/5 dark:bg-[#241A21] text-[#1A1A1A] dark:text-[#F7F3EC] flex items-center justify-center mb-4">
+                <MapPin className="w-5 h-5 text-[#1A1A1A] dark:text-[#F7F3EC]" />
               </div>
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[#736B63] block mb-1">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[#736B63] dark:text-[#9C8E83] block mb-1">
                 {isRtl ? 'المقر' : 'LOCATION'}
               </span>
-              <h3 className="font-serif text-lg font-normal text-[#1A1A1A] mb-1">
+              <h3 className="font-serif text-lg font-normal text-[#1A1A1A] dark:text-[#F7F3EC] mb-1">
                 Cairo Kitchen & Studio
               </h3>
-              <p className="text-xs text-[#736B63] font-light leading-relaxed">
+              <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed">
                 {isRtl ? 'القاهرة، مصر · الشحن متاح لجميع المحافظات' : 'Cairo, Egypt · Shipping to all 27 governorates.'}
               </p>
             </div>
-            <div className="pt-4 mt-4 border-t border-[#E8E2D7] text-xs text-[#736B63] font-light flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-[#3C1322]" />
+            <div className="pt-4 mt-4 border-t border-[#E8E2D7] dark:border-[#33242E] text-xs text-[#736B63] dark:text-[#9C8E83] font-light flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D]" />
               <span>Sat–Thu: 10:00 AM – 7:00 PM</span>
             </div>
           </div>
         </div>
 
         {/* Inquiry Form Card */}
-        <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-10 border border-[#E8E2D7] shadow-soft">
+        <div className="bg-white dark:bg-[#1B1419] rounded-2xl sm:rounded-3xl p-6 sm:p-10 border border-[#E8E2D7] dark:border-[#33242E] shadow-soft">
           <div className="max-w-2xl mb-8">
             <span className="text-[11px] font-semibold text-[#736B63] uppercase tracking-widest block mb-2">
               {isRtl ? 'نموذج الطلبات الخاصة' : 'INQUIRY FORM'}
             </span>
-            <h2 className="font-serif text-2xl sm:text-3xl text-[#1A1A1A] font-normal">
+            <h2 className="font-serif text-2xl sm:text-3xl text-[#1A1A1A] dark:text-[#F7F3EC] font-normal">
               {isRtl ? 'أخبرنا عن مناسبتك أو استفسارك' : 'Tell us about your requirements'}
             </h2>
-            <p className="text-xs sm:text-sm text-[#736B63] font-light mt-1">
+            <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light mt-1">
               {isRtl
                 ? 'سنرد عليك بعرض مفصل وعينات تذوق مقترحة خلال 24 ساعة.'
                 : 'Our concierge will respond within 24 hours with custom pricing, packaging mockups, or sample arrangements.'}
@@ -229,15 +231,15 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="p-8 bg-[#FAF7F2] rounded-2xl border border-[#E8E2D7] text-center max-w-md mx-auto my-8"
+              className="p-8 bg-[#FAF7F2] dark:bg-[#1B1419] rounded-2xl border border-[#E8E2D7] dark:border-[#33242E] text-center max-w-md mx-auto my-8"
             >
-              <div className="w-12 h-12 rounded-full bg-[#3C1322] text-[#FAF7F2] flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 rounded-full bg-[#3C1322] dark:bg-[#E8BD6D] text-[#FAF7F2] dark:text-[#120D11] flex items-center justify-center mx-auto mb-4">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h3 className="font-serif text-xl text-[#1A1A1A] mb-2 font-normal">
+              <h3 className="font-serif text-xl text-[#1A1A1A] dark:text-[#F7F3EC] mb-2 font-normal">
                 {isRtl ? 'شكراً لتواصلك معنا' : 'Thank You for Reaching Out'}
               </h3>
-              <p className="text-xs text-[#736B63] font-light leading-relaxed mb-6">
+              <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed mb-6">
                 {isRtl
                   ? 'تم استلام استفسارك بنجاح. سيتواصل معك مستشار الحلويات لدينا في أقرب وقت.'
                   : 'Your message has been safely received by our confectionery atelier team. We will review your request and get back to you shortly.'}
@@ -252,7 +254,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               {errorMessage && (
-                <div className="p-3.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-center gap-2">
+                <div className="p-3.5 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 rounded-xl text-xs text-red-700 dark:text-red-300 flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
                   <span>{errorMessage}</span>
                 </div>
@@ -260,7 +262,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
 
               {/* Inquiry Type Tabs */}
               <div>
-                <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-[#736B63] dark:text-[#9C8E83] uppercase tracking-wider mb-2">
                   {isRtl ? 'نوع الطلب أو الاستفسار' : 'Inquiry Purpose'}
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -278,8 +280,8 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
                         onClick={() => setInquiryType(type)}
                         className={`py-2.5 px-3 rounded-xl text-xs font-medium border transition-all text-center cursor-pointer ${
                           isSelected
-                            ? 'bg-[#3C1322] text-[#FAF7F2] border-[#3C1322] shadow-soft'
-                            : 'bg-[#FAF7F2] text-[#736B63] border-[#E8E2D7] hover:border-[#1A1A1A]'
+                            ? 'bg-[#3C1322] dark:bg-[#E8BD6D] text-[#FAF7F2] dark:text-[#120D11] border-[#3C1322] dark:border-[#E8BD6D] shadow-soft'
+                            : 'bg-[#FAF7F2] dark:bg-[#241A21] text-[#736B63] dark:text-[#C8BEB5] border-[#E8E2D7] dark:border-[#33242E] hover:border-[#1A1A1A] dark:hover:border-[#E8BD6D]'
                         }`}
                       >
                         {type}
@@ -292,7 +294,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
               {/* Contact Details Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-medium text-[#736B63] dark:text-[#9C8E83] uppercase tracking-wider mb-1.5">
                     {isRtl ? 'الاسم الكامل *' : 'Full Name *'}
                   </label>
                   <input
@@ -301,12 +303,12 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
                     placeholder="e.g. Karim El-Sayed"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                    className="w-full bg-[#FAF7F2] dark:bg-[#241A21] border border-[#E8E2D7] dark:border-[#33242E] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#F7F3EC] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#E8BD6D]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-medium text-[#736B63] dark:text-[#9C8E83] uppercase tracking-wider mb-1.5">
                     {isRtl ? 'اسم الشركة أو المناسبة' : 'Company or Event Name'}
                   </label>
                   <input
@@ -314,12 +316,12 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
                     placeholder="e.g. Mansour Group / Wedding"
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                    className="w-full bg-[#FAF7F2] dark:bg-[#241A21] border border-[#E8E2D7] dark:border-[#33242E] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#F7F3EC] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#E8BD6D]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-medium text-[#736B63] dark:text-[#9C8E83] uppercase tracking-wider mb-1.5">
                     {isRtl ? 'البريد الإلكتروني *' : 'Email Address *'}
                   </label>
                   <input
@@ -328,12 +330,12 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
                     placeholder="karim@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                    className="w-full bg-[#FAF7F2] dark:bg-[#241A21] border border-[#E8E2D7] dark:border-[#33242E] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#F7F3EC] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#E8BD6D]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-medium text-[#736B63] dark:text-[#9C8E83] uppercase tracking-wider mb-1.5">
                     {isRtl ? 'رقم الهاتف / واتساب *' : 'Phone / WhatsApp (Egypt) *'}
                   </label>
                   <input
@@ -342,14 +344,14 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
                     placeholder="010XXXXXXXX"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                    className="w-full bg-[#FAF7F2] dark:bg-[#241A21] border border-[#E8E2D7] dark:border-[#33242E] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#F7F3EC] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#E8BD6D]"
                   />
                 </div>
               </div>
 
               {/* Flavors of Interest */}
               <div>
-                <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-[#736B63] dark:text-[#9C8E83] uppercase tracking-wider mb-2">
                   {isRtl ? 'النكهات أو المنتجات المطلوبة' : 'Flavors & Items of Interest'}
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
@@ -361,20 +363,20 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
                         onClick={() => toggleFlavor(flv.id)}
                         className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
                           isChecked
-                            ? 'bg-[#FAF7F2] border-[#3C1322] shadow-soft'
-                            : 'bg-white border-[#E8E2D7] hover:border-[#1A1A1A]'
+                            ? 'bg-[#FAF7F2] dark:bg-[#241A21] border-[#3C1322] dark:border-[#E8BD6D] shadow-soft'
+                            : 'bg-white dark:bg-[#1B1419] border-[#E8E2D7] dark:border-[#33242E] hover:border-[#1A1A1A] dark:hover:border-[#E8BD6D]'
                         }`}
                       >
                         <div>
-                          <span className="text-xs font-medium text-[#1A1A1A] block">
+                          <span className="text-xs font-medium text-[#1A1A1A] dark:text-[#F7F3EC] block">
                             {flv.name}
                           </span>
-                          <span className="text-[10px] text-[#736B63] font-light">
+                          <span className="text-[10px] text-[#736B63] dark:text-[#C8BEB5] font-light">
                             {flv.desc}
                           </span>
                         </div>
                         <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                          isChecked ? 'bg-[#3C1322] border-[#3C1322] text-[#FAF7F2]' : 'border-[#E8E2D7]'
+                          isChecked ? 'bg-[#3C1322] dark:bg-[#E8BD6D] border-[#3C1322] dark:border-[#E8BD6D] text-[#FAF7F2] dark:text-[#120D11]' : 'border-[#E8E2D7] dark:border-[#33242E]'
                         }`}>
                           {isChecked && <Check className="w-2.5 h-2.5" />}
                         </div>
@@ -387,13 +389,13 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
               {/* Volume and Location Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-medium text-[#736B63] dark:text-[#9C8E83] uppercase tracking-wider mb-1.5">
                     {isRtl ? 'الكمية التقديرية' : 'Estimated Quantity'}
                   </label>
                   <select
                     value={estimatedQuantity}
                     onChange={(e) => setEstimatedQuantity(e.target.value)}
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                    className="w-full bg-[#FAF7F2] dark:bg-[#241A21] border border-[#E8E2D7] dark:border-[#33242E] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#F7F3EC] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#E8BD6D]"
                   >
                     <option value="25 - 50 packs">25 – 50 packs / boxes</option>
                     <option value="50 - 100 packs">50 – 100 packs / boxes</option>
@@ -403,13 +405,13 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-medium text-[#736B63] dark:text-[#9C8E83] uppercase tracking-wider mb-1.5">
                     {isRtl ? 'المحافظة' : 'Delivery Governorate'}
                   </label>
                   <select
                     value={governorate}
                     onChange={(e) => setGovernorate(e.target.value)}
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                    className="w-full bg-[#FAF7F2] dark:bg-[#241A21] border border-[#E8E2D7] dark:border-[#33242E] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#F7F3EC] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#E8BD6D]"
                   >
                     {EGYPT_GOVERNORATES.map((gov) => (
                       <option key={gov} value={gov}>{gov}</option>
@@ -420,7 +422,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
 
               {/* Notes Textarea */}
               <div>
-                <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-medium text-[#736B63] dark:text-[#9C8E83] uppercase tracking-wider mb-1.5">
                   {isRtl ? 'ملاحظات أو مواصفات خاصة' : 'Custom Details, Delivery Date, or Message'}
                 </label>
                 <textarea
@@ -428,7 +430,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={isRtl ? 'تاريخ المناسبة، نوع التغليف، تفاصيل بطاقات الإهداء...' : 'Target delivery date, branding/sleeve requests, gift notes, etc.'}
-                  className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                  className="w-full bg-[#FAF7F2] dark:bg-[#241A21] border border-[#E8E2D7] dark:border-[#33242E] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] dark:text-[#F7F3EC] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#E8BD6D]"
                 />
               </div>
 
@@ -450,6 +452,7 @@ export const WholesaleView: React.FC<WholesaleViewProps> = ({ onNavigateView }) 
                   </>
                 )}
               </button>
+
 
               <div className="text-[11px] text-center text-[#736B63] space-y-1 font-light">
                 <p>All inquiries are handled directly by our Cairo kitchen concierge.</p>

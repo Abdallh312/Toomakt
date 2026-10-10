@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   AlertCircle,
   ArrowLeft,
+  ArrowRight,
   ShoppingBag,
   CreditCard,
   Lock,
@@ -443,7 +444,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-[#FAF7F2] dark:bg-[#120D11] text-[#1A1A1A] dark:text-[#F7F3EC] py-10 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
         {/* Navigation Breadcrumb */}
         <div className="mb-8 flex items-center justify-between">
@@ -454,8 +455,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             <ArrowLeft className="w-4 h-4" />
             <span>{isRtl ? 'العودة للمتجر' : 'RETURN TO COLLECTION'}</span>
           </button>
-          <div className="text-xs text-[#736B63] flex items-center gap-1.5 font-light">
-            <Truck className="w-3.5 h-3.5 text-[#3C1322]" />
+          <div className="text-xs text-[#736B63] dark:text-[#9C8E83] flex items-center gap-1.5 font-light">
+            <Truck className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D]" />
             <span>{isRtl ? 'شحن لجميع محافظات جمهورية مصر العربية' : 'Delivering across Cairo & all Egyptian governorates'}</span>
           </div>
         </div>
@@ -466,13 +467,13 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             alt="TooMakt"
             className="h-12 sm:h-14 w-auto object-contain mb-3 filter drop-shadow-xs"
           />
-          <span className="text-[11px] font-semibold text-[#736B63] uppercase tracking-widest block mb-2">
+          <span className="text-[11px] font-semibold text-[#736B63] dark:text-[#9C8E83] uppercase tracking-widest block mb-2">
             TOOMAKT ATELIER · CAIRO
           </span>
-          <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#1A1A1A] tracking-tight">
+          <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] tracking-tight">
             {isRtl ? 'إتمام الطلب والشحن' : 'Checkout & Delivery'}
           </h1>
-          <p className="mt-2 text-xs sm:text-sm text-[#736B63] font-light max-w-md mx-auto">
+          <p className="mt-2 text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light max-w-md mx-auto">
             {isRtl
               ? 'يتم تجهيز الطلب طازجاً في معملنا ويصلك في صناديق مبردة لحماية النكهة والملمس.'
               : 'Crafted slowly and dispatched directly from our Cairo kitchen in protective climate boxes.'}
@@ -849,7 +850,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                           {isRtl ? (item.product.name_ar || item.product.name) : (item.product.name_en || item.product.name)}
                         </h4>
                         {item.selected_flavor && (
-                          <span className="text-[11px] font-medium text-[#3C1322] bg-[#FFD147]/25 border border-[#FFD147]/40 px-2 py-0.5 rounded-full inline-block mt-0.5">
+                          <span className="text-[11px] font-medium text-[#3C1322] dark:text-[#E8BD6D] bg-[#FFD147]/25 dark:bg-[#E8BD6D]/20 border border-[#FFD147]/40 dark:border-[#E8BD6D]/30 px-2 py-0.5 rounded-full inline-block mt-0.5">
                             {isRtl ? 'النكهة: ' : 'Flavor: '}{item.selected_flavor}
                           </span>
                         )}
@@ -954,29 +955,29 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
         {/* ======================================================== */}
         {paymobIframeUrl && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md animate-fade-in">
-            <div className="relative w-full max-w-3xl bg-[#FAF7F2] rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.6)] border border-[#FFD147]/40 ring-1 ring-white/10 overflow-hidden flex flex-col h-[92vh] max-h-[850px]">
+            <div className="relative w-full max-w-3xl bg-[#FAF7F2] dark:bg-[#1B1419] rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.6)] border border-[#E8BD6D]/40 ring-1 ring-white/10 overflow-hidden flex flex-col h-[92vh] max-h-[850px]">
               
               {/* IF PAYMENT APPROVED: RENDER LUXURIOUS IN-FRAME SUCCESS & TRACKING CELEBRATION */}
               {paymentSuccessOrder ? (
-                <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10 text-center bg-white space-y-6 animate-fade-in overflow-y-auto">
+                <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10 text-center bg-white dark:bg-[#1B1419] space-y-6 animate-fade-in overflow-y-auto">
                   {/* Glowing Animated Success Checkmark */}
                   <div className="relative inline-flex items-center justify-center">
                     <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-xl shadow-emerald-500/25">
                       <CheckCircle2 className="w-12 h-12 sm:w-14 sm:h-14" />
                     </div>
-                    <div className="absolute -inset-4 bg-[#FFD147]/20 rounded-full blur-2xl -z-10 animate-pulse" />
+                    <div className="absolute -inset-4 bg-[#E8BD6D]/20 rounded-full blur-2xl -z-10 animate-pulse" />
                   </div>
 
                   {/* Header Title */}
                   <div className="space-y-2 max-w-md">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold uppercase tracking-widest">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-widest">
                       <ShieldCheck className="w-3.5 h-3.5" />
                       <span>{isRtl ? 'تم قبول الدفع بنجاح عبر Paymob' : 'Payment Approved & Verified'}</span>
                     </span>
-                    <h2 className="font-serif text-2xl sm:text-4xl font-normal text-[#1A1A1A]">
+                    <h2 className="font-serif text-2xl sm:text-4xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC]">
                       {isRtl ? 'تم تأكيد طلبك بنجاح!' : 'Payment Complete & Order Placed!'}
                     </h2>
-                    <p className="text-xs sm:text-sm text-[#736B63] font-light">
+                    <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light">
                       {isRtl
                         ? `شكراً لك! تم خصم ${orderTotal.toFixed(2)} ج.م بنجاح بالفيزا، ويجري الآن تجهيز دفعة التوفي الطازجة في المعمل.`
                         : `Thank you! Your payment of ${orderTotal.toFixed(2)} EGP was authorized securely. Your batch is now moving into fresh copper kettle preparation.`}
@@ -984,36 +985,36 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   </div>
 
                   {/* Order Metrics Card */}
-                  <div className="w-full max-w-lg p-4 bg-[#FAF7F2] rounded-2xl border border-[#E8E2D7] grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-                    <div className="text-center p-2 rounded-xl bg-white border border-[#E8E2D7]">
-                      <span className="text-[10px] uppercase font-bold text-[#736B63] block">
+                  <div className="w-full max-w-lg p-4 bg-[#FAF7F2] dark:bg-[#241A21] rounded-2xl border border-[#E8E2D7] dark:border-[#33242E] grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                    <div className="text-center p-2 rounded-xl bg-white dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E]">
+                      <span className="text-[10px] uppercase font-bold text-[#736B63] dark:text-[#9C8E83] block">
                         {isRtl ? 'رقم الطلب' : 'Order No.'}
                       </span>
                       <div className="flex items-center justify-center gap-1 mt-0.5">
-                        <span className="font-mono font-bold text-[#1A1A1A]">{paymentSuccessOrder.order_number}</span>
+                        <span className="font-mono font-bold text-[#1A1A1A] dark:text-[#F7F3EC]">{paymentSuccessOrder.order_number}</span>
                         <button
                           onClick={() => handleCopy(paymentSuccessOrder.order_number, 'modal_ord')}
-                          className="text-[#736B63] hover:text-[#1A1A1A]"
+                          className="text-[#736B63] dark:text-[#9C8E83] hover:text-[#1A1A1A] dark:hover:text-[#E8BD6D]"
                         >
-                          {copiedKey === 'modal_ord' ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                          {copiedKey === 'modal_ord' ? <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3 h-3" />}
                         </button>
                       </div>
                     </div>
 
-                    <div className="text-center p-2 rounded-xl bg-white border border-[#E8E2D7]">
-                      <span className="text-[10px] uppercase font-bold text-[#736B63] block">
+                    <div className="text-center p-2 rounded-xl bg-white dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E]">
+                      <span className="text-[10px] uppercase font-bold text-[#736B63] dark:text-[#9C8E83] block">
                         {isRtl ? 'طريقة الدفع' : 'Payment'}
                       </span>
-                      <span className="font-semibold text-emerald-700 mt-0.5 block">
+                      <span className="font-semibold text-emerald-700 dark:text-emerald-400 mt-0.5 block">
                         Visa (Paid)
                       </span>
                     </div>
 
-                    <div className="text-center p-2 rounded-xl bg-white border border-[#E8E2D7] col-span-2 sm:col-span-1">
-                      <span className="text-[10px] uppercase font-bold text-[#736B63] block">
+                    <div className="text-center p-2 rounded-xl bg-white dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E] col-span-2 sm:col-span-1">
+                      <span className="text-[10px] uppercase font-bold text-[#736B63] dark:text-[#9C8E83] block">
                         {isRtl ? 'المجموع' : 'Total'}
                       </span>
-                      <span className="font-mono font-bold text-[#3C1322] mt-0.5 block">
+                      <span className="font-mono font-bold text-[#3C1322] dark:text-[#E8BD6D] mt-0.5 block">
                         {orderTotal.toFixed(2)} EGP
                       </span>
                     </div>
@@ -1034,7 +1035,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       }}
                       className="btn-primary w-full sm:flex-1 py-3 text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-soft hover:shadow-lg"
                     >
-                      <Truck className="w-4 h-4 text-[#FFD147]" />
+                      <Truck className="w-4 h-4 text-[#E8BD6D] dark:text-[#120D11]" />
                       <span>{isRtl ? 'تتبع مسار طلبي الآن' : 'Track My Order Now'}</span>
                     </button>
 
@@ -1059,7 +1060,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       setPaymobIframeUrl(null);
                       onBackToShop();
                     }}
-                    className="text-xs text-[#736B63] hover:text-[#1A1A1A] underline font-light cursor-pointer"
+                    className="text-xs text-[#736B63] dark:text-[#9C8E83] hover:text-[#1A1A1A] dark:hover:text-[#E8BD6D] underline font-light cursor-pointer"
                   >
                     {isRtl ? 'العودة لتصفح المنتجات' : 'Return to Shop Collection'}
                   </button>
@@ -1070,7 +1071,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   {/* Top Atelier Header */}
                   <div className="bg-gradient-to-r from-[#1A1A1A] via-[#2A111C] to-[#1A1A1A] text-white px-5 py-4 flex items-center justify-between border-b border-[#3C1322]">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-[#FFD147]/15 border border-[#FFD147]/30 flex items-center justify-center text-[#FFD147]">
+                      <div className="w-9 h-9 rounded-xl bg-[#E8BD6D]/15 border border-[#E8BD6D]/30 flex items-center justify-center text-[#E8BD6D]">
                         <CreditCard className="w-5 h-5" />
                       </div>
                       <div>
@@ -1125,7 +1126,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       ) : (
                         <>
                           <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-                          <span>{isRtl ? 'أتممت الدفع؟ تتبع الطلب الآن ←' : 'Finished Payment? Track Order →'}</span>
+                          <span>{isRtl ? 'أتممت الدفع؟ تتبع الطلب الآن' : 'Finished Payment? Track Order'}</span>
+                          <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
                         </>
                       )}
                     </button>

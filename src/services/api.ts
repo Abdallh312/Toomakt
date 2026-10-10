@@ -1157,8 +1157,8 @@ export const api = {
           `  • Subtotal: <code>${subtotal.toFixed(2)} EGP</code>\n` +
           `  • Shipping: <code>${shippingFee.toFixed(2)} EGP</code>\n` +
           `  • <b>TOTAL AMOUNT:</b> <b><u>${totalAmount.toFixed(2)} EGP</u></b>\n\n` +
-          `<b>Payment Method:</b> ${isPaid ? '💳 <b>Visa / Card (PAID via Paymob 3D-Secure)</b>' : '💵 <b>Cash on Delivery (COD)</b>'}\n` +
-          `<b>Payment Status:</b> ${isPaid ? '✅ <i>Confirmed & Paid</i>' : `⏳ <i>Due upon delivery: ${totalAmount.toFixed(2)} EGP</i>`}\n\n` +
+          `<b>Payment Method:</b> ${isPaid ? '<b>Visa / Card (PAID via Paymob 3D-Secure)</b>' : '<b>Cash on Delivery (COD)</b>'}\n` +
+          `<b>Payment Status:</b> ${isPaid ? '<i>Confirmed & Paid</i>' : `<i>Due upon delivery: ${totalAmount.toFixed(2)} EGP</i>`}\n\n` +
           `<b>DELIVERY DESTINATION:</b>\n` +
           `• Governorate: ${orderData.governorate || 'Cairo'}\n` +
           `• Address: ${orderData.shipping_address}\n` +

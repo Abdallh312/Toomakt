@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Star, ShieldCheck, ZoomIn, X, Check, MessageSquareHeart } from 'lucide-react';
+import { Star, ShieldCheck, ZoomIn, X, Check, MessageSquareHeart, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
 import { ScrollReveal } from './ScrollReveal';
 
 export const ReviewsSection: React.FC = () => {
   const { isRtl } = useLanguage();
+  const ArrowIcon = isRtl ? ArrowLeft : ArrowRight;
   const [isZoomOpen, setIsZoomOpen] = useState(false);
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,22 +32,22 @@ export const ReviewsSection: React.FC = () => {
   }, []);
 
   return (
-    <section id="reviews" className="py-16 sm:py-20 md:py-28 bg-[#FAF7F2] border-b border-[#E8E2D7]">
+    <section id="reviews" className="py-16 sm:py-20 md:py-28 bg-[#FAF7F2] dark:bg-[#120D11] border-b border-[#E8E2D7] dark:border-[#33242E] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header with Scroll Reveal */}
         <ScrollReveal yOffset={20}>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12 sm:mb-14 text-left rtl:text-right">
             <div>
-              <span className="text-[11px] sm:text-xs font-semibold tracking-widest uppercase text-[#736B63] block mb-3">
+              <span className="text-[11px] sm:text-xs font-semibold tracking-widest uppercase text-[#736B63] dark:text-[#C8BEB5] block mb-3">
                 {isRtl ? 'آراء وتجارب' : 'TESTIMONIALS'}
               </span>
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-[#1A1A1A] tracking-tight leading-tight">
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] tracking-tight leading-tight">
                 {isRtl ? 'محبوبة في جميع أنحاء القاهرة.' : 'Loved across Cairo.'}
               </h2>
             </div>
 
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8E2D7] text-xs text-[#736B63] shadow-soft shrink-0">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E] text-xs text-[#736B63] dark:text-[#C8BEB5] shadow-soft shrink-0">
               <ShieldCheck className="w-4 h-4 text-[#88C057]" />
               <span>{isRtl ? 'تجربة حلويات طبيعية موثقة' : 'Verified Natural Confectionery'}</span>
             </div>
@@ -59,33 +60,33 @@ export const ReviewsSection: React.FC = () => {
             {reviews.slice(0, 3).map((rev, idx) => (
               <ScrollReveal key={rev.id || idx} delay={idx * 0.12} yOffset={25}>
                 <div
-                  className="bg-white rounded-2xl p-6 sm:p-7 border border-[#E8E2D7] hover:border-[#1A1A1A] hover:shadow-soft transition-all flex flex-col justify-between h-full"
+                  className="bg-white dark:bg-[#1B1419] rounded-2xl p-6 sm:p-7 border border-[#E8E2D7] dark:border-[#33242E] hover:border-[#1A1A1A] dark:hover:border-[#E8BD6D] hover:shadow-soft transition-all flex flex-col justify-between h-full"
                 >
                   <div>
                     {/* Stars */}
-                    <div className="flex items-center gap-1 text-[#FFD147] mb-4">
+                    <div className="flex items-center gap-1 text-[#E8BD6D] mb-4">
                       {[...Array(Number(rev.rating || 5))].map((_, i) => (
                         <Star key={i} className="w-3.5 h-3.5 fill-current" />
                       ))}
                     </div>
 
-                    <p className="text-sm sm:text-base text-[#1A1A1A] font-light leading-relaxed mb-6">
+                    <p className="text-sm sm:text-base text-[#1A1A1A] dark:text-[#F7F3EC] font-light leading-relaxed mb-6">
                       "{rev.content || rev.comment}"
                     </p>
                   </div>
 
-                  <div className="pt-4 border-t border-[#E8E2D7] flex items-center justify-between">
+                  <div className="pt-4 border-t border-[#E8E2D7] dark:border-[#33242E] flex items-center justify-between">
                     <div>
-                      <h4 className="font-serif text-sm font-normal text-[#1A1A1A]">
+                      <h4 className="font-serif text-sm font-normal text-[#1A1A1A] dark:text-[#F7F3EC]">
                         {rev.author || rev.customer_name || 'Verified Guest'}
                       </h4>
-                      <span className="text-xs text-[#736B63]">
+                      <span className="text-xs text-[#736B63] dark:text-[#C8BEB5]">
                         {rev.location || 'Cairo, Egypt'}
                       </span>
                     </div>
 
                     {(rev.productTag || rev.product_tag) && (
-                      <span className="text-[11px] text-[#736B63] bg-[#F4EFEA] px-2.5 py-1 rounded-full border border-[#E8E2D7]">
+                      <span className="text-[11px] text-[#736B63] dark:text-[#C8BEB5] bg-[#F4EFEA] dark:bg-[#241A21] px-2.5 py-1 rounded-full border border-[#E8E2D7] dark:border-[#33242E]">
                         {rev.productTag || rev.product_tag}
                       </span>
                     )}
@@ -96,21 +97,22 @@ export const ReviewsSection: React.FC = () => {
           </div>
         ) : !loading && (
           <ScrollReveal yOffset={20}>
-            <div className="bg-white rounded-2xl p-8 border border-[#E8E2D7] shadow-soft mb-12 text-center max-w-3xl mx-auto">
-              <MessageSquareHeart className="w-8 h-8 text-[#3C1322] mx-auto mb-3" />
-              <h3 className="font-serif text-xl sm:text-2xl text-[#1A1A1A] mb-2 font-normal">
+            <div className="bg-white dark:bg-[#1B1419] rounded-2xl p-8 border border-[#E8E2D7] dark:border-[#33242E] shadow-soft mb-12 text-center max-w-3xl mx-auto">
+              <MessageSquareHeart className="w-8 h-8 text-[#3C1322] dark:text-[#E8BD6D] mx-auto mb-3" />
+              <h3 className="font-serif text-xl sm:text-2xl text-[#1A1A1A] dark:text-[#F7F3EC] mb-2 font-normal">
                 {isRtl ? 'وعد المعمل الحرفي بالجودة والنقاء' : 'The Atelier Craft & Quality Pledge'}
               </h3>
-              <p className="text-xs sm:text-sm text-[#736B63] font-light leading-relaxed max-w-xl mx-auto mb-6">
+              <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed max-w-xl mx-auto mb-6">
                 {isRtl
                   ? 'كل دفعة توفي نطهوها من بيوريه فواكه حقيقي 100% وزبدة أوروبية نقية دون مواد حافظة. شاركنا تجربتك بعد استلام طلبك لتظهر في هذه المساحة.'
                   : 'Every toffee batch is gently boiled using 100% natural fruit purées and pure butter without preservatives. Unbox your parcel and share your tasting experience with our kitchen.'}
               </p>
               <button
                 onClick={() => window.open('https://wa.me/201024542139?text=Hello%20toomakt%20Atelier!%20I%20would%20like%20to%20share%20my%20tasting%20review.', '_blank')}
-                className="btn-secondary text-xs"
+                className="btn-secondary text-xs flex items-center gap-1.5 group cursor-pointer"
               >
-                {isRtl ? 'شارك تجربتك مع المعمل ←' : 'Share Your Tasting Note →'}
+                <span>{isRtl ? 'شارك تجربتك مع المعمل' : 'Share Your Tasting Note'}</span>
+                <ArrowIcon className="w-3.5 h-3.5 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
               </button>
             </div>
           </ScrollReveal>
@@ -118,14 +120,14 @@ export const ReviewsSection: React.FC = () => {
 
         {/* Social Proof Banner with Scroll Reveal */}
         <ScrollReveal delay={0.2} yOffset={25}>
-          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#E8E2D7] shadow-soft overflow-hidden">
+          <div className="bg-white dark:bg-[#1B1419] rounded-2xl p-6 sm:p-8 border border-[#E8E2D7] dark:border-[#33242E] shadow-soft overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               
               <div
                 className="lg:col-span-5 relative group cursor-pointer"
                 onClick={() => setIsZoomOpen(true)}
               >
-                <div className="aspect-[4/3] rounded-xl overflow-hidden border border-[#E8E2D7] bg-[#FAF7F2] relative">
+                <div className="aspect-[4/3] rounded-xl overflow-hidden border border-[#E8E2D7] dark:border-[#33242E] bg-[#FAF7F2] dark:bg-[#120D11] relative">
                   <img
                     src="/images/toomakt/social_proof_reviews.webp"
                     alt="toomakt Customer Feedback"
@@ -136,7 +138,7 @@ export const ReviewsSection: React.FC = () => {
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="bg-[#FAF7F2] text-[#1A1A1A] text-xs font-medium px-3.5 py-1.5 rounded-full shadow-soft flex items-center gap-1.5">
+                    <span className="bg-[#FAF7F2] dark:bg-[#1B1419] text-[#1A1A1A] dark:text-[#F7F3EC] text-xs font-medium px-3.5 py-1.5 rounded-full shadow-soft flex items-center gap-1.5">
                       <ZoomIn className="w-3.5 h-3.5" />
                       {isRtl ? 'تكبير الصورة' : 'Click to enlarge'}
                     </span>
@@ -145,23 +147,23 @@ export const ReviewsSection: React.FC = () => {
               </div>
 
               <div className="lg:col-span-7 text-left rtl:text-right">
-                <span className="text-[10px] font-semibold tracking-widest uppercase text-[#736B63] block mb-2">
+                <span className="text-[10px] font-semibold tracking-widest uppercase text-[#736B63] dark:text-[#C8BEB5] block mb-2">
                   {isRtl ? 'تجربة حقيقية' : 'DIRECT ATELIER CARE'}
                 </span>
-                <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#1A1A1A] mb-3">
+                <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] mb-3">
                   {isRtl
                     ? 'من محبي الحلويات الحرفية في الزمالك والمعادي والتجمع.'
                     : 'From fruit toffee lovers in Zamalek, Maadi, and New Cairo.'}
                 </h3>
-                <p className="text-xs sm:text-sm text-[#736B63] font-light leading-relaxed mb-6">
+                <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed mb-6">
                   {isRtl
                     ? 'كل رسالة شكر وملاحظة من عملائنا تلهمنا لنستمر في صنع دفعاتنا بالصبر والحرص ذاتهما.'
                     : 'Every WhatsApp note, tagged unboxing, and repeat order fuels our kitchen to keep crafting each batch with the same meticulous care.'}
                 </p>
-                <div className="flex flex-wrap gap-4 text-xs text-[#1A1A1A] dark:text-[#FAF5EE] font-medium">
-                  <div className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#FFD147]" /> {isRtl ? 'توصيل خلال 24-48 ساعة' : '24-48h Delivery'}</div>
-                  <div className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#FFD147]" /> {isRtl ? 'تغليف حراري واقٍ' : 'Climate-Packaged'}</div>
-                  <div className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#FFD147]" /> {isRtl ? 'دفع عند الاستلام' : 'Pay on Delivery'}</div>
+                <div className="flex flex-wrap gap-4 text-xs text-[#1A1A1A] dark:text-[#F7F3EC] font-medium">
+                  <div className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D]" /> {isRtl ? 'توصيل خلال 24-48 ساعة' : '24-48h Delivery'}</div>
+                  <div className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D]" /> {isRtl ? 'تغليف حراري واقٍ' : 'Climate-Packaged'}</div>
+                  <div className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D]" /> {isRtl ? 'دفع عند الاستلام' : 'Pay on Delivery'}</div>
                 </div>
               </div>
 

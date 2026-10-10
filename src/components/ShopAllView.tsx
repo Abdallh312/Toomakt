@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Loader2, Sparkles, RefreshCw } from 'lucide-react';
+import { Search, Loader2, Sparkles, RefreshCw, ArrowRight, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../services/api';
 import { Product } from '../types';
@@ -24,6 +24,7 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
   onNavigateHome
 }) => {
   const { isRtl } = useLanguage();
+  const ArrowIcon = isRtl ? ArrowLeft : ArrowRight;
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [loading, setLoading] = useState(true);
@@ -113,27 +114,27 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
   });
 
   return (
-    <div className="bg-[#FAF7F2] dark:bg-[#0C080A] text-[#1A1A1A] dark:text-[#FAF5EE] min-h-screen transition-colors duration-300">
+    <div className="bg-[#FAF7F2] dark:bg-[#120D11] text-[#1A1A1A] dark:text-[#F7F3EC] min-h-screen transition-colors duration-300">
       
       {/* Editorial Header */}
-      <section className="pt-10 pb-12 px-4 sm:px-6 lg:px-8 border-b border-[#E8E2D7] dark:border-[#2A1622] bg-[#FAF7F2] dark:bg-[#0C080A]">
+      <section className="pt-10 pb-12 px-4 sm:px-6 lg:px-8 border-b border-[#E8E2D7] dark:border-[#33242E] bg-[#FAF7F2] dark:bg-[#120D11]">
         <div className="max-w-7xl mx-auto">
           {/* Breadcrumbs */}
-          <div className="flex items-center gap-2 text-xs font-mono text-[#736B63] dark:text-[#A89C90] uppercase tracking-wider mb-4">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#736B63] dark:text-[#C8BEB5] uppercase tracking-wider mb-4">
             <button
               onClick={onNavigateHome}
-              className="hover:text-[#1A1A1A] dark:hover:text-[#FFD147] transition-colors cursor-pointer"
+              className="hover:text-[#1A1A1A] dark:hover:text-[#E8BD6D] transition-colors cursor-pointer"
             >
               TOOMAKT
             </button>
             <span>/</span>
-            <span className="text-[#1A1A1A] dark:text-[#FAF5EE] font-semibold">COLLECTION</span>
+            <span className="text-[#1A1A1A] dark:text-[#F7F3EC] font-semibold">COLLECTION</span>
           </div>
 
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-normal text-[#1A1A1A] dark:text-[#FAF5EE] tracking-tight mb-3">
+          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] tracking-tight mb-3">
             {isRtl ? 'المجموعة الحرفية' : 'The collection'}
           </h1>
-          <p className="text-base sm:text-lg text-[#736B63] dark:text-[#B5A99D] font-light max-w-xl">
+          <p className="text-base sm:text-lg text-[#736B63] dark:text-[#C8BEB5] font-light max-w-xl">
             {isRtl
               ? 'حلوى التوفي بالفواكه الطبيعية، مصنوعة يدوياً في دفعات صغيرة.'
               : 'Fruit-led toffee, made in small batches.'}
@@ -142,7 +143,7 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
       </section>
 
       {/* Filter & Controls Bar */}
-      <section className="sticky top-16 z-30 bg-[#FAF7F2]/95 dark:bg-[#0C080A]/95 backdrop-blur-md border-b border-[#E8E2D7] dark:border-[#2A1622] py-4 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+      <section className="sticky top-16 z-30 bg-[#FAF7F2]/95 dark:bg-[#120D11]/95 backdrop-blur-md border-b border-[#E8E2D7] dark:border-[#33242E] py-4 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           
           {/* Category Pills */}
@@ -165,13 +166,13 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
           <div className="flex items-center gap-3">
             {/* Search Input */}
             <div className="relative flex-1 sm:w-56">
-              <Search className="w-3.5 h-3.5 text-[#736B63] dark:text-[#A89C90] absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-3.5 h-3.5 text-[#736B63] dark:text-[#C8BEB5] absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={isRtl ? 'تصفية...' : 'Filter collection...'}
-                className="w-full text-xs pl-8 pr-3 rtl:pl-3 rtl:pr-8 py-2 rounded-full border border-[#E8E2D7] dark:border-[#38212E] bg-white dark:bg-[#181014] text-[#1A1A1A] dark:text-[#FAF5EE] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#FFD147] transition-colors"
+                className="w-full text-xs pl-8 pr-3 rtl:pl-3 rtl:pr-8 py-2 rounded-full border border-[#E8E2D7] dark:border-[#33242E] bg-white dark:bg-[#1B1419] text-[#1A1A1A] dark:text-[#F7F3EC] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#E8BD6D] transition-colors"
               />
             </div>
 
@@ -181,7 +182,7 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 aria-label={isRtl ? 'ترتيب المنتجات' : 'Sort products'}
-                className="text-xs px-3.5 py-2 rounded-full border border-[#E8E2D7] dark:border-[#38212E] bg-white dark:bg-[#181014] text-[#1A1A1A] dark:text-[#FAF5EE] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#FFD147] transition-colors cursor-pointer"
+                className="text-xs px-3.5 py-2 rounded-full border border-[#E8E2D7] dark:border-[#33242E] bg-white dark:bg-[#1B1419] text-[#1A1A1A] dark:text-[#F7F3EC] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#E8BD6D] transition-colors cursor-pointer"
               >
                 <option value="featured">{isRtl ? 'المميز أولاً' : 'Featured'}</option>
                 <option value="price-asc">{isRtl ? 'السعر: من الأقل للأعلى' : 'Price: Low to High'}</option>
@@ -206,14 +207,14 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
             </div>
           ) : products.length === 0 ? (
             /* Clean Empty State when database has no products yet */
-            <div className="text-center py-20 bg-white dark:bg-[#181014] rounded-3xl border border-[#E8E2D7] dark:border-[#38212E] p-8 sm:p-12 shadow-soft max-w-2xl mx-auto">
-              <div className="w-12 h-12 rounded-full bg-[#3C1322]/10 dark:bg-[#FFD147]/10 text-[#3C1322] dark:text-[#FFD147] flex items-center justify-center mx-auto mb-4">
+            <div className="text-center py-20 bg-white dark:bg-[#1B1419] rounded-3xl border border-[#E8E2D7] dark:border-[#33242E] p-8 sm:p-12 shadow-soft max-w-2xl mx-auto">
+              <div className="w-12 h-12 rounded-full bg-[#3C1322]/10 dark:bg-[#E8BD6D]/15 text-[#3C1322] dark:text-[#E8BD6D] flex items-center justify-center mx-auto mb-4">
                 <Sparkles className="w-6 h-6" />
               </div>
-              <h2 className="font-serif text-2xl sm:text-3xl mb-3 text-[#1A1A1A] dark:text-[#FAF5EE]">
+              <h2 className="font-serif text-2xl sm:text-3xl mb-3 text-[#1A1A1A] dark:text-[#F7F3EC]">
                 {isRtl ? 'المطبخ الحرفي يُعد دفعات طازجة' : 'Our Atelier Kitchen is Preparing Fresh Batches'}
               </h2>
-              <p className="text-sm text-[#736B63] dark:text-[#B5A99D] mb-8 font-light leading-relaxed max-w-lg mx-auto">
+              <p className="text-sm text-[#736B63] dark:text-[#C8BEB5] mb-8 font-light leading-relaxed max-w-lg mx-auto">
                 {isRtl
                   ? 'يتم تحضير دفعات التوفي يدوياً بالطلب. أضف المنتجات الجديدة عبر لوحة التحكم أو تواصل مع خدمة الضيافة للطلبات الخاصة.'
                   : 'All fruit toffees are slowly crafted in small batches. Products added in the management portal will immediately appear here.'}
@@ -228,11 +229,11 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
               </div>
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-20 bg-white dark:bg-[#181014] rounded-2xl border border-[#E8E2D7] dark:border-[#38212E] p-8">
-              <h3 className="font-serif text-xl mb-2 text-[#1A1A1A] dark:text-[#FAF5EE]">
+            <div className="text-center py-20 bg-white dark:bg-[#1B1419] rounded-2xl border border-[#E8E2D7] dark:border-[#33242E] p-8">
+              <h3 className="font-serif text-xl mb-2 text-[#1A1A1A] dark:text-[#F7F3EC]">
                 {isRtl ? 'لا توجد منتجات مطابقة' : 'No items match your filter'}
               </h3>
-              <p className="text-xs text-[#736B63] dark:text-[#B5A99D] mb-6 font-light">
+              <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] mb-6 font-light">
                 {isRtl ? 'حاول تغيير معايير البحث أو تصفح كل النكهات' : 'Try resetting your search query or selecting All.'}
               </p>
               <button
@@ -244,7 +245,7 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
             </div>
           ) : (
             <>
-              <div className="mb-6 flex justify-between items-center text-xs text-[#736B63] dark:text-[#A89C90]">
+              <div className="mb-6 flex justify-between items-center text-xs text-[#736B63] dark:text-[#C8BEB5]">
                 <span>
                   {isRtl
                     ? `عرض ${filteredProducts.length} من إجمالي ${products.length} منتجات`
@@ -278,11 +279,11 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
           )}
 
           {/* Bottom Help Toolbar */}
-          <div className="mt-20 p-8 rounded-2xl border border-[#E8E2D7] dark:border-[#38212E] bg-[#F4EFEA] dark:bg-[#150E12] text-center max-w-2xl mx-auto">
-            <h4 className="font-serif text-xl text-[#1A1A1A] dark:text-[#FAF5EE] mb-2 font-normal">
+          <div className="mt-20 p-8 rounded-2xl border border-[#E8E2D7] dark:border-[#33242E] bg-[#F4EFEA] dark:bg-[#1B1419] text-center max-w-2xl mx-auto">
+            <h4 className="font-serif text-xl text-[#1A1A1A] dark:text-[#F7F3EC] mb-2 font-normal">
               {isRtl ? 'هل تحتاج إلى مساعدة في الاختيار؟' : 'Need help choosing?'}
             </h4>
-            <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#B5A99D] font-light mb-4">
+            <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light mb-4">
               {isRtl
                 ? 'قارن بين النكهات أو استشر خبير الحلويات لتنسيق هدية خاصة.'
                 : 'Compare fruit profiles or speak with our confectionery concierge for curated corporate or wedding gifts.'}
@@ -292,9 +293,10 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
                 onClick={() => {
                   window.open('https://wa.me/201024542139', '_blank');
                 }}
-                className="btn-secondary text-xs font-medium"
+                className="btn-secondary text-xs font-medium flex items-center gap-1.5 group cursor-pointer"
               >
-                {isRtl ? 'تواصل عبر واتساب ←' : 'Concierge on WhatsApp →'}
+                <span>{isRtl ? 'تواصل عبر واتساب' : 'Concierge on WhatsApp'}</span>
+                <ArrowIcon className="w-3.5 h-3.5 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
               </button>
             </div>
           </div>

@@ -17,7 +17,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
   const { isRtl } = useLanguage();
 
   return (
-    <div className="min-h-[75vh] bg-[#FAF7F2] dark:bg-[#0C080A] flex items-center justify-center py-16 px-4 select-none transition-colors duration-300">
+    <div className="min-h-[75vh] bg-[#FAF7F2] dark:bg-[#120D11] flex items-center justify-center py-16 px-4 select-none transition-colors duration-300">
       <div className="max-w-2xl w-full text-center">
         {/* Animated 404 Badge */}
         <motion.div
@@ -26,25 +26,25 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
           transition={{ duration: 0.4 }}
           className="relative inline-block mb-6"
         >
-          <div className="w-32 h-32 rounded-3xl bg-white dark:bg-[#181014] border border-[#E8E2D7] dark:border-[#38212E] shadow-soft-lg flex items-center justify-center mx-auto">
-            <span className="font-serif text-5xl font-normal text-[#3C1322] dark:text-[#FFD147]">
+          <div className="w-32 h-32 rounded-3xl bg-white dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E] shadow-soft-lg flex items-center justify-center mx-auto">
+            <span className="font-serif text-5xl font-normal text-[#3C1322] dark:text-[#E8BD6D]">
               404
             </span>
           </div>
 
           <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-[#3C1322] text-[#FAF7F2] flex items-center justify-center shadow-soft">
-            <Sparkles className="w-5 h-5 text-[#FFD147]" />
+            <Sparkles className="w-5 h-5 text-[#E8BD6D]" />
           </div>
         </motion.div>
 
         {/* Headline */}
-        <span className="inline-block text-[10px] font-mono uppercase tracking-[0.2em] text-[#736B63] dark:text-[#A89C90] mb-2">
+        <span className="inline-block text-[10px] font-mono uppercase tracking-[0.2em] text-[#736B63] dark:text-[#C8BEB5] mb-2">
           {isRtl ? 'خطأ 404 — الصفحة غير موجودة' : 'ERROR 404 — PAGE NOT FOUND'}
         </span>
-        <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#1A1A1A] dark:text-[#FAF5EE] tracking-tight leading-tight mt-1 mb-3">
+        <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] tracking-tight leading-tight mt-1 mb-3">
           {isRtl ? 'الصفحة المطلوبة غير متوفرة' : 'Page Not Found'}
         </h1>
-        <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#B5A99D] font-light max-w-md mx-auto mb-8 leading-relaxed">
+        <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light max-w-md mx-auto mb-8 leading-relaxed">
           {isRtl
             ? 'يبدو أن الرابط الذي تبحث عنه غير متوفر أو تم نقله. يمكنك العودة إلى المتجر الرئيسي أو التواصل معنا.'
             : 'The page or confectionery collection you are looking for has been moved or does not exist. Return to our boutique collection below.'}
