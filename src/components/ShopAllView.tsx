@@ -1,160 +1,153 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Loader2, Sparkles, RefreshCw, ArrowRight, ArrowLeft } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { api } from '../services/api';
+import { Search, X, Loader2, ArrowUpRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Product } from '../types';
+import { api } from '../services/api';
 import { ProductCard } from './ProductCard';
 import { useLanguage } from '../context/LanguageContext';
+import { ScrollReveal } from './ScrollReveal';
 
 interface ShopAllViewProps {
-  onSelectProduct: (p: Product) => void;
-  initialCategory?: string;
-  onNavigateHome?: () => void;
-}
-
-interface CategoryOption {
-  id: string;
-  name: string;
-  arabicName: string;
+  onSelectProduct: (product: Product) => void;
+  onNavigateHome: () => void;
 }
 
 export const ShopAllView: React.FC<ShopAllViewProps> = ({
   onSelectProduct,
-  initialCategory = 'all',
-  onNavigateHome
+  onNavigateHome,
 }) => {
   const { isRtl } = useLanguage();
-  const ArrowIcon = isRtl ? ArrowLeft : ArrowRight;
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc'>('featured');
 
   useEffect(() => {
-    let active = true;
+    const handleGlobalSearch = (e: any) => {
+      if (e.detail) setSearchQuery(e.detail);
+    };
+    window.addEventListener('toomakt:search', handleGlobalSearch);
+    return () => window.removeEventListener('toomakt:search', handleGlobalSearch);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
     const fetchCatalog = async () => {
       setLoading(true);
       try {
-        const [prodList, catList] = await Promise.all([
-          api.getProducts(),
-          api.getCategories()
-        ]);
-        if (!active) return;
-        setProducts(prodList || []);
-
-        const mappedCategories: CategoryOption[] = [
-          { id: 'all', name: 'All', arabicName: 'الكل' },
-          ...(catList || []).map((c: any) => ({
-            id: c.slug || c.id,
-            name: c.name,
-            arabicName: c.name_ar || c.name
-          }))
-        ];
-        setCategories(mappedCategories);
-      } catch (err) {
-        if (!active) return;
-        console.error('Failed to load shop catalog:', err);
-        setProducts([]);
-        setCategories([{ id: 'all', name: 'All', arabicName: 'الكل' }]);
+        const data = await api.getProducts();
+        if (!cancelled && data && data.length > 0) {
+          setProducts(data);
+        }
+      } catch {
+        // fallback
       } finally {
-        if (active) setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
-
     fetchCatalog();
-    return () => {
-      active = false;
-    };
+    return () => { cancelled = true; };
   }, []);
 
-  React.useEffect(() => {
-    const handleSearchEvent = (e: any) => {
-      if (e && e.detail !== undefined) {
-        setSearchQuery(e.detail);
-        setSelectedCategory('all');
-      }
-    };
-    window.addEventListener('toomakt:search', handleSearchEvent);
-    return () => window.removeEventListener('toomakt:search', handleSearchEvent);
-  }, []);
+  const CATEGORIES = [
+    { id: 'all',       name: 'All',                   arabicName: 'كل الحلويات' },
+    { id: 'toffee',    name: 'Toffee',                arabicName: 'توفي زبدة' },
+    { id: 'bonbon',    name: 'Bonbon',                arabicName: 'بونبون فاخر' },
+    { id: 'coffee',    name: 'Coffee & Cappuccino',   arabicName: 'قهوة وكابتشينو' },
+    { id: 'chocolate', name: 'Chocolate & Peanut',    arabicName: 'شوكولاتة وإكلير' },
+    { id: 'fruit',     name: 'Fruit Confections',     arabicName: 'فواكه طبيعية' },
+  ];
 
-  const filteredProducts = products.filter(p => {
-    // Category match
+  const filteredProducts = products.filter((p) => {
     if (selectedCategory !== 'all') {
-      const cat = (p.category || (p as any).category_slug || '').toLowerCase();
-      if (cat !== selectedCategory && !cat.includes(selectedCategory)) {
-        return false;
-      }
-    }
-
-    // Search query match
-    if (searchQuery.trim() !== '') {
-      const q = searchQuery.toLowerCase();
+      const cat = typeof p.category === 'object' && p.category !== null
+        ? ((p.category as any).slug || (p.category as any).name)
+        : (p.category_name || p.category || '');
+      const catLower = String(cat).toLowerCase();
       const match =
-        (p.name_ar || p.name).toLowerCase().includes(q) ||
-        (p.name_en || p.name).toLowerCase().includes(q) ||
-        (p.tagline_ar || p.tagline || '').toLowerCase().includes(q) ||
-        (p.tagline_en || p.tagline || '').toLowerCase().includes(q) ||
-        (p.description_ar || p.description || '').toLowerCase().includes(q) ||
-        (p.description_en || p.description || '').toLowerCase().includes(q) ||
-        (p.flavor_ar || p.flavor || '').toLowerCase().includes(q) ||
-        (p.flavor_en || p.flavor || '').toLowerCase().includes(q) ||
-        (Array.isArray(p.fruitNotes) && p.fruitNotes.some(n => n.toLowerCase().includes(q))) ||
-        (Array.isArray(p.tasting_notes_en) && p.tasting_notes_en.some(n => n.toLowerCase().includes(q)));
+        (selectedCategory === 'toffee' && catLower.includes('toffee')) ||
+        (selectedCategory === 'bonbon' && catLower.includes('bonbon')) ||
+        (selectedCategory === 'coffee' && (catLower.includes('coffee') || catLower.includes('cappuccino') || p.id.includes('cappuccino'))) ||
+        (selectedCategory === 'chocolate' && (catLower.includes('chocolate') || catLower.includes('peanut') || catLower.includes('eclair') || p.id.includes('eclairs'))) ||
+        (selectedCategory === 'fruit' && (catLower.includes('fruit') || p.id.includes('fruit')));
       if (!match) return false;
     }
 
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      const name = (p.name || '').toLowerCase();
+      const nameAr = (p.name_ar || '').toLowerCase();
+      const nameEn = (p.name_en || '').toLowerCase();
+      const desc = (p.description || '').toLowerCase();
+      const descAr = (p.description_ar || '').toLowerCase();
+      const descEn = (p.description_en || '').toLowerCase();
+      return (
+        name.includes(q) ||
+        nameAr.includes(q) ||
+        nameEn.includes(q) ||
+        desc.includes(q) ||
+        descAr.includes(q) ||
+        descEn.includes(q)
+      );
+    }
     return true;
-  }).sort((a, b) => {
+  });
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortBy === 'price-asc') return a.price - b.price;
     if (sortBy === 'price-desc') return b.price - a.price;
-    return 0; // 'featured' keep original order
+    return 0;
   });
 
   return (
-    <div className="bg-[#FAF7F2] dark:bg-[#120D11] text-[#1A1A1A] dark:text-[#F7F3EC] min-h-screen transition-colors duration-300">
-      
-      {/* Editorial Header */}
-      <section className="pt-10 pb-12 px-4 sm:px-6 lg:px-8 border-b border-[#E8E2D7] dark:border-[#33242E] bg-[#FAF7F2] dark:bg-[#120D11]">
-        <div className="max-w-7xl mx-auto">
-          {/* Breadcrumbs */}
-          <div className="flex items-center gap-2 text-xs font-mono text-[#736B63] dark:text-[#C8BEB5] uppercase tracking-wider mb-4">
-            <button
-              onClick={onNavigateHome}
-              className="hover:text-[#1A1A1A] dark:hover:text-[#E8BD6D] transition-colors cursor-pointer"
-            >
-              TOOMAKT
-            </button>
-            <span>/</span>
-            <span className="text-[#1A1A1A] dark:text-[#F7F3EC] font-semibold">COLLECTION</span>
-          </div>
-
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] tracking-tight mb-3">
-            {isRtl ? 'المجموعة الحرفية' : 'The collection'}
-          </h1>
-          <p className="text-base sm:text-lg text-[#736B63] dark:text-[#C8BEB5] font-light max-w-xl">
-            {isRtl
-              ? 'حلوى التوفي بالفواكه الطبيعية، مصنوعة يدوياً في دفعات صغيرة.'
-              : 'Fruit-led toffee, made in small batches.'}
-          </p>
+    <div className="w-full min-h-screen bg-[#FAF5EE] pt-28 sm:pt-36 pb-24 text-[#22120C]">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-14">
+        {/* Navigation Breadcrumb */}
+        <div className="flex items-center gap-2 text-xs font-mono text-[#22120C]/60 mb-8">
+          <button type="button" onClick={onNavigateHome} className="hover:text-[#963725] transition-colors cursor-pointer">
+            {isRtl ? 'الرئيسية' : 'Home'}
+          </button>
+          <span>/</span>
+          <span className="text-[#963725] font-semibold">
+            {isRtl ? 'تشكيلة الحلويات' : 'The Collection'}
+          </span>
         </div>
-      </section>
 
-      {/* Filter & Controls Bar */}
-      <section className="sticky top-16 z-30 bg-[#FAF7F2]/95 dark:bg-[#120D11]/95 backdrop-blur-md border-b border-[#E8E2D7] dark:border-[#33242E] py-4 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-          
-          {/* Category Pills */}
-          <div className="flex flex-wrap items-center gap-2 overflow-x-auto pb-1 md:pb-0">
-            {categories.map(cat => {
+        {/* Master Catalog Header */}
+        <ScrollReveal>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 sm:mb-12 border-b border-[#22120C]/10 pb-8">
+            <div>
+              <span className="inline-block px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest text-[#963725] bg-[#963725]/08 border border-[#963725]/20 mb-3">
+                {isRtl ? 'التشكيلة الكاملة · مصنع العاشر' : 'The Complete Confectionery Collection'}
+              </span>
+              <h1 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#22120C]">
+                {isRtl ? 'توفي وبونبون حرفي فاخر' : 'Handcrafted Toffees & Bonbons'}
+              </h1>
+              <p className="mt-2 text-sm text-[#22120C]/65 font-light max-w-lg leading-relaxed font-sans">
+                {isRtl
+                  ? 'فاكهة طبيعية، زبدة أوروبية، طهي بطيء في مراجل النحاس.'
+                  : 'Real orchard fruit, European butter, slow-cooked in copper cauldrons.'}
+              </p>
+            </div>
+            <span className="text-xs font-mono text-[#963725] px-3.5 py-1.5 rounded-full border border-[#22120C]/10 bg-white/50">
+              {sortedProducts.length} {isRtl ? 'صنف حلويات' : 'confections available'}
+            </span>
+          </div>
+        </ScrollReveal>
+
+        {/* Controls Bar: Category Pills + Search + Sort */}
+        <div className="space-y-5 mb-10 sm:mb-12">
+          {/* Category Filter Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+            {CATEGORIES.map((cat) => {
               const isActive = selectedCategory === cat.id;
               return (
                 <button
                   key={cat.id}
+                  type="button"
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`category-pill cursor-pointer ${isActive ? 'active' : ''}`}
+                  className={`category-pill-warm shrink-0 cursor-pointer ${isActive ? 'active' : ''}`}
                 >
                   {isRtl ? cat.arabicName : cat.name}
                 </button>
@@ -162,148 +155,100 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
             })}
           </div>
 
-          {/* Search & Sort Controls */}
-          <div className="flex items-center gap-3">
+          {/* Search Bar & Sorter Row */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             {/* Search Input */}
-            <div className="relative flex-1 sm:w-56">
-              <Search className="w-3.5 h-3.5 text-[#736B63] dark:text-[#C8BEB5] absolute left-3 rtl:left-auto rtl:right-3 top-1/2 -translate-y-1/2" />
+            <div className="relative w-full sm:max-w-md">
+              <Search className="w-4 h-4 text-[#22120C]/40 absolute left-3.5 rtl:left-auto rtl:right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={isRtl ? 'تصفية...' : 'Filter collection...'}
-                className="w-full text-xs pl-8 pr-3 rtl:pl-3 rtl:pr-8 py-2 rounded-full border border-[#E8E2D7] dark:border-[#33242E] bg-white dark:bg-[#1B1419] text-[#1A1A1A] dark:text-[#F7F3EC] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#E8BD6D] transition-colors"
+                placeholder={isRtl ? 'ابحث في التشكيلة...' : 'Search confections...'}
+                className="w-full text-xs sm:text-sm pl-10 pr-9 rtl:pl-9 rtl:pr-10 py-3 rounded-full bg-white/60 border border-[#22120C]/10 text-[#22120C] placeholder-[#22120C]/40 focus:outline-none focus:border-[#963725] font-sans transition-colors"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 rtl:right-auto rtl:left-3 top-1/2 -translate-y-1/2 text-[#22120C]/40 hover:text-[#22120C] p-1"
+                  aria-label="Clear search"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
 
-            {/* Sort Dropdown */}
-            <div className="relative shrink-0">
+            {/* Sorter Selector */}
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end text-xs font-sans text-[#22120C]/60">
+              <span>{isRtl ? 'الترتيب:' : 'Sort:'}</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                aria-label={isRtl ? 'ترتيب المنتجات' : 'Sort products'}
-                className="text-xs px-3.5 py-2 rounded-full border border-[#E8E2D7] dark:border-[#33242E] bg-white dark:bg-[#1B1419] text-[#1A1A1A] dark:text-[#F7F3EC] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#E8BD6D] transition-colors cursor-pointer"
+                className="px-3.5 py-2 rounded-full border border-[#22120C]/10 bg-white/60 text-[#22120C] focus:outline-none focus:border-[#963725] cursor-pointer font-sans text-xs"
               >
-                <option value="featured">{isRtl ? 'المميز أولاً' : 'Featured'}</option>
+                <option value="featured">{isRtl ? 'المختار للمعمل' : 'Featured Atelier'}</option>
                 <option value="price-asc">{isRtl ? 'السعر: من الأقل للأعلى' : 'Price: Low to High'}</option>
                 <option value="price-desc">{isRtl ? 'السعر: من الأعلى للأقل' : 'Price: High to Low'}</option>
               </select>
             </div>
           </div>
-
         </div>
-      </section>
 
-      {/* Catalog Grid */}
-      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-24 text-[#736B63]">
-              <Loader2 className="w-8 h-8 animate-spin text-[#3C1322] mb-3" />
-              <span className="text-sm font-light">
-                {isRtl ? 'جاري تحميل التشكيلة من المعمل...' : 'Loading collection from atelier...'}
-              </span>
-            </div>
-          ) : products.length === 0 ? (
-            /* Clean Empty State when database has no products yet */
-            <div className="text-center py-20 bg-white dark:bg-[#1B1419] rounded-3xl border border-[#E8E2D7] dark:border-[#33242E] p-8 sm:p-12 shadow-soft max-w-2xl mx-auto">
-              <div className="w-12 h-12 rounded-full bg-[#3C1322]/10 dark:bg-[#E8BD6D]/15 text-[#3C1322] dark:text-[#E8BD6D] flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              <h2 className="font-serif text-2xl sm:text-3xl mb-3 text-[#1A1A1A] dark:text-[#F7F3EC]">
-                {isRtl ? 'المطبخ الحرفي يُعد دفعات طازجة' : 'Our Atelier Kitchen is Preparing Fresh Batches'}
-              </h2>
-              <p className="text-sm text-[#736B63] dark:text-[#C8BEB5] mb-8 font-light leading-relaxed max-w-lg mx-auto">
-                {isRtl
-                  ? 'يتم تحضير دفعات التوفي يدوياً بالطلب. أضف المنتجات الجديدة عبر لوحة التحكم أو تواصل مع خدمة الضيافة للطلبات الخاصة.'
-                  : 'All fruit toffees are slowly crafted in small batches. Products added in the management portal will immediately appear here.'}
-              </p>
-              <div className="flex flex-wrap justify-center gap-3">
-                <button
-                  onClick={() => window.open('https://wa.me/201024542139', '_blank')}
-                  className="btn-primary text-xs"
-                >
-                  {isRtl ? 'تواصل مع المعمل عبر واتساب' : 'Inquire on WhatsApp'}
-                </button>
-              </div>
-            </div>
-          ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-20 bg-white dark:bg-[#1B1419] rounded-2xl border border-[#E8E2D7] dark:border-[#33242E] p-8">
-              <h3 className="font-serif text-xl mb-2 text-[#1A1A1A] dark:text-[#F7F3EC]">
-                {isRtl ? 'لا توجد منتجات مطابقة' : 'No items match your filter'}
-              </h3>
-              <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] mb-6 font-light">
-                {isRtl ? 'حاول تغيير معايير البحث أو تصفح كل النكهات' : 'Try resetting your search query or selecting All.'}
-              </p>
-              <button
-                onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}
-                className="btn-primary text-xs"
-              >
-                {isRtl ? 'إعادة ضبط الفلاتر' : 'Reset filters'}
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className="mb-6 flex justify-between items-center text-xs text-[#736B63] dark:text-[#C8BEB5]">
-                <span>
-                  {isRtl
-                    ? `عرض ${filteredProducts.length} من إجمالي ${products.length} منتجات`
-                    : `Showing ${filteredProducts.length} of ${products.length} items`}
-                </span>
-              </div>
-
-              <motion.div
-                layout
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
-              >
-                <AnimatePresence>
-                  {filteredProducts.map(product => (
-                    <motion.div
-                      key={product.id}
-                      layout
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <ProductCard
-                        product={product}
-                        onSelectProduct={onSelectProduct}
-                      />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </motion.div>
-            </>
-          )}
-
-          {/* Bottom Help Toolbar */}
-          <div className="mt-20 p-8 rounded-2xl border border-[#E8E2D7] dark:border-[#33242E] bg-[#F4EFEA] dark:bg-[#1B1419] text-center max-w-2xl mx-auto">
-            <h4 className="font-serif text-xl text-[#1A1A1A] dark:text-[#F7F3EC] mb-2 font-normal">
-              {isRtl ? 'هل تحتاج إلى مساعدة في الاختيار؟' : 'Need help choosing?'}
-            </h4>
-            <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light mb-4">
-              {isRtl
-                ? 'قارن بين النكهات أو استشر خبير الحلويات لتنسيق هدية خاصة.'
-                : 'Compare fruit profiles or speak with our confectionery concierge for curated corporate or wedding gifts.'}
+        {/* Loading Spinner */}
+        {loading && (
+          <div className="py-24 text-center">
+            <Loader2 className="w-8 h-8 text-[#963725] animate-spin mx-auto mb-3" />
+            <p className="text-xs font-sans text-[#22120C]/60">
+              {isRtl ? 'جاري استحضار الحلويات...' : 'Loading confectionery catalog...'}
             </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <button
-                onClick={() => {
-                  window.open('https://wa.me/201024542139', '_blank');
-                }}
-                className="btn-secondary text-xs font-medium flex items-center gap-1.5 group cursor-pointer"
-              >
-                <span>{isRtl ? 'تواصل عبر واتساب' : 'Concierge on WhatsApp'}</span>
-                <ArrowIcon className="w-3.5 h-3.5 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
-              </button>
-            </div>
           </div>
+        )}
 
-        </div>
-      </section>
+        {/* Empty Search Result Fallback */}
+        {!loading && sortedProducts.length === 0 && (
+          <div className="py-20 text-center bg-white/50 rounded-3xl border border-[#22120C]/10 p-10">
+            <p className="font-serif text-2xl text-[#963725] mb-2">
+              {isRtl ? 'لم نعثر على نتائج مطابقة' : 'No confections found'}
+            </p>
+            <p className="text-sm text-[#22120C]/60 font-light mb-6 font-sans">
+              {isRtl ? 'جرب البحث بكلمة أخرى أو اختر قسماً مختلفاً.' : 'Try a different search term or reset filters.'}
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCategory('all');
+              }}
+              className="btn-warm-primary"
+            >
+              {isRtl ? 'إعادة ضبط كل الفلاتر' : 'Reset All Filters'}
+            </button>
+          </div>
+        )}
 
+        {/* Product Grid: Grand 3-column layout with larger cards */}
+        {!loading && sortedProducts.length > 0 && (
+          <motion.div
+            layout
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 items-stretch"
+          >
+            {sortedProducts.map((product, idx) => (
+              <ScrollReveal key={product.id} delay={Math.min(idx * 0.05, 0.3)} className="h-full flex flex-col">
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onSelectProduct={onSelectProduct}
+                  showDescription={true}
+                  className="h-full"
+                />
+              </ScrollReveal>
+            ))}
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 };
+
+export default ShopAllView;

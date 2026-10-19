@@ -59,9 +59,9 @@ export const PRODUCTS: Product[] = [
     chewiness: 9.6,
     fruitImpact: { label: 'Coffee Intensity', score: 9.9 },
     fruitNotes: ['سائل القهوة الطبيعية', 'كريمة الكابتشينو', 'حبوب قهوة إيطالية محمصة'],
-    image: '/images/products/cappuccino_candies_thumb.jpg',
+    image: '/images/products/cappuccino_candies_thumb_isolated.png',
     images: [
-      '/images/products/cappuccino_candies_thumb.jpg',
+      '/images/products/cappuccino_candies_thumb_isolated.png',
       '/images/products/cappuccino_candies_jar.jpg',
       '/images/products/cappuccino_candies_piece.jpg',
       '/images/products/cappuccino_candies_shoot.jpg',
@@ -76,7 +76,7 @@ export const PRODUCTS: Product[] = [
     in_stock: true,
     available_flavors: ['سائل القهوة الإيطالية', 'كابتشينو بالكريمة'],
     flavor_images: {
-      'سائل القهوة الإيطالية': '/images/products/cappuccino_candies_thumb.jpg',
+      'سائل القهوة الإيطالية': '/images/products/cappuccino_candies_thumb_isolated.png',
       'كابتشينو بالكريمة': '/images/products/cappuccino_candies_jar.jpg'
     }
   },
@@ -123,9 +123,9 @@ export const PRODUCTS: Product[] = [
     chewiness: 10.0,
     fruitImpact: { label: 'Milk Richness', score: 9.9 },
     fruitNotes: ['حليب طبيعي كامل الدسم', 'كريمة فانيليا ناعمة', 'زبدة أوربية'],
-    image: '/images/products/milk_toffee_thumb.jpg',
+    image: '/images/products/milk_toffee_thumb_isolated.png',
     images: [
-      '/images/products/milk_toffee_thumb.jpg',
+      '/images/products/milk_toffee_thumb_isolated.png',
       '/images/products/milk_toffee_jar.jpg',
       '/images/products/milk_toffee_piece_3d.png',
       '/images/products/milk_toffee_shoot.jpg',
@@ -140,7 +140,7 @@ export const PRODUCTS: Product[] = [
     in_stock: true,
     available_flavors: ['حليب طبيعي كامل الدسم', 'فانيليا ناعمة'],
     flavor_images: {
-      'حليب طبيعي كامل الدسم': '/images/products/milk_toffee_thumb.jpg',
+      'حليب طبيعي كامل الدسم': '/images/products/milk_toffee_thumb_isolated.png',
       'فانيليا ناعمة': '/images/products/milk_toffee_jar.jpg'
     }
   },
@@ -187,9 +187,9 @@ export const PRODUCTS: Product[] = [
     chewiness: 9.7,
     fruitImpact: { label: 'Chocolate Core', score: 9.8 },
     fruitNotes: ['قلب شوكولاتة غني', 'توفي زبدة ذهبي', 'كاكاو طبيعي'],
-    image: '/images/products/eclairs_05_thumb.jpg',
+    image: '/images/products/eclairs_05_thumb_isolated.png',
     images: [
-      '/images/products/eclairs_05_thumb.jpg',
+      '/images/products/eclairs_05_thumb_isolated.png',
       '/images/products/eclairs_jar.jpg',
       '/images/products/eclairs_piece_3d.png',
       '/images/products/cards/spec_eclairs_chocolate_05egp.jpg'
@@ -203,7 +203,7 @@ export const PRODUCTS: Product[] = [
     in_stock: true,
     available_flavors: ['شوكولاتة سائلة كلاسيك'],
     flavor_images: {
-      'شوكولاتة سائلة كلاسيك': '/images/products/eclairs_05_thumb.jpg'
+      'شوكولاتة سائلة كلاسيك': '/images/products/eclairs_05_thumb_isolated.png'
     }
   },
   {
@@ -249,9 +249,9 @@ export const PRODUCTS: Product[] = [
     chewiness: 9.8,
     fruitImpact: { label: 'Butter Texture', score: 9.9 },
     fruitNotes: ['زبدة طبيعية فاخرة', 'كريمة شوكولاتة ذائبة', 'فانيليا طبيعية'],
-    image: '/images/products/butter_eclairs_1_thumb.jpg',
+    image: '/images/products/butter_eclairs_1_thumb_isolated.png',
     images: [
-      '/images/products/butter_eclairs_1_thumb.jpg',
+      '/images/products/butter_eclairs_1_thumb_isolated.png',
       '/images/products/butter_eclairs_jar.jpg',
       '/images/products/eclairs_piece_3d.png',
       '/images/products/cards/spec_butter_eclairs_1egp.jpg'
@@ -265,7 +265,7 @@ export const PRODUCTS: Product[] = [
     in_stock: true,
     available_flavors: ['زبدة وشوكولاتة سائلة'],
     flavor_images: {
-      'زبدة وشوكولاتة سائلة': '/images/products/butter_eclairs_1_thumb.jpg'
+      'زبدة وشوكولاتة سائلة': '/images/products/butter_eclairs_1_thumb_isolated.png'
     }
   },
   {
@@ -311,9 +311,9 @@ export const PRODUCTS: Product[] = [
     chewiness: 9.7,
     fruitImpact: { label: 'Fruit Density', score: 9.9 },
     fruitNotes: ['فراولة طبيعية', 'ليمون منعش', 'تفاح أخضر', 'عسل الفواكه'],
-    image: '/images/products/fruit_toffee_05_thumb.jpg',
+    image: '/images/products/fruit_toffee_05_thumb_isolated.png',
     images: [
-      '/images/products/fruit_toffee_05_thumb.jpg',
+      '/images/products/fruit_toffee_05_thumb_isolated.png',
       '/images/products/fruit_toffee_jar.jpg',
       '/images/products/fruit_toffee_strawberry_3d.png',
       '/images/products/fruit_toffee_lemon_3d.png',
@@ -378,9 +378,9 @@ export const PRODUCTS: Product[] = [
     chewiness: 9.8,
     fruitImpact: { label: 'Fruit Honey Burst', score: 9.8 },
     fruitNotes: ['عسل الفواكه الطبيعي', 'توت وفراولة برية', 'مستخلصات فواكه منعشة'],
-    image: '/images/products/fruit_toffee_1_thumb.jpg',
+    image: '/images/products/fruit_toffee_1_thumb_isolated.png',
     images: [
-      '/images/products/fruit_toffee_1_thumb.jpg',
+      '/images/products/fruit_toffee_1_thumb_isolated.png',
       '/images/products/fruit_toffee_jar.jpg',
       '/images/products/fruit_toffee_strawberry_3d.png',
       '/images/products/cards/spec_fruit_toffee_1egp.jpg'
@@ -394,7 +394,7 @@ export const PRODUCTS: Product[] = [
     in_stock: true,
     available_flavors: ['عسل الفواكه المشكلة'],
     flavor_images: {
-      'عسل الفواكه المشكلة': '/images/products/fruit_toffee_1_thumb.jpg'
+      'عسل الفواكه المشكلة': '/images/products/fruit_toffee_1_thumb_isolated.png'
     }
   },
   {
@@ -440,9 +440,9 @@ export const PRODUCTS: Product[] = [
     chewiness: 9.6,
     fruitImpact: { label: 'Peanut Intensity', score: 9.7 },
     fruitNotes: ['فول سوداني محمص طازج', 'شوكولاتة ناعمة', 'زبدة طبيعية'],
-    image: '/images/products/peanut_chocolate_05_thumb.jpg',
+    image: '/images/products/peanut_chocolate_05_thumb_isolated.png',
     images: [
-      '/images/products/peanut_chocolate_05_thumb.jpg',
+      '/images/products/peanut_chocolate_05_thumb_isolated.png',
       '/images/products/peanut_chocolate_jar.jpg',
       '/images/products/cards/spec_peanut_butter_chocolate_05egp.jpg'
     ],
@@ -455,7 +455,7 @@ export const PRODUCTS: Product[] = [
     in_stock: true,
     available_flavors: ['فول سوداني وشوكولاتة'],
     flavor_images: {
-      'فول سوداني وشوكولاتة': '/images/products/peanut_chocolate_05_thumb.jpg'
+      'فول سوداني وشوكولاتة': '/images/products/peanut_chocolate_05_thumb_isolated.png'
     }
   },
   {
@@ -501,9 +501,9 @@ export const PRODUCTS: Product[] = [
     chewiness: 9.8,
     fruitImpact: { label: 'Cocoa & Peanut', score: 9.8 },
     fruitNotes: ['فول سوداني محمص', 'كاكاو هولندي داكن', 'توفي زبدي غني'],
-    image: '/images/products/peanut_eclairs_1_thumb.jpg',
+    image: '/images/products/peanut_eclairs_1_thumb_isolated.png',
     images: [
-      '/images/products/peanut_eclairs_1_thumb.jpg',
+      '/images/products/peanut_eclairs_1_thumb_isolated.png',
       '/images/products/peanut_eclairs_piece_3d.png',
       '/images/products/peanut_chocolate_jar.jpg',
       '/images/products/cards/spec_peanut_eclairs_1egp.jpg'
@@ -517,7 +517,7 @@ export const PRODUCTS: Product[] = [
     in_stock: true,
     available_flavors: ['فول سوداني وكاكاو داكن'],
     flavor_images: {
-      'فول سوداني وكاكاو داكن': '/images/products/peanut_eclairs_1_thumb.jpg'
+      'فول سوداني وكاكاو داكن': '/images/products/peanut_eclairs_1_thumb_isolated.png'
     }
   },
   {
@@ -563,9 +563,9 @@ export const PRODUCTS: Product[] = [
     chewiness: 9.7,
     fruitImpact: { label: 'Caramel Softness', score: 9.9 },
     fruitNotes: ['زبدة حليب أوروبية', 'كراميل ذهبي ناعم', 'كريمة دافئة'],
-    image: '/images/products/butterm_caramel_thumb.jpg',
+    image: '/images/products/butterm_caramel_thumb_isolated.png',
     images: [
-      '/images/products/butterm_caramel_thumb.jpg',
+      '/images/products/butterm_caramel_thumb_isolated.png',
       '/images/products/butterm_caramel_jar.jpg',
       '/images/products/butterm_caramel_piece.jpg',
       '/images/products/cards/spec_butterm_caramel_05egp.jpg'
@@ -579,7 +579,7 @@ export const PRODUCTS: Product[] = [
     in_stock: true,
     available_flavors: ['كراميل الزبدة الفاخر'],
     flavor_images: {
-      'كراميل الزبدة الفاخر': '/images/products/butterm_caramel_thumb.jpg'
+      'كراميل الزبدة الفاخر': '/images/products/butterm_caramel_thumb_isolated.png'
     }
   },
   {
@@ -625,9 +625,9 @@ export const PRODUCTS: Product[] = [
     chewiness: 9.6,
     fruitImpact: { label: 'Coconut Essence', score: 9.6 },
     fruitNotes: ['جوز هند طبيعي مبشور', 'قلب كاكاو داكن', 'زبدة حلوة'],
-    image: '/images/products/coconut_chocolate_thumb.jpg',
+    image: '/images/products/coconut_chocolate_thumb_isolated.png',
     images: [
-      '/images/products/coconut_chocolate_thumb.jpg',
+      '/images/products/coconut_chocolate_thumb_isolated.png',
       '/images/products/cards/spec_coconut_chocolate_1egp.jpg'
     ],
     accentColor: '#78350F',
@@ -639,7 +639,7 @@ export const PRODUCTS: Product[] = [
     in_stock: true,
     available_flavors: ['جوز هند وشوكولاتة'],
     flavor_images: {
-      'جوز هند وشوكولاتة': '/images/products/coconut_chocolate_thumb.jpg'
+      'جوز هند وشوكولاتة': '/images/products/coconut_chocolate_thumb_isolated.png'
     }
   },
   {
@@ -685,9 +685,9 @@ export const PRODUCTS: Product[] = [
     chewiness: 9.4,
     fruitImpact: { label: 'Mint Coolness', score: 9.9 },
     fruitNotes: ['نعناع بارد منعش', 'ليمون حمضي', 'فواكه صيفية منعشة'],
-    image: '/images/products/mint_fruit_thumb.jpg',
+    image: '/images/products/mint_fruit_thumb_isolated.png',
     images: [
-      '/images/products/mint_fruit_thumb.jpg',
+      '/images/products/mint_fruit_thumb_isolated.png',
       '/images/products/mint_fruit_angle.jpg',
       '/images/products/cards/spec_mint_fruit_candy_05egp.jpg'
     ],
@@ -700,7 +700,7 @@ export const PRODUCTS: Product[] = [
     in_stock: true,
     available_flavors: ['نعناع منعش بالفواكه'],
     flavor_images: {
-      'نعناع منعش بالفواكه': '/images/products/mint_fruit_thumb.jpg'
+      'نعناع منعش بالفواكه': '/images/products/mint_fruit_thumb_isolated.png'
     }
   },
   {
@@ -746,12 +746,12 @@ export const PRODUCTS: Product[] = [
     chewiness: 9.7,
     fruitImpact: { label: 'Fruit & Milk Harmony', score: 9.8 },
     fruitNotes: ['كريمة حليب مخفوقة', 'فراولة طبيعية', 'موز وكنتالوب'],
-    image: '/images/products/fruity_milk_thumb.jpg',
+    image: '/images/products/fruity_milk_isolated.png',
     images: [
-      '/images/products/fruity_milk_thumb.jpg',
+      '/images/products/fruity_milk_isolated.png',
       '/images/products/fruity_milk_jar.jpg',
-      '/images/products/fruity_candy_banana.jpg',
-      '/images/products/fruity_candy_strawberry.jpg',
+      '/images/products/fruity_banana_isolated.png',
+      '/images/products/fruity_strawberry_isolated.png',
       '/images/products/cards/spec_fruity_milk_cream_05egp.jpg'
     ],
     accentColor: '#DB2777',
@@ -763,9 +763,9 @@ export const PRODUCTS: Product[] = [
     in_stock: true,
     available_flavors: ['بطعم الموز', 'بطعم الفراولة', 'بطعم الكنتالوب'],
     flavor_images: {
-      'بطعم الموز': '/images/products/fruity_candy_banana.jpg',
-      'بطعم الفراولة': '/images/products/fruity_candy_strawberry.jpg',
-      'بطعم الكنتالوب': '/images/products/fruity_milk_thumb.jpg'
+      'بطعم الموز': '/images/products/fruity_banana_isolated.png',
+      'بطعم الفراولة': '/images/products/fruity_strawberry_isolated.png',
+      'بطعم الكنتالوب': '/images/products/fruity_milk_isolated.png'
     }
   },
   {
@@ -811,9 +811,9 @@ export const PRODUCTS: Product[] = [
     chewiness: 9.8,
     fruitImpact: { label: 'Butter & Cocoa', score: 9.8 },
     fruitNotes: ['زبدة طبيعية نقية', 'شوكولاتة بالحليب', 'كراميل ناعم'],
-    image: '/images/products/butter_chocolate_royalblue_thumb.jpg',
+    image: '/images/products/butter_chocolate_royalblue_thumb_isolated.png',
     images: [
-      '/images/products/butter_chocolate_royalblue_thumb.jpg',
+      '/images/products/butter_chocolate_royalblue_thumb_isolated.png',
       '/images/products/butter_chocolate_jar.jpg',
       '/images/products/butter_chocolate_piece_3d.png',
       '/images/products/cards/spec_butter_chocolate_royalblue_05egp.jpg'
@@ -827,7 +827,7 @@ export const PRODUCTS: Product[] = [
     in_stock: true,
     available_flavors: ['شوكولاتة زبدة رويال'],
     flavor_images: {
-      'شوكولاتة زبدة رويال': '/images/products/butter_chocolate_royalblue_thumb.jpg'
+      'شوكولاتة زبدة رويال': '/images/products/butter_chocolate_royalblue_thumb_isolated.png'
     }
   },
   {
@@ -873,9 +873,9 @@ export const PRODUCTS: Product[] = [
     chewiness: 9.5,
     fruitImpact: { label: 'Cocoa Center', score: 9.7 },
     fruitNotes: ['بونبون زبدة مقرمش', 'قلب شوكولاتة داكنة', 'مسحوق كاكاو فاخر'],
-    image: '/images/products/zahra_butter_bonbon_thumb.jpg',
+    image: '/images/products/zahra_butter_bonbon_thumb_isolated.png',
     images: [
-      '/images/products/zahra_butter_bonbon_thumb.jpg',
+      '/images/products/zahra_butter_bonbon_thumb_isolated.png',
       '/images/products/zahra_butter_bonbon_gold.jpg',
       '/images/products/cards/spec_zahra_butter_bonbon.jpg'
     ],
@@ -888,7 +888,7 @@ export const PRODUCTS: Product[] = [
     in_stock: true,
     available_flavors: ['شوكولاتة وكاكاو زهرة'],
     flavor_images: {
-      'شوكولاتة وكاكاو زهرة': '/images/products/zahra_butter_bonbon_thumb.jpg'
+      'شوكولاتة وكاكاو زهرة': '/images/products/zahra_butter_bonbon_thumb_isolated.png'
     }
   }
 ];
@@ -993,7 +993,7 @@ export const GRAND_CAROUSEL_BOX: BundleItem = {
   price: 120.00,
   rating: 4.98,
   reviewCount: 340,
-  image: '/images/products/cappuccino_candies_thumb.jpg',
+  image: '/images/products/cappuccino_candies_thumb_isolated.png',
   weight: '236g كيس (50 قطعة)',
   pieces_per_pack: 50
 };
@@ -1008,7 +1008,7 @@ export const CROWD_FAVORITES_ITEMS: BundleItem[] = [
     price: 135.00,
     rating: 4.99,
     reviewCount: 420,
-    image: '/images/products/milk_toffee_thumb.jpg',
+    image: '/images/products/milk_toffee_thumb_isolated.png',
     weight: '496g كيس',
     pieces_per_pack: 76
   },
@@ -1021,7 +1021,7 @@ export const CROWD_FAVORITES_ITEMS: BundleItem[] = [
     price: 140.00,
     rating: 4.97,
     reviewCount: 310,
-    image: '/images/products/butter_eclairs_1_thumb.jpg',
+    image: '/images/products/butter_eclairs_1_thumb_isolated.png',
     weight: '496g كيس',
     pieces_per_pack: 76
   },
@@ -1034,7 +1034,7 @@ export const CROWD_FAVORITES_ITEMS: BundleItem[] = [
     price: 85.00,
     rating: 4.96,
     reviewCount: 390,
-    image: '/images/products/fruit_toffee_05_thumb.jpg',
+    image: '/images/products/fruit_toffee_05_thumb_isolated.png',
     weight: '255g كيس',
     pieces_per_pack: 89
   }

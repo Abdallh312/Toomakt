@@ -65,8 +65,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'toomakt_backend.wsgi.application'
 
 # Database Configuration: Supabase PostgreSQL via DATABASE_URL or SQLite fallback
-DATABASE_URL = os.environ.get('DATABASE_URL')
-if DATABASE_URL:
+DATABASE_URL = os.environ.get('DATABASE_URL', '')
+VALID_DB_SCHEMES = ('postgres://', 'postgresql://', 'sqlite://', 'mysql://')
+if DATABASE_URL and any(DATABASE_URL.startswith(scheme) for scheme in VALID_DB_SCHEMES):
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,

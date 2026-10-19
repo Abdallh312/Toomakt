@@ -17,7 +17,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
   const { isRtl } = useLanguage();
 
   return (
-    <div className="min-h-[75vh] bg-[#FAF7F2] dark:bg-[#120D11] flex items-center justify-center py-16 px-4 select-none transition-colors duration-300">
+    <div className="min-h-[75vh] bg-[#FAF5EE] text-[#22120C] flex items-center justify-center py-24 px-4 select-none">
       <div className="max-w-2xl w-full text-center">
         {/* Animated 404 Badge */}
         <motion.div
@@ -26,27 +26,27 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
           transition={{ duration: 0.4 }}
           className="relative inline-block mb-6"
         >
-          <div className="w-32 h-32 rounded-3xl bg-white dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E] shadow-soft-lg flex items-center justify-center mx-auto">
-            <span className="font-serif text-5xl font-normal text-[#3C1322] dark:text-[#E8BD6D]">
+          <div className="w-32 h-32 rounded-[28px] bg-[#F4ECE2] border border-[#22120C]/10 flex items-center justify-center mx-auto shadow-sm">
+            <span className="font-serif text-5xl font-normal text-[#963725]">
               404
             </span>
           </div>
 
-          <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-[#3C1322] text-[#FAF7F2] flex items-center justify-center shadow-soft">
-            <Sparkles className="w-5 h-5 text-[#E8BD6D]" />
+          <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-[#963725] text-[#FAF5EE] flex items-center justify-center shadow-md">
+            <Sparkles className="w-5 h-5 text-[#FAF5EE]" />
           </div>
         </motion.div>
 
         {/* Headline */}
-        <span className="inline-block text-[10px] font-mono uppercase tracking-[0.2em] text-[#736B63] dark:text-[#C8BEB5] mb-2">
-          {isRtl ? 'خطأ 404 — الصفحة غير موجودة' : 'ERROR 404 — PAGE NOT FOUND'}
-        </span>
-        <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] tracking-tight leading-tight mt-1 mb-3">
+        <p className="font-serif italic text-[#963725] text-sm mb-2">
+          {isRtl ? 'خطأ 404 — الصفحة غير موجودة' : 'Error 404 — Page Not Found'}
+        </p>
+        <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#22120C] tracking-tight leading-tight mt-1 mb-3">
           {isRtl ? 'الصفحة المطلوبة غير متوفرة' : 'Page Not Found'}
         </h1>
-        <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light max-w-md mx-auto mb-8 leading-relaxed">
+        <p className="text-xs sm:text-sm text-[#22120C]/70 font-light max-w-md mx-auto mb-8 leading-relaxed">
           {isRtl
-            ? 'يبدو أن الرابط الذي تبحث عنه غير متوفر أو تم نقله. يمكنك العودة إلى المتجر الرئيسي أو التواصل معنا.'
+            ? 'يبدو أن الرابط الذي تبحث عنه غير متوفر أو تم نقله. يمكنك العودة إلى المتجر الرئيسي أو تصفح التشكيلة الكاملة.'
             : 'The page or confectionery collection you are looking for has been moved or does not exist. Return to our boutique collection below.'}
         </p>
 
@@ -55,7 +55,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
           <button
             type="button"
             onClick={onNavigateHome}
-            className="btn-secondary text-xs flex items-center gap-2 cursor-pointer shadow-soft"
+            className="text-xs flex items-center gap-2 cursor-pointer border border-[#22120C]/20 text-[#22120C] hover:border-[#963725] hover:text-[#963725] px-6 py-3 rounded-full font-mono transition-all"
           >
             <Home className="w-4 h-4" />
             <span>{isRtl ? 'الرئيسية' : 'Return Home'}</span>
@@ -64,13 +64,15 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
           <button
             type="button"
             onClick={onNavigateShop}
-            className="btn-primary text-xs flex items-center gap-2 cursor-pointer shadow-soft"
+            className="text-xs flex items-center gap-2 cursor-pointer bg-[#963725] text-[#FAF5EE] hover:bg-[#822E1E] px-6 py-3 rounded-full font-serif font-medium transition-all shadow-[0_4px_14px_rgba(150,55,37,0.25)] hover:shadow-[0_6px_20px_rgba(150,55,37,0.35)]"
           >
             <ShoppingBag className="w-4 h-4" />
-            <span>{isRtl ? 'تصفح المجموعة' : 'Explore Collection'}</span>
+            <span>{isRtl ? 'تصفح التشكيلة' : 'Explore Collection'}</span>
           </button>
         </div>
       </div>
     </div>
   );
 };
+
+export default NotFoundPage;

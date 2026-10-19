@@ -7,7 +7,7 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Boxes
+  Boxes,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '../types';
@@ -71,12 +71,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   const baseImages = Array.isArray(product.images) && product.images.length > 0
     ? product.images
-    : [product.image || '/images/products/cappuccino_candies_thumb.jpg'];
+    : [product.image || '/images/products/cappuccino_candies_thumb_isolated.png'];
 
-  // Ensure any flavor images are included in gallery
   const flavorImageUrls = product.flavor_images ? Object.values(product.flavor_images) : [];
   const images = Array.from(new Set([...baseImages, ...flavorImageUrls]));
-
   const activeImage = images[selectedImageIndex] || images[0];
 
   const stock = product.stock_quantity ?? (product.in_stock ? 50 : 0);
@@ -101,7 +99,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     ? (Array.isArray(product.tasting_notes_ar) && product.tasting_notes_ar.length > 0 ? product.tasting_notes_ar : defaultTastingNotes)
     : (Array.isArray(product.tasting_notes_en) && product.tasting_notes_en.length > 0 ? product.tasting_notes_en : defaultTastingNotes);
 
-  // Dynamic flavor selection: update image automatically
   const handleSelectFlavor = (flv: string) => {
     setSelectedFlavor(flv);
     if (product.flavor_images && product.flavor_images[flv]) {
@@ -118,7 +115,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     }
   };
 
-  // Thumbnail selection: sync flavor if mapped
   const handleSelectThumbnail = (idx: number) => {
     setSelectedImageIndex(idx);
     const clickedImg = images[idx];
@@ -159,57 +155,59 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-5">
-        {/* Backdrop */}
+      <div className="fixed inset-0 z-[100] overflow-y-auto flex items-center justify-center p-3 sm:p-6">
+        {/* Soft Warm Dim Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+          className="fixed inset-0 bg-[#22120C]/65 backdrop-blur-sm transition-opacity"
         />
 
+        {/* Modal Container: Solid Warm Cream Background */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.97, y: 15 }}
+          initial={{ opacity: 0, scale: 0.96, y: 16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.97, y: 15 }}
-          transition={{ duration: 0.22, ease: 'easeOut' }}
-          className="relative w-full max-w-4xl bg-[#FAF7F2] dark:bg-[#120D11] rounded-2xl border border-[#E8E2D7] dark:border-[#33242E] shadow-2xl overflow-hidden my-4 z-10 max-h-[92vh] flex flex-col"
+          exit={{ opacity: 0, scale: 0.96, y: 16 }}
+          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          className="relative w-full max-w-4xl bg-[#FAF5EE] text-[#22120C] rounded-[32px] border border-[#22120C]/12 shadow-[0_30px_90px_rgba(34,18,12,0.22)] overflow-hidden my-4 z-10 max-h-[92vh] flex flex-col"
         >
           {/* Header Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 rtl:right-auto rtl:left-4 z-20 p-2 rounded-full text-[#736B63] dark:text-[#C8BEB5] hover:text-[#1A1A1A] dark:hover:text-[#F7F3EC] hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer"
+            className="absolute top-4 right-4 rtl:right-auto rtl:left-4 z-20 p-2.5 rounded-full text-[#22120C]/60 hover:text-[#22120C] hover:bg-[#22120C]/8 transition-colors cursor-pointer"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
           </button>
 
           <div className="overflow-y-auto flex-1 grid grid-cols-1 md:grid-cols-12 gap-0">
-            {/* ======================================================== */}
-            {/* LEFT: MULTI-IMAGE GALLERY WITH THUMBNAILS & TRANSITION  */}
-            {/* ======================================================== */}
-            <div className="md:col-span-6 bg-white dark:bg-[#1B1419] p-5 sm:p-7 flex flex-col justify-center border-b md:border-b-0 md:border-r border-[#E8E2D7] dark:border-[#33242E]">
+            {/* LEFT: GALLERY WITH CLEAN ISOLATED IMAGE */}
+            <div className="md:col-span-6 bg-[#F4ECE2] p-6 sm:p-8 flex flex-col justify-center border-b md:border-b-0 md:border-r border-[#22120C]/10">
               <div className="space-y-4">
-                {/* Main Showcase Image */}
-                <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-[#FAF7F2] dark:bg-[#120D11] border border-[#E8E2D7]/80 dark:border-[#33242E] group shadow-xs flex items-center justify-center">
+                {/* Main Showcase Image Stage */}
+                <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[#EDE3D6] border border-[#22120C]/8 group flex items-center justify-center p-7">
+                  {/* Subtle ambient spotlight behind the product */}
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(228,176,114,0.3),transparent_70%)] pointer-events-none" />
+
                   <AnimatePresence mode="wait">
                     <motion.img
                       key={activeImage}
                       src={activeImage}
                       alt={displayName}
-                      initial={{ opacity: 0.2, scale: 0.98 }}
+                      initial={{ opacity: 0.2, scale: 0.94 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0.2 }}
-                      transition={{ duration: 0.2 }}
-                      className="w-full h-full object-contain p-3"
+                      transition={{ duration: 0.22 }}
+                      className="w-full h-full object-contain filter drop-shadow-[0_16px_32px_rgba(34,18,12,0.18)] relative z-10"
                     />
                   </AnimatePresence>
 
                   {/* Ribbon Badge */}
                   {displayBadge && (
-                    <div className="absolute top-3 left-3 rtl:left-auto rtl:right-3">
-                      <span className="bg-[#FAF7F2]/95 dark:bg-[#1B1419]/95 backdrop-blur-sm text-[#1A1A1A] dark:text-[#F7F3EC] border border-[#E8E2D7] dark:border-[#33242E] text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-xs">
+                    <div className="absolute top-3.5 left-3.5 rtl:left-auto rtl:right-3.5 z-20">
+                      <span className="bg-[#FAF5EE]/95 backdrop-blur-sm text-[#963725] border border-[#963725]/20 text-[10px] font-mono font-semibold uppercase tracking-wider px-3 py-1 rounded-full shadow-xs">
                         {displayBadge}
                       </span>
                     </div>
@@ -221,7 +219,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setSelectedImageIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1))}
-                        className="absolute left-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-white/80 dark:bg-black/60 text-[#1A1A1A] dark:text-white backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white cursor-pointer"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-[#FAF5EE]/90 text-[#22120C] border border-[#22120C]/10 shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:border-[#963725] cursor-pointer z-20"
                         title="Previous Image"
                       >
                         <ChevronLeft className="w-4 h-4" />
@@ -229,7 +227,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setSelectedImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0))}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-white/80 dark:bg-black/60 text-[#1A1A1A] dark:text-white backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white cursor-pointer"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-[#FAF5EE]/90 text-[#22120C] border border-[#22120C]/10 shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:border-[#963725] cursor-pointer z-20"
                         title="Next Image"
                       >
                         <ChevronRight className="w-4 h-4" />
@@ -240,7 +238,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
                 {/* Thumbnail Strip */}
                 {images.length > 1 && (
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-0.5">
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1">
                     {images.map((img, idx) => {
                       const isSelected = idx === selectedImageIndex;
                       return (
@@ -248,13 +246,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                           key={idx}
                           type="button"
                           onClick={() => handleSelectThumbnail(idx)}
-                          className={`flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border cursor-pointer transition-all bg-white dark:bg-[#120D11] ${
+                          className={`shrink-0 w-14 h-14 rounded-xl overflow-hidden border cursor-pointer transition-all p-1.5 bg-[#EDE3D6] ${
                             isSelected
-                              ? 'border-[#8B2D5C] dark:border-[#E8BD6D] ring-2 ring-[#8B2D5C]/30 dark:ring-[#E8BD6D]/30 scale-102'
-                              : 'border-[#E8E2D7] dark:border-[#33242E] hover:border-[#736B63] opacity-70 hover:opacity-100'
+                              ? 'border-[#963725] ring-2 ring-[#963725]/30 scale-105'
+                              : 'border-[#22120C]/10 opacity-70 hover:opacity-100 hover:border-[#963725]/40'
                           }`}
                         >
-                          <img src={img} alt={`${displayName} view ${idx + 1}`} className="w-full h-full object-cover" />
+                          <img src={img} alt={`${displayName} view ${idx + 1}`} className="w-full h-full object-contain" />
                         </button>
                       );
                     })}
@@ -263,64 +261,60 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
             </div>
 
-            {/* ======================================================== */}
-            {/* RIGHT: STRUCTURED PRODUCT INFORMATION & ORDER CONTROLS   */}
-            {/* ======================================================== */}
-            <div className="md:col-span-6 p-5 sm:p-7 flex flex-col justify-between space-y-5">
+            {/* RIGHT: DETAILS WITH SOLID WARM CREAM CARD */}
+            <div className="md:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-6 bg-[#FAF5EE]">
               <div className="space-y-4">
                 {/* Category & SKU */}
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold uppercase tracking-wider text-[#3C1322] dark:text-[#E8BD6D]">
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-[#963725] font-semibold">
                       {typeof product.category === 'object' && product.category !== null
                         ? ((product.category as any).name || (product.category as any).slug)
                         : (product.category_name || product.category || 'Atelier Collection')}
                     </span>
-                    <span className="text-[10px] text-[#A89F91]">•</span>
-                    <span className="font-mono text-[10px] text-[#736B63] dark:text-[#C8BEB5]">
+                    <span className="text-[10px] text-[#22120C]/30">•</span>
+                    <span className="font-mono text-[10px] text-[#22120C]/50">
                       {sku}
                     </span>
                   </div>
                 </div>
 
                 {/* Title */}
-                <h2 className="text-2xl sm:text-3xl font-serif font-normal text-[#1A1A1A] dark:text-[#F7F3EC]">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-normal text-[#22120C] leading-tight">
                   {displayName}
                 </h2>
 
                 {/* Price & Unit */}
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl sm:text-3xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC]">
+                <div className="flex items-baseline gap-2 pt-1">
+                  <span className="text-2xl sm:text-3xl font-serif text-[#963725] font-semibold">
                     {formatPrice(product.price)}
                   </span>
-                  <span className="text-xs text-[#736B63] dark:text-[#C8BEB5]">
+                  <span className="text-xs text-[#22120C]/60 font-mono">
                     / {displayPackQuantity}
                   </span>
                 </div>
 
-                {/* ======================================================== */}
-                {/* QUANTITY SYSTEM: BOX QTY vs PACK QTY vs ORDER QTY       */}
-                {/* ======================================================== */}
-                <div className="p-3 rounded-xl bg-white dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E] space-y-2">
-                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#3C1322] dark:text-[#E8BD6D]">
+                {/* Packaging specs */}
+                <div className="p-4 rounded-2xl bg-[#F4ECE2] border border-[#22120C]/10 space-y-2.5">
+                  <div className="flex items-center gap-1.5 text-[11px] font-mono text-[#963725] font-semibold">
                     <Boxes className="w-3.5 h-3.5" />
                     <span>{isRtl ? 'مواصفات التعبئة والتغليف' : 'Packaging Specifications'}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="p-2 rounded-lg bg-[#FAF5EE] dark:bg-[#241A21] border border-[#E8E2D7]/60 dark:border-[#33242E]">
-                      <span className="text-[10px] text-[#736B63] dark:text-[#C8BEB5] block uppercase tracking-wider">
+                    <div className="p-2.5 rounded-xl bg-[#FAF5EE] border border-[#22120C]/8">
+                      <span className="text-[10px] font-mono text-[#22120C]/50 block uppercase tracking-wider mb-0.5">
                         {isRtl ? 'الكرتونة' : 'Box Quantity'}
                       </span>
-                      <span className="font-semibold text-[#1A1A1A] dark:text-[#F7F3EC]">
+                      <span className="font-serif font-normal text-[#22120C] text-sm">
                         {displayBoxQuantityLabel}
                       </span>
                     </div>
 
-                    <div className="p-2 rounded-lg bg-[#FAF5EE] dark:bg-[#241A21] border border-[#E8E2D7]/60 dark:border-[#33242E]">
-                      <span className="text-[10px] text-[#736B63] dark:text-[#C8BEB5] block uppercase tracking-wider">
+                    <div className="p-2.5 rounded-xl bg-[#FAF5EE] border border-[#22120C]/8">
+                      <span className="text-[10px] font-mono text-[#22120C]/50 block uppercase tracking-wider mb-0.5">
                         {isRtl ? 'محتوى العبوة' : 'Pack Content'}
                       </span>
-                      <span className="font-semibold text-[#1A1A1A] dark:text-[#F7F3EC]">
+                      <span className="font-serif font-normal text-[#22120C] text-sm">
                         {displayPackQuantity}
                       </span>
                     </div>
@@ -328,22 +322,22 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </div>
 
                 {/* Description */}
-                <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#22120C]/75 font-light leading-relaxed">
                   {displayDescription}
                 </p>
 
                 {/* Flavor / Variant Selector */}
                 {flavorsList.length > 0 && (
                   <div className="pt-1">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[10px] font-semibold text-[#736B63] dark:text-[#C8BEB5] uppercase tracking-wider">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-mono text-[#22120C]/60 uppercase tracking-wider">
                         {isRtl ? 'النكهة' : 'Flavor'}
                       </span>
-                      <span className="text-[11px] font-medium text-[#3C1322] dark:text-[#E8BD6D] bg-[#FFD147]/30 dark:bg-[#E8BD6D]/20 border border-[#FFD147]/40 dark:border-[#E8BD6D]/30 px-2 py-0.5 rounded-full">
+                      <span className="text-[11px] font-mono text-[#963725] bg-[#963725]/10 border border-[#963725]/20 px-2.5 py-0.5 rounded-full font-semibold">
                         {selectedFlavor}
                       </span>
                     </div>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-2">
                       {flavorsList.map((flv) => {
                         const isSelected = selectedFlavor === flv;
                         return (
@@ -351,13 +345,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                             key={flv}
                             type="button"
                             onClick={() => handleSelectFlavor(flv)}
-                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer ${
+                            className={`px-3.5 py-1.5 rounded-full text-xs font-mono transition-all flex items-center gap-1.5 cursor-pointer ${
                               isSelected
-                                ? 'bg-[#3C1322] text-[#FAF7F2] dark:bg-[#E8BD6D] dark:text-[#120D11] shadow-soft scale-[1.02] font-semibold'
-                                : 'bg-[#FAF5EE] dark:bg-[#241A21] text-[#1A1A1A] dark:text-[#F7F3EC] border border-[#E8E2D7] dark:border-[#33242E] hover:border-[#1A1A1A] dark:hover:border-[#E8BD6D]'
+                                ? 'bg-[#963725] text-[#FAF5EE] shadow-sm font-semibold'
+                                : 'bg-[#F4ECE2] text-[#22120C] border border-[#22120C]/10 hover:border-[#963725]/40'
                             }`}
                           >
-                            {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[#FFD147] dark:bg-[#120D11]" />}
+                            {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[#FAF5EE]" />}
                             <span>{flv}</span>
                           </button>
                         );
@@ -369,14 +363,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 {/* Tasting Notes */}
                 {displayTastingNotes.length > 0 && (
                   <div className="pt-1">
-                    <span className="text-[10px] font-semibold text-[#736B63] dark:text-[#C8BEB5] uppercase tracking-wider block mb-1.5">
+                    <span className="text-[10px] font-mono text-[#22120C]/60 uppercase tracking-wider block mb-1.5">
                       {isRtl ? 'ملاحظات النكهة والمذاق' : 'Tasting Notes'}
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {displayTastingNotes.map((note, idx) => (
                         <span
                           key={idx}
-                          className="text-[11px] px-2.5 py-1 rounded-full bg-[#FAF5EE] dark:bg-[#241A21] border border-[#E8E2D7] dark:border-[#33242E] text-[#1A1A1A] dark:text-[#F7F3EC]"
+                          className="text-[11px] px-3 py-1 rounded-full bg-[#F4ECE2] border border-[#22120C]/10 text-[#22120C]/75 font-mono"
                         >
                           {note}
                         </span>
@@ -387,54 +381,53 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
 
               {/* Order Actions & Customer Quantity */}
-              <div className="space-y-3 pt-4 border-t border-[#E8E2D7] dark:border-[#33242E]">
-                {/* Customer Quantity Stepper */}
+              <div className="space-y-3 pt-4 border-t border-[#22120C]/10">
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-xs text-[#1A1A1A] dark:text-[#F7F3EC] font-medium block">
+                    <span className="text-xs text-[#22120C] font-semibold block">
                       {isRtl ? 'الكمية' : 'Quantity'}
                     </span>
-                    <span className="text-[10px] text-[#736B63] dark:text-[#C8BEB5]">
+                    <span className="text-[10px] text-[#22120C]/50 font-mono">
                       {customerQuantity} × {displayPackQuantity}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 bg-white dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E] rounded-full px-3 py-1">
+                  <div className="flex items-center gap-3 bg-[#F4ECE2] border border-[#22120C]/10 rounded-full px-3 py-1">
                     <button
                       onClick={() => setCustomerQuantity(Math.max(1, customerQuantity - 1))}
                       disabled={customerQuantity <= 1}
-                      className="text-[#736B63] hover:text-[#1A1A1A] dark:hover:text-[#F7F3EC] disabled:opacity-30 cursor-pointer"
+                      className="text-[#22120C]/60 hover:text-[#22120C] disabled:opacity-30 cursor-pointer"
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
-                    <span className="font-mono text-xs font-semibold w-4 text-center text-[#1A1A1A] dark:text-[#F7F3EC]">
+                    <span className="font-mono text-xs font-semibold w-4 text-center text-[#22120C]">
                       {customerQuantity}
                     </span>
                     <button
                       onClick={() => setCustomerQuantity(Math.min(10, customerQuantity + 1))}
                       disabled={customerQuantity >= 10}
-                      className="text-[#736B63] hover:text-[#1A1A1A] dark:hover:text-[#F7F3EC] disabled:opacity-30 cursor-pointer"
+                      className="text-[#22120C]/60 hover:text-[#22120C] disabled:opacity-30 cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
 
-                {/* Primary CTA Buttons */}
-                <div className="flex gap-2">
+                {/* Buttons */}
+                <div className="flex gap-2.5">
                   <button
                     onClick={handleAddToCart}
                     disabled={isOutOfStock}
-                    className="flex-1 btn-primary py-2.5 text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    className="flex-1 py-3 text-xs font-mono font-bold tracking-wider uppercase rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] flex items-center justify-center gap-2 cursor-pointer shadow-[0_4px_14px_rgba(150,55,37,0.25)] hover:shadow-[0_6px_20px_rgba(150,55,37,0.35)] disabled:opacity-50 transition-all"
                   >
                     {justAdded ? (
                       <>
-                        <Check className="w-3.5 h-3.5" />
-                        <span>{isRtl ? 'تمت الإضافة للحقيبة' : 'Added to bag'}</span>
+                        <Check className="w-3.5 h-3.5 text-[#FAF5EE]" />
+                        <span>{isRtl ? 'تمت الإضافة للحقيبة' : 'Added to Bag'}</span>
                       </>
                     ) : (
                       <>
                         <ShoppingBag className="w-3.5 h-3.5" />
-                        <span>{isRtl ? 'أضف للحقيبة' : 'Add to bag'}</span>
+                        <span>{isRtl ? 'أضف للحقيبة' : 'Add to Bag'}</span>
                       </>
                     )}
                   </button>
@@ -442,9 +435,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <button
                     onClick={handleBuyNow}
                     disabled={isOutOfStock}
-                    className="flex-1 btn-secondary py-2.5 text-xs font-medium cursor-pointer disabled:opacity-50"
+                    className="flex-1 py-3 text-xs font-mono font-semibold tracking-wider uppercase rounded-full border border-[#963725] text-[#963725] hover:bg-[#963725] hover:text-[#FAF5EE] cursor-pointer disabled:opacity-50 transition-all"
                   >
-                    {isRtl ? 'شراء فوري' : 'Buy now'}
+                    {isRtl ? 'شراء فوري' : 'Buy Now'}
                   </button>
                 </div>
               </div>
@@ -455,3 +448,5 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     </AnimatePresence>
   );
 };
+
+export default ProductDetailModal;

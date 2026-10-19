@@ -1,17 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  ShoppingBag,
-  Menu,
-  X,
-  Search,
-  Gift,
-  Sun,
-  Moon,
-} from 'lucide-react';
+import { ShoppingBag, Menu, X, Search, ChevronRight, ArrowUpRight, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
-import { useTheme } from '../context/ThemeContext';
 import { navigateTo } from '../utils/navigation';
 
 interface NavbarProps {
@@ -24,26 +15,70 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   onNavigateSection,
   onNavigateView,
-  currentView,
+  currentView = 'home',
   onSearchQuery,
 }) => {
   const { totalCount, setIsCartOpen } = useCart();
   const { language, setLanguage, isRtl } = useLanguage();
-  const { isDark, toggleTheme } = useTheme();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [isCompact, setIsCompact] = useState(false);
+  const lastScrollYRef = useRef(0);
+  const [activeLandingSection, setActiveLandingSection] = useState<string>('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      const lastScrollY = lastScrollYRef.current;
+      const scrollDiff = currentScrollY - lastScrollY;
+
+      // Dynamic compact pill compression
+      setIsCompact(currentScrollY > 48);
+
+      // Smart direction-aware hide & reveal
+      if (currentScrollY < 60) {
+        setIsVisible(true);
+      } else if (scrollDiff > 8) {
+        // Scrolling down -> gracefully slide up
+        setIsVisible(false);
+      } else if (scrollDiff < -6) {
+        // Scrolling up -> immediately reveal
+        setIsVisible(true);
+      }
+
+      lastScrollYRef.current = currentScrollY;
+
+      // In-page section highlight tracking if on home view
+      if (currentView === 'home') {
+        const sections = [
+          { target: 'contact', el: document.getElementById('our-branches-trail') },
+          { target: 'about',   el: document.getElementById('the-toomakt-spirit') },
+          { target: 'bundles', el: document.getElementById('bundles') },
+          { target: 'shop',    el: document.getElementById('meet-your-sweet-side') },
+        ];
+
+        let found = '';
+        for (const sec of sections) {
+          if (sec.el) {
+            const rect = sec.el.getBoundingClientRect();
+            if (rect.top <= 240) {
+              found = sec.target;
+              break;
+            }
+          }
+        }
+        setActiveLandingSection(found);
+      }
     };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [currentView]);
 
   useEffect(() => {
     if (searchOpen && searchInputRef.current) {
@@ -51,20 +86,35 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   }, [searchOpen]);
 
-  const toggleLanguage = () => {
-    setLanguage(language === 'en' ? 'ar' : 'en');
-  };
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
+  const toggleLanguage = () => setLanguage(language === 'en' ? 'ar' : 'en');
 
   const handleLinkClick = (target: string) => {
     setMobileMenuOpen(false);
+    setSearchOpen(false);
     if (target.startsWith('#')) {
-      const sectionId = target.substring(1);
+      const id = target.substring(1);
       if (onNavigateSection) {
-        onNavigateSection(sectionId);
+        onNavigateSection(id);
       } else {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+        const el = document.getElementById(id);
+        if (el) {
+          if ((window as any).lenis) {
+            (window as any).lenis.scrollTo(el, { offset: -70, duration: 1.15 });
+          } else {
+            el.scrollIntoView({ behavior: 'smooth' });
+          }
         }
       }
     } else {
@@ -78,266 +128,273 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const handleSearchSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    const query = searchValue.trim();
-    if (!query) return;
-
-    if (onSearchQuery) {
-      onSearchQuery(query);
-    } else if (onNavigateView) {
-      onNavigateView('shop');
-    } else {
-      navigateTo('shop');
-    }
-    window.dispatchEvent(new CustomEvent('toomakt:search', { detail: query }));
+    const q = searchValue.trim();
+    if (!q) return;
+    if (onSearchQuery) onSearchQuery(q);
+    else if (onNavigateView) onNavigateView('shop');
+    window.dispatchEvent(new CustomEvent('toomakt:search', { detail: q }));
     setSearchOpen(false);
+    setMobileMenuOpen(false);
   };
 
   const navLinks = [
-    { id: 'home', label: isRtl ? 'الرئيسية' : 'Home', target: 'home' },
-    { id: 'products', label: isRtl ? 'المنتجات' : 'Products', target: 'shop' },
-    { id: 'bundles', label: isRtl ? 'الباقات' : 'Bundles', target: 'bundles', accent: true },
-    { id: 'about', label: isRtl ? 'عن توماكت' : 'About', target: 'our-story' },
-    { id: 'contact', label: isRtl ? 'اتصل بنا' : 'Contact', target: 'wholesale' },
+    { id: 'shop',      labelAr: 'المُنتجات',       labelEn: 'Products',      target: 'shop' },
+    { id: 'bundles',   labelAr: 'الباقات المختارة', labelEn: 'Bundles',       target: 'bundles' },
+    { id: 'about',     labelAr: 'حِكَايَتُنَا',     labelEn: 'Our story',     target: 'about' },
+    { id: 'contact',   labelAr: 'فُرُوعُنَا',       labelEn: 'Our branches',  target: 'contact' },
   ];
 
-  const isLinkActive = (target: string) => {
-    if (target === 'home') return currentView === 'home' || !currentView;
-    if (target === 'shop') return currentView === 'shop' || currentView === 'products';
-    if (target === 'bundles') return currentView === 'bundles' || currentView === 'gifts';
-    if (target === 'our-story') {
-      return currentView ? ['our-story', 'about', 'ingredients', 'faq', 'shipping'].includes(currentView) : false;
+  const isActive = (target: string) => {
+    if (currentView === 'home' && activeLandingSection) {
+      return activeLandingSection === target;
     }
-    if (target === 'wholesale') return currentView === 'wholesale' || currentView === 'contact';
-    return currentView === target;
+    return (
+      currentView === target ||
+      (target === 'about'   && currentView === 'our-story') ||
+      (target === 'shop'    && currentView === 'products') ||
+      (target === 'contact' && currentView === 'wholesale')
+    );
   };
 
+  const showNavbar = isVisible || mobileMenuOpen || searchOpen;
+
   return (
-    <header
-      className={`sticky top-0 z-40 w-full transition-all duration-300 ${
-        isScrolled
-          ? 'bg-[#FAF7F2]/90 dark:bg-[#120D11]/90 backdrop-blur-xl shadow-[0_8px_30px_rgba(26,21,18,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.45)] border-b border-[#E8E2D7]/70 dark:border-[#33242E] py-2.5 sm:py-3'
-          : 'bg-gradient-to-b from-[#FAF7F2] to-[#FAF7F2]/95 dark:from-[#120D11] dark:to-[#120D11]/95 border-b border-transparent dark:border-[#261A23] py-3.5 sm:py-4'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-3 sm:gap-6">
-          {/* Brand */}
+    <>
+      {/* Floating Direction-Aware Dynamic Island Navigation Header */}
+      <motion.header
+        initial={{ y: 0, opacity: 1 }}
+        animate={{
+          y: showNavbar ? 0 : -96,
+          opacity: showNavbar ? 1 : 0,
+        }}
+        transition={{
+          y: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+          opacity: { duration: 0.22 },
+        }}
+        className="fixed top-2.5 sm:top-4 inset-x-0 z-50 px-3 sm:px-6 pointer-events-none transition-all"
+      >
+        <nav
+          aria-label="Main Navigation"
+          className={`pointer-events-auto mx-auto rounded-full flex items-center justify-between transition-all duration-300 ease-out ${
+            isCompact
+              ? 'max-w-5xl h-13 sm:h-14 px-3.5 sm:px-5 bg-[#FAF5EE]/95 backdrop-blur-2xl border border-[#22120C]/12 shadow-[0_12px_36px_rgba(34,18,12,0.09)]'
+              : 'max-w-6xl h-15 sm:h-[4.25rem] px-4.5 sm:px-6 bg-[#FAF5EE]/90 backdrop-blur-xl border border-[#22120C]/08 shadow-[0_8px_30px_rgba(34,18,12,0.05)]'
+          }`}
+        >
+          {/* Left: Brand Identity */}
           <button
             type="button"
             onClick={() => handleLinkClick('home')}
-            className="cursor-pointer group flex flex-col items-start select-none shrink-0 text-left rtl:text-right"
+            className="group flex items-center gap-2.5 sm:gap-3 cursor-pointer focus:outline-none"
             aria-label="toomakt home"
           >
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-[#1A1A1A] dark:text-[#F7F3EC] lowercase group-hover:text-[#3C1322] dark:group-hover:text-[#E8BD6D] transition-colors duration-300">
+            <img
+              src="/images/logos/toomakt_logo_main.png"
+              alt="toomakt logo"
+              className={`w-auto object-contain transition-all duration-300 group-hover:scale-105 ${
+                isCompact ? 'h-6 sm:h-7' : 'h-7 sm:h-8'
+              }`}
+            />
+            <div className="flex items-center gap-2">
+              <span
+                className={`font-serif text-[#22120C] tracking-tight group-hover:text-[#963725] transition-all lowercase leading-none ${
+                  isCompact ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-[1.7rem]'
+                }`}
+              >
                 toomakt
               </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#3C1322] dark:bg-[#E8BD6D] inline-block mb-1 group-hover:scale-125 transition-transform" />
             </div>
-            <span className="text-[9px] font-mono tracking-[0.22em] uppercase text-[#736B63]/75 dark:text-[#C8BEB5] -mt-0.5 hidden sm:block">
-              {isRtl ? 'معمل التوفي الحرفي' : 'ATELIER DU TOFFEE'}
-            </span>
           </button>
 
-          {/* Desktop links */}
-          <nav
-            className="hidden md:flex items-center gap-1 lg:gap-1.5 px-2 py-1 rounded-full bg-white/70 dark:bg-[#1B1419]/90 border border-[#E8E2D7]/80 dark:border-[#33242E] backdrop-blur-md shadow-xs"
-            aria-label="Primary"
-          >
+          {/* Center: Desktop Navigation Links (Pill Track) */}
+          <div className="hidden lg:flex items-center bg-[#22120C]/[0.03] p-1 rounded-full border border-[#22120C]/06">
             {navLinks.map((link) => {
-              const active = isLinkActive(link.target);
-              const isBundles = link.id === 'bundles';
-
+              const active = isActive(link.target);
               return (
                 <button
                   key={link.id}
                   type="button"
                   onClick={() => handleLinkClick(link.target)}
-                  className={`relative px-3.5 lg:px-4 py-2 rounded-full text-sm tracking-wide transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                  className={`relative px-4 py-1.5 rounded-full text-xs font-sans font-medium transition-all duration-200 cursor-pointer ${
                     active
-                      ? 'bg-[#3C1322] dark:bg-[#E8BD6D] text-[#FAF7F2] dark:text-[#120D11] font-semibold shadow-[0_2px_12px_rgba(232,189,109,0.25)]'
-                      : 'text-[#736B63] dark:text-[#C8BEB5] hover:text-[#1A1A1A] dark:hover:text-[#F7F3EC] hover:bg-[#F4EFEA]/80 dark:hover:bg-[#241A21] font-normal'
+                      ? 'text-[#FAF5EE] font-semibold'
+                      : 'text-[#22120C]/75 hover:text-[#22120C]'
                   }`}
                 >
-                  {isBundles && (
-                    <Gift
-                      className={`w-3.5 h-3.5 ${
-                        active
-                          ? 'text-[#E8BD6D] dark:text-[#120D11]'
-                          : 'text-[#3C1322]/70 dark:text-[#E8BD6D]'
-                      }`}
+                  {/* Active Indicator Sliding Pill */}
+                  {active && (
+                    <motion.div
+                      layoutId="navActivePill"
+                      className="absolute inset-0 rounded-full bg-[#963725] shadow-xs"
+                      transition={{ type: 'spring', stiffness: 420, damping: 32 }}
                     />
                   )}
-                  <span>{link.label}</span>
+                  <span className="relative z-10">{isRtl ? link.labelAr : link.labelEn}</span>
                 </button>
               );
             })}
-          </nav>
+          </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5">
-            {/* Search Input */}
-            <div className="relative flex items-center">
+          {/* Right: Actions Suite */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            {/* Search Input / Trigger */}
+            <div className="relative">
               <AnimatePresence>
                 {searchOpen ? (
                   <motion.form
+                    key="search-form"
                     initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: 220, opacity: 1 }}
+                    animate={{ width: 190, opacity: 1 }}
                     exit={{ width: 0, opacity: 0 }}
-                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                    transition={{ duration: 0.22 }}
                     onSubmit={handleSearchSubmit}
-                    className="flex items-center overflow-hidden bg-white dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E] rounded-full px-3 py-1.5 shadow-soft mr-1 rtl:mr-0 rtl:ml-1"
+                    className="overflow-hidden flex items-center border border-[#963725]/40 bg-white rounded-full px-3 py-1.5 shadow-sm"
                   >
                     <input
                       ref={searchInputRef}
                       type="text"
                       value={searchValue}
                       onChange={(e) => setSearchValue(e.target.value)}
-                      placeholder={isRtl ? 'ابحث في النكهات...' : 'Search confections...'}
-                      className="w-full text-xs bg-transparent text-[#1A1A1A] dark:text-[#F7F3EC] focus:outline-none placeholder-[#736B63]/60 dark:placeholder-[#9C8E83] font-light"
+                      placeholder={isRtl ? 'بحث...' : 'Search...'}
+                      className="w-full text-xs bg-transparent text-[#22120C] placeholder-[#22120C]/40 focus:outline-none border-none shadow-none font-sans"
                     />
-                    {searchValue.trim() ? (
-                      <button
-                        type="submit"
-                        className="text-[11px] font-semibold text-[#3C1322] dark:text-[#E8BD6D] hover:underline px-1 shrink-0 cursor-pointer"
-                      >
-                        {isRtl ? 'بحث' : 'Go'}
-                      </button>
-                    ) : null}
                     <button
                       type="button"
                       onClick={() => setSearchOpen(false)}
-                      className="p-1 text-[#736B63] dark:text-[#9C8E83] hover:text-[#1A1A1A] dark:hover:text-white cursor-pointer ml-1 rtl:ml-0 rtl:mr-1 shrink-0"
-                      aria-label="Close search"
+                      className="text-[#22120C]/50 hover:text-[#22120C] transition-colors cursor-pointer shrink-0 ml-1 rtl:ml-0 rtl:mr-1"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </motion.form>
-                ) : null}
+                ) : (
+                  <button
+                    key="search-btn"
+                    type="button"
+                    onClick={() => setSearchOpen(true)}
+                    className="w-9 h-9 rounded-full hover:bg-[#22120C]/[0.06] border border-[#22120C]/10 text-[#22120C]/75 hover:text-[#963725] flex items-center justify-center transition-all cursor-pointer"
+                    aria-label="Search"
+                  >
+                    <Search className="w-4 h-4" />
+                  </button>
+                )}
               </AnimatePresence>
-
-              <button
-                type="button"
-                onClick={() => {
-                  if (searchOpen && searchValue.trim()) {
-                    handleSearchSubmit();
-                  } else {
-                    setSearchOpen(!searchOpen);
-                  }
-                }}
-                className={`p-2 rounded-full transition-all cursor-pointer ${
-                  searchOpen
-                    ? 'bg-[#3C1322] text-[#FAF7F2]'
-                    : 'text-[#1A1A1A] dark:text-[#F7F3EC] hover:text-[#3C1322] dark:hover:text-[#E8BD6D] hover:bg-[#F4EFEA] dark:hover:bg-[#241A21]'
-                }`}
-                title={isRtl ? 'البحث في المتجر' : 'Search Collection'}
-                aria-label="Search"
-              >
-                <Search className="w-4 h-4" />
-              </button>
             </div>
 
-            {/* Language Switcher */}
+            {/* Language Switcher Pill */}
             <button
               type="button"
               onClick={toggleLanguage}
-              className="hidden sm:inline-flex px-2.5 py-1 text-xs font-mono font-medium text-[#736B63] dark:text-[#C8BEB5] hover:text-[#1A1A1A] dark:hover:text-[#F7F3EC] border border-[#E8E2D7] dark:border-[#33242E] rounded-full hover:border-[#1A1A1A] dark:hover:border-[#E8BD6D] transition-colors cursor-pointer"
-              title={isRtl ? 'Switch to English' : 'التحويل إلى العربية'}
-              aria-label="Toggle Language"
+              className="h-9 px-3.5 rounded-full border border-[#22120C]/15 hover:border-[#963725]/40 hover:bg-[#22120C]/[0.04] text-xs font-mono font-semibold text-[#22120C]/80 hover:text-[#963725] transition-all cursor-pointer flex items-center justify-center"
+              aria-label="Toggle language"
             >
               {language === 'en' ? 'عربي' : 'EN'}
             </button>
 
-            {/* Theme Toggle (Dark / Light) */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="p-1.5 sm:p-2 rounded-full text-[#736B63] dark:text-[#E8BD6D] hover:text-[#1A1A1A] dark:hover:text-[#F7F3EC] hover:bg-[#F4EFEA] dark:hover:bg-[#241A21] border border-[#E8E2D7] dark:border-[#33242E] transition-colors cursor-pointer"
-              title={
-                isDark
-                  ? isRtl
-                    ? 'تفعيل الوضع النهاري'
-                    : 'Switch to Light Mode'
-                  : isRtl
-                  ? 'تفعيل الوضع الليلي'
-                  : 'Switch to Dark Mode'
-              }
-              aria-label="Toggle Dark/Light Mode"
-            >
-              {isDark ? (
-                <Sun className="w-4 h-4 text-[#E8BD6D]" />
-              ) : (
-                <Moon className="w-4 h-4 text-[#3C1322]" />
-              )}
-            </button>
-
-            {/* Shopping Cart Button */}
+            {/* Shopping Tasting Bag Drawer Trigger */}
             <button
               type="button"
               onClick={() => setIsCartOpen(true)}
-              className="relative px-3 sm:px-4 py-1.5 sm:py-2 bg-[#1A1A1A] dark:bg-[#1B1419] border border-transparent dark:border-[#E8BD6D]/40 hover:bg-[#3C1322] dark:hover:bg-[#E8BD6D] text-[#FAF7F2] dark:text-[#E8BD6D] dark:hover:text-[#120D11] rounded-full transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-soft hover:shadow-soft-md shrink-0 active:scale-[0.97]"
-              title="Shopping Bag"
-              aria-label="Shopping Bag"
+              className="h-9 group relative flex items-center gap-1.5 px-3.5 rounded-full border border-[#22120C]/15 hover:border-[#963725]/40 hover:bg-[#22120C]/[0.04] text-[#22120C] transition-all cursor-pointer"
+              aria-label="View shopping bag"
             >
-              <ShoppingBag className="w-3.5 h-3.5 shrink-0" />
-              <span className="font-semibold text-xs tracking-wide">
-                <span className="hidden sm:inline">{isRtl ? 'الحقيبة ' : 'Bag '}</span>
-                <span>({totalCount})</span>
+              <ShoppingBag className="w-3.5 h-3.5 transition-transform group-hover:scale-110" />
+              <span className="font-mono text-xs font-bold text-[#963725]">
+                {totalCount}
               </span>
               {totalCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#E8BD6D] dark:bg-[#E8BD6D] border-2 border-[#FAF7F2] dark:border-[#120D11]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#963725] animate-pulse" />
               )}
+            </button>
+
+            {/* "Say hello" Desktop CTA Button */}
+            <button
+              type="button"
+              onClick={() => handleLinkClick('contact')}
+              className="hidden sm:inline-flex items-center justify-center gap-2 h-9 px-5 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 shadow-xs hover:shadow-[0_4px_16px_rgba(229,141,165,0.4)] cursor-pointer group whitespace-nowrap shrink-0 leading-none"
+            >
+              <span className="translate-y-px">{isRtl ? 'تَوَاصَلْ' : 'Say hello'}</span>
+              <ArrowUpRight className="w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </button>
 
             {/* Mobile Hamburger Button */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-[#1A1A1A] dark:text-[#F7F3EC] hover:bg-[#F4EFEA] dark:hover:bg-[#241A21] rounded-full cursor-pointer"
-              aria-label="Toggle Menu"
-              aria-expanded={mobileMenuOpen}
+              className="lg:hidden w-9 h-9 rounded-full border border-[#22120C]/15 text-[#22120C] hover:bg-[#22120C]/[0.06] flex items-center justify-center transition-colors cursor-pointer"
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
           </div>
-        </div>
-      </div>
+        </nav>
+      </motion.header>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Menu (Floating Frosted Panel) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="md:hidden bg-[#FAF7F2] dark:bg-[#171015] border-b border-[#E8E2D7] dark:border-[#33242E] px-4 py-4 space-y-2"
+            initial={{ opacity: 0, y: -20, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.98 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-x-3 top-20 z-40 max-w-lg mx-auto bg-[#FAF5EE]/98 backdrop-blur-2xl rounded-3xl border border-[#22120C]/12 shadow-[0_20px_50px_rgba(34,18,12,0.18)] p-6 text-[#22120C] lg:hidden"
           >
-            <div className="flex items-center justify-between px-3 pb-3 border-b border-[#E8E2D7] dark:border-[#33242E] mb-2">
-              <span className="font-serif text-xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] lowercase">toomakt</span>
-              <span className="text-[9px] font-mono tracking-widest text-[#736B63] dark:text-[#C8BEB5] uppercase">
-                {isRtl ? 'معمل التوفي · القاهرة' : 'ATELIER DU TOFFEE · CAIRO'}
-              </span>
-            </div>
-            {navLinks.map((link) => {
-              const active = isLinkActive(link.target);
-              return (
+            {/* Mobile Navigation Links */}
+            <nav className="space-y-1.5 pt-2">
+              {navLinks.map((link) => {
+                const active = isActive(link.target);
+                return (
+                  <button
+                    key={link.id}
+                    type="button"
+                    onClick={() => handleLinkClick(link.target)}
+                    className={`w-full text-left rtl:text-right py-3.5 px-4 rounded-2xl flex items-center justify-between text-base font-serif transition-colors ${
+                      active
+                        ? 'bg-[#963725]/10 text-[#963725] font-semibold'
+                        : 'text-[#22120C] hover:bg-[#22120C]/[0.04]'
+                    }`}
+                  >
+                    <span>{isRtl ? link.labelAr : link.labelEn}</span>
+                    <ChevronRight className="w-4 h-4 text-[#22120C]/30 rtl:rotate-180" />
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* Mobile Drawer Bottom Actions */}
+            <div className="pt-6 mt-4 space-y-3.5 border-t border-[#22120C]/10">
+              <div className="flex items-center justify-between gap-3">
                 <button
-                  key={link.id}
-                  onClick={() => handleLinkClick(link.target)}
-                  className={`w-full text-left rtl:text-right px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                    active
-                      ? 'bg-[#3C1322] dark:bg-[#E8BD6D] text-[#FAF7F2] dark:text-[#120D11] font-semibold'
-                      : 'text-[#736B63] dark:text-[#C8BEB5] hover:bg-[#F4EFEA] dark:hover:bg-[#241A21]'
-                  }`}
+                  type="button"
+                  onClick={toggleLanguage}
+                  className="flex-1 py-3 rounded-full border border-[#22120C]/20 text-xs font-mono font-semibold text-[#22120C] hover:border-[#963725] transition-colors"
                 >
-                  {link.label}
+                  {language === 'en' ? 'التحويل إلى العربية' : 'Switch to English'}
                 </button>
-              );
-            })}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsCartOpen(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex-1 py-3 rounded-full bg-[#963725] text-[#FAF5EE] text-xs font-mono font-bold flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>{isRtl ? `الحقيبة (${totalCount})` : `Bag (${totalCount})`}</span>
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] font-mono text-[#22120C]/50 pt-1">
+                <span>HOTLINE: 01024542139</span>
+                <span>CAIRO · ATELIER</span>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 };
+
+export default Navbar;

@@ -2,21 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { CartProvider } from './context/CartContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { MessageCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { AnnouncementBar } from './components/AnnouncementBar';
+import { MessageCircle, ArrowUp } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/Navbar';
+import { CustomCursor } from './components/CustomCursor';
 import { SmoothScroll } from './components/SmoothScroll';
-import { HeroSection } from './components/HeroSection';
-import { BrandMissionSection } from './components/BrandMissionSection';
-import { BrandFlavorShowcaseSection } from './components/BrandFlavorShowcaseSection';
-import { BrandStorySection } from './components/BrandStorySection';
-import { ReviewsSection } from './components/ReviewsSection';
-import { BrandInvitationSection } from './components/BrandInvitationSection';
+import { LandingPageView } from './components/landing/LandingPageView';
+import { FactoryView } from './components/FactoryView';
+import { AboutView } from './components/AboutView';
+import { ContactWholesaleView } from './components/ContactWholesaleView';
 import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
 import { ProductDetailModal } from './components/ProductDetailModal';
-import { FeaturedProductsSection } from './components/FeaturedProductsSection';
 import { ShopAllView } from './components/ShopAllView';
 import { BundlesView } from './components/BundlesView';
 import { TrackOrderView } from './components/TrackOrderView';
@@ -24,7 +21,6 @@ import { CMSPageView } from './components/CMSPageView';
 import { NotFoundPage } from './components/NotFoundPage';
 import { CheckoutView } from './components/CheckoutView';
 import { OrderSuccessView } from './components/OrderSuccessView';
-import { WholesaleView } from './components/WholesaleView';
 import { AlertManagerView } from './components/AlertManagerView';
 import { AdminLoginView } from './components/admin/AdminLoginView';
 import { AdminDashboard } from './components/admin/AdminDashboard';
@@ -57,6 +53,21 @@ export const AppContent: React.FC = () => {
       return null;
     }
   });
+
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 280);
+    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Initialize SEO and tracking pixels
   useEffect(() => {
@@ -139,6 +150,33 @@ export const AppContent: React.FC = () => {
           ? 'صناديق هدايا فاخرة ومجموعات تذوق راقية في علب أنيقة محفورة، مثالية للإهداء والمناسبات السعيدة في مصر.'
           : 'Explore luxury presentation gift boxes, holiday tasting collections, and artisanal toffee canisters from toomakt Cairo atelier.',
         path: 'bundles',
+      },
+      factory: {
+        title: isRtl
+          ? 'المصنع والمجمع الصناعي بالعاشر من رمضان — شركة الزهرة وتوماكت'
+          : 'Manufacturing & Industrial Complex — Al-Zahra & toomakt Cairo',
+        desc: isRtl
+          ? 'جولة موثقة داخل خطوط إنتاج ومراجل النحاس لصناعة التوفي الفاخر بالعاشر من رمضان. معتمد من الهيئة القومية لسلامة الغذاء (NFSA).'
+          : 'Tour our 28,000 sq ft confectionery complex in Cairo. European copper cauldrons, automated cleanrooms, and NFSA-grade food safety.',
+        path: 'factory',
+      },
+      about: {
+        title: isRtl
+          ? 'قصتنا وحرفتنا وتاريخ النشأة — معمل حلويات توماكت القاهرة'
+          : 'Our Craft Heritage & Story — toomakt Confectionery Atelier',
+        desc: isRtl
+          ? 'اكتشف قصة توماكت: طهي هادئ في مراجل نحاسية فرنسية، بيوريه فواكه البساتين 100%، والزبدة الأوروبية الطبيعية بالقاهرة.'
+          : 'Discover the story behind toomakt: slow copper-kettle caramelization, pure fruit purées, and European butter in Cairo.',
+        path: 'about',
+      },
+      contact: {
+        title: isRtl
+          ? 'تواصل مع معمل توماكت — طلبات الجملة وهدايا الشركات والمناسبات'
+          : 'Connect with toomakt — Bespoke Gifting & Wholesale Concierge',
+        desc: isRtl
+          ? 'تواصل مع مستشار حلويات توماكت عبر واتساب أو الهاتف لطلبات الجملة، هدايا المؤتمرات والشركات، وتوريد الفنادق.'
+          : 'Connect directly with our Cairo atelier for corporate gifting, hotel amenities, and bulk confectionery distribution.',
+        path: 'contact',
       },
       'our-story': {
         title: isRtl
@@ -537,169 +575,153 @@ export const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#FAF7F2] dark:bg-[#120D11] text-[#1A1A1A] dark:text-[#F7F3EC] flex flex-col font-sans selection:bg-[#3C1322] selection:text-white dark:selection:bg-[#E8BD6D] dark:selection:text-[#120D11] transition-colors duration-300">
-      {/* 1. Global Announcement Header Bar */}
-      <div className="no-print">
-        <AnnouncementBar onNavigateView={handleNavigateView} />
-      </div>
+    <div className="w-full min-h-screen bg-[#FAF5EE] font-sans selection:bg-[#963725] selection:text-[#FAF5EE] flex flex-col">
+      {/* Desktop custom cursor */}
+      <CustomCursor />
 
-      {/* 2. Brand Sticky Navbar (Redesigned, Professional, Inline Search, No Wishlist) */}
-      <div className="no-print">
-        <Navbar
-          onNavigateSection={handleNavigateSection}
-          onNavigateView={handleNavigateView}
-          currentView={currentView}
-          onSearchQuery={(q) => {
-            handleNavigateView('shop');
-            window.dispatchEvent(new CustomEvent('toomakt:search', { detail: q }));
-          }}
-        />
-      </div>
+      {/* Website Full-Bleed Container */}
+      <div className="flex-1 w-full flex flex-col">
+        {/* Brand Sticky Navbar — visible on ALL pages */}
+        <div className="no-print">
+          <Navbar
+            onNavigateSection={handleNavigateSection}
+            onNavigateView={handleNavigateView}
+            currentView={currentView}
+            onSearchQuery={(q) => {
+              handleNavigateView('shop');
+              window.dispatchEvent(new CustomEvent('toomakt:search', { detail: q }));
+            }}
+          />
+        </div>
 
-      {/* 3. Main Dynamic Content Switcher */}
-      <main className="flex-1 w-full max-w-full overflow-x-hidden">
-        {/* PAGE 1: DEDICATED BRAND INTRODUCTION LANDING PAGE */}
-        {currentView === 'home' && (
-          <div id="brand-landing" className="relative w-full">
-            {/* 1. Brand Hero Introduction with Silent Cinema & Instant Products Quick-Shelf */}
-            <HeroSection
-              onShopNow={() => {
-                const el = document.getElementById('featured-products');
-                if (el) {
-                  if ((window as any).scrollToSmooth) {
-                    (window as any).scrollToSmooth(el, -30);
-                  } else {
-                    el.scrollIntoView({ behavior: 'smooth' });
-                  }
-                } else {
-                  handleNavigateView('shop');
-                }
+        {/* Main Dynamic Content Switcher */}
+        <main className="main-content-layer flex-1 w-full max-w-full overflow-x-hidden">
+          {/* PAGE 1: DEDICATED BRAND INTRODUCTION LANDING PAGE */}
+          {currentView === 'home' && (
+            <LandingPageView
+              onNavigateView={handleNavigateView}
+              onSelectProduct={handleSelectProduct}
+            />
+          )}
+
+          {/* PAGE 2: SEPARATE DEDICATED PRODUCTS EXPERIENCE */}
+          {(currentView === 'shop' || currentView === 'products') && (
+            <ShopAllView
+              onSelectProduct={handleSelectProduct}
+              onNavigateHome={() => handleNavigateView('home')}
+            />
+          )}
+
+          {/* PAGE 3: DEDICATED FACTORIES & MANUFACTURING PAGE */}
+          {(currentView === 'factory' || currentView === 'manufacturing') && (
+            <FactoryView
+              onNavigateHome={() => handleNavigateView('home')}
+              onNavigateContact={() => handleNavigateView('contact')}
+            />
+          )}
+
+          {/* PAGE 4: DEDICATED ABOUT US & CRAFT HERITAGE PAGE */}
+          {(currentView === 'about' || currentView === 'our-story') && (
+            <AboutView
+              onNavigateHome={() => handleNavigateView('home')}
+              onNavigateShop={() => handleNavigateView('shop')}
+              onNavigateFactory={() => handleNavigateView('factory')}
+            />
+          )}
+
+          {/* PAGE 5: DEDICATED CONTACT US & WHOLESALE CONCIERGE */}
+          {(currentView === 'contact' || currentView === 'wholesale') && (
+            <ContactWholesaleView
+              onNavigateHome={() => handleNavigateView('home')}
+              onNavigateShop={() => handleNavigateView('shop')}
+            />
+          )}
+
+          {/* PAGE 6: CURATED BUNDLES FROM DATABASE */}
+          {(currentView === 'bundles' || currentView === 'gifts') && (
+            <BundlesView onNavigateHome={() => handleNavigateView('home')} />
+          )}
+
+          {/* CMS UTILITY PAGES */}
+          {['ingredients', 'faq', 'shipping', 'privacy', 'terms'].includes(currentView) && (
+            <CMSPageView
+              slug={currentView}
+              onBackHome={() => handleNavigateView('home')}
+              onNavigateView={handleNavigateView}
+            />
+          )}
+
+          {/* DEDICATED ALERT SYSTEM MANAGEMENT PAGE */}
+          {(currentView === 'alerts' || currentView === 'announcements') && (
+            <AlertManagerView
+              onBackToStore={() => handleNavigateView('home')}
+              onNavigateView={handleNavigateView}
+            />
+          )}
+
+          {/* UTILITY VIEWS: CHECKOUT, ORDER SUCCESS, TRACKING */}
+          {currentView === 'checkout' && (
+            <CheckoutView
+              onOrderSuccess={(ord) => {
+                setLastOrder(ord);
+                try {
+                  localStorage.setItem('toomakt_last_order', JSON.stringify(ord));
+                } catch (e) {}
+                handleNavigateView('order-success');
               }}
-              onExploreProcess={() => handleNavigateSection('story-ritual')}
-              onSelectProduct={handleSelectProduct}
+              onTrackOrder={(ord) => {
+                setLastOrder(ord);
+                try {
+                  localStorage.setItem('toomakt_last_order', JSON.stringify(ord));
+                } catch (e) {}
+                handleNavigateView('track');
+              }}
+              onBackToShop={() => handleNavigateView('shop')}
             />
+          )}
 
-            {/* 2. Official Products Collection Elevated Directly Below Hero (Instant Visibility) */}
-            <FeaturedProductsSection
-              onSelectProduct={handleSelectProduct}
-              onExploreAll={() => handleNavigateView('shop')}
+          {/* ORDER SUCCESS VIEW */}
+          {currentView === 'order-success' && (
+            <OrderSuccessView
+              order={lastOrder}
+              onContinueShopping={() => handleNavigateView('shop')}
+              onTrackOrder={(_orderNum) => {
+                handleNavigateView('track');
+              }}
             />
+          )}
 
-            {/* 3. Atelier Process & The Toomakt Ritual with Silent Cinema Video */}
-            <BrandStorySection onReadMore={() => handleNavigateView('our-story')} />
-
-            {/* 4. Tasting Palette: 4 Flavor Family Showcase with Instant Smooth Scroll to Products */}
-            <BrandFlavorShowcaseSection
-              onExploreProducts={() => handleNavigateView('shop')}
+          {/* TRACK ORDER VIEW */}
+          {currentView === 'track' && (
+            <TrackOrderView
+              onBackToShop={() => handleNavigateView('shop')}
             />
+          )}
 
-            {/* 5. Our Approach (3 Numbered Craft Pillars) */}
-            <BrandMissionSection onNavigateStory={() => handleNavigateView('our-story')} />
-
-            {/* 6. Verified Client Feedback & Social Proof */}
-            <ReviewsSection />
-
-            {/* 7. Closing Brand Invitation & Direct Shop CTA */}
-            <BrandInvitationSection
-              onShopProducts={() => handleNavigateView('shop')}
-              onContactWholesale={() => handleNavigateView('wholesale')}
+          {/* 404 NOT FOUND VIEW */}
+          {currentView === '404' && (
+            <NotFoundPage
+              onNavigateHome={() => handleNavigateView('home')}
+              onNavigateShop={() => handleNavigateView('shop')}
+              onNavigateTrack={() => handleNavigateView('track')}
+              onOpenSearch={() => handleNavigateView('shop')}
             />
-          </div>
-        )}
-
-        {/* PAGE 2: SEPARATE DEDICATED PRODUCTS EXPERIENCE */}
-        {(currentView === 'shop' || currentView === 'products') && (
-          <ShopAllView
-            onSelectProduct={handleSelectProduct}
-            onNavigateHome={() => handleNavigateView('home')}
-          />
-        )}
-
-        {/* PAGE 2b: CURATED BUNDLES FROM DATABASE */}
-        {(currentView === 'bundles' || currentView === 'gifts') && (
-          <BundlesView onNavigateHome={() => handleNavigateView('home')} />
-        )}
-
-        {/* PAGE 3: ABOUT / CRAFT & INGREDIENTS */}
-        {['our-story', 'about', 'ingredients', 'faq', 'shipping'].includes(currentView) && (
-          <CMSPageView
-            slug={currentView === 'about' ? 'our-story' : currentView}
-            onBackHome={() => handleNavigateView('home')}
-            onNavigateView={handleNavigateView}
-          />
-        )}
-
-        {/* PAGE 4: CONTACT / WHOLESALE & CORPORATE GIFTING */}
-        {(currentView === 'wholesale' || currentView === 'contact') && (
-          <WholesaleView onNavigateView={handleNavigateView} />
-        )}
-
-        {/* PAGE 5: DEDICATED ALERT SYSTEM MANAGEMENT PAGE */}
-        {(currentView === 'alerts' || currentView === 'announcements') && (
-          <AlertManagerView
-            onBackToStore={() => handleNavigateView('home')}
-            onNavigateView={handleNavigateView}
-          />
-        )}
-
-        {/* UTILITY VIEWS: CHECKOUT, ORDER SUCCESS, TRACKING */}
-        {currentView === 'checkout' && (
-          <CheckoutView
-            onOrderSuccess={(ord) => {
-              setLastOrder(ord);
-              try {
-                localStorage.setItem('toomakt_last_order', JSON.stringify(ord));
-              } catch (e) {}
-              handleNavigateView('order-success');
-            }}
-            onTrackOrder={(ord) => {
-              setLastOrder(ord);
-              try {
-                localStorage.setItem('toomakt_last_order', JSON.stringify(ord));
-              } catch (e) {}
-              handleNavigateView('track');
-            }}
-            onBackToShop={() => handleNavigateView('shop')}
-          />
-        )}
-
-        {currentView === 'order-success' && (
-          <OrderSuccessView
-            order={lastOrder}
-            onContinueShopping={() => handleNavigateView('shop')}
-            onTrackOrder={(_orderNum) => {
-              handleNavigateView('track');
-            }}
-          />
-        )}
-
-        {currentView === 'track' && (
-          <TrackOrderView
-            onBackToShop={() => handleNavigateView('shop')}
-          />
-        )}
-
-        {currentView === '404' && (
-          <NotFoundPage
-            onNavigateHome={() => handleNavigateView('home')}
-            onNavigateShop={() => handleNavigateView('shop')}
-            onNavigateTrack={() => handleNavigateView('track')}
-            onOpenSearch={() => handleNavigateView('shop')}
-          />
-        )}
-      </main>
-
-      {/* 4. Luxury Dark Cacao Footer */}
-      <div className="no-print">
-        <Footer onNavigateView={handleNavigateView} />
+          )}
+        </main>
       </div>
+
+      {/* Behind-The-Page Reveal Footer — shows on ALL pages */}
+      <Footer
+        onNavigateView={handleNavigateView}
+        onNavigateSection={handleNavigateSection}
+      />
 
       {/* Slide-over Tasting Bag / Cart Drawer */}
       <div className="no-print">
         <CartDrawer onNavigateView={handleNavigateView} />
       </div>
 
-      {/* Modals: Product Detail Modal ONLY (No Wishlist, No Search Modal Window) */}
+      {/* Modals: Product Detail Modal ONLY */}
       <div className="no-print">
         <ProductDetailModal
           product={selectedProduct}
@@ -708,19 +730,36 @@ export const AppContent: React.FC = () => {
         />
       </div>
 
+      {/* Floating Scroll to Top Button (from reference image) */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 10 }}
+            transition={{ duration: 0.2 }}
+            onClick={scrollToTop}
+            className="no-print fixed bottom-6 right-6 rtl:right-auto rtl:left-6 z-40 w-11 h-11 rounded-full bg-black text-white flex items-center justify-center shadow-xl hover:scale-108 active:scale-95 transition-all cursor-pointer border border-white/20"
+            aria-label="Scroll to top"
+          >
+            <ArrowUp className="w-5 h-5" />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
       {/* Floating Animated WhatsApp Concierge Button */}
       <motion.a
         href="https://wa.me/201024542139?text=Hello%20toomakt%20Atelier!%20I%20have%20an%20inquiry."
         target="_blank"
         rel="noopener noreferrer"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="no-print fixed bottom-6 right-6 z-40 bg-[#3C1322] hover:bg-[#280A15] text-[#FAF7F2] p-3 sm:px-4 sm:py-2.5 rounded-full shadow-soft-lg flex items-center gap-2 transition-all cursor-pointer group select-none border border-[#FAF7F2]/20"
+        whileHover={{ scale: 1.04 }}
+        whileTap={{ scale: 0.96 }}
+        className="no-print fixed bottom-6 left-6 rtl:left-auto rtl:right-6 z-40 bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] p-3 sm:px-4 sm:py-2.5 rounded-full shadow-[0_6px_20px_rgba(150,55,37,0.35)] flex items-center gap-2 transition-all cursor-pointer group select-none border border-[#FAF5EE]/20 font-mono text-xs uppercase tracking-wider"
         title="Chat with toomakt Concierge"
         aria-label="WhatsApp Concierge"
       >
         <MessageCircle className="w-4 h-4" />
-        <span className="hidden sm:inline font-medium text-xs tracking-wider">
+        <span className="hidden sm:inline font-medium text-[11px]">
           Concierge
         </span>
       </motion.a>

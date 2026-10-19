@@ -4,37 +4,54 @@
 
 @layer base {
   :root {
-    color-scheme: light;
-    --bg-page: #FAF7F2;
-    --bg-card: #FFFFFF;
-    --bg-subtle: #F4EFEA;
-    --text-primary: #1A1A1A;
-    --text-secondary: #736B63;
-    --text-muted: #9B938A;
-    --border-main: #E8E2D7;
-    --border-hover: #CFC5B6;
-    --accent-plum: #3C1322;
-    --accent-gold: #FFD147;
-    --accent-amber: #F5A623;
-    --shadow-card: 0 4px 20px rgba(44, 24, 16, 0.05);
-    --shadow-hover: 0 16px 36px -4px rgba(60, 19, 34, 0.12);
+    /* ─── Unified Warm Palette (Landing-First Design System) ─── */
+    --warm-cream:     #FAF5EE;
+    --warm-sand:      #F0E6D8;
+    --warm-linen:     #EADBCC;
+    --deep-brown:     #22120C;
+    --terracotta:     #963725;
+    --terracotta-hover: #822E1E;
+    --secondary-rose: #E58DA5;
+    --secondary-rose-hover: #D4708A;
+    --secondary-rose-light: #FDF2F5;
+    --secondary-rose-glow: rgba(229, 141, 165, 0.28);
+    --golden-amber:   #E4B072;
+    --golden-honey:   #E7B379;
+    --dark-espresso:  #24130D;
+    --soft-olive:     #6B7A5E;
+
+    /* ─── Dark Palette (Utility pages, admin, modals) ─── */
+    --bg-dark:     #0D090C;
+    --bg-card:     #171116;
+    --bg-surface:  #1F161E;
+    --gold:        #E8BD6D;
+    --gold-light:  #F2CE7F;
+    --gold-deep:   #C89748;
+    --amber:       #EFB55B;
+    --terracotta-dark:  #C4563E;
+    --ivory:       #FAF7F2;
+    --cashmere:    #C8BEB5;
+    --border:      rgba(232, 189, 109, 0.16);
+    --border-dark: #33242E;
+
+    /* ─── Frame & Layout ─── */
+    --frame-padding: 0px;
+    --frame-radius: 0px;
+    --navbar-height: 72px;
   }
 
-  html.dark {
-    color-scheme: dark;
-    --bg-page: #120D11;          /* Deep Velvety Cacao Obsidian (soothing & beautiful on eyes) */
-    --bg-card: #1B1419;          /* Warm Ganache Surface (tactile card depth) */
-    --bg-subtle: #241A21;        /* Toasted Praline Surface (chips, pills, inputs) */
-    --text-primary: #F7F3EC;     /* Warm Almond Silk (comforting, zero blue glare) */
-    --text-secondary: #C8BEB5;   /* Soft Cashmere (clear legibility without glare) */
-    --text-muted: #9C8E83;       /* Warm Toasted Stone */
-    --border-main: #33242E;      /* Gentle warm border */
-    --border-hover: #523849;     /* Warm plum glow */
-    --accent-plum: #E27B9E;      /* Rose Velvet highlight */
-    --accent-gold: #E8BD6D;      /* Champagne Honey Gold (gentle and radiant) */
-    --accent-amber: #E89B48;     /* Warm Caramel Amber */
-    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.55), 0 0 1px 1px rgba(232, 189, 109, 0.05);
-    --shadow-hover: 0 20px 48px -6px rgba(0, 0, 0, 0.75), 0 0 16px rgba(232, 189, 109, 0.12);
+  @media (min-width: 640px) {
+    :root {
+      --frame-padding: 0px;
+      --frame-radius: 0px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --frame-padding: 0px;
+      --frame-radius: 0px;
+    }
   }
 
   html {
@@ -44,434 +61,515 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: var(--warm-cream);
   }
 
-  html:not(.lenis) {
-    scroll-behavior: smooth;
-  }
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+  .lenis.lenis-stopped { overflow: hidden; }
 
-  /* Lenis Butter-Smooth Physics Styles */
-  html.lenis,
-  html.lenis body {
-    height: auto;
-  }
-
-  .lenis.lenis-smooth {
-    scroll-behavior: auto !important;
-  }
-
-  .lenis.lenis-smooth [data-lenis-prevent] {
-    overscroll-behavior: contain;
-  }
-
-  .lenis.lenis-stopped {
-    overflow: hidden;
-  }
+  html:not(.lenis) { scroll-behavior: smooth; }
 
   body {
     width: 100%;
     max-width: 100vw;
     overflow-x: hidden;
-    background-color: var(--bg-page);
-    color: var(--text-primary);
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background-color: var(--warm-cream);
+    color: var(--deep-brown);
+    font-family: 'Alexandria', 'Plus Jakarta Sans', system-ui, sans-serif;
     position: relative;
     -webkit-tap-highlight-color: transparent;
-    transition: background-color 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  h1, h2, h3, h4, h5, h6, .font-serif {
-    font-family: 'Fraunces', 'Playfair Display', Georgia, serif;
-    letter-spacing: -0.02em;
+  /* Heading hierarchy */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant Garamond', 'Fraunces', Georgia, serif;
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+    color: var(--deep-brown);
   }
 
-  /* Custom Slim Atelier Scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  /* Slim luxury scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--warm-cream); }
+  ::-webkit-scrollbar-thumb { background: rgba(150, 55, 37, 0.4); border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--terracotta); }
+
+  /* RTL Arabic Typography */
+  html[dir="rtl"] body,
+  html[dir="rtl"] .font-sans,
+  .font-arabic {
+    font-family: 'Alexandria', system-ui, -apple-system, sans-serif !important;
+    letter-spacing: normal !important;
   }
-  ::-webkit-scrollbar-track {
-    background: var(--bg-page);
+  html[dir="rtl"] h1,
+  html[dir="rtl"] h2,
+  html[dir="rtl"] h3 {
+    font-family: 'Alexandria', 'Amiri', system-ui, sans-serif !important;
+    letter-spacing: -0.01em !important;
   }
-  ::-webkit-scrollbar-thumb {
-    background: #D8D0C5;
-    border-radius: 9999px;
-    transition: background 0.2s ease;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #3C1322;
+  .font-calligraphy {
+    font-family: 'Amiri', 'Cormorant Garamond', serif !important;
   }
 
-  html.dark ::-webkit-scrollbar-track {
-    background: #120D11;
+  /* Text selection */
+  ::selection {
+    background-color: var(--terracotta);
+    color: var(--warm-cream);
   }
-  html.dark ::-webkit-scrollbar-thumb {
-    background: #382732;
+
+  /* Custom cursor: hide native when active */
+  html.has-custom-cursor,
+  html.has-custom-cursor * {
+    cursor: none !important;
   }
-  html.dark ::-webkit-scrollbar-thumb:hover {
-    background: #E8BD6D;
+  /* Restore cursor on inputs */
+  html.has-custom-cursor input,
+  html.has-custom-cursor textarea,
+  html.has-custom-cursor select {
+    cursor: text !important;
+  }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .scroll-reveal { opacity: 1 !important; transform: none !important; }
   }
 }
 
-/* =========================================================================
-   LUXURY EDITORIAL BUTTONS & ELEMENTS
-   ========================================================================= */
+/* ============================================================
+   WEBSITE FULL-BLEED LAYOUT SYSTEM
+   Full-width seamless presentation with zero unwanted empty borders
+   ============================================================ */
+.site-frame {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--warm-cream);
+}
+
+.site-frame-inner {
+  flex: 1;
+  width: 100%;
+  border-radius: 0;
+  overflow: visible;
+  position: relative;
+  background-color: var(--warm-cream);
+  box-shadow: none;
+}
+
+/* ============================================================
+   WARM PALETTE BUTTONS (Landing-First Design System)
+   ============================================================ */
+.btn-warm-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  background-color: var(--terracotta);
+  color: var(--warm-cream);
+  font-family: 'Sometype Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.875rem 2rem;
+  border-radius: 9999px;
+  border: 1.5px solid var(--terracotta);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 6px 24px rgba(150, 55, 37, 0.3);
+  cursor: pointer;
+  will-change: transform;
+}
+.btn-warm-primary:hover {
+  background-color: var(--terracotta-hover);
+  border-color: var(--terracotta-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(150, 55, 37, 0.4);
+}
+.btn-warm-primary:active { transform: translateY(0); }
+
+.btn-warm-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: var(--deep-brown);
+  font-family: 'Sometype Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.875rem 2rem;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(34, 18, 12, 0.3);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+}
+.btn-warm-outline:hover {
+  background-color: var(--deep-brown);
+  color: var(--warm-cream);
+  border-color: var(--deep-brown);
+  transform: translateY(-2px);
+}
+.btn-warm-outline:active { transform: translateY(0); }
+
+/* ============================================================
+   DARK PALETTE BUTTONS (preserved for modals, admin, etc.)
+   ============================================================ */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #1A1A1A;
-  color: #FAF7F2;
-  font-weight: 600;
-  font-size: 0.9375rem;
-  padding: 0.75rem 1.75rem;
-  border-radius: 9999px;
-  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform, box-shadow;
-}
-
-.btn-primary:hover {
-  background-color: #3C1322;
-  color: #FAF7F2;
-  transform: translateY(-1.5px);
-  box-shadow: 0 8px 24px rgba(60, 19, 34, 0.22);
-}
-
-html.dark .btn-primary {
-  background: linear-gradient(135deg, #E8BD6D 0%, #D8A953 100%);
-  color: #140F13;
+  gap: 0.5rem;
+  background-color: #E8BD6D;
+  color: #0D090C;
+  font-family: 'Sometype Mono', monospace;
+  font-size: 0.72rem;
   font-weight: 700;
-  box-shadow: 0 4px 18px rgba(232, 189, 109, 0.22);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.875rem 2rem;
+  border-radius: 9999px;
+  border: 1px solid #E8BD6D;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 4px 20px rgba(232, 189, 109, 0.2);
+  cursor: pointer;
+  will-change: transform;
 }
-
-html.dark .btn-primary:hover {
-  background: linear-gradient(135deg, #F0C97D 0%, #E8BD6D 100%);
-  color: #120D11;
-  box-shadow: 0 8px 28px rgba(232, 189, 109, 0.38);
-  transform: translateY(-1.5px);
+.btn-primary:hover {
+  background-color: #F2CE7F;
+  border-color: #F2CE7F;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(232, 189, 109, 0.35);
 }
+.btn-primary:active { transform: translateY(0); }
 
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-.btn-secondary {
+.btn-outline {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   background-color: transparent;
-  color: var(--text-primary);
-  font-weight: 500;
-  font-size: 0.9375rem;
-  padding: 0.75rem 1.75rem;
+  color: #FAF7F2;
+  font-family: 'Sometype Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.875rem 2rem;
   border-radius: 9999px;
-  border: 1px solid var(--border-main);
-  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform, background-color;
+  border: 1px solid rgba(232, 189, 109, 0.35);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
 }
-
-.btn-secondary:hover {
-  border-color: var(--text-primary);
-  background-color: var(--bg-card);
-  transform: translateY(-1.5px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+.btn-outline:hover {
+  background-color: rgba(232, 189, 109, 0.12);
+  color: #E8BD6D;
+  border-color: #E8BD6D;
+  transform: translateY(-2px);
 }
+.btn-outline:active { transform: translateY(0); }
 
-.btn-secondary:active {
-  transform: translateY(0);
-}
+.btn-secondary { @apply btn-outline; }
 
-.btn-link {
+/* ============================================================
+   WARM PALETTE COMPONENTS
+   ============================================================ */
+
+/* Warm micro-badge chips */
+.label-chip-warm {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  font-family: 'Sometype Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  background-color: rgba(150, 55, 37, 0.08);
+  border: 1px solid rgba(150, 55, 37, 0.2);
+  padding: 0.35rem 0.875rem;
+  border-radius: 9999px;
 }
 
-.btn-link:hover {
-  color: #3C1322;
-  gap: 0.55rem;
+/* Warm Category Filter Pills */
+.category-pill-warm {
+  font-family: 'Sometype Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(34, 18, 12, 0.18);
+  background-color: transparent;
+  color: rgba(34, 18, 12, 0.7);
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.category-pill-warm:hover {
+  border-color: rgba(34, 18, 12, 0.4);
+  color: var(--deep-brown);
+  background-color: rgba(34, 18, 12, 0.04);
+}
+.category-pill-warm.active {
+  background-color: var(--terracotta);
+  color: var(--warm-cream);
+  border-color: var(--terracotta);
+  font-weight: 700;
+  box-shadow: 0 3px 16px rgba(150, 55, 37, 0.25);
 }
 
-html.dark .btn-link:hover {
-  color: #E8BD6D;
+/* Warm card hover */
+.card-warm {
+  background-color: white;
+  border: 1px solid rgba(34, 18, 12, 0.1);
+  border-radius: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+.card-warm:hover {
+  border-color: rgba(150, 55, 37, 0.25);
+  box-shadow: 0 16px 48px rgba(34, 18, 12, 0.1);
+  transform: translateY(-3px);
 }
 
-/* =========================================================================
-   LUXURY ATELIER CARDS & FILTERS
-   ========================================================================= */
-.atelier-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-main);
-  border-radius: 1.25rem;
-  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform, box-shadow;
-}
+/* ============================================================
+   DARK PALETTE COMPONENTS (preserved)
+   ============================================================ */
 
-.atelier-card:hover {
-  border-color: var(--border-hover);
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-3.5px);
-}
-
-html.dark .atelier-card {
-  background: #1B1419;
-  border-color: #33242E;
-}
-
-html.dark .atelier-card:hover {
-  border-color: #E8BD6D;
-  box-shadow: 0 16px 40px -5px rgba(0, 0, 0, 0.75), 0 0 20px rgba(232, 189, 109, 0.12);
+/* Micro-badge chips */
+.label-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: 'Sometype Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #C8BEB5;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(232, 189, 109, 0.16);
+  padding: 0.35rem 0.875rem;
+  border-radius: 9999px;
 }
 
 /* Category Filter Pills */
 .category-pill {
+  font-family: 'Sometype Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   padding: 0.5rem 1.25rem;
   border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  border: 1px solid transparent;
+  border: 1px solid #33242E;
+  background-color: #171116;
+  color: #C8BEB5;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
   white-space: nowrap;
 }
-
-.category-pill.active {
-  background-color: #1A1A1A;
+.category-pill:hover {
+  border-color: rgba(232, 189, 109, 0.4);
   color: #FAF7F2;
 }
-
-html.dark .category-pill.active {
+.category-pill.active {
   background-color: #E8BD6D;
-  color: #120D11;
+  color: #0D090C;
+  border-color: #E8BD6D;
   font-weight: 700;
-  box-shadow: 0 4px 14px rgba(232, 189, 109, 0.25);
+  box-shadow: 0 2px 14px rgba(232, 189, 109, 0.25);
 }
 
-.category-pill:not(.active) {
-  background-color: transparent;
-  color: var(--text-secondary);
-  border-color: var(--border-main);
+/* Luxury card glow */
+.card-dark {
+  background-color: #171116;
+  border: 1px solid #33242E;
+  border-radius: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card-dark:hover {
+  border-color: rgba(232, 189, 109, 0.35);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
 }
 
-.category-pill:not(.active):hover {
-  border-color: var(--text-primary);
-  color: var(--text-primary);
+/* ============================================================
+   SCROLL ANIMATION UTILITIES
+   ============================================================ */
+
+/* Scroll-triggered reveal base */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Continuous Marquee Animation */
+.scroll-reveal-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.scroll-reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-reveal-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.scroll-reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-reveal-scale {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.scroll-reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Stagger delay utilities */
+.stagger-1 { transition-delay: 0.08s; }
+.stagger-2 { transition-delay: 0.16s; }
+.stagger-3 { transition-delay: 0.24s; }
+.stagger-4 { transition-delay: 0.32s; }
+.stagger-5 { transition-delay: 0.40s; }
+.stagger-6 { transition-delay: 0.48s; }
+
+/* ============================================================
+   FOOTER REVEAL SYSTEM
+   The footer sits fixed behind the main content.
+   Main content has a bottom margin equal to footer height.
+   ============================================================ */
+.footer-reveal {
+  position: fixed;
+  bottom: 0;
+  left: var(--frame-padding);
+  right: var(--frame-padding);
+  z-index: 0;
+}
+
+.main-content-layer {
+  position: relative;
+  z-index: 10;
+  background-color: var(--warm-cream);
+  box-shadow: 0 50px 100px rgba(34, 18, 12, 0.3);
+}
+
+/* ============================================================
+   SECTION TRANSITIONS — Eliminate visual cutoffs
+   ============================================================ */
+.section-fade-top::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--warm-cream), transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.section-fade-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to top, var(--warm-cream), transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ============================================================
+   INFINITE MARQUEE ANIMATIONS
+   ============================================================ */
 @keyframes marquee {
   0% { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
+  100% { transform: translateX(-100%); }
 }
-
+@keyframes marquee2 {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(0%); }
+}
 .animate-marquee {
-  display: flex;
-  width: 200%;
-  animation: marquee 30s linear infinite;
+  animation: marquee 35s linear infinite;
 }
-
-.animate-marquee:hover {
+.animate-marquee2 {
+  animation: marquee2 35s linear infinite;
+}
+.animate-marquee:hover,
+.animate-marquee2:hover {
   animation-play-state: paused;
 }
 
-/* RTL Typography Support for Arabic */
-html[dir="rtl"] body,
-html[dir="rtl"] .font-sans,
-.font-arabic {
-  font-family: 'Cairo', 'Plus Jakarta Sans', system-ui, sans-serif !important;
-  letter-spacing: normal !important;
+/* ============================================================
+   LENIS SILK SMOOTH SCROLL STYLES
+   ============================================================ */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
-html[dir="rtl"] h1,
-html[dir="rtl"] h2,
-html[dir="rtl"] h3,
-html[dir="rtl"] .font-serif {
-  font-family: 'Cairo', Georgia, serif !important;
-  letter-spacing: normal !important;
+
+/* ============================================================
+   CUSTOM CURSOR STYLING
+   ============================================================ */
+@media (hover: hover) and (pointer: fine) {
+  html.has-custom-cursor [data-cursor="view"],
+  html.has-custom-cursor [data-cursor="taste"],
+  html.has-custom-cursor [data-cursor="branch"],
+  html.has-custom-cursor [data-cursor="explore"],
+  html.has-custom-cursor [data-cursor="drag"],
+  html.has-custom-cursor [data-cursor="play"] {
+    cursor: pointer;
+  }
 }
 
-/* =========================================================================
-   COMPREHENSIVE DARK MODE CLASS MAPPINGS (NO FLASHES, NO BROKEN CONTRAST)
-   ========================================================================= */
-html.dark .bg-white,
-html.dark [class*="bg-white"] {
-  background-color: #1B1419 !important;
-}
-
-html.dark [class*="bg-[#FAF7F2]"] {
-  background-color: #120D11 !important;
-}
-
-html.dark [class*="bg-[#FAF7F2]/"] {
-  background-color: rgba(18, 13, 17, 0.95) !important;
-}
-
-html.dark [class*="bg-[#F4EFEA]"] {
-  background-color: #20171F !important;
-}
-
-html.dark [class*="bg-[#FDFBF7]"] {
-  background-color: #1B1419 !important;
-}
-
-html.dark [class*="bg-[#EAE3D2]"] {
-  background-color: #2A1D28 !important;
-}
-
-html.dark [class*="bg-[#F5F0E6]"] {
-  background-color: #241A22 !important;
-}
-
-html.dark [class*="bg-[#0C080A]"] {
-  background-color: #120D11 !important;
-}
-
-html.dark [class*="bg-[#140C12]"] {
-  background-color: #1B1419 !important;
-}
-
-html.dark [class*="border-[#E8E2D7]"] {
-  border-color: #33242E !important;
-}
-
-html.dark [class*="border-[#2A1622]"] {
-  border-color: #382732 !important;
-}
-
-html.dark [class*="border-[#341F2B]"] {
-  border-color: #3D2B37 !important;
-}
-
-html.dark [class*="border-[#D6CCC0]"],
-html.dark [class*="border-[#CFC5B6]"] {
-  border-color: #4A3343 !important;
-}
-
-html.dark [class*="text-[#1A1A1A]"] {
-  color: #F7F3EC !important;
-}
-
-html.dark [class*="text-[#FAF5EE]"] {
-  color: #F7F3EC !important;
-}
-
-html.dark [class*="text-[#736B63]"] {
-  color: #C8BEB5 !important;
-}
-
-html.dark [class*="text-[#9B938A]"] {
-  color: #9C8E83 !important;
-}
-
-html.dark .hover\:bg-\[\#F4EFEA\]:hover {
-  background-color: #261C24 !important;
-}
-
-html.dark .hover\:border-\[\#1A1A1A\]:hover {
-  border-color: #E8BD6D !important;
-}
-
-/* Form Inputs in Dark Mode */
-html.dark input,
-html.dark select,
-html.dark textarea {
-  background-color: #1F161E !important;
-  color: #F7F3EC !important;
-  border-color: #382732 !important;
-}
-
-html.dark input:focus,
-html.dark select:focus,
-html.dark textarea:focus {
-  border-color: #E8BD6D !important;
-  box-shadow: 0 0 0 2px rgba(232, 189, 109, 0.22) !important;
-}
-
-html.dark input::placeholder,
-html.dark textarea::placeholder {
-  color: #8C7F75 !important;
-}
-
-/* =========================================================================
-   OFFICIAL ATELIER PRINT & INVOICE MEDIA STYLES
-   ========================================================================= */
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
 @media print {
-  /* Hide all website navigation, headers, footers, interactive buttons, and floating widgets */
-  header,
-  nav,
-  footer,
-  .no-print,
-  #concierge,
-  [aria-label="WhatsApp Concierge"],
-  .btn-primary,
-  .btn-secondary,
-  button:not(.print-include) {
-    display: none !important;
-  }
-
-  /* Force background to white and text to crisp black/plum */
-  html, body {
-    background-color: #ffffff !important;
-    background: #ffffff !important;
-    color: #1A1A1A !important;
-    font-size: 11pt !important;
-    line-height: 1.4 !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-  }
-
-  main {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-  }
-
-  /* Page setup: A4 portrait with proper print margins */
-  @page {
-    size: A4 portrait;
-    margin: 12mm 15mm;
-  }
-
-  /* Ensure colors and borders are printed faithfully */
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-  }
-
-  /* Avoid awkward page break splits */
-  .print-avoid-break,
-  .official-invoice,
-  .receipt-table,
-  tr, td, th {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-  /* Hide on-screen celebration elements during print */
-  .screen-only {
-    display: none !important;
-  }
-
-  /* Display dedicated printable invoice */
-  .printable-invoice {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    padding: 0 !important;
-  }
-}
-
-/* Hide printable-only invoice on normal screen */
-@media screen {
-  .print-only {
-    display: none !important;
-  }
+  .no-print { display: none !important; }
+  .site-frame { padding: 0; }
+  .site-frame-inner { border-radius: 0; box-shadow: none; }
 }
 
