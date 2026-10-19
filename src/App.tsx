@@ -24,6 +24,7 @@ import { OrderSuccessView } from './components/OrderSuccessView';
 import { AlertManagerView } from './components/AlertManagerView';
 import { AdminLoginView } from './components/admin/AdminLoginView';
 import { AdminDashboard } from './components/admin/AdminDashboard';
+import { BrandPreloader } from './components/BrandPreloader';
 import { Product } from './types';
 import { initSeoAndTracking } from './services/seoTracking';
 import { seo } from './services/seo';
@@ -576,6 +577,9 @@ export const AppContent: React.FC = () => {
 
   return (
     <div className="w-full min-h-screen bg-[#FAF5EE] font-sans selection:bg-[#963725] selection:text-[#FAF5EE] flex flex-col">
+      {/* Brand Luxury Initial & Refresh Preloader with Smooth Animated Transition */}
+      <BrandPreloader minDurationMs={550} />
+
       {/* Desktop custom cursor */}
       <CustomCursor />
 

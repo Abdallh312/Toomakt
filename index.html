@@ -43,12 +43,13 @@
     <meta name="twitter:description" content="حلويات توفي فاخرة مطهوة ببطء مع بيوريه الفواكه الطبيعية والزبدة الأوروبية في القاهرة، مصر." />
     <meta name="twitter:image" content="https://www.toomakt.com/images/hero/hero_spec.jpg" />
 
-    <!-- Google Fonts: Lora, Alexandria, Cormorant Garamond, Amiri, Fraunces, Sometype Mono, Plus Jakarta Sans -->
+    <!-- Optimized Google Fonts: Lora, Alexandria, Amiri, Sometype Mono with display=swap -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sometype+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&family=Amiri:wght@400;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Sometype+Mono:wght@400;600&display=swap">
 
-    <!-- Critical LCP Hero Preload -->
+    <!-- Critical Asset Preloads for Instant Render -->
+    <link rel="preload" as="image" href="/images/logos/toomakt_logo_main.png" type="image/png">
     <link rel="preload" as="image" href="/images/hero/hero_confection_poster.webp" type="image/webp" fetchpriority="high">
 
     <!-- Schema.org Initial Graph for Crawlers -->
@@ -95,8 +96,33 @@
     }
     </script>
   </head>
-  <body class="bg-[#0D090C] text-[#FAF7F2] font-sans antialiased overflow-x-hidden selection:bg-[#E8BD6D] selection:text-[#0D090C]">
-    <div id="root"></div>
+  <body class="bg-[#FAF5EE] text-[#22120C] font-sans antialiased overflow-x-hidden selection:bg-[#963725] selection:text-[#FAF5EE]">
+    <div id="root">
+      <!-- Instant Pre-React Branded Luxury Splash Loader (Zero Flash on Refresh) -->
+      <div id="toomakt-initial-splash" style="position:fixed;inset:0;background-color:#FAF5EE;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;font-family:serif;">
+        <div style="position:relative;width:110px;height:110px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+          <div style="position:absolute;inset:0;border-radius:50%;border:2.5px solid rgba(150,55,37,0.12);border-top-color:#963725;border-right-color:#E890A8;animation:toomaktSplashSpin 1.1s cubic-bezier(0.5,0,0.5,1) infinite;"></div>
+          <div style="position:absolute;inset:6px;border-radius:50%;background:#ffffff;box-shadow:0 10px 28px rgba(150,55,37,0.12);display:flex;align-items:center;justify-content:center;">
+            <img src="/images/logos/toomakt_logo_main.png" alt="toomakt" style="width:56px;height:56px;object-fit:contain;" />
+          </div>
+        </div>
+        <div style="font-family:'Lora',Georgia,serif;font-size:30px;color:#22120C;letter-spacing:-0.03em;margin-bottom:6px;line-height:1;">toomakt</div>
+        <div style="font-family:'Alexandria',system-ui,sans-serif;font-size:10px;color:#963725;letter-spacing:0.22em;text-transform:uppercase;font-weight:600;">ARTISANAL CONFECTIONERY · EST. 1970</div>
+        <div style="margin-top:22px;width:140px;height:3px;border-radius:99px;background:rgba(34,18,12,0.08);overflow:hidden;position:relative;">
+          <div style="position:absolute;top:0;left:0;bottom:0;width:50%;background:linear-gradient(90deg,#963725,#E890A8,#6AACE9);border-radius:99px;animation:toomaktSplashBar 1.2s ease-in-out infinite alternate;"></div>
+        </div>
+      </div>
+      <style>
+        @keyframes toomaktSplashSpin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        @keyframes toomaktSplashBar {
+          0% { left: 0%; width: 30%; }
+          100% { left: 70%; width: 30%; }
+        }
+      </style>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
