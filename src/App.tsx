@@ -578,7 +578,7 @@ export const AppContent: React.FC = () => {
   return (
     <div className="w-full min-h-screen bg-[#FAF5EE] font-sans selection:bg-[#963725] selection:text-[#FAF5EE] flex flex-col">
       {/* Brand Luxury Initial & Refresh Preloader with Smooth Animated Transition */}
-      <BrandPreloader minDurationMs={550} />
+      <BrandPreloader minDurationMs={240} />
 
       {/* Desktop custom cursor */}
       <CustomCursor />

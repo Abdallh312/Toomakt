@@ -98,30 +98,48 @@
   </head>
   <body class="bg-[#FAF5EE] text-[#22120C] font-sans antialiased overflow-x-hidden selection:bg-[#963725] selection:text-[#FAF5EE]">
     <div id="root">
-      <!-- Instant Pre-React Branded Luxury Splash Loader (Zero Flash on Refresh) -->
-      <div id="toomakt-initial-splash" style="position:fixed;inset:0;background-color:#FAF5EE;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;font-family:serif;">
-        <div style="position:relative;width:110px;height:110px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
-          <div style="position:absolute;inset:0;border-radius:50%;border:2.5px solid rgba(150,55,37,0.12);border-top-color:#963725;border-right-color:#E890A8;animation:toomaktSplashSpin 1.1s cubic-bezier(0.5,0,0.5,1) infinite;"></div>
-          <div style="position:absolute;inset:6px;border-radius:50%;background:#ffffff;box-shadow:0 10px 28px rgba(150,55,37,0.12);display:flex;align-items:center;justify-content:center;">
-            <img src="/images/logos/toomakt_logo_main.png" alt="toomakt" style="width:56px;height:56px;object-fit:contain;" />
-          </div>
-        </div>
-        <div style="font-family:'Lora',Georgia,serif;font-size:30px;color:#22120C;letter-spacing:-0.03em;margin-bottom:6px;line-height:1;">toomakt</div>
-        <div style="font-family:'Alexandria',system-ui,sans-serif;font-size:10px;color:#963725;letter-spacing:0.22em;text-transform:uppercase;font-weight:600;">ARTISANAL CONFECTIONERY · EST. 1970</div>
-        <div style="margin-top:22px;width:140px;height:3px;border-radius:99px;background:rgba(34,18,12,0.08);overflow:hidden;position:relative;">
-          <div style="position:absolute;top:0;left:0;bottom:0;width:50%;background:linear-gradient(90deg,#963725,#E890A8,#6AACE9);border-radius:99px;animation:toomaktSplashBar 1.2s ease-in-out infinite alternate;"></div>
-        </div>
-      </div>
+      <!-- Instant Pre-React Branded Luxury Splash Loader (Zero Flash on Refresh & Guaranteed Zero Borders) -->
       <style>
-        @keyframes toomaktSplashSpin {
+        #toomakt-initial-splash,
+        #toomakt-initial-splash * {
+          box-sizing: border-box !important;
+          border: 0 none transparent !important;
+          outline: 0 none transparent !important;
+          box-shadow: none !important;
+          -webkit-appearance: none !important;
+          appearance: none !important;
+        }
+        @keyframes toomaktSpin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
-        @keyframes toomaktSplashBar {
-          0% { left: 0%; width: 30%; }
-          100% { left: 70%; width: 30%; }
+        @keyframes toomaktPulseScale {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.04); }
         }
       </style>
+      <div id="toomakt-initial-splash" style="position:fixed;inset:0;background-color:#FAF5EE;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;user-select:none;pointer-events:none;-webkit-user-select:none;">
+        <div style="position:relative;width:96px;height:96px;display:flex;align-items:center;justify-content:center;">
+          <!-- Spinning Vector Orbital Ring (SVG Circle prevents any rectangular border artifacts) -->
+          <svg viewBox="0 0 100 100" style="position:absolute;inset:0;width:100%;height:100%;animation:toomaktSpin 1.1s cubic-bezier(0.5,0,0.5,1) infinite;overflow:visible;">
+            <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(150,55,37,0.12)" stroke-width="2.5" />
+            <circle cx="50" cy="50" r="44" fill="none" stroke="url(#toomaktSplashGrad)" stroke-width="2.5" stroke-dasharray="68 180" stroke-linecap="round" />
+            <defs>
+              <linearGradient id="toomaktSplashGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#963725" />
+                <stop offset="50%" stop-color="#E890A8" />
+                <stop offset="100%" stop-color="#6AACE9" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <!-- Brand Logo in Center -->
+          <img src="/images/logos/toomakt_logo_main.png" alt="toomakt" width="48" height="48" style="position:relative;z-index:2;width:48px;height:48px;object-fit:contain;border-radius:50%;display:block;animation:toomaktPulseScale 1.8s ease-in-out infinite;" />
+        </div>
+        <!-- Minimal Elegant Brandmark Word -->
+        <div style="margin-top:16px;font-family:'Alexandria',-apple-system,BlinkMacSystemFont,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.26em;color:#963725;text-transform:uppercase;line-height:1;">
+          toomakt
+        </div>
+      </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

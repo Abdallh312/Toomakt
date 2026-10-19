@@ -10,26 +10,25 @@ interface BrandPreloaderProps {
 
 export const BrandPreloader: React.FC<BrandPreloaderProps> = ({
   onComplete,
-  minDurationMs = 550,
+  minDurationMs = 240,
 }) => {
   const { isRtl } = useLanguage();
   const [isVisible, setIsVisible] = useState(true);
-  const [progress, setProgress] = useState(12);
+  const [progress, setProgress] = useState(20);
 
   useEffect(() => {
-    // Smooth progress increment
+    // Fast, responsive progress increment
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(progressInterval);
           return 100;
         }
-        const step = Math.max(12, Math.floor((100 - prev) / 3));
-        return Math.min(100, prev + step);
+        return Math.min(100, prev + 25);
       });
-    }, 60);
+    }, 28);
 
-    // Minimum display duration to allow buttery visual transition
+    // Fast minimum duration for instant refresh feel
     const timer = setTimeout(() => {
       setIsVisible(false);
       if (onComplete) {
@@ -51,12 +50,11 @@ export const BrandPreloader: React.FC<BrandPreloaderProps> = ({
           initial={{ opacity: 1 }}
           exit={{
             opacity: 0,
-            scale: 1.03,
-            filter: 'blur(8px)',
-            transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+            scale: 1.02,
+            transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
           }}
-          className="fixed inset-0 z-[99999] bg-[#FAF5EE] flex flex-col items-center justify-center overflow-hidden select-none cursor-wait"
-          style={{ willChange: 'opacity, transform, filter' }}
+          className="fixed inset-0 z-[99999] bg-[#FAF5EE] flex flex-col items-center justify-center overflow-hidden select-none cursor-wait border-0 outline-none"
+          style={{ willChange: 'opacity, transform' }}
           role="status"
           aria-live="polite"
           aria-label={isRtl ? 'جاري تحضير تجربة توماكت...' : 'Preparing the toomakt experience...'}
@@ -135,13 +133,13 @@ export const BrandPreloader: React.FC<BrandPreloaderProps> = ({
               </svg>
 
               {/* Pulsing Concentric Aura */}
-              <div className="absolute inset-2 rounded-full bg-white/90 backdrop-blur-md border border-[#22120C]/08 shadow-[0_12px_36px_rgba(150,55,37,0.12)] flex items-center justify-center" />
+              <div className="absolute inset-2 rounded-full bg-white/95 backdrop-blur-md border-0 shadow-[0_12px_36px_rgba(150,55,37,0.1)] flex items-center justify-center" />
 
               {/* Logo Emblem */}
               <motion.img
                 src="/images/logos/toomakt_logo_main.png"
                 alt="toomakt"
-                className="relative z-10 w-14 h-14 sm:w-16 sm:h-16 object-contain filter drop-shadow-[0_4px_12px_rgba(150,55,37,0.15)]"
+                className="relative z-10 w-14 h-14 sm:w-16 sm:h-16 object-contain filter drop-shadow-[0_4px_12px_rgba(150,55,37,0.15)] border-0"
                 animate={{
                   scale: [1, 1.05, 1],
                 }}
@@ -153,7 +151,7 @@ export const BrandPreloader: React.FC<BrandPreloaderProps> = ({
               />
 
               {/* Little Floating Confection Sparkle */}
-              <div className="absolute -top-1 -right-1 z-20 w-7 h-7 rounded-full bg-white shadow-sm border border-[#E890A8]/40 flex items-center justify-center">
+              <div className="absolute -top-1 -right-1 z-20 w-7 h-7 rounded-full bg-white shadow-sm border-0 flex items-center justify-center">
                 <Sparkles className="w-3.5 h-3.5 text-[#E890A8] animate-pulse" />
               </div>
             </motion.div>
@@ -165,11 +163,11 @@ export const BrandPreloader: React.FC<BrandPreloaderProps> = ({
               transition={{ delay: 0.1, duration: 0.35 }}
               className="space-y-1.5"
             >
-              <h1 className="font-serif text-2xl sm:text-3xl text-[#22120C] font-normal tracking-tight leading-none lowercase">
+              <h1 className="font-serif text-2xl sm:text-3xl text-[#22120C] font-normal tracking-tight leading-none lowercase border-0">
                 toomakt
               </h1>
 
-              <div className="flex items-center justify-center gap-1.5 text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#963725] font-semibold">
+              <div className="flex items-center justify-center gap-1.5 text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#963725] font-semibold border-0">
                 <span>{isRtl ? 'حِرْفَةُ التَّوْفِي الفَاخِرَة' : 'ARTISANAL TOFFEE'}</span>
                 <span className="text-[#E890A8]">•</span>
                 <span>{isRtl ? 'سُورْيَا ١٩٧٠ · مِصْر' : 'EST. 1970'}</span>
@@ -180,13 +178,13 @@ export const BrandPreloader: React.FC<BrandPreloaderProps> = ({
             <motion.div
               initial={{ opacity: 0, width: 0 }}
               animate={{ opacity: 1, width: 140 }}
-              transition={{ delay: 0.15, duration: 0.3 }}
-              className="mt-6 w-36 h-1 rounded-full bg-[#22120C]/08 overflow-hidden relative"
+              transition={{ delay: 0.1, duration: 0.2 }}
+              className="mt-6 w-36 h-1 rounded-full bg-[#22120C]/08 overflow-hidden relative border-0"
             >
               <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-[#963725] via-[#E890A8] to-[#6AACE9]"
+                className="h-full rounded-full bg-gradient-to-r from-[#963725] via-[#E890A8] to-[#6AACE9] border-0"
                 style={{ width: `${progress}%` }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.15 }}
               />
             </motion.div>
 
