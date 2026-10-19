@@ -7,9 +7,7 @@ import {
   ArrowRight,
   AlertCircle,
   ShieldCheck,
-  ArrowLeft,
-  KeyRound,
-  Check
+  ArrowLeft
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../services/api';
@@ -21,13 +19,12 @@ interface AdminLoginViewProps {
 }
 
 export const AdminLoginView: React.FC<AdminLoginViewProps> = ({ onLoginSuccess, onBackToShop }) => {
-  const [email, setEmail] = useState('admin@toomakt.com');
-  const [password, setPassword] = useState('admin123456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [demoCopied, setDemoCopied] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,13 +55,6 @@ export const AdminLoginView: React.FC<AdminLoginViewProps> = ({ onLoginSuccess, 
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleFillDemo = () => {
-    setEmail('admin@toomakt.com');
-    setPassword('admin123456');
-    setDemoCopied(true);
-    setTimeout(() => setDemoCopied(false), 2000);
   };
 
   const handleReturnHome = () => {
@@ -164,7 +154,7 @@ export const AdminLoginView: React.FC<AdminLoginViewProps> = ({ onLoginSuccess, 
                     onChange={e => setEmail(e.target.value)}
                     required
                     autoComplete="username"
-                    placeholder="admin@toomakt.com"
+                    placeholder="name@company.com"
                     className="w-full bg-[#FAF7F2] border border-[#E8E2D7] focus:border-[#3C1322] rounded-xl pl-10 pr-4 py-2.5 text-sm text-[#1A1A1A] placeholder-[#736B63]/60 focus:outline-none focus:ring-1 focus:ring-[#3C1322] transition-colors"
                   />
                 </div>
@@ -239,49 +229,18 @@ export const AdminLoginView: React.FC<AdminLoginViewProps> = ({ onLoginSuccess, 
               </button>
             </form>
 
-            {/* Quick Demo Autofill Helper */}
-            <div className="mt-6 pt-5 border-t border-[#E8E2D7] text-center">
-              <div className="bg-[#FAF7F2] rounded-2xl p-3 border border-[#E8E2D7] text-left flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#736B63] block font-semibold">
-                    Superuser Credentials Demo
-                  </span>
-                  <div className="text-xs text-[#1A1A1A] font-mono truncate mt-0.5">
-                    <span>admin@toomakt.com</span>
-                    <span className="text-[#736B63] mx-1.5">•</span>
-                    <span>admin123456</span>
-                  </div>
-                </div>
-
+            {/* Back to Storefront */}
+            {onBackToShop && (
+              <div className="mt-6 pt-4 border-t border-[#E8E2D7] text-center">
                 <button
                   type="button"
-                  onClick={handleFillDemo}
-                  className="shrink-0 text-xs px-2.5 py-1 rounded-lg bg-white border border-[#E8E2D7] hover:border-[#1A1A1A] text-[#1A1A1A] font-medium transition flex items-center gap-1 cursor-pointer shadow-2xs"
-                  title="Auto-fill form with superuser credentials"
-                >
-                  {demoCopied ? (
-                    <>
-                      <Check className="w-3 h-3 text-[#2E7D32]" />
-                      <span className="text-[#2E7D32]">Filled</span>
-                    </>
-                  ) : (
-                    <>
-                      <KeyRound className="w-3 h-3 text-[#736B63]" />
-                      <span>Fill</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {onBackToShop && (
-                <button
                   onClick={onBackToShop}
-                  className="mt-3.5 inline-block text-xs text-[#736B63] hover:text-[#1A1A1A] underline underline-offset-4 transition-colors cursor-pointer"
+                  className="inline-block text-xs text-[#736B63] hover:text-[#1A1A1A] underline underline-offset-4 transition-colors cursor-pointer"
                 >
                   Back to Storefront
                 </button>
-              )}
-            </div>
+              </div>
+            )}
 
           </div>
 

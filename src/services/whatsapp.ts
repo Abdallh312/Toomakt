@@ -106,7 +106,7 @@ Customer: *${order.customer_name}*
 Amount Submitted: *${Number(amount || order.total_amount).toFixed(2)} EGP*${refText}
 
 Your payment screenshot has been submitted.
-Your order is now waiting for admin verification.
+Your order is now waiting for verification.
 You will receive an update as soon as the atelier team approves the transaction.`;
   },
 

@@ -122,8 +122,8 @@ export const BundlesView: React.FC<BundlesViewProps> = ({ onNavigateHome }) => {
               </h2>
               <p className="text-sm text-[#22120C]/70 font-light max-w-md mx-auto">
                 {isRtl
-                  ? 'أضف باقات من لوحة التحكم لتظهر هنا مباشرة من قاعدة البيانات.'
-                  : 'Add gift bundles in the admin dashboard — they will appear here from the database.'}
+                  ? 'ترقبوا إطلاق باقات وتشكيلات الهدايا الفاخرة قريباً.'
+                  : 'Curated luxury gift collections and bundles coming soon.'}
               </p>
             </div>
           ) : (

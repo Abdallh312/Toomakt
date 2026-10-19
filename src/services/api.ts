@@ -772,7 +772,7 @@ export const api = {
 
       return {
         success: true,
-        message: 'Your payment screenshot has been submitted. Your order is now waiting for admin verification.'
+        message: 'Your payment screenshot has been submitted. Your order is now waiting for verification.'
       };
     } catch (e: any) {
       return { success: false, message: e.message || 'Failed to submit payment confirmation.' };
