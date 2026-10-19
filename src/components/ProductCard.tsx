@@ -98,7 +98,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       onClick={() => onSelectProduct(product)}
       data-cursor="view"
       data-cursor-label={isRtl ? 'عرض وتذوق' : 'VIEW'}
-      className={`group cursor-pointer select-none flex flex-col justify-between h-full rounded-2xl sm:rounded-3xl bg-white border border-[#22120C]/[0.08] p-3.5 sm:p-4.5 transition-all duration-300 hover:shadow-[0_20px_45px_rgba(229,141,165,0.20)] hover:-translate-y-1.5 hover:border-[#E58DA5]/60 relative ${
+      className={`group cursor-pointer select-none flex flex-col justify-between h-full rounded-2xl sm:rounded-3xl bg-white border border-[#22120C]/[0.08] p-3.5 sm:p-4.5 transition-all duration-300 hover:shadow-[0_20px_45px_rgba(232,144,168,0.18)] hover:-translate-y-1.5 hover:border-[#E890A8]/60 relative ${
         isFeaturedSpan ? 'md:col-span-2' : ''
       } ${className}`}
     >
@@ -126,10 +126,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {/* Floating 3D Confection Inset (Bottom-Left in LTR / Bottom-Right in RTL) */}
           {pieceImage && (
             <div
-              className="absolute bottom-3 left-3 rtl:left-auto rtl:right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur-md border border-[#E58DA5]/40 px-2 py-1 rounded-full shadow-xs group-hover:scale-105 transition-all duration-300 pointer-events-none"
+              className="absolute bottom-3 left-3 rtl:left-auto rtl:right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur-md border border-[#E890A8]/45 px-2 py-1 rounded-full shadow-xs group-hover:scale-105 transition-all duration-300 pointer-events-none"
               title={isRtl ? 'حشوة سائلة طبيعية' : 'Natural liquid center piece'}
             >
-              <div className="w-6 h-6 rounded-full bg-[#FAF5EE] p-0.5 border border-[#E58DA5]/30 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="w-6 h-6 rounded-full bg-[#FAF5EE] p-0.5 border border-[#E890A8]/30 flex items-center justify-center overflow-hidden shrink-0">
                 <img
                   src={pieceImage}
                   alt=""
@@ -172,8 +172,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {/* Top-Left: Terracotta & Rose Brand Badge */}
           {displayBadge && (
             <div className="absolute top-3 left-3 rtl:left-auto rtl:right-3 z-20">
-              <div className="inline-flex items-center gap-1 bg-[#FAF5EE] text-[#963725] border border-[#E58DA5]/50 text-[10px] font-sans font-semibold px-2.5 py-1 rounded-full shadow-xs">
-                <Sparkles className="w-3 h-3 text-[#E58DA5]" />
+              <div className="inline-flex items-center gap-1 bg-[#FAF5EE] text-[#963725] border border-[#E890A8]/50 text-[10px] font-sans font-semibold px-2.5 py-1 rounded-full shadow-xs">
+                <Sparkles className="w-3 h-3 text-[#E890A8]" />
                 <span>{displayBadge}</span>
               </div>
             </div>
@@ -188,7 +188,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 e.stopPropagation();
                 onSelectProduct(product);
               }}
-              className="w-8 h-8 rounded-full bg-white text-[#22120C] border border-[#22120C]/10 flex items-center justify-center shadow-xs opacity-0 group-hover:opacity-100 transition-all hover:bg-[#963725] hover:text-white cursor-pointer"
+              className="w-8 h-8 rounded-full bg-white text-[#22120C] border border-[#22120C]/10 flex items-center justify-center shadow-xs opacity-0 group-hover:opacity-100 transition-all hover:bg-[#6AACE9] hover:border-[#6AACE9] hover:text-white cursor-pointer"
               aria-label={isRtl ? 'نظرة سريعة' : 'Quick view'}
             >
               <Eye className="w-3.5 h-3.5" />
@@ -200,8 +200,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               onClick={handleWishlist}
               className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-xs cursor-pointer ${
                 isWishlisted
-                  ? 'bg-[#E58DA5] text-white border border-[#E58DA5]'
-                  : 'bg-white text-[#22120C] border border-[#22120C]/10 hover:border-[#E58DA5] hover:text-[#963725]'
+                  ? 'bg-[#E890A8] text-white border border-[#E890A8]'
+                  : 'bg-white text-[#22120C] border border-[#22120C]/10 hover:border-[#E890A8] hover:text-[#963725]'
               }`}
               aria-label={isRtl ? 'إضافة للمفضلة' : 'Add to wishlist'}
             >
@@ -246,18 +246,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {displayName}
           </h3>
 
-          {/* Tasting Notes Pills */}
+          {/* Tasting Notes Pills: Alternating Dual Secondary Colors (#E890A8 & #6AACE9) */}
           {tastingNotes.length > 0 && (
             <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-              {tastingNotes.slice(0, 2).map((note, idx) => (
-                <span
-                  key={idx}
-                  className="inline-flex items-center gap-1 text-[10px] font-sans text-[#736B63] bg-[#FAF5EE] border border-[#E58DA5]/30 px-2 py-0.5 rounded-full"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#E58DA5]" />
-                  <span>{note}</span>
-                </span>
-              ))}
+              {tastingNotes.slice(0, 2).map((note, idx) => {
+                const isBlue = idx % 2 !== 0;
+                return (
+                  <span
+                    key={idx}
+                    className={`inline-flex items-center gap-1 text-[10px] font-sans text-[#736B63] bg-[#FAF5EE] border px-2 py-0.5 rounded-full ${
+                      isBlue ? 'border-[#6AACE9]/35' : 'border-[#E890A8]/35'
+                    }`}
+                  >
+                    <span
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: isBlue ? '#6AACE9' : '#E890A8' }}
+                    />
+                    <span>{note}</span>
+                  </span>
+                );
+              })}
             </div>
           )}
 

@@ -114,7 +114,7 @@ export const LandingFigmaOutlook: React.FC = () => {
               {isRtl ? 'الزهرة – تاريخ الأجداد يتوارثه الأبناء.' : 'Al-Zahra – Heritage of Ancestors, Inherited by Generations.'}
             </span>
 
-            <span className="text-xs font-mono text-[#963725] bg-[#E58DA5]/15 border border-[#E58DA5]/35 px-3 py-1 rounded-full font-medium shadow-xs">
+            <span className="text-xs font-mono text-[#963725] bg-[#E890A8]/15 border border-[#E890A8]/40 px-3 py-1 rounded-full font-medium shadow-xs">
               {isRtl ? 'فخر الصناعة المصرية' : 'Pride of Egyptian Industry'}
             </span>
           </div>

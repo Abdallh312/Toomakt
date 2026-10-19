@@ -36,8 +36,8 @@ export const LandingFigmaTrail: React.FC<LandingFigmaTrailProps> = ({
               <span className="text-[11px] sm:text-xs font-mono tracking-[0.25em] uppercase text-[#963725] font-semibold block">
                 {isRtl ? 'فُرُوعُ وَمَرَافِقُ تُومَاكْت' : 'TOOMAKT BRANCHES & ATELIER'}
               </span>
-              <span className="inline-flex items-center gap-1 text-[10px] font-mono text-[#963725] bg-[#E58DA5]/20 border border-[#E58DA5]/40 px-2.5 py-0.5 rounded-full font-medium">
-                <Sparkles className="w-3 h-3 text-[#963725]" />
+              <span className="inline-flex items-center gap-1 text-[10px] font-mono text-[#963725] bg-[#E890A8]/20 border border-[#E890A8]/40 px-2.5 py-0.5 rounded-full font-medium">
+                <Sparkles className="w-3 h-3 text-[#E890A8]" />
                 <span>{isRtl ? 'فرع حالي · وفرع قادم' : '1 Active · 1 Coming Soon'}</span>
               </span>
             </div>
@@ -55,39 +55,39 @@ export const LandingFigmaTrail: React.FC<LandingFigmaTrailProps> = ({
           <button
             type="button"
             onClick={onAskBranches}
-            className="inline-flex items-center gap-2 self-start sm:self-auto px-6 py-3 rounded-full border border-[#22120C]/20 hover:border-[#963725] hover:bg-[#963725] hover:text-[#FAF5EE] text-[#22120C] text-xs font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer group"
+            className="inline-flex items-center gap-2 self-start sm:self-auto px-6 py-3 rounded-full border border-[#22120C]/20 hover:border-[#6AACE9] hover:bg-[#F0F7FD] hover:text-[#1F5F99] text-[#22120C] text-xs font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer group"
           >
             <span>{isRtl ? 'تَوَاصَلْ مَعَ الإِدَارَة' : 'Contact Management'}</span>
-            <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-[#6AACE9]" />
           </button>
         </div>
 
-        {/* ─── 2 GRAND BRANCH CARDS: 1 CURRENT ACTIVE & 1 COMING SOON ─── */}
+        {/* ─── 2 GRAND BRANCH CARDS: 1 CURRENT ACTIVE (SKY AZURE) & 1 COMING SOON (SWEET ROSE) ─── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 items-stretch">
-          {/* Branch 1: Current Flagship Branch (10th of Ramadan) */}
+          {/* Branch 1: Current Flagship Branch (10th of Ramadan - Styled with Confection Sky Azure #6AACE9) */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="group relative p-8 sm:p-10 rounded-3xl bg-white border border-[#22120C]/10 hover:border-[#963725]/40 shadow-[0_12px_36px_rgba(34,18,12,0.05)] hover:shadow-[0_20px_45px_rgba(150,55,37,0.12)] transition-all duration-300 flex flex-col justify-between"
+            className="group relative p-8 sm:p-10 rounded-3xl bg-white border border-[#22120C]/10 hover:border-[#6AACE9]/60 shadow-[0_12px_36px_rgba(34,18,12,0.05)] hover:shadow-[0_20px_45px_rgba(106,172,233,0.18)] transition-all duration-300 flex flex-col justify-between"
           >
             <div className="space-y-6">
               {/* Card Header: Icon + Status Badge */}
               <div className="flex items-center justify-between">
-                <div className="w-14 h-14 rounded-2xl bg-[#963725]/10 text-[#963725] flex items-center justify-center transition-all group-hover:scale-105">
+                <div className="w-14 h-14 rounded-2xl bg-[#6AACE9]/15 text-[#1F5F99] flex items-center justify-center transition-all group-hover:scale-105 group-hover:bg-[#6AACE9]/25">
                   <Factory className="w-7 h-7 stroke-[1.6]" />
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono font-semibold">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F0F7FD] border border-[#6AACE9]/40 text-[#1F5F99] text-[11px] font-mono font-semibold">
+                  <span className="w-2 h-2 rounded-full bg-[#6AACE9] animate-pulse" />
                   <span>{isRtl ? 'الفرع الرئيسي (مفتوح حالياً)' : 'FLAGSHIP · OPEN NOW'}</span>
                 </div>
               </div>
 
               {/* Branch Name & Address */}
               <div>
-                <span className="text-[10px] font-mono text-[#963725] uppercase tracking-widest font-semibold block mb-1">
-                  {isRtl ? 'الفرع الأول · المجمع الصناعي والمقر' : 'BRANCH 01 · INDUSTRIAL PLANT & HQ'}
+                <span className="text-[10px] font-mono text-[#6AACE9] uppercase tracking-widest font-bold block mb-1">
+                  {isRtl ? 'الفرع الأول · المجمع الصناعي والتصدير' : 'BRANCH 01 · INDUSTRIAL PLANT & EXPORTS'}
                 </span>
                 <h3 className="font-serif text-2xl sm:text-3xl text-[#22120C] font-normal leading-snug">
                   {isRtl ? 'فرع ومصنع العاشر من رمضان' : '10th of Ramadan Flagship Complex'}
@@ -102,7 +102,7 @@ export const LandingFigmaTrail: React.FC<LandingFigmaTrailProps> = ({
               {/* Working Hours & Telephone */}
               <div className="space-y-2 pt-4 border-t border-[#22120C]/08 text-xs font-sans text-[#22120C]/80">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-[#963725] shrink-0" />
+                  <Clock className="w-4 h-4 text-[#6AACE9] shrink-0" />
                   <span>{isRtl ? 'السبت - الخميس: ٨:٠٠ ص - ٦:٠٠ م (مفتوح للعملاء والطلبات)' : 'Sat - Thu: 8:00 AM - 6:00 PM (Serving Clients & Orders)'}</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -128,29 +128,29 @@ export const LandingFigmaTrail: React.FC<LandingFigmaTrailProps> = ({
                 href="https://maps.google.com/?q=10th+of+Ramadan+City+Industrial+Zone"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="py-3 px-5 rounded-full border border-[#22120C]/20 hover:border-[#963725] text-xs font-mono font-semibold text-[#22120C] hover:text-[#963725] flex items-center gap-1.5 transition-colors"
+                className="py-3 px-5 rounded-full border border-[#22120C]/20 hover:border-[#6AACE9] text-xs font-mono font-semibold text-[#22120C] hover:text-[#1F5F99] flex items-center gap-1.5 transition-colors"
               >
-                <Navigation className="w-3.5 h-3.5" />
+                <Navigation className="w-3.5 h-3.5 text-[#6AACE9]" />
                 <span>{isRtl ? 'الموقع' : 'Directions'}</span>
               </a>
             </div>
           </motion.div>
 
-          {/* Branch 2: Second Branch Coming Soon (Cairo) */}
+          {/* Branch 2: Second Branch Coming Soon (Cairo - Styled with Sweet Rose #E890A8) */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="group relative p-8 sm:p-10 rounded-3xl bg-[#FFFBFD] border-2 border-[#E58DA5]/40 hover:border-[#E58DA5] shadow-[0_12px_36px_rgba(229,141,165,0.08)] hover:shadow-[0_20px_45px_rgba(229,141,165,0.20)] transition-all duration-300 flex flex-col justify-between"
+            className="group relative p-8 sm:p-10 rounded-3xl bg-[#FFFBFD] border-2 border-[#E890A8]/45 hover:border-[#E890A8] shadow-[0_12px_36px_rgba(232,144,168,0.10)] hover:shadow-[0_20px_45px_rgba(232,144,168,0.22)] transition-all duration-300 flex flex-col justify-between"
           >
             <div className="space-y-6">
               {/* Card Header: Icon + Sweet Rose Status Badge */}
               <div className="flex items-center justify-between">
-                <div className="w-14 h-14 rounded-2xl bg-[#E58DA5]/20 text-[#963725] flex items-center justify-center transition-all group-hover:scale-105">
+                <div className="w-14 h-14 rounded-2xl bg-[#E890A8]/20 text-[#963725] flex items-center justify-center transition-all group-hover:scale-105">
                   <Building2 className="w-7 h-7 stroke-[1.6]" />
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#E58DA5]/25 border border-[#E58DA5]/60 text-[#963725] text-[11px] font-mono font-bold tracking-wider">
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#E890A8]/25 border border-[#E890A8]/60 text-[#963725] text-[11px] font-mono font-bold tracking-wider">
                   <Sparkles className="w-3 h-3 text-[#963725]" />
                   <span>{isRtl ? 'الفرع الثاني (قريباً)' : 'BRANCH 02 · COMING SOON'}</span>
                 </div>
@@ -158,7 +158,7 @@ export const LandingFigmaTrail: React.FC<LandingFigmaTrailProps> = ({
 
               {/* Branch Name & Address */}
               <div>
-                <span className="text-[10px] font-mono text-[#E58DA5] uppercase tracking-widest font-bold block mb-1">
+                <span className="text-[10px] font-mono text-[#E890A8] uppercase tracking-widest font-bold block mb-1">
                   {isRtl ? 'الفرع الثاني · التوسع القادم' : 'BRANCH 02 · NEXT EXPANSION'}
                 </span>
                 <h3 className="font-serif text-2xl sm:text-3xl text-[#22120C] font-normal leading-snug">
@@ -172,9 +172,9 @@ export const LandingFigmaTrail: React.FC<LandingFigmaTrailProps> = ({
               </div>
 
               {/* Status Note */}
-              <div className="p-4 rounded-2xl bg-[#FAF5EE] border border-[#E58DA5]/30 space-y-1 text-xs text-[#22120C]">
+              <div className="p-4 rounded-2xl bg-[#FAF5EE] border border-[#E890A8]/30 space-y-1 text-xs text-[#22120C]">
                 <div className="flex items-center gap-2 font-semibold text-[#963725]">
-                  <Sparkles className="w-3.5 h-3.5 text-[#E58DA5]" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#E890A8]" />
                   <span>{isRtl ? 'ترقبوا الافتتاح الرسمي قريباً' : 'Official Grand Opening Coming Soon'}</span>
                 </div>
                 <p className="text-[11px] text-[#736B63] leading-relaxed">
@@ -191,9 +191,9 @@ export const LandingFigmaTrail: React.FC<LandingFigmaTrailProps> = ({
                 href="https://wa.me/201024542139?text=Hello%20Toomakt,%20I%20want%20to%20inquire%20about%20the%20Cairo%20branch!"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 py-3 px-5 rounded-full bg-[#FAF5EE] hover:bg-[#E58DA5]/20 border border-[#E58DA5]/50 text-xs font-semibold text-[#963725] flex items-center justify-center gap-2 transition-colors text-center"
+                className="flex-1 py-3 px-5 rounded-full bg-[#FAF5EE] hover:bg-[#E890A8]/20 border border-[#E890A8]/50 text-xs font-semibold text-[#963725] flex items-center justify-center gap-2 transition-colors text-center"
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#E58DA5]" />
+                <Sparkles className="w-3.5 h-3.5 text-[#E890A8]" />
                 <span>{isRtl ? 'استفسر عن موعد الافتتاح عبر واتساب' : 'Inquire via WhatsApp'}</span>
               </a>
             </div>
@@ -267,16 +267,16 @@ export const LandingFigmaTrail: React.FC<LandingFigmaTrailProps> = ({
               </a>
               <a
                 href="tel:+201095288014"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF5EE] hover:bg-[#E58DA5]/20 text-xs font-mono text-[#22120C]/80 hover:text-[#963725] transition-colors border border-[#22120C]/08"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF5EE] hover:bg-[#6AACE9]/15 text-xs font-mono text-[#22120C]/80 hover:text-[#1F5F99] transition-colors border border-[#22120C]/08"
               >
-                <Phone className="w-3 h-3 text-[#963725]" />
+                <Phone className="w-3 h-3 text-[#6AACE9]" />
                 <span dir="ltr">+20 10 95288014</span>
               </a>
               <a
                 href="tel:+201277664957"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FAF5EE] hover:bg-[#E58DA5]/20 text-xs font-mono text-[#22120C]/80 hover:text-[#963725] transition-colors border border-[#22120C]/08"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FAF5EE] hover:bg-[#E890A8]/20 text-xs font-mono text-[#22120C]/80 hover:text-[#963725] transition-colors border border-[#22120C]/08"
               >
-                <Phone className="w-3 h-3 text-[#963725]" />
+                <Phone className="w-3 h-3 text-[#E890A8]" />
                 <span dir="ltr">+20 12 77664957</span>
               </a>
             </div>

@@ -38,8 +38,8 @@ export const LandingFigmaSweetSide: React.FC<LandingFigmaSweetSideProps> = ({
               <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#963725] font-semibold block">
                 {isRtl ? 'تَشْكِيلَةُ الحَلْوَيَاتِ الحِرَفِيَّة' : 'THE ARTISAN SELECTION'}
               </span>
-              <span className="inline-flex items-center gap-1 text-[10px] font-mono text-[#963725] bg-[#E58DA5]/20 border border-[#E58DA5]/40 px-2.5 py-0.5 rounded-full font-medium">
-                <Sparkles className="w-3 h-3 text-[#E58DA5]" />
+              <span className="inline-flex items-center gap-1 text-[10px] font-mono text-[#963725] bg-[#E890A8]/20 border border-[#E890A8]/45 px-2.5 py-0.5 rounded-full font-medium">
+                <Sparkles className="w-3 h-3 text-[#E890A8]" />
                 <span>{isRtl ? 'وصفات فرنسية أصلية' : 'Authentic French Recipes'}</span>
               </span>
             </div>
@@ -56,7 +56,7 @@ export const LandingFigmaSweetSide: React.FC<LandingFigmaSweetSideProps> = ({
           <button
             type="button"
             onClick={onViewAllProducts}
-            className="inline-flex items-center gap-2 self-start md:self-auto px-7 py-3.5 rounded-full border border-[#22120C]/25 text-xs sm:text-sm font-sans font-medium text-[#22120C] hover:bg-[#22120C] hover:text-[#FAF5EE] hover:border-[#22120C] hover:shadow-[0_8px_24px_rgba(229,141,165,0.25)] transition-all duration-300 cursor-pointer group shadow-xs will-change-transform"
+            className="inline-flex items-center gap-2 self-start md:self-auto px-7 py-3.5 rounded-full border border-[#22120C]/25 text-xs sm:text-sm font-sans font-medium text-[#22120C] hover:bg-[#22120C] hover:text-[#FAF5EE] hover:border-[#22120C] hover:shadow-[0_8px_24px_rgba(232,144,168,0.25)] transition-all duration-300 cursor-pointer group shadow-xs will-change-transform"
           >
             <span>{isRtl ? 'عَرْضُ كَافَّةِ التشكيلة (١٤ صنفاً)' : 'View all 14 confections'}</span>
             <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

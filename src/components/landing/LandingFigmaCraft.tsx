@@ -137,7 +137,7 @@ export const LandingFigmaCraft: React.FC = () => {
                 {isRtl ? 'الرَّكَائِزُ الَّتِي نَبْنِي عَلَيْهَا نَجَاحَنَا.' : 'The Pillars That Anchor Our Success.'}
               </h3>
             </div>
-            <span className="text-xs font-mono text-[#963725] bg-[#E58DA5]/20 border border-[#E58DA5]/40 px-3 py-1 rounded-full self-start sm:self-auto font-medium shadow-xs">
+            <span className="text-xs font-mono text-[#963725] bg-[#E890A8]/20 border border-[#E890A8]/45 px-3 py-1 rounded-full self-start sm:self-auto font-medium shadow-xs">
               {isRtl ? '٦ قِيَمٍ رَاسِخَة' : '6 Core Principles'}
             </span>
           </div>
@@ -145,6 +145,7 @@ export const LandingFigmaCraft: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
             {values.map((v, idx) => {
               const Icon = v.icon;
+              const isBlue = idx % 2 !== 0;
               return (
                 <motion.div
                   key={v.num}
@@ -152,11 +153,21 @@ export const LandingFigmaCraft: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: idx * 0.08 }}
-                  className="p-7 rounded-3xl bg-white border border-[#22120C]/06 hover:border-[#E58DA5]/60 shadow-[0_6px_20px_rgba(34,18,12,0.03)] hover:shadow-[0_16px_36px_rgba(229,141,165,0.16)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
+                  className={`p-7 rounded-3xl bg-white border border-[#22120C]/06 shadow-[0_6px_20px_rgba(34,18,12,0.03)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group ${
+                    isBlue
+                      ? 'hover:border-[#6AACE9]/60 hover:shadow-[0_16px_36px_rgba(106,172,233,0.18)]'
+                      : 'hover:border-[#E890A8]/60 hover:shadow-[0_16px_36px_rgba(232,144,168,0.18)]'
+                  }`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-5">
-                      <div className="w-11 h-11 rounded-xl bg-[#963725]/08 text-[#963725] flex items-center justify-center">
+                      <div
+                        className={`w-11 h-11 rounded-xl flex items-center justify-center transition-colors ${
+                          isBlue
+                            ? 'bg-[#6AACE9]/15 text-[#1F5F99] group-hover:bg-[#6AACE9]/25'
+                            : 'bg-[#E890A8]/15 text-[#963725] group-hover:bg-[#E890A8]/25'
+                        }`}
+                      >
                         <Icon className="w-5 h-5 stroke-[1.8]" />
                       </div>
                       <span className="font-mono text-xs text-[#22120C]/40 font-bold">{v.num}</span>

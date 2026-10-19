@@ -102,7 +102,7 @@ export const LandingFigmaConversation: React.FC<LandingFigmaConversationProps> =
             <button
               type="button"
               onClick={onStartTalk}
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] font-medium text-sm sm:text-base shadow-[0_8px_24px_rgba(150,55,37,0.25)] hover:shadow-[0_12px_32px_rgba(229,141,165,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out cursor-pointer group will-change-transform"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] font-medium text-sm sm:text-base shadow-[0_8px_24px_rgba(150,55,37,0.25)] hover:shadow-[0_12px_32px_rgba(232,144,168,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out cursor-pointer group will-change-transform"
             >
               <span>{isRtl ? 'إِرْسَالُ طَلَبٍ أَوْ اسْتِفْسَار' : 'Send an Inquiry'}</span>
               <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />

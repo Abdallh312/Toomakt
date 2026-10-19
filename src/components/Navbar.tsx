@@ -310,7 +310,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={() => handleLinkClick('contact')}
-              className="hidden sm:inline-flex items-center justify-center gap-2 h-9 px-5 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 shadow-xs hover:shadow-[0_4px_16px_rgba(229,141,165,0.4)] cursor-pointer group whitespace-nowrap shrink-0 leading-none"
+              className="hidden sm:inline-flex items-center justify-center gap-2 h-9 px-5 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 shadow-xs hover:shadow-[0_4px_16px_rgba(232,144,168,0.45)] cursor-pointer group whitespace-nowrap shrink-0 leading-none"
             >
               <span className="translate-y-px">{isRtl ? 'تَوَاصَلْ' : 'Say hello'}</span>
               <ArrowUpRight className="w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

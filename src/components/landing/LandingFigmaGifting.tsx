@@ -61,21 +61,28 @@ export const LandingFigmaGifting: React.FC<LandingFigmaGiftingProps> = ({
             <button
               type="button"
               onClick={onTalkGifting}
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] font-medium text-sm sm:text-base shadow-[0_8px_24px_rgba(150,55,37,0.25)] hover:shadow-[0_12px_32px_rgba(229,141,165,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out cursor-pointer group will-change-transform"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] font-medium text-sm sm:text-base shadow-[0_8px_24px_rgba(150,55,37,0.25)] hover:shadow-[0_12px_32px_rgba(232,144,168,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out cursor-pointer group will-change-transform"
             >
               <span>{isRtl ? 'تَوَاصَلْ لِطَلَبَاتِ الجُمْلَةِ وَالتَّوْزِيع' : 'Inquire for Wholesale & Trade'}</span>
               <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
             </button>
 
             <div className="flex flex-wrap items-center gap-2 pt-1">
-              {partnerTiers.map((tier, idx) => (
-                <span
-                  key={idx}
-                  className="px-3.5 py-1.5 rounded-full bg-white border border-[#E58DA5]/30 hover:border-[#E58DA5] text-xs font-mono text-[#22120C]/80 shadow-xs transition-colors"
-                >
-                  {isRtl ? tier.ar : tier.en}
-                </span>
-              ))}
+              {partnerTiers.map((tier, idx) => {
+                const isBlue = idx % 2 !== 0;
+                return (
+                  <span
+                    key={idx}
+                    className={`px-3.5 py-1.5 rounded-full bg-white text-xs font-mono text-[#22120C]/80 shadow-xs transition-colors border ${
+                      isBlue
+                        ? 'border-[#6AACE9]/35 hover:border-[#6AACE9] hover:text-[#1F5F99]'
+                        : 'border-[#E890A8]/35 hover:border-[#E890A8] hover:text-[#963725]'
+                    }`}
+                  >
+                    {isRtl ? tier.ar : tier.en}
+                  </span>
+                );
+              })}
             </div>
           </div>
         </div>

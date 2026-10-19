@@ -18,6 +18,13 @@ export default {
         'gold-deep': '#C89748',
         amber:      '#EFB55B',
         terracotta: '#C4563E',
+        // User Secondary Brand Colors
+        'toomakt-blue':       '#6AACE9',
+        'toomakt-blue-hover': '#559AD8',
+        'toomakt-blue-light': '#F0F7FD',
+        'toomakt-rose':       '#E890A8',
+        'toomakt-rose-hover': '#D87B95',
+        'toomakt-rose-light': '#FDF2F5',
         ivory:      '#FAF7F2',
         cashmere:   '#C8BEB5',
         'border-dark': '#33242E',

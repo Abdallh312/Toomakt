@@ -21,17 +21,17 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
       className="relative w-full bg-[#FAF5EE] text-[#22120C] pt-24 sm:pt-32 pb-20 sm:pb-28 px-6 sm:px-10 lg:px-16 overflow-hidden transition-colors"
       aria-label="Welcome to Toomakt"
     >
-      {/* Soothing Ambient Light Pools including Sweet Rose Secondary Tone */}
+      {/* Soothing Ambient Light Pools with Dual Secondary Tones: Sweet Rose (#E890A8) & Sky Azure (#6AACE9) */}
       <div
         className="absolute top-0 right-0 w-[550px] h-[550px] rounded-full pointer-events-none opacity-50 blur-3xl"
         style={{
-          background: 'radial-gradient(circle, rgba(229, 141, 165, 0.22) 0%, rgba(250, 245, 238, 0) 70%)',
+          background: 'radial-gradient(circle, rgba(232, 144, 168, 0.22) 0%, rgba(250, 245, 238, 0) 70%)',
         }}
       />
       <div
-        className="absolute top-1/3 left-1/4 w-[400px] h-[400px] rounded-full pointer-events-none opacity-35 blur-3xl"
+        className="absolute top-1/3 left-10 w-[420px] h-[420px] rounded-full pointer-events-none opacity-40 blur-3xl"
         style={{
-          background: 'radial-gradient(circle, rgba(228, 176, 114, 0.20) 0%, rgba(250, 245, 238, 0) 70%)',
+          background: 'radial-gradient(circle, rgba(106, 172, 233, 0.20) 0%, rgba(250, 245, 238, 0) 70%)',
         }}
       />
       <div
@@ -59,9 +59,9 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E58DA5]/15 border border-[#E58DA5]/40 text-[#963725] text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase shadow-xs"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E890A8]/15 border border-[#E890A8]/45 text-[#963725] text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase shadow-xs"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#E58DA5]" />
+            <Sparkles className="w-3.5 h-3.5 text-[#E890A8]" />
             <span>
               {isRtl
                 ? 'فَخْرُ الصِّنَاعَةِ المِصْرِيَّة · شَرِكَةُ الزَّهْرَةِ لِلصِّنَاعَاتِ الغِذَائِيَّة'
@@ -107,22 +107,22 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
               : 'Al-Zahra Food Industries, owner of the TOOMAKT brand, is a family enterprise founded in Syria in 1970 and established in Egypt in 2012 (10th of Ramadan City). Specialized in crafting premium toffees and filled bonbons uniting distinguished taste, certified quality, and accessible value across global export markets.'}
           </motion.p>
 
-          {/* 3 Authentic Trust Chips */}
+          {/* 3 Authentic Trust Chips with Dual Secondary Colors */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.25 }}
             className="flex flex-wrap items-center gap-2.5 pt-1 text-xs font-sans text-[#22120C]/75"
           >
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-[#22120C]/08 shadow-xs">
-              <Sparkles className="w-3 h-3 text-[#963725]" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/85 border border-[#E890A8]/30 shadow-xs">
+              <Sparkles className="w-3 h-3 text-[#E890A8]" />
               <span>{isRtl ? 'توفي وبونبوني محشي فاخر' : 'Premium Toffee & Filled Bonbons'}</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-[#22120C]/08 shadow-xs">
-              <Globe className="w-3 h-3 text-[#963725]" />
-              <span>{isRtl ? 'صادرات لأسواق عربية ودولية' : 'Arab & Global Exports'}</span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/85 border border-[#6AACE9]/40 shadow-xs">
+              <Globe className="w-3 h-3 text-[#6AACE9]" />
+              <span className="font-medium text-[#22120C]">{isRtl ? 'صادرات لأسواق عربية ودولية' : 'Arab & Global Exports'}</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 border border-[#22120C]/08 shadow-xs">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/85 border border-[#963725]/20 shadow-xs">
               <Heart className="w-3 h-3 text-[#963725]" />
               <span>{isRtl ? 'إرث عائلي متوارث منذ ١٩٧٠' : 'Family Heritage Since 1970'}</span>
             </span>
@@ -138,7 +138,7 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
             <button
               type="button"
               onClick={onExploreSweets}
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] font-medium text-sm sm:text-base shadow-[0_8px_24px_rgba(150,55,37,0.22)] hover:shadow-[0_12px_32px_rgba(229,141,165,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out cursor-pointer group will-change-transform"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] font-medium text-sm sm:text-base shadow-[0_8px_24px_rgba(150,55,37,0.22)] hover:shadow-[0_12px_32px_rgba(232,144,168,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out cursor-pointer group will-change-transform"
             >
               <span>{isRtl ? 'تصفح منتجات توماكت' : 'Explore our sweets'}</span>
               <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
@@ -147,9 +147,9 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
             <button
               type="button"
               onClick={() => onNavigateSection('meet-your-sweet-side')}
-              className="inline-flex items-center gap-2.5 px-5 py-3.5 rounded-full border border-[#22120C]/15 hover:border-[#E58DA5] hover:bg-[#FFF5F8]/60 text-[#22120C] text-xs font-mono font-semibold tracking-wider uppercase transition-all duration-300 ease-out cursor-pointer group"
+              className="inline-flex items-center gap-2.5 px-5 py-3.5 rounded-full border border-[#22120C]/15 hover:border-[#6AACE9] hover:bg-[#F0F7FD] text-[#22120C] text-xs font-mono font-semibold tracking-wider uppercase transition-all duration-300 ease-out cursor-pointer group"
             >
-              <ArrowDown className="w-3.5 h-3.5 text-[#963725] transition-transform group-hover:translate-y-0.5" />
+              <ArrowDown className="w-3.5 h-3.5 text-[#6AACE9] transition-transform group-hover:translate-y-0.5" />
               <span>{isRtl ? 'اِسْتَكْشِفِ التَّشْكِيلَة' : 'EXPLORE COLLECTION'}</span>
             </button>
           </motion.div>
