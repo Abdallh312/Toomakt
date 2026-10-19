@@ -26,17 +26,17 @@ export const LandingFigmaRibbon: React.FC = () => {
 
   return (
     <div
-      className="relative w-full bg-[#22120C] text-[#FAF5EE] py-4 sm:py-5 border-t border-b border-white/[0.08] overflow-hidden"
+      className="relative w-full bg-[#E890A8] text-white py-4 sm:py-5 border-t border-b border-white/20 overflow-hidden shadow-xs"
       aria-label="Brand ribbon ticker"
     >
       <div className="flex w-full overflow-hidden select-none">
         <div className="flex shrink-0 animate-marquee items-center gap-12 whitespace-nowrap">
           {phrases.concat(phrases).map((phrase, idx) => (
             <div key={idx} className="flex items-center gap-8">
-              <span className="font-mono text-xs sm:text-sm tracking-[0.25em] font-medium text-[#FAF5EE]/90 uppercase">
+              <span className="font-mono text-xs sm:text-sm tracking-[0.25em] font-semibold text-white uppercase">
                 {phrase}
               </span>
-              <span className="text-amber-400 text-xs sm:text-sm font-serif">✳</span>
+              <span className="text-white text-xs sm:text-sm font-serif">✳</span>
             </div>
           ))}
         </div>
@@ -44,10 +44,10 @@ export const LandingFigmaRibbon: React.FC = () => {
         <div className="flex shrink-0 animate-marquee2 items-center gap-12 whitespace-nowrap" aria-hidden="true">
           {phrases.concat(phrases).map((phrase, idx) => (
             <div key={`clone-${idx}`} className="flex items-center gap-8">
-              <span className="font-mono text-xs sm:text-sm tracking-[0.25em] font-medium text-[#FAF5EE]/90 uppercase">
+              <span className="font-mono text-xs sm:text-sm tracking-[0.25em] font-semibold text-white uppercase">
                 {phrase}
               </span>
-              <span className="text-amber-400 text-xs sm:text-sm font-serif">✳</span>
+              <span className="text-white text-xs sm:text-sm font-serif">✳</span>
             </div>
           ))}
         </div>

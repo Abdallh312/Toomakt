@@ -101,15 +101,15 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
   });
 
   return (
-    <div className="w-full min-h-screen bg-[#FAF5EE] pt-28 sm:pt-36 pb-24 text-[#22120C]">
+    <div className="w-full min-h-screen bg-white pt-28 sm:pt-36 pb-24 text-[#22120C]">
       <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-14">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center gap-2 text-xs font-mono text-[#22120C]/60 mb-8">
-          <button type="button" onClick={onNavigateHome} className="hover:text-[#963725] transition-colors cursor-pointer">
+          <button type="button" onClick={onNavigateHome} className="hover:text-[#E890A8] transition-colors cursor-pointer">
             {isRtl ? 'الرئيسية' : 'Home'}
           </button>
           <span>/</span>
-          <span className="text-[#963725] font-semibold">
+          <span className="text-[#E890A8] font-semibold">
             {isRtl ? 'تشكيلة الحلويات' : 'The Collection'}
           </span>
         </div>
@@ -118,7 +118,7 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
         <ScrollReveal>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 sm:mb-12 border-b border-[#22120C]/10 pb-8">
             <div>
-              <span className="inline-block px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest text-[#963725] bg-[#963725]/08 border border-[#963725]/20 mb-3">
+              <span className="inline-block px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest text-[#E890A8] bg-[#E890A8]/08 border border-[#E890A8]/20 mb-3">
                 {isRtl ? 'التشكيلة الكاملة · مصنع العاشر' : 'The Complete Confectionery Collection'}
               </span>
               <h1 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#22120C]">
@@ -130,7 +130,7 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
                   : 'Real orchard fruit, European butter, slow-cooked in copper cauldrons.'}
               </p>
             </div>
-            <span className="text-xs font-mono text-[#963725] px-3.5 py-1.5 rounded-full border border-[#22120C]/10 bg-white/50">
+            <span className="text-xs font-mono text-[#E890A8] px-3.5 py-1.5 rounded-full border border-[#22120C]/10 bg-white">
               {sortedProducts.length} {isRtl ? 'صنف حلويات' : 'confections available'}
             </span>
           </div>
@@ -165,7 +165,7 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={isRtl ? 'ابحث في التشكيلة...' : 'Search confections...'}
-                className="w-full text-xs sm:text-sm pl-10 pr-9 rtl:pl-9 rtl:pr-10 py-3 rounded-full bg-white/60 border border-[#22120C]/10 text-[#22120C] placeholder-[#22120C]/40 focus:outline-none focus:border-[#963725] font-sans transition-colors"
+                className="w-full text-xs sm:text-sm pl-10 pr-9 rtl:pl-9 rtl:pr-10 py-3 rounded-full bg-white border border-[#22120C]/10 text-[#22120C] placeholder-[#22120C]/40 focus:outline-none focus:border-[#E890A8] font-sans transition-colors"
               />
               {searchQuery && (
                 <button
@@ -185,7 +185,7 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-3.5 py-2 rounded-full border border-[#22120C]/10 bg-white/60 text-[#22120C] focus:outline-none focus:border-[#963725] cursor-pointer font-sans text-xs"
+                className="px-3.5 py-2 rounded-full border border-[#22120C]/10 bg-white text-[#22120C] focus:outline-none focus:border-[#E890A8] cursor-pointer font-sans text-xs"
               >
                 <option value="featured">{isRtl ? 'المختار للمعمل' : 'Featured Atelier'}</option>
                 <option value="price-asc">{isRtl ? 'السعر: من الأقل للأعلى' : 'Price: Low to High'}</option>
@@ -198,7 +198,7 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
         {/* Loading Spinner */}
         {loading && (
           <div className="py-24 text-center">
-            <Loader2 className="w-8 h-8 text-[#963725] animate-spin mx-auto mb-3" />
+            <Loader2 className="w-8 h-8 text-[#E890A8] animate-spin mx-auto mb-3" />
             <p className="text-xs font-sans text-[#22120C]/60">
               {isRtl ? 'جاري استحضار الحلويات...' : 'Loading confectionery catalog...'}
             </p>
@@ -207,8 +207,8 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
 
         {/* Empty Search Result Fallback */}
         {!loading && sortedProducts.length === 0 && (
-          <div className="py-20 text-center bg-white/50 rounded-3xl border border-[#22120C]/10 p-10">
-            <p className="font-serif text-2xl text-[#963725] mb-2">
+          <div className="py-20 text-center bg-white rounded-3xl border border-[#22120C]/10 p-10">
+            <p className="font-serif text-2xl text-[#E890A8] mb-2">
               {isRtl ? 'لم نعثر على نتائج مطابقة' : 'No confections found'}
             </p>
             <p className="text-sm text-[#22120C]/60 font-light mb-6 font-sans">

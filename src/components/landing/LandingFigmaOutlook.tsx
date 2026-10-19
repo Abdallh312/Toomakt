@@ -9,7 +9,7 @@ export const LandingFigmaOutlook: React.FC = () => {
   return (
     <section
       id="a-sweeter-outlook"
-      className="relative w-full bg-[#FAF5EE] text-[#22120C] py-20 sm:py-32 px-6 sm:px-10 lg:px-16 overflow-hidden"
+      className="relative w-full bg-white text-[#22120C] py-20 sm:py-32 px-6 sm:px-10 lg:px-16 overflow-hidden"
       aria-label="About Al-Zahra and Toomakt"
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
@@ -32,13 +32,13 @@ export const LandingFigmaOutlook: React.FC = () => {
               />
             </div>
 
-            {/* Overlaid Gold Circular Stamp */}
+            {/* Overlaid Circular Stamp */}
             <motion.div
               initial={{ scale: 0, rotate: 15 }}
               whileInView={{ scale: 1, rotate: 8 }}
               viewport={{ once: true }}
               transition={{ type: 'spring', stiffness: 220, damping: 16, delay: 0.3 }}
-              className="absolute -bottom-2 -right-2 sm:bottom-4 sm:-right-4 w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-[#E4B880] text-[#22120C] flex flex-col items-center justify-center text-center p-3 shadow-[0_12px_32px_rgba(34,18,12,0.18)] border-2 border-[#FAF5EE]/60 pointer-events-none select-none"
+              className="absolute -bottom-2 -right-2 sm:bottom-4 sm:-right-4 w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-[#E890A8] text-white flex flex-col items-center justify-center text-center p-3 shadow-[0_12px_32px_rgba(232,144,168,0.35)] border-2 border-white/80 pointer-events-none select-none"
             >
               <span className="font-serif italic font-bold text-xs sm:text-sm leading-tight">
                 {isRtl ? (
@@ -55,7 +55,7 @@ export const LandingFigmaOutlook: React.FC = () => {
                   </>
                 )}
               </span>
-              <span className="text-[10px] font-mono tracking-widest uppercase opacity-75 mt-1 block">
+              <span className="text-[10px] font-mono tracking-widest uppercase opacity-90 mt-1 block">
                 1970 · 2012
               </span>
             </motion.div>
@@ -65,7 +65,7 @@ export const LandingFigmaOutlook: React.FC = () => {
         {/* Right Column: Company Story & Manifesto */}
         <div className="lg:col-span-7 space-y-6 sm:space-y-7">
           <div className="space-y-2">
-            <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#963725] font-semibold block">
+            <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#E890A8] font-semibold block">
               {isRtl ? 'مَنْ نَحْنُ · شَرِكَةُ الزَّهْرَةِ لِلصِّنَاعَاتِ الغِذَائِيَّة' : 'WHO WE ARE · AL-ZAHRA FOOD INDUSTRIES'}
             </span>
 
@@ -73,14 +73,14 @@ export const LandingFigmaOutlook: React.FC = () => {
               {isRtl ? (
                 <>
                   تَارِيخُ الأَجْدَادِ{' '}
-                  <span className="italic font-light text-[#963725]">
+                  <span className="italic font-light text-[#E890A8]">
                     يَتَوَارَثُهُ الأَبْنَاء.
                   </span>
                 </>
               ) : (
                 <>
                   A Generational Legacy,{' '}
-                  <span className="italic font-light text-[#963725]">
+                  <span className="italic font-light text-[#E890A8]">
                     Inherited Across Decades.
                   </span>
                 </>
@@ -110,11 +110,11 @@ export const LandingFigmaOutlook: React.FC = () => {
 
           {/* Slogan Signature */}
           <div className="pt-2 border-t border-[#22120C]/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <span className="font-serif italic text-xl sm:text-2xl text-[#963725] tracking-wide block">
+            <span className="font-serif italic text-xl sm:text-2xl text-[#E890A8] tracking-wide block">
               {isRtl ? 'الزهرة – تاريخ الأجداد يتوارثه الأبناء.' : 'Al-Zahra – Heritage of Ancestors, Inherited by Generations.'}
             </span>
 
-            <span className="text-xs font-mono text-[#963725] bg-[#E890A8]/15 border border-[#E890A8]/40 px-3 py-1 rounded-full font-medium shadow-xs">
+            <span className="text-xs font-mono text-[#E890A8] bg-[#E890A8]/15 border border-[#E890A8]/40 px-3 py-1 rounded-full font-medium shadow-xs">
               {isRtl ? 'فخر الصناعة المصرية' : 'Pride of Egyptian Industry'}
             </span>
           </div>

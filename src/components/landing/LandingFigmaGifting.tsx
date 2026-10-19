@@ -21,13 +21,13 @@ export const LandingFigmaGifting: React.FC<LandingFigmaGiftingProps> = ({
   return (
     <section
       id="sweetness-worth-sharing"
-      className="relative w-full bg-[#FAF5EE] text-[#22120C] py-24 sm:py-36 px-6 sm:px-10 lg:px-16 overflow-hidden"
+      className="relative w-full bg-white text-[#22120C] py-24 sm:py-36 px-6 sm:px-10 lg:px-16 overflow-hidden"
       aria-label="Wholesale and Trade Partnerships"
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         {/* Left Column: Commercial Trade Message */}
         <div className="lg:col-span-6 space-y-6 sm:space-y-8">
-          <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#963725] font-semibold block">
+          <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#E890A8] font-semibold block">
             {isRtl ? 'شَرَاكَاتُ النَّجَاحِ وَالتَّوْزِيعِ التِّجَارِيّ' : 'WHOLESALE & TRADE PARTNERSHIPS'}
           </span>
 
@@ -36,7 +36,7 @@ export const LandingFigmaGifting: React.FC<LandingFigmaGiftingProps> = ({
               <>
                 عَلَاقَاتٌ طَوِيلَةُ الأَمَد:
                 <br />
-                <span className="italic font-light text-[#963725]">
+                <span className="italic font-light text-[#E890A8]">
                   مَعَ شُرَكَاءِ النَّجَاحِ حَوْلَ العَالَم.
                 </span>
               </>
@@ -44,7 +44,7 @@ export const LandingFigmaGifting: React.FC<LandingFigmaGiftingProps> = ({
               <>
                 Enduring Alliances:
                 <br />
-                <span className="italic font-light text-[#963725]">
+                <span className="italic font-light text-[#E890A8]">
                   With Trade Partners Globally.
                 </span>
               </>
@@ -61,7 +61,7 @@ export const LandingFigmaGifting: React.FC<LandingFigmaGiftingProps> = ({
             <button
               type="button"
               onClick={onTalkGifting}
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] font-medium text-sm sm:text-base shadow-[0_8px_24px_rgba(150,55,37,0.25)] hover:shadow-[0_12px_32px_rgba(232,144,168,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out cursor-pointer group will-change-transform"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white font-medium text-sm sm:text-base shadow-[0_8px_24px_rgba(232,144,168,0.35)] hover:shadow-[0_12px_32px_rgba(106,172,233,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out cursor-pointer group will-change-transform"
             >
               <span>{isRtl ? 'تَوَاصَلْ لِطَلَبَاتِ الجُمْلَةِ وَالتَّوْزِيع' : 'Inquire for Wholesale & Trade'}</span>
               <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
@@ -75,8 +75,8 @@ export const LandingFigmaGifting: React.FC<LandingFigmaGiftingProps> = ({
                     key={idx}
                     className={`px-3.5 py-1.5 rounded-full bg-white text-xs font-mono text-[#22120C]/80 shadow-xs transition-colors border ${
                       isBlue
-                        ? 'border-[#6AACE9]/35 hover:border-[#6AACE9] hover:text-[#1F5F99]'
-                        : 'border-[#E890A8]/35 hover:border-[#E890A8] hover:text-[#963725]'
+                        ? 'border-[#6AACE9]/35 hover:border-[#6AACE9] hover:text-[#6AACE9]'
+                        : 'border-[#E890A8]/35 hover:border-[#E890A8] hover:text-[#E890A8]'
                     }`}
                   >
                     {isRtl ? tier.ar : tier.en}
@@ -94,7 +94,7 @@ export const LandingFigmaGifting: React.FC<LandingFigmaGiftingProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.8 }}
-            className="relative w-full max-w-[500px] aspect-[4/3.4] rounded-t-[140px] rounded-b-3xl overflow-hidden shadow-[0_20px_50px_rgba(34,18,12,0.12)] border border-[#22120C]/10 bg-[#E8B072]/20 group"
+            className="relative w-full max-w-[500px] aspect-[4/3.4] rounded-t-[140px] rounded-b-3xl overflow-hidden shadow-[0_20px_50px_rgba(34,18,12,0.12)] border border-[#22120C]/10 bg-[#E890A8]/10 group"
           >
             <img
               src="/images/figma/7a1d2bd79e3da9ebae2f6943a53ec8be937f6d5e.jpg"

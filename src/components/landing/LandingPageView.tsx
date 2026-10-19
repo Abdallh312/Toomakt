@@ -48,12 +48,12 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({
   return (
     <div
       ref={containerRef}
-      className="relative w-full overflow-hidden bg-[#FAF5EE] text-[#22120C]"
+      className="relative w-full overflow-hidden bg-white text-[#22120C]"
     >
-      {/* Global Terracotta, Sweet Rose & Sky Azure Scroll Progress Indicator (Smooth GPU spring) */}
+      {/* Global Sweet Rose & Sky Azure Scroll Progress Indicator (Smooth GPU spring) */}
       <motion.div
         style={{ scaleX: smoothProgress, transformOrigin: '0%' }}
-        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#963725] via-[#E890A8] via-[#6AACE9] to-[#963725] z-[60] pointer-events-none shadow-[0_0_14px_rgba(106,172,233,0.45)] will-change-transform"
+        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#E890A8] via-[#6AACE9] to-[#E890A8] z-[60] pointer-events-none shadow-[0_0_14px_rgba(106,172,233,0.45)] will-change-transform"
       />
 
       {/* 01 — Hero: Welcome to Toomakt ("Life's sweeter unwrapped.") */}

@@ -117,14 +117,14 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
   }));
 
   return (
-    <div className="bg-[#FAF5EE] text-[#22120C] min-h-screen py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
+    <div className="bg-white text-[#22120C] min-h-screen py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         
         {/* Navigation Breadcrumb */}
         <div className="mb-6 flex items-center justify-between">
           <button
             onClick={onBackHome}
-            className="text-xs flex items-center gap-2 cursor-pointer border border-[#22120C]/15 hover:border-[#963725] hover:text-[#963725] px-4 py-2 rounded-full font-mono transition-colors"
+            className="text-xs flex items-center gap-2 cursor-pointer border border-[#22120C]/15 hover:border-[#E890A8] hover:text-[#E890A8] px-4 py-2 rounded-full font-mono transition-colors"
           >
             <ArrowLeft className="w-4 h-4 rtl:rotate-180" />
             <span>{isRtl ? 'العودة للرئيسية' : 'RETURN TO ATELIER'}</span>
@@ -137,7 +137,7 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
 
         {/* Page Editorial Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <span className="text-[11px] font-semibold text-[#963725] uppercase tracking-widest block mb-2 font-mono">
+          <span className="text-[11px] font-semibold text-[#E890A8] uppercase tracking-widest block mb-2 font-mono">
             {isRtl ? 'عن توماكت' : 'ABOUT TOOMAKT'}
           </span>
           <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal text-[#22120C] tracking-tight mb-4">
@@ -151,7 +151,7 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
         </div>
 
         {/* Responsive Tab Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-12 sm:mb-16 p-1.5 rounded-full bg-[#F4ECE2] border border-[#22120C]/10 max-w-2xl mx-auto">
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-12 sm:mb-16 p-1.5 rounded-full bg-[#FDF2F5] border border-[#E890A8]/20 max-w-2xl mx-auto">
           {tabs.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -162,8 +162,8 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
                 onClick={() => handleTabClick(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-[#963725] text-[#FAF5EE] shadow-sm font-semibold'
-                    : 'text-[#22120C]/70 hover:text-[#22120C] hover:bg-[#FAF5EE]'
+                    ? 'bg-[#E890A8] text-white shadow-sm font-semibold'
+                    : 'text-[#22120C]/70 hover:text-[#22120C] hover:bg-white'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -182,8 +182,8 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
             className="space-y-12 sm:space-y-16"
           >
             {/* Story Narrative Box */}
-            <div className="bg-[#FAF5EE] rounded-2xl sm:rounded-[32px] p-6 sm:p-10 border border-[#22120C]/10 shadow-[0_16px_40px_rgba(34,18,12,0.06)]">
-              <span className="text-[11px] font-mono tracking-widest uppercase text-[#963725] font-semibold block mb-2">
+            <div className="bg-white rounded-2xl sm:rounded-[32px] p-6 sm:p-10 border border-[#22120C]/10 shadow-[0_16px_40px_rgba(34,18,12,0.06)]">
+              <span className="text-[11px] font-mono tracking-widest uppercase text-[#E890A8] font-semibold block mb-2">
                 {isRtl ? 'الفلسفة التأسيسية' : 'FOUNDING PHILOSOPHY'}
               </span>
               <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#22120C] mb-6 font-normal">
@@ -204,9 +204,9 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
             </div>
 
             {/* The 4-Stage Tasting Evolution */}
-            <div className="bg-[#F4ECE2] rounded-2xl sm:rounded-[32px] p-6 sm:p-10 border border-[#22120C]/10">
+            <div className="bg-[#FDF2F5] rounded-2xl sm:rounded-[32px] p-6 sm:p-10 border border-[#E890A8]/20">
               <div className="max-w-2xl mb-8">
-                <span className="text-[11px] font-mono tracking-widest uppercase text-[#963725] font-semibold block mb-2">
+                <span className="text-[11px] font-mono tracking-widest uppercase text-[#E890A8] font-semibold block mb-2">
                   {isRtl ? 'علم التذوق' : 'THE 45-SECOND TASTING EVOLUTION'}
                 </span>
                 <h3 className="font-serif text-2xl sm:text-3xl text-[#22120C] font-normal">
@@ -216,9 +216,9 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {chewStages.map((stg) => (
-                  <div key={stg.sec} className="bg-[#FAF5EE] rounded-2xl p-5 border border-[#22120C]/10 shadow-xs flex flex-col justify-between">
+                  <div key={stg.sec} className="bg-white rounded-2xl p-5 border border-[#22120C]/10 shadow-xs flex flex-col justify-between">
                     <div>
-                      <span className="font-mono text-xs font-semibold text-[#963725] block mb-2">
+                      <span className="font-mono text-xs font-semibold text-[#E890A8] block mb-2">
                         {stg.sec}
                       </span>
                       <h4 className="font-serif text-sm font-medium text-[#22120C] mb-2">
@@ -245,13 +245,13 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {ingredientsList.map((ing) => (
-                <div key={ing.name} className="bg-[#FAF5EE] rounded-2xl p-6 sm:p-8 border border-[#22120C]/10 shadow-[0_12px_30px_rgba(34,18,12,0.05)] flex flex-col justify-between">
+                <div key={ing.name} className="bg-white rounded-2xl p-6 sm:p-8 border border-[#22120C]/10 shadow-[0_12px_30px_rgba(34,18,12,0.05)] flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-3">
                       <span className="text-xs font-mono font-medium text-[#22120C]/60 uppercase">
                         {ing.source}
                       </span>
-                      <span className="text-[10px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-[#963725]/10 text-[#963725] border border-[#963725]/20 font-mono">
+                      <span className="text-[10px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-[#E890A8]/10 text-[#E890A8] border border-[#E890A8]/20 font-mono">
                         {ing.badge}
                       </span>
                     </div>
@@ -267,25 +267,25 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
             </div>
 
             {/* Zero Promise Banner */}
-            <div className="bg-[#F4ECE2] rounded-2xl p-6 sm:p-8 border border-[#22120C]/10 text-center max-w-2xl mx-auto">
+            <div className="bg-[#FDF2F5] rounded-2xl p-6 sm:p-8 border border-[#E890A8]/20 text-center max-w-2xl mx-auto">
               <h4 className="font-serif text-lg text-[#22120C] mb-3 font-normal">
                 {isRtl ? 'عهد النقاء من معمل توماكت' : 'Our Clean Label Promise'}
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs text-[#22120C]/70 font-light">
-                <div className="p-3 bg-[#FAF5EE] rounded-xl border border-[#22120C]/10">
-                  <span className="block font-medium text-[#963725] mb-0.5 font-mono">0%</span>
+                <div className="p-3 bg-white rounded-xl border border-[#22120C]/10 shadow-xs">
+                  <span className="block font-medium text-[#E890A8] mb-0.5 font-mono">0%</span>
                   <span>{isRtl ? 'شراب ذرة' : 'Corn Syrup'}</span>
                 </div>
-                <div className="p-3 bg-[#FAF5EE] rounded-xl border border-[#22120C]/10">
-                  <span className="block font-medium text-[#963725] mb-0.5 font-mono">0%</span>
+                <div className="p-3 bg-white rounded-xl border border-[#22120C]/10 shadow-xs">
+                  <span className="block font-medium text-[#E890A8] mb-0.5 font-mono">0%</span>
                   <span>{isRtl ? 'زيت نخيل' : 'Palm Oil'}</span>
                 </div>
-                <div className="p-3 bg-[#FAF5EE] rounded-xl border border-[#22120C]/10">
-                  <span className="block font-medium text-[#963725] mb-0.5 font-mono">0%</span>
+                <div className="p-3 bg-white rounded-xl border border-[#22120C]/10 shadow-xs">
+                  <span className="block font-medium text-[#E890A8] mb-0.5 font-mono">0%</span>
                   <span>{isRtl ? 'ملونات صناعية' : 'Artificial Dyes'}</span>
                 </div>
-                <div className="p-3 bg-[#FAF5EE] rounded-xl border border-[#22120C]/10">
-                  <span className="block font-medium text-[#963725] mb-0.5 font-mono">0%</span>
+                <div className="p-3 bg-white rounded-xl border border-[#22120C]/10 shadow-xs">
+                  <span className="block font-medium text-[#E890A8] mb-0.5 font-mono">0%</span>
                   <span>{isRtl ? 'مواد حافظة' : 'Preservatives'}</span>
                 </div>
               </div>
@@ -301,8 +301,8 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
             transition={{ duration: 0.4 }}
             className="space-y-8"
           >
-            <div className="bg-[#FAF5EE] rounded-2xl sm:rounded-[32px] p-6 sm:p-10 border border-[#22120C]/10 shadow-[0_16px_40px_rgba(34,18,12,0.06)]">
-              <span className="text-[11px] font-mono tracking-widest uppercase text-[#963725] font-semibold block mb-2">
+            <div className="bg-white rounded-2xl sm:rounded-[32px] p-6 sm:p-10 border border-[#22120C]/10 shadow-[0_16px_40px_rgba(34,18,12,0.06)]">
+              <span className="text-[11px] font-mono tracking-widest uppercase text-[#E890A8] font-semibold block mb-2">
                 {isRtl ? 'الشحن المبرد المعزول' : 'CLIMATE-PROTECTED LOGISTICS'}
               </span>
               <h2 className="font-serif text-2xl sm:text-3xl text-[#22120C] mb-4 font-normal">
@@ -358,18 +358,18 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
               return (
                 <div
                   key={idx}
-                  className="bg-[#FAF5EE] rounded-2xl border border-[#22120C]/10 overflow-hidden transition-all shadow-xs"
+                  className="bg-white rounded-2xl border border-[#22120C]/10 overflow-hidden transition-all shadow-xs"
                 >
                   <button
                     onClick={() => setActiveAccordion(isOpen ? null : idx)}
-                    className="w-full p-5 sm:p-6 text-left rtl:text-right flex items-center justify-between gap-4 cursor-pointer hover:bg-[#F4ECE2] transition-colors"
+                    className="w-full p-5 sm:p-6 text-left rtl:text-right flex items-center justify-between gap-4 cursor-pointer hover:bg-[#FDF2F5] transition-colors"
                   >
                     <span className="font-serif text-base sm:text-lg font-normal text-[#22120C]">
                       {faq.q}
                     </span>
                     <ChevronDown
                       className={`w-4 h-4 text-[#22120C]/60 shrink-0 transition-transform duration-200 ${
-                        isOpen ? 'rotate-180 text-[#963725]' : ''
+                        isOpen ? 'rotate-180 text-[#E890A8]' : ''
                       }`}
                     />
                   </button>
@@ -399,7 +399,7 @@ export const CMSPageView: React.FC<CMSPageViewProps> = ({
           </p>
           <button
             onClick={() => onNavigateView && onNavigateView('shop')}
-            className="px-7 py-3 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] text-xs font-mono font-semibold tracking-wider uppercase shadow-[0_4px_14px_rgba(150,55,37,0.25)] hover:shadow-[0_6px_20px_rgba(150,55,37,0.35)] cursor-pointer transition-all"
+            className="px-7 py-3 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white text-xs font-mono font-semibold tracking-wider uppercase shadow-[0_4px_14px_rgba(232,144,168,0.3)] hover:shadow-[0_6px_20px_rgba(106,172,233,0.35)] cursor-pointer transition-all"
           >
             <span>{isRtl ? 'استكشف تشكيلة المتجر' : 'Explore The Collection'}</span>
           </button>

@@ -177,8 +177,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           aria-label="Main Navigation"
           className={`pointer-events-auto mx-auto rounded-full flex items-center justify-between transition-all duration-300 ease-out ${
             isCompact
-              ? 'max-w-5xl h-13 sm:h-14 px-3.5 sm:px-5 bg-[#FAF5EE]/95 backdrop-blur-2xl border border-[#22120C]/12 shadow-[0_12px_36px_rgba(34,18,12,0.09)]'
-              : 'max-w-6xl h-15 sm:h-[4.25rem] px-4.5 sm:px-6 bg-[#FAF5EE]/90 backdrop-blur-xl border border-[#22120C]/08 shadow-[0_8px_30px_rgba(34,18,12,0.05)]'
+              ? 'max-w-5xl h-13 sm:h-14 px-3.5 sm:px-5 bg-white/95 backdrop-blur-2xl border border-[#22120C]/10 shadow-[0_12px_36px_rgba(34,18,12,0.06)]'
+              : 'max-w-6xl h-15 sm:h-[4.25rem] px-4.5 sm:px-6 bg-white/90 backdrop-blur-xl border border-[#22120C]/08 shadow-[0_8px_30px_rgba(34,18,12,0.04)]'
           }`}
         >
           {/* Left: Brand Identity */}
@@ -197,7 +197,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             />
             <div className="flex items-center gap-2">
               <span
-                className={`font-serif text-[#22120C] tracking-tight group-hover:text-[#963725] transition-all lowercase leading-none ${
+                className={`font-serif text-[#22120C] tracking-tight group-hover:text-[#E890A8] transition-all lowercase leading-none ${
                   isCompact ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-[1.7rem]'
                 }`}
               >
@@ -217,7 +217,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => handleLinkClick(link.target)}
                   className={`relative px-4 py-1.5 rounded-full text-xs font-sans font-medium transition-all duration-200 cursor-pointer ${
                     active
-                      ? 'text-[#FAF5EE] font-semibold'
+                      ? 'text-white font-semibold'
                       : 'text-[#22120C]/75 hover:text-[#22120C]'
                   }`}
                 >
@@ -225,7 +225,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   {active && (
                     <motion.div
                       layoutId="navActivePill"
-                      className="absolute inset-0 rounded-full bg-[#963725] shadow-xs"
+                      className="absolute inset-0 rounded-full bg-[#E890A8] shadow-xs"
                       transition={{ type: 'spring', stiffness: 420, damping: 32 }}
                     />
                   )}
@@ -248,7 +248,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     exit={{ width: 0, opacity: 0 }}
                     transition={{ duration: 0.22 }}
                     onSubmit={handleSearchSubmit}
-                    className="overflow-hidden flex items-center border border-[#963725]/40 bg-white rounded-full px-3 py-1.5 shadow-sm"
+                    className="overflow-hidden flex items-center border border-[#E890A8]/40 bg-white rounded-full px-3 py-1.5 shadow-sm"
                   >
                     <input
                       ref={searchInputRef}
@@ -271,7 +271,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     key="search-btn"
                     type="button"
                     onClick={() => setSearchOpen(true)}
-                    className="w-9 h-9 rounded-full hover:bg-[#22120C]/[0.06] border border-[#22120C]/10 text-[#22120C]/75 hover:text-[#963725] flex items-center justify-center transition-all cursor-pointer"
+                    className="w-9 h-9 rounded-full hover:bg-[#22120C]/[0.06] border border-[#22120C]/10 text-[#22120C]/75 hover:text-[#E890A8] flex items-center justify-center transition-all cursor-pointer"
                     aria-label="Search"
                   >
                     <Search className="w-4 h-4" />
@@ -284,7 +284,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={toggleLanguage}
-              className="h-9 px-3.5 rounded-full border border-[#22120C]/15 hover:border-[#963725]/40 hover:bg-[#22120C]/[0.04] text-xs font-mono font-semibold text-[#22120C]/80 hover:text-[#963725] transition-all cursor-pointer flex items-center justify-center"
+              className="h-9 px-3.5 rounded-full border border-[#22120C]/15 hover:border-[#E890A8]/40 hover:bg-[#22120C]/[0.04] text-xs font-mono font-semibold text-[#22120C]/80 hover:text-[#E890A8] transition-all cursor-pointer flex items-center justify-center"
               aria-label="Toggle language"
             >
               {language === 'en' ? 'عربي' : 'EN'}
@@ -294,15 +294,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={() => setIsCartOpen(true)}
-              className="h-9 group relative flex items-center gap-1.5 px-3.5 rounded-full border border-[#22120C]/15 hover:border-[#963725]/40 hover:bg-[#22120C]/[0.04] text-[#22120C] transition-all cursor-pointer"
+              className="h-9 group relative flex items-center gap-1.5 px-3.5 rounded-full border border-[#22120C]/15 hover:border-[#E890A8]/40 hover:bg-[#22120C]/[0.04] text-[#22120C] transition-all cursor-pointer"
               aria-label="View shopping bag"
             >
               <ShoppingBag className="w-3.5 h-3.5 transition-transform group-hover:scale-110" />
-              <span className="font-mono text-xs font-bold text-[#963725]">
+              <span className="font-mono text-xs font-bold text-[#E890A8]">
                 {totalCount}
               </span>
               {totalCount > 0 && (
-                <span className="w-1.5 h-1.5 rounded-full bg-[#963725] animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E890A8] animate-pulse" />
               )}
             </button>
 
@@ -310,7 +310,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={() => handleLinkClick('contact')}
-              className="hidden sm:inline-flex items-center justify-center gap-2 h-9 px-5 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 shadow-xs hover:shadow-[0_4px_16px_rgba(232,144,168,0.45)] cursor-pointer group whitespace-nowrap shrink-0 leading-none"
+              className="hidden sm:inline-flex items-center justify-center gap-2 h-9 px-5 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 shadow-[0_4px_16px_rgba(232,144,168,0.35)] hover:shadow-[0_4px_16px_rgba(106,172,233,0.45)] cursor-pointer group whitespace-nowrap shrink-0 leading-none"
             >
               <span className="translate-y-px">{isRtl ? 'تَوَاصَلْ' : 'Say hello'}</span>
               <ArrowUpRight className="w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -337,7 +337,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.98 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-x-3 top-20 z-40 max-w-lg mx-auto bg-[#FAF5EE]/98 backdrop-blur-2xl rounded-3xl border border-[#22120C]/12 shadow-[0_20px_50px_rgba(34,18,12,0.18)] p-6 text-[#22120C] lg:hidden"
+            className="fixed inset-x-3 top-20 z-40 max-w-lg mx-auto bg-white/98 backdrop-blur-2xl rounded-3xl border border-[#22120C]/12 shadow-[0_20px_50px_rgba(34,18,12,0.18)] p-6 text-[#22120C] lg:hidden"
           >
             {/* Mobile Navigation Links */}
             <nav className="space-y-1.5 pt-2">
@@ -350,7 +350,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     onClick={() => handleLinkClick(link.target)}
                     className={`w-full text-left rtl:text-right py-3.5 px-4 rounded-2xl flex items-center justify-between text-base font-serif transition-colors ${
                       active
-                        ? 'bg-[#963725]/10 text-[#963725] font-semibold'
+                        ? 'bg-[#E890A8]/12 text-[#E890A8] font-semibold'
                         : 'text-[#22120C] hover:bg-[#22120C]/[0.04]'
                     }`}
                   >
@@ -367,7 +367,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   type="button"
                   onClick={toggleLanguage}
-                  className="flex-1 py-3 rounded-full border border-[#22120C]/20 text-xs font-mono font-semibold text-[#22120C] hover:border-[#963725] transition-colors"
+                  className="flex-1 py-3 rounded-full border border-[#22120C]/20 text-xs font-mono font-semibold text-[#22120C] hover:border-[#E890A8] hover:text-[#E890A8] transition-colors"
                 >
                   {language === 'en' ? 'التحويل إلى العربية' : 'Switch to English'}
                 </button>
@@ -378,7 +378,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     setIsCartOpen(true);
                     setMobileMenuOpen(false);
                   }}
-                  className="flex-1 py-3 rounded-full bg-[#963725] text-[#FAF5EE] text-xs font-mono font-bold flex items-center justify-center gap-2 shadow-sm"
+                  className="flex-1 py-3 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white text-xs font-mono font-bold flex items-center justify-center gap-2 shadow-sm transition-colors"
                 >
                   <ShoppingBag className="w-4 h-4" />
                   <span>{isRtl ? `الحقيبة (${totalCount})` : `Bag (${totalCount})`}</span>

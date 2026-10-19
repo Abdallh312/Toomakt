@@ -27,7 +27,7 @@ export const LandingFigmaSweetSide: React.FC<LandingFigmaSweetSideProps> = ({
   return (
     <section
       id="meet-your-sweet-side"
-      className="relative w-full bg-[#FAF5EE] text-[#22120C] py-24 sm:py-32 px-6 sm:px-10 lg:px-16 overflow-hidden"
+      className="relative w-full bg-white text-[#22120C] py-24 sm:py-32 px-6 sm:px-10 lg:px-16 overflow-hidden"
       aria-label="Meet your sweet side"
     >
       <div className="max-w-7xl mx-auto">
@@ -35,10 +35,10 @@ export const LandingFigmaSweetSide: React.FC<LandingFigmaSweetSideProps> = ({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 sm:mb-20">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#963725] font-semibold block">
+              <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#E890A8] font-semibold block">
                 {isRtl ? 'تَشْكِيلَةُ الحَلْوَيَاتِ الحِرَفِيَّة' : 'THE ARTISAN SELECTION'}
               </span>
-              <span className="inline-flex items-center gap-1 text-[10px] font-mono text-[#963725] bg-[#E890A8]/20 border border-[#E890A8]/45 px-2.5 py-0.5 rounded-full font-medium">
+              <span className="inline-flex items-center gap-1 text-[10px] font-mono text-[#E890A8] bg-[#E890A8]/20 border border-[#E890A8]/45 px-2.5 py-0.5 rounded-full font-medium">
                 <Sparkles className="w-3 h-3 text-[#E890A8]" />
                 <span>{isRtl ? 'وصفات فرنسية أصلية' : 'Authentic French Recipes'}</span>
               </span>
@@ -56,7 +56,7 @@ export const LandingFigmaSweetSide: React.FC<LandingFigmaSweetSideProps> = ({
           <button
             type="button"
             onClick={onViewAllProducts}
-            className="inline-flex items-center gap-2 self-start md:self-auto px-7 py-3.5 rounded-full border border-[#22120C]/25 text-xs sm:text-sm font-sans font-medium text-[#22120C] hover:bg-[#22120C] hover:text-[#FAF5EE] hover:border-[#22120C] hover:shadow-[0_8px_24px_rgba(232,144,168,0.25)] transition-all duration-300 cursor-pointer group shadow-xs will-change-transform"
+            className="inline-flex items-center gap-2 self-start md:self-auto px-7 py-3.5 rounded-full border border-[#E890A8] text-xs sm:text-sm font-sans font-medium text-[#E890A8] hover:bg-[#E890A8] hover:text-white hover:shadow-[0_8px_24px_rgba(232,144,168,0.35)] transition-all duration-300 cursor-pointer group shadow-xs will-change-transform"
           >
             <span>{isRtl ? 'عَرْضُ كَافَّةِ التشكيلة (١٤ صنفاً)' : 'View all 14 confections'}</span>
             <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -97,7 +97,7 @@ export const LandingFigmaSweetSide: React.FC<LandingFigmaSweetSideProps> = ({
           <button
             type="button"
             onClick={onViewAllProducts}
-            className="text-xs font-mono text-[#963725] hover:underline font-semibold"
+            className="text-xs font-mono text-[#E890A8] hover:text-[#6AACE9] hover:underline font-semibold"
           >
             {isRtl ? 'استكشف كافة الأصناف ←' : 'Browse full catalog →'}
           </button>

@@ -18,26 +18,26 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
   return (
     <section
       id="welcome-to-toomakt"
-      className="relative w-full bg-[#FAF5EE] text-[#22120C] pt-24 sm:pt-32 pb-20 sm:pb-28 px-6 sm:px-10 lg:px-16 overflow-hidden transition-colors"
+      className="relative w-full bg-white text-[#22120C] pt-24 sm:pt-32 pb-20 sm:pb-28 px-6 sm:px-10 lg:px-16 overflow-hidden transition-colors"
       aria-label="Welcome to Toomakt"
     >
       {/* Soothing Ambient Light Pools with Dual Secondary Tones: Sweet Rose (#E890A8) & Sky Azure (#6AACE9) */}
       <div
         className="absolute top-0 right-0 w-[550px] h-[550px] rounded-full pointer-events-none opacity-50 blur-3xl"
         style={{
-          background: 'radial-gradient(circle, rgba(232, 144, 168, 0.22) 0%, rgba(250, 245, 238, 0) 70%)',
+          background: 'radial-gradient(circle, rgba(232, 144, 168, 0.20) 0%, rgba(255, 255, 255, 0) 70%)',
         }}
       />
       <div
         className="absolute top-1/3 left-10 w-[420px] h-[420px] rounded-full pointer-events-none opacity-40 blur-3xl"
         style={{
-          background: 'radial-gradient(circle, rgba(106, 172, 233, 0.20) 0%, rgba(250, 245, 238, 0) 70%)',
+          background: 'radial-gradient(circle, rgba(106, 172, 233, 0.20) 0%, rgba(255, 255, 255, 0) 70%)',
         }}
       />
       <div
         className="absolute bottom-0 left-0 w-[450px] h-[450px] rounded-full pointer-events-none opacity-30 blur-3xl"
         style={{
-          background: 'radial-gradient(circle, rgba(150, 55, 37, 0.10) 0%, rgba(250, 245, 238, 0) 70%)',
+          background: 'radial-gradient(circle, rgba(232, 144, 168, 0.15) 0%, rgba(255, 255, 255, 0) 70%)',
         }}
       />
 
@@ -59,7 +59,7 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E890A8]/15 border border-[#E890A8]/45 text-[#963725] text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase shadow-xs"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E890A8]/15 border border-[#E890A8]/45 text-[#E890A8] text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase shadow-xs"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#E890A8]" />
             <span>
@@ -80,7 +80,7 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
               <>
                 تَارِيخُ الأَجْدَادِ
                 <br />
-                <span className="italic font-light text-[#963725]">
+                <span className="italic font-light text-[#E890A8]">
                   يَتَوَارَثُهُ الأَبْنَاء.
                 </span>
               </>
@@ -88,7 +88,7 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
               <>
                 Heritage of Ancestors,
                 <br />
-                <span className="italic font-light text-[#963725]">
+                <span className="italic font-light text-[#E890A8]">
                   Inherited by Generations.
                 </span>
               </>
@@ -122,8 +122,8 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
               <Globe className="w-3 h-3 text-[#6AACE9]" />
               <span className="font-medium text-[#22120C]">{isRtl ? 'صادرات لأسواق عربية ودولية' : 'Arab & Global Exports'}</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/85 border border-[#963725]/20 shadow-xs">
-              <Heart className="w-3 h-3 text-[#963725]" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/85 border border-[#E890A8]/25 shadow-xs">
+              <Heart className="w-3 h-3 text-[#E890A8]" />
               <span>{isRtl ? 'إرث عائلي متوارث منذ ١٩٧٠' : 'Family Heritage Since 1970'}</span>
             </span>
           </motion.div>
@@ -138,7 +138,7 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
             <button
               type="button"
               onClick={onExploreSweets}
-              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] font-medium text-sm sm:text-base shadow-[0_8px_24px_rgba(150,55,37,0.22)] hover:shadow-[0_12px_32px_rgba(232,144,168,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out cursor-pointer group will-change-transform"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white font-medium text-sm sm:text-base shadow-[0_8px_24px_rgba(232,144,168,0.35)] hover:shadow-[0_12px_32px_rgba(106,172,233,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out cursor-pointer group will-change-transform"
             >
               <span>{isRtl ? 'تصفح منتجات توماكت' : 'Explore our sweets'}</span>
               <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
@@ -147,7 +147,7 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
             <button
               type="button"
               onClick={() => onNavigateSection('meet-your-sweet-side')}
-              className="inline-flex items-center gap-2.5 px-5 py-3.5 rounded-full border border-[#22120C]/15 hover:border-[#6AACE9] hover:bg-[#F0F7FD] text-[#22120C] text-xs font-mono font-semibold tracking-wider uppercase transition-all duration-300 ease-out cursor-pointer group"
+              className="inline-flex items-center gap-2.5 px-5 py-3.5 rounded-full border border-[#22120C]/15 hover:border-[#6AACE9] hover:bg-[#6AACE9]/10 text-[#22120C] text-xs font-mono font-semibold tracking-wider uppercase transition-all duration-300 ease-out cursor-pointer group"
             >
               <ArrowDown className="w-3.5 h-3.5 text-[#6AACE9] transition-transform group-hover:translate-y-0.5" />
               <span>{isRtl ? 'اِسْتَكْشِفِ التَّشْكِيلَة' : 'EXPLORE COLLECTION'}</span>
@@ -165,7 +165,7 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
           >
             {/* Elegant Luxury Frame with Soft Shadow */}
             <div className="relative rounded-3xl sm:rounded-[2.5rem] p-2.5 sm:p-3.5 bg-white/70 backdrop-blur-md border border-[#22120C]/08 shadow-[0_24px_60px_-15px_rgba(34,18,12,0.10)] group">
-              <div className="relative aspect-[4/4.5] sm:aspect-square w-full rounded-2xl sm:rounded-[2rem] overflow-hidden bg-[#FAF5EE]">
+              <div className="relative aspect-[4/4.5] sm:aspect-square w-full rounded-2xl sm:rounded-[2rem] overflow-hidden bg-white">
                 <img
                   src="/images/figma/c736dc6cdbf982bcd40416b1b8b770e8459665ca.jpg"
                   alt="TOOMAKT authentic confectionery still life"
@@ -187,7 +187,7 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
                 {/* Bottom Trust Note: Exports & 10th of Ramadan */}
                 <div className="absolute bottom-4 inset-x-4 sm:bottom-5 sm:inset-x-5 flex items-center justify-between bg-white/90 backdrop-blur-md rounded-2xl p-3 border border-[#22120C]/08 shadow-sm text-[#22120C]">
                   <div className="flex items-center gap-1.5">
-                    <Award className="w-4 h-4 text-[#963725]" />
+                    <Award className="w-4 h-4 text-[#6AACE9]" />
                     <span className="text-xs font-mono font-bold text-[#22120C]">TOOMAKT</span>
                   </div>
                   <span className="text-[11px] font-sans text-[#22120C]/75 font-light">
@@ -197,12 +197,12 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
               </div>
             </div>
 
-            {/* Overlaid Terracotta Seal ("تاريخ الأجداد يتوارثه الأبناء") */}
+            {/* Overlaid Seal ("تاريخ الأجداد يتوارثه الأبناء") */}
             <motion.div
               initial={{ scale: 0, rotate: -20 }}
               animate={{ scale: 1, rotate: -10 }}
               transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.5 }}
-              className="absolute -bottom-4 -left-4 sm:bottom-2 sm:-left-6 w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-[#963725] text-[#FAF5EE] flex items-center justify-center text-center p-3 shadow-[0_12px_28px_rgba(150,55,37,0.32)] border-2 border-[#FAF5EE]/30 pointer-events-none select-none"
+              className="absolute -bottom-4 -left-4 sm:bottom-2 sm:-left-6 w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-[#E890A8] text-white flex items-center justify-center text-center p-3 shadow-[0_12px_28px_rgba(232,144,168,0.35)] border-2 border-white/50 pointer-events-none select-none"
             >
               <span className="font-serif italic text-xs sm:text-sm leading-tight">
                 {isRtl ? (

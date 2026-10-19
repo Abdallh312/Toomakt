@@ -58,26 +58,26 @@ export const AboutView: React.FC<AboutViewProps> = ({
   ];
 
   return (
-    <div className="w-full min-h-screen bg-[#FAF5EE] pt-28 sm:pt-36 pb-24 text-[#22120C]">
+    <div className="w-full min-h-screen bg-white pt-28 sm:pt-36 pb-24 text-[#22120C]">
       <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-14">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center gap-2 text-xs font-mono text-[#22120C]/60 mb-8">
           <button
             type="button"
             onClick={onNavigateHome}
-            className="hover:text-[#963725] transition-colors cursor-pointer"
+            className="hover:text-[#E890A8] transition-colors cursor-pointer"
           >
             {isRtl ? 'الرئيسية' : 'Home'}
           </button>
           <span>/</span>
-          <span className="text-[#963725] font-semibold">
+          <span className="text-[#E890A8] font-semibold">
             {isRtl ? 'قصتنا وحرفتنا' : 'Our Story & Heritage'}
           </span>
         </div>
 
         {/* Hero Section Header */}
         <div className="max-w-3xl mb-16 sm:mb-24">
-          <p className="font-serif italic text-[#963725] text-lg sm:text-xl mb-3">
+          <p className="font-serif italic text-[#E890A8] text-lg sm:text-xl mb-3">
             {isRtl ? 'شركة الزهرة للصناعات الغذائية · فخر الصناعة المصرية' : 'Al-Zahra Food Industries · Pride of Egyptian Industry'}
           </p>
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-[#22120C] leading-[1.08] mb-6">
@@ -94,8 +94,8 @@ export const AboutView: React.FC<AboutViewProps> = ({
 
         {/* Key Philosophy Pillars Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-20 sm:mb-28">
-          <div className="bg-[#FAF5EE] border border-[#22120C]/10 rounded-[28px] p-8 hover:border-[#963725]/35 hover:shadow-[0_16px_40px_rgba(34,18,12,0.06)] transition-all">
-            <span className="font-mono text-xs font-semibold text-[#963725] uppercase block mb-3">
+          <div className="bg-white border border-[#22120C]/10 rounded-[28px] p-8 hover:border-[#E890A8]/45 hover:shadow-[0_16px_40px_rgba(232,144,168,0.1)] transition-all">
+            <span className="font-mono text-xs font-semibold text-[#E890A8] uppercase block mb-3">
               01 · {isRtl ? 'نقاء المكونات' : 'PURE BUTTERFAT'}
             </span>
             <h3 className="font-serif text-2xl font-normal text-[#22120C] mb-3">
@@ -108,8 +108,8 @@ export const AboutView: React.FC<AboutViewProps> = ({
             </p>
           </div>
 
-          <div className="bg-[#FAF5EE] border border-[#22120C]/10 rounded-[28px] p-8 hover:border-[#963725]/35 hover:shadow-[0_16px_40px_rgba(34,18,12,0.06)] transition-all">
-            <span className="font-mono text-xs font-semibold text-[#963725] uppercase block mb-3">
+          <div className="bg-white border border-[#22120C]/10 rounded-[28px] p-8 hover:border-[#E890A8]/45 hover:shadow-[0_16px_40px_rgba(232,144,168,0.1)] transition-all">
+            <span className="font-mono text-xs font-semibold text-[#E890A8] uppercase block mb-3">
               02 · {isRtl ? 'حلاوة الفواكه' : 'FRUIT PURÉE'}
             </span>
             <h3 className="font-serif text-2xl font-normal text-[#22120C] mb-3">
@@ -122,8 +122,8 @@ export const AboutView: React.FC<AboutViewProps> = ({
             </p>
           </div>
 
-          <div className="bg-[#FAF5EE] border border-[#22120C]/10 rounded-[28px] p-8 hover:border-[#963725]/35 hover:shadow-[0_16px_40px_rgba(34,18,12,0.06)] transition-all">
-            <span className="font-mono text-xs font-semibold text-[#963725] uppercase block mb-3">
+          <div className="bg-white border border-[#22120C]/10 rounded-[28px] p-8 hover:border-[#E890A8]/45 hover:shadow-[0_16px_40px_rgba(232,144,168,0.1)] transition-all">
+            <span className="font-mono text-xs font-semibold text-[#E890A8] uppercase block mb-3">
               03 · {isRtl ? 'القلب السائل' : 'MOLTEN FILLING'}
             </span>
             <h3 className="font-serif text-2xl font-normal text-[#22120C] mb-3">
@@ -140,7 +140,7 @@ export const AboutView: React.FC<AboutViewProps> = ({
         {/* Milestone Timeline */}
         <div className="mb-20 sm:mb-28">
           <div className="max-w-2xl mb-12">
-            <p className="font-serif italic text-[#963725] text-lg mb-1">
+            <p className="font-serif italic text-[#E890A8] text-lg mb-1">
               {isRtl ? 'مَحَطَّاتُ الرِّحْلَة' : 'The Milestones'}
             </p>
             <h2 className="font-serif text-3xl sm:text-4xl text-[#22120C] font-normal">
@@ -152,10 +152,10 @@ export const AboutView: React.FC<AboutViewProps> = ({
             {milestones.map((item, idx) => (
               <div
                 key={idx}
-                className="bg-[#FAF5EE] border border-[#22120C]/10 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-[#963725]/30 hover:shadow-xs transition-all"
+                className="bg-white border border-[#22120C]/10 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-[#E890A8]/30 hover:shadow-xs transition-all"
               >
                 <div className="flex items-center gap-5">
-                  <span className="font-serif text-2xl sm:text-3xl text-[#963725] font-normal shrink-0">
+                  <span className="font-serif text-2xl sm:text-3xl text-[#E890A8] font-normal shrink-0">
                     {item.num}
                   </span>
                   <div className="h-8 w-px bg-[#22120C]/15 hidden sm:block" />
@@ -174,7 +174,7 @@ export const AboutView: React.FC<AboutViewProps> = ({
         </div>
 
         {/* Dual CTA Actions */}
-        <div className="p-8 sm:p-12 rounded-[32px] bg-[#F4ECE2] border border-[#22120C]/10 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="p-8 sm:p-12 rounded-[32px] bg-[#FDF2F5] border border-[#E890A8]/20 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="font-serif text-2xl sm:text-3xl text-[#22120C] font-normal">
               {isRtl ? 'اكتشف حلوياتنا أو شاهد مجمعنا الصناعي' : 'Explore the confections or tour the complex'}
@@ -188,7 +188,7 @@ export const AboutView: React.FC<AboutViewProps> = ({
             <button
               type="button"
               onClick={onNavigateShop}
-              className="px-6 py-3 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] font-medium text-xs font-mono uppercase tracking-wider group cursor-pointer flex items-center gap-2 shadow-sm transition-all"
+              className="px-6 py-3 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white font-medium text-xs font-mono uppercase tracking-wider group cursor-pointer flex items-center gap-2 shadow-sm transition-all"
             >
               <span>{isRtl ? 'متجر التشكيلة' : 'Shop Confections'}</span>
               <ArrowIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
@@ -196,7 +196,7 @@ export const AboutView: React.FC<AboutViewProps> = ({
             <button
               type="button"
               onClick={onNavigateFactory}
-              className="px-6 py-3 rounded-full border border-[#22120C]/20 hover:border-[#963725] hover:text-[#963725] text-[#22120C] font-medium text-xs font-mono uppercase tracking-wider cursor-pointer flex items-center gap-2 transition-all"
+              className="px-6 py-3 rounded-full border border-[#22120C]/20 hover:border-[#6AACE9] hover:text-[#6AACE9] text-[#22120C] font-medium text-xs font-mono uppercase tracking-wider cursor-pointer flex items-center gap-2 transition-all"
             >
               <span>{isRtl ? 'المصنع' : 'Factory'}</span>
             </button>

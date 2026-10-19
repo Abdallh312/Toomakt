@@ -53,18 +53,18 @@ export const BrandPreloader: React.FC<BrandPreloaderProps> = ({
             scale: 1.02,
             transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
           }}
-          className="fixed inset-0 z-[99999] bg-[#FAF5EE] flex flex-col items-center justify-center overflow-hidden select-none cursor-wait border-0 outline-none"
+          className="fixed inset-0 z-[99999] bg-white flex flex-col items-center justify-center overflow-hidden select-none cursor-wait border-0 outline-none"
           style={{ willChange: 'opacity, transform' }}
           role="status"
           aria-live="polite"
           aria-label={isRtl ? 'جاري تحضير تجربة توماكت...' : 'Preparing the toomakt experience...'}
         >
-          {/* Ambient Brand Glowing Pools (Secondary Colors: Sweet Rose #E890A8 & Sky Azure #6AACE9) */}
+          {/* Ambient Brand Glowing Pools (Sweet Rose #E890A8 & Sky Azure #6AACE9) */}
           <div
             className="absolute top-1/4 -right-16 w-[420px] h-[420px] rounded-full pointer-events-none opacity-40 blur-3xl animate-pulse"
             style={{
               background:
-                'radial-gradient(circle, rgba(232, 144, 168, 0.28) 0%, rgba(250, 245, 238, 0) 70%)',
+                'radial-gradient(circle, rgba(232, 144, 168, 0.28) 0%, rgba(255, 255, 255, 0) 70%)',
               animationDuration: '3s',
             }}
           />
@@ -72,14 +72,14 @@ export const BrandPreloader: React.FC<BrandPreloaderProps> = ({
             className="absolute -bottom-16 -left-16 w-[420px] h-[420px] rounded-full pointer-events-none opacity-35 blur-3xl"
             style={{
               background:
-                'radial-gradient(circle, rgba(106, 172, 233, 0.24) 0%, rgba(250, 245, 238, 0) 70%)',
+                'radial-gradient(circle, rgba(106, 172, 233, 0.24) 0%, rgba(255, 255, 255, 0) 70%)',
             }}
           />
           <div
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full pointer-events-none opacity-30 blur-2xl"
             style={{
               background:
-                'radial-gradient(circle, rgba(150, 55, 37, 0.15) 0%, rgba(250, 245, 238, 0) 70%)',
+                'radial-gradient(circle, rgba(232, 144, 168, 0.18) 0%, rgba(255, 255, 255, 0) 70%)',
             }}
           />
 
@@ -110,7 +110,7 @@ export const BrandPreloader: React.FC<BrandPreloaderProps> = ({
                   cy="50"
                   r="45"
                   fill="none"
-                  stroke="rgba(150, 55, 37, 0.12)"
+                  stroke="rgba(232, 144, 168, 0.2)"
                   strokeWidth="2"
                 />
                 <circle
@@ -125,15 +125,14 @@ export const BrandPreloader: React.FC<BrandPreloaderProps> = ({
                 />
                 <defs>
                   <linearGradient id="toomaktLoaderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#963725" />
-                    <stop offset="50%" stopColor="#E890A8" />
+                    <stop offset="0%" stopColor="#E890A8" />
                     <stop offset="100%" stopColor="#6AACE9" />
                   </linearGradient>
                 </defs>
               </svg>
 
               {/* Pulsing Concentric Aura */}
-              <div className="absolute inset-2 rounded-full bg-white/95 backdrop-blur-md border-0 shadow-[0_12px_36px_rgba(150,55,37,0.1)] flex items-center justify-center" />
+              <div className="absolute inset-2 rounded-full bg-white/95 backdrop-blur-md border-0 shadow-[0_12px_36px_rgba(232,144,168,0.15)] flex items-center justify-center" />
 
               {/* Logo Emblem */}
               <motion.img
@@ -167,9 +166,9 @@ export const BrandPreloader: React.FC<BrandPreloaderProps> = ({
                 toomakt
               </h1>
 
-              <div className="flex items-center justify-center gap-1.5 text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#963725] font-semibold border-0">
+              <div className="flex items-center justify-center gap-1.5 text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#E890A8] font-semibold border-0">
                 <span>{isRtl ? 'حِرْفَةُ التَّوْفِي الفَاخِرَة' : 'ARTISANAL TOFFEE'}</span>
-                <span className="text-[#E890A8]">•</span>
+                <span className="text-[#6AACE9]">•</span>
                 <span>{isRtl ? 'سُورْيَا ١٩٧٠ · مِصْر' : 'EST. 1970'}</span>
               </div>
             </motion.div>
@@ -182,7 +181,7 @@ export const BrandPreloader: React.FC<BrandPreloaderProps> = ({
               className="mt-6 w-36 h-1 rounded-full bg-[#22120C]/08 overflow-hidden relative border-0"
             >
               <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-[#963725] via-[#E890A8] to-[#6AACE9] border-0"
+                className="h-full rounded-full bg-gradient-to-r from-[#E890A8] to-[#6AACE9] border-0"
                 style={{ width: `${progress}%` }}
                 transition={{ duration: 0.15 }}
               />

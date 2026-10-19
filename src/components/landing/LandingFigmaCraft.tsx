@@ -60,14 +60,14 @@ export const LandingFigmaCraft: React.FC = () => {
   return (
     <section
       id="the-art-of-craft"
-      className="relative w-full bg-[#FAF5EE] text-[#22120C] py-20 sm:py-32 px-6 sm:px-10 lg:px-16 overflow-hidden"
+      className="relative w-full bg-white text-[#22120C] py-20 sm:py-32 px-6 sm:px-10 lg:px-16 overflow-hidden"
       aria-label="Vision, Mission and Values"
     >
       <div className="max-w-7xl mx-auto space-y-16 sm:space-y-24">
         {/* Top Split: Vision & Mission Cards */}
         <div>
           <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-3">
-            <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#963725] font-semibold block">
+            <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#E890A8] font-semibold block">
               {isRtl ? 'رُؤْيَتُنَا وَرِسَالَتُنَا' : 'OUR VISION & MISSION'}
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-[#22120C]">
@@ -82,12 +82,12 @@ export const LandingFigmaCraft: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="p-8 sm:p-10 rounded-3xl bg-white border border-[#22120C]/08 shadow-[0_12px_36px_rgba(34,18,12,0.04)] relative group hover:border-[#963725]/30 transition-all"
+              className="p-8 sm:p-10 rounded-3xl bg-white border border-[#22120C]/08 shadow-[0_12px_36px_rgba(34,18,12,0.04)] relative group hover:border-[#E890A8]/40 transition-all"
             >
-              <div className="w-12 h-12 rounded-2xl bg-[#963725]/08 text-[#963725] flex items-center justify-center mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-[#E890A8]/15 text-[#E890A8] flex items-center justify-center mb-6">
                 <Compass className="w-6 h-6 stroke-[1.8]" />
               </div>
-              <span className="text-xs font-mono tracking-widest uppercase text-[#963725] font-semibold block mb-2">
+              <span className="text-xs font-mono tracking-widest uppercase text-[#E890A8] font-semibold block mb-2">
                 {isRtl ? 'رُؤْيَتُنَا' : 'OUR VISION'}
               </span>
               <h3 className="font-serif text-2xl sm:text-3xl text-[#22120C] mb-4">
@@ -106,12 +106,12 @@ export const LandingFigmaCraft: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="p-8 sm:p-10 rounded-3xl bg-white border border-[#22120C]/08 shadow-[0_12px_36px_rgba(34,18,12,0.04)] relative group hover:border-[#963725]/30 transition-all"
+              className="p-8 sm:p-10 rounded-3xl bg-white border border-[#22120C]/08 shadow-[0_12px_36px_rgba(34,18,12,0.04)] relative group hover:border-[#6AACE9]/40 transition-all"
             >
-              <div className="w-12 h-12 rounded-2xl bg-[#963725]/08 text-[#963725] flex items-center justify-center mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-[#6AACE9]/15 text-[#6AACE9] flex items-center justify-center mb-6">
                 <Target className="w-6 h-6 stroke-[1.8]" />
               </div>
-              <span className="text-xs font-mono tracking-widest uppercase text-[#963725] font-semibold block mb-2">
+              <span className="text-xs font-mono tracking-widest uppercase text-[#6AACE9] font-semibold block mb-2">
                 {isRtl ? 'رِسَالَتُنَا' : 'OUR MISSION'}
               </span>
               <h3 className="font-serif text-2xl sm:text-3xl text-[#22120C] mb-4">
@@ -130,14 +130,14 @@ export const LandingFigmaCraft: React.FC = () => {
         <div>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12 pb-6 border-b border-[#22120C]/10">
             <div>
-              <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#963725] font-semibold block mb-2">
+              <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#E890A8] font-semibold block mb-2">
                 {isRtl ? 'قِيَمُنَا الأَسَاسِيَّة' : 'OUR CORE VALUES'}
               </span>
               <h3 className="font-serif text-3xl sm:text-4xl text-[#22120C]">
                 {isRtl ? 'الرَّكَائِزُ الَّتِي نَبْنِي عَلَيْهَا نَجَاحَنَا.' : 'The Pillars That Anchor Our Success.'}
               </h3>
             </div>
-            <span className="text-xs font-mono text-[#963725] bg-[#E890A8]/20 border border-[#E890A8]/45 px-3 py-1 rounded-full self-start sm:self-auto font-medium shadow-xs">
+            <span className="text-xs font-mono text-[#E890A8] bg-[#E890A8]/20 border border-[#E890A8]/45 px-3 py-1 rounded-full self-start sm:self-auto font-medium shadow-xs">
               {isRtl ? '٦ قِيَمٍ رَاسِخَة' : '6 Core Principles'}
             </span>
           </div>
@@ -164,8 +164,8 @@ export const LandingFigmaCraft: React.FC = () => {
                       <div
                         className={`w-11 h-11 rounded-xl flex items-center justify-center transition-colors ${
                           isBlue
-                            ? 'bg-[#6AACE9]/15 text-[#1F5F99] group-hover:bg-[#6AACE9]/25'
-                            : 'bg-[#E890A8]/15 text-[#963725] group-hover:bg-[#E890A8]/25'
+                            ? 'bg-[#6AACE9]/15 text-[#6AACE9] group-hover:bg-[#6AACE9]/25'
+                            : 'bg-[#E890A8]/15 text-[#E890A8] group-hover:bg-[#E890A8]/25'
                         }`}
                       >
                         <Icon className="w-5 h-5 stroke-[1.8]" />

@@ -40,9 +40,9 @@ const DEFAULT_CONFIG: AlertConfig = {
   arMain: 'شحن مجاني للطلبات أكثر من 2,000 ج.م',
   arCta: 'تسوق',
   ctaTarget: 'shop',
-  bgColor: '#3C1322',
-  textColor: '#FAF7F2',
-  accentColor: '#FFD147'
+  bgColor: '#E890A8',
+  textColor: '#FFFFFF',
+  accentColor: '#FFFFFF'
 };
 
 const PRESETS: { title: string; desc: string; config: Partial<AlertConfig> }[] = [
@@ -57,9 +57,9 @@ const PRESETS: { title: string; desc: string; config: Partial<AlertConfig> }[] =
       arMain: 'شحن مجاني للطلبات أكثر من 2,000 ج.م',
       arCta: 'تسوق المجموعة',
       ctaTarget: 'shop',
-      bgColor: '#3C1322',
-      textColor: '#FAF7F2',
-      accentColor: '#FFD147'
+      bgColor: '#E890A8',
+      textColor: '#FFFFFF',
+      accentColor: '#FFFFFF'
     }
   },
   {
@@ -73,9 +73,9 @@ const PRESETS: { title: string; desc: string; config: Partial<AlertConfig> }[] =
       arMain: 'طُبخت اليوم ببطء في قدور نحاسية',
       arCta: 'تذوق الآن',
       ctaTarget: 'shop',
-      bgColor: '#1A1512',
-      textColor: '#FAF7F2',
-      accentColor: '#FFD147'
+      bgColor: '#6AACE9',
+      textColor: '#FFFFFF',
+      accentColor: '#FFFFFF'
     }
   },
   {
@@ -89,9 +89,9 @@ const PRESETS: { title: string; desc: string; config: Partial<AlertConfig> }[] =
       arMain: 'صناديق الهدايا الفاخرة المكونة من 6 علب متوفرة الآن',
       arCta: 'استكشف الهدايا',
       ctaTarget: 'wholesale',
-      bgColor: '#5B172E',
-      textColor: '#FAF7F2',
-      accentColor: '#FFE082'
+      bgColor: '#E890A8',
+      textColor: '#FFFFFF',
+      accentColor: '#FFFFFF'
     }
   },
   {
@@ -105,20 +105,20 @@ const PRESETS: { title: string; desc: string; config: Partial<AlertConfig> }[] =
       arMain: 'توصيل مبرد سريع لجميع محافظات مصر',
       arCta: 'تفاصيل الشحن',
       ctaTarget: 'shipping',
-      bgColor: '#263428',
-      textColor: '#FAF7F2',
-      accentColor: '#A3E635'
+      bgColor: '#6AACE9',
+      textColor: '#FFFFFF',
+      accentColor: '#FFFFFF'
     }
   }
 ];
 
 const COLOR_PALETTES = [
-  { name: 'Atelier Cacao', bg: '#3C1322', text: '#FAF7F2', accent: '#FFD147' },
-  { name: 'Espresso Noir', bg: '#1A1512', text: '#FAF7F2', accent: '#FFD147' },
-  { name: 'Velvet Berry', bg: '#60142C', text: '#FAF7F2', accent: '#FFDE7D' },
-  { name: 'Warm Caramel', bg: '#78350F', text: '#FAF7F2', accent: '#FDE68A' },
-  { name: 'Forest Olive', bg: '#253427', text: '#FAF7F2', accent: '#BEF264' },
-  { name: 'Clean Minimalist Light', bg: '#FAF7F2', text: '#1A1A1A', accent: '#3C1322' }
+  { name: 'Rose Confection', bg: '#E890A8', text: '#FFFFFF', accent: '#FFFFFF' },
+  { name: 'Azure Sky', bg: '#6AACE9', text: '#FFFFFF', accent: '#FFFFFF' },
+  { name: 'Pure White (Rose Accent)', bg: '#FFFFFF', text: '#E890A8', accent: '#6AACE9' },
+  { name: 'Pure White (Azure Accent)', bg: '#FFFFFF', text: '#6AACE9', accent: '#E890A8' },
+  { name: 'Soft Rose Tint', bg: '#FDF2F5', text: '#E890A8', accent: '#6AACE9' },
+  { name: 'Soft Azure Tint', bg: '#F0F7FD', text: '#6AACE9', accent: '#E890A8' }
 ];
 
 interface AlertManagerViewProps {
@@ -182,7 +182,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
   };
 
   return (
-    <div className="bg-[#FAF7F2] text-[#1A1A1A] min-h-screen py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
+    <div className="bg-white text-[#1A1A1A] min-h-screen py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         
         {/* Navigation Breadcrumb & Back */}
@@ -190,7 +190,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
           <div className="flex items-center gap-2 text-xs font-mono text-[#736B63] uppercase tracking-wider">
             <button
               onClick={() => onBackToStore ? onBackToStore() : navigateTo('')}
-              className="hover:text-[#1A1A1A] transition-colors cursor-pointer"
+              className="hover:text-[#E890A8] transition-colors cursor-pointer"
             >
               TOOMAKT
             </button>
@@ -200,7 +200,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
 
           <button
             onClick={() => onBackToStore ? onBackToStore() : navigateTo('')}
-            className="text-xs font-medium text-[#736B63] hover:text-[#1A1A1A] flex items-center gap-1.5 cursor-pointer"
+            className="text-xs font-medium text-[#736B63] hover:text-[#E890A8] flex items-center gap-1.5 cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Return to Store</span>
@@ -209,7 +209,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
 
         {/* Header Title */}
         <div className="mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3C1322]/5 text-[#3C1322] text-xs font-semibold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FDF2F5] text-[#E890A8] text-xs font-semibold uppercase tracking-wider mb-2">
             <Bell className="w-3.5 h-3.5" />
             <span>GLOBAL ANNOUNCEMENT SYSTEM</span>
           </div>
@@ -225,7 +225,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
         <div className="bg-white rounded-2xl border border-[#E8E2D7] p-5 sm:p-6 mb-8 shadow-soft">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
             <div className="flex items-center gap-2">
-              <Eye className="w-4 h-4 text-[#3C1322]" />
+              <Eye className="w-4 h-4 text-[#E890A8]" />
               <h2 className="text-sm font-semibold uppercase tracking-wider text-[#1A1A1A]">
                 Live Preview (Top Announcement Bar)
               </h2>
@@ -238,8 +238,8 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
                 onClick={() => setPreviewLang('en')}
                 className={`px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer ${
                   previewLang === 'en'
-                    ? 'bg-[#1A1A1A] text-[#FAF7F2] font-semibold'
-                    : 'bg-[#F4EFEA] text-[#736B63] hover:text-[#1A1A1A]'
+                    ? 'bg-[#E890A8] text-white font-semibold'
+                    : 'bg-[#FDF2F5] text-[#736B63] hover:text-[#E890A8]'
                 }`}
               >
                 English
@@ -249,8 +249,8 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
                 onClick={() => setPreviewLang('ar')}
                 className={`px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer ${
                   previewLang === 'ar'
-                    ? 'bg-[#1A1A1A] text-[#FAF7F2] font-semibold'
-                    : 'bg-[#F4EFEA] text-[#736B63] hover:text-[#1A1A1A]'
+                    ? 'bg-[#E890A8] text-white font-semibold'
+                    : 'bg-[#FDF2F5] text-[#736B63] hover:text-[#E890A8]'
                 }`}
               >
                 العربية
@@ -287,7 +287,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
               </div>
             </div>
           ) : (
-            <div className="rounded-xl py-4 px-4 bg-[#F4EFEA] border border-dashed border-[#E8E2D7] text-center text-xs text-[#736B63]">
+            <div className="rounded-xl py-4 px-4 bg-[#FDF2F5] border border-dashed border-[#E890A8]/40 text-center text-xs text-[#736B63]">
               The global announcement bar is currently <strong>disabled</strong> and will not appear on the website.
             </div>
           )}
@@ -296,7 +296,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
         {/* 2. CURATED ONE-CLICK PRESETS */}
         <div className="bg-white rounded-2xl border border-[#E8E2D7] p-5 sm:p-6 mb-8 shadow-soft">
           <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="w-4 h-4 text-[#3C1322]" />
+            <Sparkles className="w-4 h-4 text-[#E890A8]" />
             <h2 className="text-sm font-semibold uppercase tracking-wider text-[#1A1A1A]">
               Quick Atelier Presets
             </h2>
@@ -307,13 +307,13 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
                 key={idx}
                 type="button"
                 onClick={() => applyPreset(p.config)}
-                className="text-left rtl:text-right p-3.5 rounded-xl border border-[#E8E2D7] hover:border-[#3C1322] hover:bg-[#FAF7F2] transition-all cursor-pointer group"
+                className="text-left rtl:text-right p-3.5 rounded-xl border border-[#E8E2D7] hover:border-[#E890A8] hover:bg-[#FDF2F5] transition-all cursor-pointer group"
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-semibold text-[#1A1A1A] group-hover:text-[#3C1322]">
+                  <span className="text-xs font-semibold text-[#1A1A1A] group-hover:text-[#E890A8]">
                     {p.title}
                   </span>
-                  <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#F4EFEA] text-[#736B63]">
+                  <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#FDF2F5] text-[#E890A8] font-bold">
                     Apply
                   </span>
                 </div>
@@ -335,7 +335,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
                 type="checkbox"
                 checked={config.enabled}
                 onChange={(e) => setConfig({ ...config, enabled: e.target.checked })}
-                className="rounded border-[#E8E2D7] text-[#3C1322] focus:ring-[#3C1322] w-4 h-4"
+                className="rounded border-[#E8E2D7] text-[#E890A8] focus:ring-[#E890A8] w-4 h-4"
               />
               <span>Banner Active</span>
             </label>
@@ -344,7 +344,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             
             {/* English Content Box */}
-            <div className="bg-[#FAF7F2] p-4 rounded-xl border border-[#E8E2D7]">
+            <div className="bg-[#FDF2F5] p-4 rounded-xl border border-[#E890A8]/20">
               <span className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A] block mb-3">
                 English Text (LTR)
               </span>
@@ -358,7 +358,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
                     type="text"
                     value={config.enPrefix}
                     onChange={(e) => setConfig({ ...config, enPrefix: e.target.value })}
-                    className="w-full text-xs bg-white border border-[#E8E2D7] rounded-lg px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#3C1322]"
+                    className="w-full text-xs bg-white border border-[#E8E2D7] rounded-lg px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#E890A8]"
                     placeholder="e.g. THE FRUIT TOFFEE UNIVERSE IS OPEN"
                   />
                 </div>
@@ -371,7 +371,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
                     type="text"
                     value={config.enMain}
                     onChange={(e) => setConfig({ ...config, enMain: e.target.value })}
-                    className="w-full text-xs bg-white border border-[#E8E2D7] rounded-lg px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#3C1322]"
+                    className="w-full text-xs bg-white border border-[#E8E2D7] rounded-lg px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#E890A8]"
                     placeholder="e.g. FREE SHIPPING OVER EGP 2,000"
                   />
                 </div>
@@ -384,7 +384,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
                     type="text"
                     value={config.enCta}
                     onChange={(e) => setConfig({ ...config, enCta: e.target.value })}
-                    className="w-full text-xs bg-white border border-[#E8E2D7] rounded-lg px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#3C1322]"
+                    className="w-full text-xs bg-white border border-[#E8E2D7] rounded-lg px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#E890A8]"
                     placeholder="e.g. Shop"
                   />
                 </div>
@@ -392,7 +392,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
             </div>
 
             {/* Arabic Content Box */}
-            <div className="bg-[#FAF7F2] p-4 rounded-xl border border-[#E8E2D7]" dir="rtl">
+            <div className="bg-[#FDF2F5] p-4 rounded-xl border border-[#E890A8]/20" dir="rtl">
               <span className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A] block mb-3">
                 النص العربي (RTL)
               </span>
@@ -406,7 +406,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
                     type="text"
                     value={config.arPrefix}
                     onChange={(e) => setConfig({ ...config, arPrefix: e.target.value })}
-                    className="w-full text-xs bg-white border border-[#E8E2D7] rounded-lg px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#3C1322]"
+                    className="w-full text-xs bg-white border border-[#E8E2D7] rounded-lg px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#E890A8]"
                     placeholder="مثال: عالم التوفي بالفاكهة الطبيعية مفتوح الآن"
                   />
                 </div>
@@ -419,7 +419,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
                     type="text"
                     value={config.arMain}
                     onChange={(e) => setConfig({ ...config, arMain: e.target.value })}
-                    className="w-full text-xs bg-white border border-[#E8E2D7] rounded-lg px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#3C1322]"
+                    className="w-full text-xs bg-white border border-[#E8E2D7] rounded-lg px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#E890A8]"
                     placeholder="مثال: شحن مجاني للطلبات أكثر من 2,000 ج.م"
                   />
                 </div>
@@ -432,7 +432,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
                     type="text"
                     value={config.arCta}
                     onChange={(e) => setConfig({ ...config, arCta: e.target.value })}
-                    className="w-full text-xs bg-white border border-[#E8E2D7] rounded-lg px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#3C1322]"
+                    className="w-full text-xs bg-white border border-[#E8E2D7] rounded-lg px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#E890A8]"
                     placeholder="مثال: تسوق"
                   />
                 </div>
@@ -459,8 +459,8 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
                   onClick={() => setConfig({ ...config, ctaTarget: opt.id })}
                   className={`px-3 py-2 rounded-xl text-xs font-medium border text-center transition-all cursor-pointer ${
                     config.ctaTarget === opt.id
-                      ? 'bg-[#3C1322] text-[#FAF7F2] border-[#3C1322]'
-                      : 'bg-white text-[#736B63] border-[#E8E2D7] hover:border-[#1A1A1A]'
+                      ? 'bg-[#E890A8] text-white border-[#E890A8]'
+                      : 'bg-white text-[#736B63] border-[#E8E2D7] hover:border-[#E890A8]'
                   }`}
                 >
                   {opt.label}
@@ -487,8 +487,8 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
                   })}
                   className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center gap-1.5 ${
                     config.bgColor === palette.bg
-                      ? 'border-[#3C1322] shadow-soft ring-2 ring-[#3C1322]/20'
-                      : 'border-[#E8E2D7] hover:border-[#1A1A1A]'
+                      ? 'border-[#E890A8] shadow-soft ring-2 ring-[#E890A8]/20'
+                      : 'border-[#E8E2D7] hover:border-[#E890A8]'
                   }`}
                 >
                   <div
@@ -512,7 +512,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
             <button
               type="button"
               onClick={handleResetDismiss}
-              className="text-xs text-[#736B63] hover:text-[#1A1A1A] underline underline-offset-4 cursor-pointer"
+              className="text-xs text-[#736B63] hover:text-[#E890A8] underline underline-offset-4 cursor-pointer"
             >
               Reset Dismissed Status (Un-hide Bar)
             </button>
@@ -520,7 +520,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
             <button
               type="button"
               onClick={handleResetToDefault}
-              className="text-xs text-[#C53030] hover:underline cursor-pointer"
+              className="text-xs text-[#E890A8] hover:underline cursor-pointer"
             >
               Factory Defaults
             </button>
@@ -528,14 +528,14 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
 
           <div className="flex items-center gap-3 w-full sm:w-auto">
             {saveSuccess && (
-              <span className="text-xs text-[#2E7D32] flex items-center gap-1 font-medium">
+              <span className="text-xs text-[#E890A8] flex items-center gap-1 font-medium">
                 <Check className="w-3.5 h-3.5" />
                 Alert system updated & published!
               </span>
             )}
 
             {dismissResetSuccess && (
-              <span className="text-xs text-[#2E7D32] flex items-center gap-1 font-medium">
+              <span className="text-xs text-[#E890A8] flex items-center gap-1 font-medium">
                 <Check className="w-3.5 h-3.5" />
                 Alert unhidden for this session!
               </span>
@@ -544,7 +544,7 @@ export const AlertManagerView: React.FC<AlertManagerViewProps> = ({
             <button
               type="button"
               onClick={handleSave}
-              className="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-soft hover:shadow-soft-md"
+              className="px-6 py-2.5 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white text-xs font-semibold w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-soft hover:shadow-soft-md transition-all"
             >
               <Save className="w-4 h-4" />
               <span>Publish Alert Changes</span>

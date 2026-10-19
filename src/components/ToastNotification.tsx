@@ -55,12 +55,12 @@ export const ToastNotification: React.FC<ToastNotificationProps> = ({ toast, onC
       tagText: isRtl ? 'تنبيه' : 'Notice',
     },
     info: {
-      lightBadge: 'bg-plum-50 text-[#3C1322] border-[#E8E2D7]',
-      darkBadge: 'bg-[#241A21] text-[#E8BD6D] border-[#33242E]',
-      iconColor: 'text-[#3C1322] dark:text-[#E8BD6D]',
-      glow: 'from-[#E8BD6D]/15 via-transparent to-transparent',
-      progress: 'bg-gradient-to-r from-[#3C1322] to-[#E8BD6D]',
-      actionBg: 'bg-[#1A1A1A] dark:bg-[#E8BD6D] dark:text-[#120D11] hover:bg-[#3C1322] text-[#FAF7F2]',
+      lightBadge: 'bg-[#E890A8]/10 text-[#E890A8] border-[#E890A8]/30',
+      darkBadge: 'bg-[#E890A8]/20 text-[#6AACE9] border-[#6AACE9]/30',
+      iconColor: 'text-[#E890A8] dark:text-[#6AACE9]',
+      glow: 'from-[#E890A8]/15 via-transparent to-transparent',
+      progress: 'bg-gradient-to-r from-[#E890A8] to-[#6AACE9]',
+      actionBg: 'bg-[#E890A8] hover:bg-[#6AACE9] text-white',
       tagText: isRtl ? 'معلومات' : 'Atelier Info',
     },
   }[toast.type];
@@ -82,7 +82,7 @@ export const ToastNotification: React.FC<ToastNotificationProps> = ({ toast, onC
           className={`pointer-events-auto relative overflow-hidden rounded-2xl p-4 sm:p-5 backdrop-blur-2xl transition-all duration-300 shadow-2xl ${
             isDark
               ? 'bg-[#1B1419]/95 border border-[#33242E] text-[#F7F3EC] shadow-[0_20px_50px_rgba(0,0,0,0.6)]'
-              : 'bg-white/95 border border-[#E8E2D7] text-[#1A1A1A] shadow-[0_20px_45px_-10px_rgba(60,19,34,0.12)]'
+              : 'bg-white/95 border border-[#E8E2D7] text-[#1A1A1A] shadow-[0_20px_45px_-10px_rgba(232,144,168,0.2)]'
           }`}
         >
           {/* Subtle Ambient Radial Glow */}
@@ -95,7 +95,7 @@ export const ToastNotification: React.FC<ToastNotificationProps> = ({ toast, onC
             <div className="relative shrink-0 mt-0.5">
               <div
                 className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${
-                  isDark ? 'bg-[#22161E] border border-[#3E2332]' : 'bg-[#FAF7F2] border border-[#E8E2D7]'
+                  isDark ? 'bg-[#22161E] border border-[#3E2332]' : 'bg-[#FDF2F5] border border-[#E890A8]/20'
                 }`}
               >
                 {toast.type === 'success' && <CheckCircle2 className={`w-5 h-5 ${themeStyles.iconColor}`} />}
@@ -152,7 +152,7 @@ export const ToastNotification: React.FC<ToastNotificationProps> = ({ toast, onC
               onClick={onClose}
               className={`p-1 rounded-full transition-colors cursor-pointer shrink-0 ${
                 isDark
-                  ? 'text-[#8C8075] hover:text-[#FAF5EE] hover:bg-white/10'
+                  ? 'text-[#8C8075] hover:text-white hover:bg-white/10'
                   : 'text-[#9B938A] hover:text-[#1A1A1A] hover:bg-black/5'
               }`}
               aria-label="Dismiss notification"

@@ -106,13 +106,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView, onNavigateSectio
       style={{ height: footerHeight > 0 ? `${footerHeight}px` : 'auto' }}
       aria-label="Behind-The-Page Footer"
     >
-      {/* The Fixed Reveal Stage — warm cream design matching landing */}
+      {/* The Fixed Reveal Stage — pure white and sweet rose accent */}
       <div
         ref={footerContentRef}
-        className="footer-reveal bg-[#FAF5EE] text-[#22120C] border-t border-[#22120C]/10"
+        className="footer-reveal bg-white text-[#22120C] border-t border-[#22120C]/10"
       >
         {/* Subtle Ambient Back-Glow */}
-        <div className="absolute top-0 right-1/4 w-[600px] h-[300px] bg-[radial-gradient(ellipse,rgba(228,176,114,0.08),transparent_70%)] pointer-events-none blur-3xl" />
+        <div className="absolute top-0 right-1/4 w-[600px] h-[300px] bg-[radial-gradient(ellipse,rgba(232,144,168,0.12),transparent_70%)] pointer-events-none blur-3xl" />
 
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-16 sm:pt-20 pb-10">
           {/* Top Grid: Brand Dossier + 3 Link Columns */}
@@ -146,35 +146,35 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView, onNavigateSectio
               <div className="flex flex-wrap items-center gap-2 pt-2">
                 <a
                   href="tel:01024542139"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#963725] text-white text-xs font-mono font-bold shadow-xs hover:bg-[#822E1E] transition-all"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#E890A8] text-white text-xs font-mono font-bold shadow-xs hover:bg-[#6AACE9] transition-all"
                   title={isRtl ? 'الرقم الرئيسي للموقع' : 'Main Website Hotline'}
                 >
-                  <Phone className="w-3.5 h-3.5 text-[#FAF5EE]" />
+                  <Phone className="w-3.5 h-3.5 text-white" />
                   <span className="font-sans font-semibold text-[11px]">{isRtl ? 'الرئيسي:' : 'Main:'}</span>
                   <span dir="ltr">01024542139</span>
                 </a>
 
                 <a
                   href="tel:+201095288014"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#22120C]/[0.04] hover:bg-[#22120C]/[0.08] border border-[#22120C]/15 text-xs font-mono text-[#22120C]/80 hover:text-[#963725] hover:border-[#963725]/40 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#22120C]/[0.04] hover:bg-[#22120C]/[0.08] border border-[#22120C]/15 text-xs font-mono text-[#22120C]/80 hover:text-[#E890A8] hover:border-[#E890A8]/40 transition-colors"
                 >
-                  <Phone className="w-3.5 h-3.5 text-[#963725]" />
+                  <Phone className="w-3.5 h-3.5 text-[#E890A8]" />
                   <span dir="ltr">+20 10 95288014</span>
                 </a>
 
                 <a
                   href="tel:+201277664957"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#22120C]/[0.04] hover:bg-[#22120C]/[0.08] border border-[#22120C]/15 text-xs font-mono text-[#22120C]/80 hover:text-[#963725] hover:border-[#963725]/40 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#22120C]/[0.04] hover:bg-[#22120C]/[0.08] border border-[#22120C]/15 text-xs font-mono text-[#22120C]/80 hover:text-[#E890A8] hover:border-[#E890A8]/40 transition-colors"
                 >
-                  <Phone className="w-3.5 h-3.5 text-[#963725]" />
+                  <Phone className="w-3.5 h-3.5 text-[#E890A8]" />
                   <span dir="ltr">+20 12 77664957</span>
                 </a>
 
                 <a
                   href="mailto:alzahra.company23@gmail.com"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#22120C]/[0.04] hover:bg-[#22120C]/[0.08] border border-[#22120C]/15 text-xs font-mono text-[#22120C]/80 hover:text-[#963725] hover:border-[#963725]/40 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#22120C]/[0.04] hover:bg-[#22120C]/[0.08] border border-[#22120C]/15 text-xs font-mono text-[#22120C]/80 hover:text-[#E890A8] hover:border-[#E890A8]/40 transition-colors"
                 >
-                  <Mail className="w-3.5 h-3.5 text-[#963725]" />
+                  <Mail className="w-3.5 h-3.5 text-[#E890A8]" />
                   <span>alzahra.company23@gmail.com</span>
                 </a>
               </div>
@@ -184,7 +184,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView, onNavigateSectio
             <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8">
               {footerLinks.map((col) => (
                 <div key={col.titleEn} className={isRtl ? 'text-right' : 'text-left'}>
-                  <p className="text-[11px] font-mono tracking-widest uppercase mb-4 text-[#963725] font-semibold">
+                  <p className="text-[11px] font-mono tracking-widest uppercase mb-4 text-[#E890A8] font-semibold">
                     {isRtl ? col.titleAr : col.titleEn}
                   </p>
                   <ul className="space-y-3">
@@ -193,7 +193,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView, onNavigateSectio
                         <button
                           type="button"
                           onClick={link.fn}
-                          className="text-sm text-[#22120C]/65 hover:text-[#963725] hover:translate-x-1 rtl:hover:-translate-x-1 transition-all font-light cursor-pointer text-left rtl:text-right font-sans"
+                          className="text-sm text-[#22120C]/65 hover:text-[#E890A8] hover:translate-x-1 rtl:hover:-translate-x-1 transition-all font-light cursor-pointer text-left rtl:text-right font-sans"
                         >
                           {isRtl ? link.ar : link.en}
                         </button>
@@ -231,11 +231,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView, onNavigateSectio
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={isRtl ? 'بريدك الإلكتروني المهني' : 'Enter work email'}
-                  className="w-full text-xs px-5 pr-28 rtl:pr-5 rtl:pl-28 py-3 rounded-full bg-[#22120C]/[0.04] border border-[#22120C]/15 text-[#22120C] placeholder-[#22120C]/40 font-mono focus:outline-none focus:border-[#963725] transition-colors"
+                  className="w-full text-xs px-5 pr-28 rtl:pr-5 rtl:pl-28 py-3 rounded-full bg-[#22120C]/[0.04] border border-[#22120C]/15 text-[#22120C] placeholder-[#22120C]/40 font-mono focus:outline-none focus:border-[#E890A8] transition-colors"
                 />
                 <button
                   type="submit"
-                  className="absolute right-1.5 rtl:right-auto rtl:left-1.5 px-4 py-2 rounded-full bg-[#963725] text-[#FAF5EE] text-[11px] font-mono font-bold uppercase tracking-wider hover:bg-[#822E1E] transition-all cursor-pointer shadow-md"
+                  className="absolute right-1.5 rtl:right-auto rtl:left-1.5 px-4 py-2 rounded-full bg-[#E890A8] text-white text-[11px] font-mono font-bold uppercase tracking-wider hover:bg-[#6AACE9] transition-all cursor-pointer shadow-md"
                 >
                   {isRtl ? 'اشتراك' : 'Join'}
                 </button>
@@ -246,14 +246,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView, onNavigateSectio
           {/* Social Media */}
           <div className="py-6 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
-              <span className="text-[11px] font-mono tracking-widest uppercase text-[#963725] font-semibold">
+              <span className="text-[11px] font-mono tracking-widest uppercase text-[#E890A8] font-semibold">
                 {isRtl ? 'تَابِعُونَا' : 'FOLLOW US'}
               </span>
               <a
                 href="https://facebook.com/share/1FViuqzzWy/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full border border-[#22120C]/15 flex items-center justify-center text-[#22120C]/70 hover:bg-[#963725] hover:text-[#FAF5EE] hover:border-[#963725] transition-all"
+                className="w-9 h-9 rounded-full border border-[#22120C]/15 flex items-center justify-center text-[#22120C]/70 hover:bg-[#E890A8] hover:text-white hover:border-[#E890A8] transition-all"
                 aria-label="Facebook"
               >
                 <svg className="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
@@ -264,7 +264,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView, onNavigateSectio
                 href="https://instagram.com/toomakt11"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full border border-[#22120C]/15 flex items-center justify-center text-[#22120C]/70 hover:bg-[#963725] hover:text-[#FAF5EE] hover:border-[#963725] transition-all"
+                className="w-9 h-9 rounded-full border border-[#22120C]/15 flex items-center justify-center text-[#22120C]/70 hover:bg-[#E890A8] hover:text-white hover:border-[#E890A8] transition-all"
                 aria-label="Instagram"
               >
                 <svg className="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
@@ -277,7 +277,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView, onNavigateSectio
                 href="https://tiktok.com/@alzahra.eg"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full border border-[#22120C]/15 flex items-center justify-center text-[#22120C]/70 hover:bg-[#963725] hover:text-[#FAF5EE] hover:border-[#963725] transition-all"
+                className="w-9 h-9 rounded-full border border-[#22120C]/15 flex items-center justify-center text-[#22120C]/70 hover:bg-[#E890A8] hover:text-white hover:border-[#E890A8] transition-all"
                 aria-label="TikTok"
               >
                 <svg className="w-4 h-4 fill-currentColor" viewBox="0 0 24 24">
@@ -322,7 +322,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView, onNavigateSectio
               <button
                 type="button"
                 onClick={scrollToTop}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#22120C]/[0.04] border border-[#22120C]/10 text-[#963725] hover:text-[#22120C] hover:border-[#22120C]/25 transition-all cursor-pointer font-mono tracking-wider text-xs"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#22120C]/[0.04] border border-[#22120C]/10 text-[#E890A8] hover:text-[#6AACE9] hover:border-[#6AACE9]/25 transition-all cursor-pointer font-mono tracking-wider text-xs"
                 aria-label="Scroll to top"
               >
                 <span className="hidden sm:inline">{isRtl ? 'العودة للأعلى' : 'Back to top'}</span>

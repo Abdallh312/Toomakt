@@ -80,10 +80,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
           animate={{ x: 0 }}
           exit={{ x: isRtl ? -480 : 480 }}
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-          className="relative w-full max-w-lg bg-[#FAF5EE] text-[#22120C] h-full shadow-[0_0_60px_rgba(34,18,12,0.2)] flex flex-col z-10 border-l rtl:border-l-0 rtl:border-r border-[#22120C]/10 overflow-hidden"
+          className="relative w-full max-w-lg bg-white text-[#22120C] h-full shadow-[0_0_60px_rgba(34,18,12,0.18)] flex flex-col z-10 border-l rtl:border-l-0 rtl:border-r border-[#22120C]/10 overflow-hidden"
         >
           {/* Header */}
-          <div className="p-6 border-b border-[#22120C]/10 flex items-center justify-between bg-[#FAF5EE]">
+          <div className="p-6 border-b border-[#22120C]/10 flex items-center justify-between bg-white">
             <div className="flex items-center gap-3">
               <img
                 src="/images/logos/toomakt_logo_main.png"
@@ -109,12 +109,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
           </div>
 
           {/* Free Shipping Progress Meter */}
-          <div className="bg-[#F4ECE2] px-6 py-3.5 border-b border-[#22120C]/10">
+          <div className="bg-[#FDF2F5] px-6 py-3.5 border-b border-[#E890A8]/20">
             <div className="flex items-center justify-between text-xs mb-1.5 font-medium">
               <span>
                 {amountToFreeShipping <= 0 ? (
-                  <span className="text-[#963725] font-semibold flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-[#963725]" />
+                  <span className="text-[#E890A8] font-semibold flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-[#E890A8]" />
                     <span>{isRtl ? 'مبروك! حصلت على شحن مجاني' : 'You unlocked complimentary delivery!'}</span>
                   </span>
                 ) : (
@@ -125,13 +125,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                   </span>
                 )}
               </span>
-              <span className="text-[#963725] font-mono text-xs font-semibold">
+              <span className="text-[#E890A8] font-mono text-xs font-semibold">
                 {shippingPercent}%
               </span>
             </div>
-            <div className="w-full bg-[#EADBCC] h-2 rounded-full overflow-hidden border border-[#22120C]/8">
+            <div className="w-full bg-[#E890A8]/20 h-2 rounded-full overflow-hidden border border-[#E890A8]/30">
               <div
-                className="bg-[#963725] h-full transition-all duration-500 rounded-full"
+                className="bg-gradient-to-r from-[#E890A8] to-[#6AACE9] h-full transition-all duration-500 rounded-full"
                 style={{ width: `${shippingPercent}%` }}
               />
             </div>
@@ -155,7 +155,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                     setIsCartOpen(false);
                     if (onNavigateView) onNavigateView('shop');
                   }}
-                  className="px-8 py-3 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] font-medium text-xs font-mono tracking-wider uppercase transition-all shadow-md cursor-pointer"
+                  className="px-8 py-3 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white font-medium text-xs font-mono tracking-wider uppercase transition-all shadow-[0_4px_16px_rgba(232,144,168,0.35)] hover:shadow-[0_4px_16px_rgba(106,172,233,0.45)] cursor-pointer"
                 >
                   {isRtl ? 'تصفح التشكيلة' : 'Explore Collection'}
                 </button>
@@ -164,10 +164,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
               items.map((item) => (
                 <div
                   key={`${item.product.id}-${item.selected_flavor || ''}`}
-                  className="bg-[#F4ECE2] border border-[#22120C]/10 rounded-2xl p-4 flex gap-4 items-center justify-between transition-colors hover:border-[#963725]/30"
+                  className="bg-white border border-[#E890A8]/20 rounded-2xl p-4 flex gap-4 items-center justify-between transition-colors hover:border-[#6AACE9]/50 shadow-xs"
                 >
                   <div className="flex items-center gap-3.5 min-w-0">
-                    <div className="w-16 h-16 rounded-xl bg-[#EDE3D6] border border-[#22120C]/8 p-2 flex items-center justify-center shrink-0">
+                    <div className="w-16 h-16 rounded-xl bg-[#FDF2F5] border border-[#E890A8]/15 p-2 flex items-center justify-center shrink-0">
                       <img
                         src={item.product.image || '/images/products/cappuccino_candies_thumb_isolated.png'}
                         alt={isRtl ? (item.product.name_ar || item.product.name) : (item.product.name_en || item.product.name)}
@@ -179,7 +179,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                         {isRtl ? (item.product.name_ar || item.product.name) : (item.product.name_en || item.product.name)}
                       </h4>
                       {item.selected_flavor && (
-                        <span className="text-[10px] font-mono text-[#963725] bg-[#963725]/10 border border-[#963725]/20 px-2 py-0.5 rounded-full inline-block mt-0.5 font-semibold">
+                        <span className="text-[10px] font-mono text-[#E890A8] bg-[#E890A8]/10 border border-[#E890A8]/25 px-2 py-0.5 rounded-full inline-block mt-0.5 font-semibold">
                           {item.selected_flavor}
                         </span>
                       )}
@@ -191,7 +191,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                       <div className="flex items-center gap-2 mt-2">
                         <button
                           onClick={() => updateQuantity(item.product.id, -1, item.selected_flavor)}
-                          className="w-6 h-6 rounded-md border border-[#22120C]/15 text-[#22120C] hover:border-[#963725] hover:bg-[#22120C]/5 flex items-center justify-center text-xs transition-colors cursor-pointer"
+                          className="w-6 h-6 rounded-md border border-[#22120C]/15 text-[#22120C] hover:border-[#E890A8] hover:text-[#E890A8] hover:bg-[#E890A8]/5 flex items-center justify-center text-xs transition-colors cursor-pointer"
                         >
                           <Minus className="w-3.5 h-3.5" />
                         </button>
@@ -200,7 +200,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                         </span>
                         <button
                           onClick={() => updateQuantity(item.product.id, 1, item.selected_flavor)}
-                          className="w-6 h-6 rounded-md border border-[#22120C]/15 text-[#22120C] hover:border-[#963725] hover:bg-[#22120C]/5 flex items-center justify-center text-xs transition-colors cursor-pointer"
+                          className="w-6 h-6 rounded-md border border-[#22120C]/15 text-[#22120C] hover:border-[#E890A8] hover:text-[#E890A8] hover:bg-[#E890A8]/5 flex items-center justify-center text-xs transition-colors cursor-pointer"
                         >
                           <Plus className="w-3.5 h-3.5" />
                         </button>
@@ -211,12 +211,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                   <div className="text-right rtl:text-left flex flex-col items-end justify-between self-stretch shrink-0">
                     <button
                       onClick={() => removeFromCart(item.product.id, item.selected_flavor)}
-                      className="text-[#22120C]/40 hover:text-[#963725] transition-colors p-1 cursor-pointer"
+                      className="text-[#22120C]/40 hover:text-[#E890A8] transition-colors p-1 cursor-pointer"
                       title="Remove"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
-                    <span className="font-serif font-semibold text-base text-[#963725]">
+                    <span className="font-serif font-semibold text-base text-[#E890A8]">
                       {formatPrice(item.product.price * item.quantity)}
                     </span>
                   </div>
@@ -235,7 +235,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                   onChange={(e) => setOrderNote(e.target.value)}
                   placeholder={isRtl ? 'تعليمات خاصة بالتغليف أو التوصيل...' : 'Special gift instructions or delivery requests...'}
                   rows={2}
-                  className="w-full text-xs p-3.5 rounded-xl border border-[#22120C]/15 bg-[#FAF5EE] text-[#22120C] focus:outline-none focus:border-[#963725] transition-colors resize-none placeholder:text-[#22120C]/40 font-mono"
+                  className="w-full text-xs p-3.5 rounded-xl border border-[#22120C]/15 bg-white text-[#22120C] focus:outline-none focus:border-[#E890A8] transition-colors resize-none placeholder:text-[#22120C]/40 font-mono"
                 />
               </div>
             )}
@@ -243,7 +243,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
 
           {/* Footer & Checkout Summary */}
           {items.length > 0 && (
-            <div className="p-6 border-t border-[#22120C]/10 bg-[#F4ECE2] space-y-4">
+            <div className="p-6 border-t border-[#E890A8]/15 bg-[#FDF2F5] space-y-4">
               {/* Promo Code Form */}
               <form onSubmit={handleApplyPromo} className="flex gap-2">
                 <input
@@ -251,22 +251,22 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                   value={promoInput}
                   onChange={(e) => setPromoInput(e.target.value)}
                   placeholder={isRtl ? 'كود الخصم (مثل TOOMAKT10)' : 'Promo code (e.g. TOOMAKT10)'}
-                  className="flex-1 text-xs px-3.5 py-2.5 bg-[#FAF5EE] border border-[#22120C]/15 text-[#22120C] rounded-full focus:outline-none focus:border-[#963725] uppercase tracking-wider font-mono placeholder:text-[#22120C]/40"
+                  className="flex-1 text-xs px-3.5 py-2.5 bg-white border border-[#22120C]/15 text-[#22120C] rounded-full focus:outline-none focus:border-[#E890A8] uppercase tracking-wider font-mono placeholder:text-[#22120C]/40"
                 />
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] rounded-full text-xs font-mono font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                  className="px-5 py-2.5 bg-[#6AACE9] hover:bg-[#E890A8] text-white rounded-full text-xs font-mono font-bold uppercase tracking-wider transition-colors cursor-pointer shadow-xs"
                 >
                   {isRtl ? 'تطبيق' : 'Apply'}
                 </button>
               </form>
               {promoError && (
-                <p className="text-[11px] font-mono text-[#963725]">
+                <p className="text-[11px] font-mono text-[#E890A8]">
                   {isRtl ? 'كود غير صحيح' : 'Invalid promo code. Try TOOMAKT10'}
                 </p>
               )}
               {promoApplied && (
-                <p className="text-[11px] font-mono text-[#2E5C38] flex items-center gap-1 font-medium">
+                <p className="text-[11px] font-mono text-[#6AACE9] flex items-center gap-1 font-medium">
                   <Check className="w-3.5 h-3.5" />
                   {isRtl ? 'تم تطبيق الخصم بنجاح!' : 'Promo applied successfully!'}
                 </p>
@@ -279,7 +279,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                   <span className="font-mono text-[#22120C] font-semibold">EGP {subtotal.toLocaleString()}</span>
                 </div>
                 {discountAmount > 0 && (
-                  <div className="flex justify-between text-[#963725]">
+                  <div className="flex justify-between text-[#E890A8]">
                     <span>{isRtl ? 'الخصم' : 'Discount'}</span>
                     <span className="font-mono font-semibold">-EGP {discountAmount.toLocaleString()}</span>
                   </div>
@@ -290,16 +290,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                     {shippingCost === 0 ? (isRtl ? 'مجاني' : 'COMPLIMENTARY') : `EGP ${shippingCost}`}
                   </span>
                 </div>
-                <div className="flex justify-between text-base font-serif text-[#22120C] pt-2 border-t border-[#22120C]/10 font-bold">
+                <div className="flex justify-between text-base font-serif text-[#22120C] pt-2 border-t border-[#E890A8]/20 font-bold">
                   <span>{isRtl ? 'الإجمالي التقديري' : 'Estimated Total'}</span>
-                  <span className="font-mono text-xl text-[#963725]">EGP {grandTotal.toLocaleString()}</span>
+                  <span className="font-mono text-xl text-[#E890A8]">EGP {grandTotal.toLocaleString()}</span>
                 </div>
               </div>
 
               {/* Checkout CTA */}
               <button
                 onClick={handleProceedCheckout}
-                className="w-full py-3.5 rounded-full bg-[#963725] hover:bg-[#822E1E] text-[#FAF5EE] text-xs font-mono font-bold tracking-wider uppercase flex items-center justify-center gap-2 cursor-pointer shadow-[0_4px_14px_rgba(150,55,37,0.25)] hover:shadow-[0_6px_20px_rgba(150,55,37,0.35)] transition-all"
+                className="w-full py-3.5 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white text-xs font-mono font-bold tracking-wider uppercase flex items-center justify-center gap-2 cursor-pointer shadow-[0_6px_20px_rgba(232,144,168,0.35)] hover:shadow-[0_6px_20px_rgba(106,172,233,0.45)] transition-all"
               >
                 <span>{isRtl ? 'المتابعة إلى إتمام الطلب' : 'Continue to Checkout'}</span>
               </button>
@@ -307,12 +307,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
               {/* Trust Badges */}
               <div className="flex items-center justify-center gap-4 text-[10px] font-mono text-[#22120C]/60 pt-1">
                 <div className="flex items-center gap-1">
-                  <Leaf className="w-3.5 h-3.5 text-[#963725]" />
+                  <Leaf className="w-3.5 h-3.5 text-[#E890A8]" />
                   <span>{isRtl ? 'فواكه وزبدة طبيعية' : '100% Pure Fruit & Butter'}</span>
                 </div>
                 <span>·</span>
                 <div className="flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#963725]" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#6AACE9]" />
                   <span>{isRtl ? 'دفع بالاستلام أو إنستاباي' : 'Cash or InstaPay'}</span>
                 </div>
               </div>

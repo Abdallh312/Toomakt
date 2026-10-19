@@ -129,7 +129,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               className="absolute bottom-3 left-3 rtl:left-auto rtl:right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur-md border border-[#E890A8]/45 px-2 py-1 rounded-full shadow-xs group-hover:scale-105 transition-all duration-300 pointer-events-none"
               title={isRtl ? 'حشوة سائلة طبيعية' : 'Natural liquid center piece'}
             >
-              <div className="w-6 h-6 rounded-full bg-[#FAF5EE] p-0.5 border border-[#E890A8]/30 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="w-6 h-6 rounded-full bg-white p-0.5 border border-[#E890A8]/30 flex items-center justify-center overflow-hidden shrink-0">
                 <img
                   src={pieceImage}
                   alt=""
@@ -172,7 +172,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {/* Top-Left: Terracotta & Rose Brand Badge */}
           {displayBadge && (
             <div className="absolute top-3 left-3 rtl:left-auto rtl:right-3 z-20">
-              <div className="inline-flex items-center gap-1 bg-[#FAF5EE] text-[#963725] border border-[#E890A8]/50 text-[10px] font-sans font-semibold px-2.5 py-1 rounded-full shadow-xs">
+              <div className="inline-flex items-center gap-1 bg-white text-[#E890A8] border border-[#E890A8]/50 text-[10px] font-sans font-semibold px-2.5 py-1 rounded-full shadow-xs">
                 <Sparkles className="w-3 h-3 text-[#E890A8]" />
                 <span>{displayBadge}</span>
               </div>
@@ -201,7 +201,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-xs cursor-pointer ${
                 isWishlisted
                   ? 'bg-[#E890A8] text-white border border-[#E890A8]'
-                  : 'bg-white text-[#22120C] border border-[#22120C]/10 hover:border-[#E890A8] hover:text-[#963725]'
+                  : 'bg-white text-[#22120C] border border-[#22120C]/10 hover:border-[#E890A8] hover:text-[#E890A8]'
               }`}
               aria-label={isRtl ? 'إضافة للمفضلة' : 'Add to wishlist'}
             >
@@ -223,7 +223,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div className="text-left rtl:text-right space-y-2">
           {/* Rating & Stock Indicator */}
           <div className="flex items-center justify-between text-[11px] font-sans text-[#736B63]">
-            <div className="flex items-center gap-1 text-[#E4B072]">
+            <div className="flex items-center gap-1 text-[#E890A8]">
               <Star className="w-3 h-3 fill-current" />
               <span className="font-bold text-[#22120C]">
                 {product.rating || '4.95'}
@@ -242,7 +242,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Product Title */}
-          <h3 className="font-serif text-lg font-normal text-[#22120C] group-hover:text-[#963725] transition-colors leading-snug line-clamp-1">
+          <h3 className="font-serif text-lg font-normal text-[#22120C] group-hover:text-[#E890A8] transition-colors leading-snug line-clamp-1">
             {displayName}
           </h3>
 
@@ -254,7 +254,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 return (
                   <span
                     key={idx}
-                    className={`inline-flex items-center gap-1 text-[10px] font-sans text-[#736B63] bg-[#FAF5EE] border px-2 py-0.5 rounded-full ${
+                    className={`inline-flex items-center gap-1 text-[10px] font-sans text-[#736B63] bg-white border px-2 py-0.5 rounded-full ${
                       isBlue ? 'border-[#6AACE9]/35' : 'border-[#E890A8]/35'
                     }`}
                   >
@@ -293,12 +293,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Weight / Pack Size */}
-          <span className="text-[11px] font-mono text-[#736B63] bg-[#FAF5EE] border border-[#22120C]/08 px-2 py-0.5 rounded-md shrink-0">
+          <span className="text-[11px] font-mono text-[#736B63] bg-white border border-[#22120C]/08 px-2 py-0.5 rounded-md shrink-0">
             {weightLabel}
           </span>
         </div>
 
-        {/* Primary Terracotta CTA Button */}
+        {/* Primary Sweet Rose CTA Button */}
         {!isOutOfStock && (
           <button
             type="button"
@@ -306,7 +306,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             className={`w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-sans font-medium tracking-wide shadow-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
               justAdded
                 ? 'bg-[#2E5C38] text-white shadow-sm'
-                : 'bg-[#963725] hover:bg-[#822E1E] text-white active:scale-[0.98]'
+                : 'bg-[#E890A8] hover:bg-[#6AACE9] text-white active:scale-[0.98] shadow-[0_4px_14px_rgba(232,144,168,0.3)] hover:shadow-[0_4px_14px_rgba(106,172,233,0.35)]'
             }`}
           >
             {justAdded ? (

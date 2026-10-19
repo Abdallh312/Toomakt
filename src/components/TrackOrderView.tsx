@@ -140,7 +140,7 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
   const whatsappUrl = `https://wa.me/201024542139?text=${encodeURIComponent(whatsappMsg)}`;
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] dark:bg-[#120D11] py-10 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-white py-10 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
       <div className="max-w-4xl mx-auto space-y-8">
         
         {/* Navigation Breadcrumb (Hidden in Print) */}
@@ -148,13 +148,13 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
           <div className="no-print flex items-center justify-between">
             <button
               onClick={onBackToShop}
-              className="btn-secondary text-xs flex items-center gap-2 cursor-pointer"
+              className="btn-secondary text-xs flex items-center gap-2 cursor-pointer hover:border-[#E890A8] hover:text-[#E890A8] font-mono"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4 rtl:rotate-180" />
               <span>{isRtl ? 'العودة للمتجر' : 'RETURN TO COLLECTION'}</span>
             </button>
-            <div className="text-xs text-[#736B63] dark:text-[#9C8E83] flex items-center gap-1.5 font-light">
-              <Truck className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D]" />
+            <div className="text-xs text-[#22120C]/70 flex items-center gap-1.5 font-light">
+              <Truck className="w-3.5 h-3.5 text-[#E890A8]" />
               <span>{isRtl ? 'تتبع مباشر للشحنات في كافة المحافظات المصرية' : 'Express climate dispatch across Egypt'}</span>
             </div>
           </div>
@@ -162,13 +162,13 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
 
         {/* Section Header (Hidden in Print) */}
         <div className="no-print text-center max-w-xl mx-auto">
-          <span className="text-[11px] font-semibold text-[#736B63] dark:text-[#9C8E83] uppercase tracking-widest block mb-2">
+          <span className="text-[11px] font-semibold text-[#E890A8] uppercase tracking-widest block mb-2 font-mono">
             {isRtl ? 'غرفة التتبع المباشر للطلبات' : 'LIVE ATELIER TELEMETRY'}
           </span>
-          <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] tracking-tight">
+          <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#22120C] tracking-tight">
             {isRtl ? 'تتبع مسار شحنة طلبك' : 'Track Your Confectionery Order'}
           </h1>
-          <p className="mt-2 text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light leading-relaxed">
+          <p className="mt-2 text-xs sm:text-sm text-[#22120C]/70 font-light leading-relaxed">
             {isRtl
               ? 'تابع مراحل طهي التوفي في المراجل النحاسية وحتى وصول الصندوق المبرد إلى باب منزلك.'
               : 'Monitor your fruit toffee from artisan copper kettle batching to protective thermal delivery.'}
@@ -178,8 +178,8 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
         {/* Search Bar Form (Hidden in Print) */}
         <div className="no-print space-y-3">
           <form onSubmit={handleTrack} className="max-w-xl mx-auto">
-            <div className="flex items-center gap-2 p-1.5 bg-white dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E] rounded-full shadow-soft focus-within:border-[#1A1A1A] dark:focus-within:border-[#E8BD6D] transition-colors">
-              <div className="pl-4 text-[#736B63] dark:text-[#9C8E83]">
+            <div className="flex items-center gap-2 p-1.5 bg-white border border-[#22120C]/15 rounded-full shadow-soft focus-within:border-[#E890A8] transition-colors">
+              <div className="pl-4 rtl:pl-0 rtl:pr-4 text-[#22120C]/60">
                 <Search className="w-4 h-4" />
               </div>
               <input
@@ -187,12 +187,12 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
                 placeholder={isRtl ? 'أدخل رقم الطلب أو رقم الهاتف المسجل...' : 'Enter your order number or phone number...'}
                 value={orderQuery}
                 onChange={e => setOrderQuery(e.target.value)}
-                className="flex-1 bg-transparent px-2 py-2 text-xs sm:text-sm text-[#1A1A1A] dark:text-[#F7F3EC] font-mono focus:outline-none"
+                className="flex-1 bg-transparent px-2 py-2 text-xs sm:text-sm text-[#22120C] font-mono focus:outline-none"
               />
               <button
                 type="submit"
                 disabled={loading || !orderQuery.trim()}
-                className="btn-primary py-2.5 px-6 text-xs font-semibold uppercase tracking-wider cursor-pointer disabled:opacity-50 transition shadow-soft"
+                className="py-2.5 px-6 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white text-xs font-mono font-semibold uppercase tracking-wider cursor-pointer disabled:opacity-50 transition shadow-soft"
               >
                 {loading ? (isRtl ? 'جاري البحث...' : 'LOCATING...') : (isRtl ? 'تتبع الآن' : 'TRACK NOW')}
               </button>
@@ -202,11 +202,11 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
 
         {/* Error Alert */}
         {errorMsg && (
-          <div className="no-print max-w-xl mx-auto p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 rounded-2xl text-xs text-red-800 dark:text-red-300 flex items-center gap-3 shadow-xs animate-fade-in">
-            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0" />
+          <div className="no-print max-w-xl mx-auto p-4 bg-[#FDF2F5] border border-[#E890A8]/30 rounded-2xl text-xs text-[#22120C] flex items-center gap-3 shadow-xs animate-fade-in">
+            <AlertCircle className="w-5 h-5 text-[#E890A8] shrink-0" />
             <div className="flex-1">
-              <strong>{isRtl ? 'تعذر العثور على الطلب' : 'Order Not Found'}</strong>
-              <p className="mt-0.5">{errorMsg}</p>
+              <strong className="text-[#E890A8] block font-mono">{isRtl ? 'تعذر العثور على الطلب' : 'Order Not Found'}</strong>
+              <p className="mt-0.5 text-[#22120C]/70">{errorMsg}</p>
             </div>
           </div>
         )}
@@ -215,64 +215,64 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
         {orderData && (
           <div className="space-y-6 animate-fade-in">
             {/* Top Telemetry Header */}
-            <div className="bg-white dark:bg-[#1B1419] rounded-3xl p-6 sm:p-8 border border-[#E8E2D7] dark:border-[#33242E] shadow-soft">
-              <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#E8E2D7] dark:border-[#33242E]">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#22120C]/10 shadow-soft">
+              <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#22120C]/10">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#FAF7F2] dark:bg-[#241A21] text-[#3C1322] dark:text-[#E8BD6D] border border-[#E8E2D7] dark:border-[#33242E]">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#FDF2F5] text-[#E890A8] border border-[#E890A8]/20 font-mono">
                       {isCard ? (
-                        <span className="flex items-center gap-1 text-emerald-800 dark:text-emerald-400">
-                          <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400 inline" />
+                        <span className="flex items-center gap-1 text-[#6AACE9]">
+                          <ShieldCheck className="w-3 h-3 text-[#6AACE9] inline" />
                           <span>{isRtl ? 'مدفوع بالفيزا (Paymob 3D-Secure)' : 'Paid via Visa (Paymob 3D-Secure)'}</span>
                         </span>
                       ) : (
-                        <span className="flex items-center gap-1 text-[#3C1322] dark:text-[#E8BD6D]">
-                          <Banknote className="w-3 h-3 text-[#3C1322] dark:text-[#E8BD6D] inline" />
+                        <span className="flex items-center gap-1 text-[#E890A8]">
+                          <Banknote className="w-3 h-3 text-[#E890A8] inline" />
                           <span>{isRtl ? 'الدفع عند الاستلام (كاش للمندوب)' : 'Cash on Delivery (COD)'}</span>
                         </span>
                       )}
                     </span>
-                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border font-mono ${
                       orderData.status === 'delivered' || orderData.status === 'completed'
-                        ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60'
+                        ? 'bg-[#6AACE9]/15 text-[#6AACE9] border-[#6AACE9]/30'
                         : orderData.status === 'cancelled'
-                        ? 'bg-red-100 dark:bg-red-950/60 text-red-900 dark:text-red-300 border-red-200 dark:border-red-800/60'
-                        : 'bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border-amber-200 dark:border-amber-800/60'
+                        ? 'bg-red-50 text-red-600 border-red-200'
+                        : 'bg-[#E890A8]/15 text-[#E890A8] border-[#E890A8]/30'
                     }`}>
                       {orderData.status?.toUpperCase() || 'PROCESSING'}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC]">
+                    <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[#22120C]">
                       #{orderData.order_number}
                     </h2>
                     <button
                       onClick={() => handleCopy(orderData.order_number, 'ord')}
-                      className="text-[#736B63] dark:text-[#9C8E83] hover:text-[#1A1A1A] dark:hover:text-[#E8BD6D] p-1 cursor-pointer transition"
+                      className="text-[#22120C]/60 hover:text-[#E890A8] p-1 cursor-pointer transition"
                       title="Copy Order Number"
                     >
-                      {copiedKey === 'ord' ? <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                      {copiedKey === 'ord' ? <Check className="w-4 h-4 text-[#6AACE9]" /> : <Copy className="w-4 h-4" />}
                     </button>
                   </div>
 
-                  <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light mt-1">
+                  <p className="text-xs text-[#22120C]/60 font-light mt-1 font-mono">
                     {orderData.customer_name} • {orderData.governorate || 'Cairo'}, Egypt {formattedDate ? `• ${formattedDate}` : ''}
                   </p>
 
                   {orderData.tracking_number && (
-                    <div className="mt-2 inline-flex items-center gap-1.5 text-xs text-[#3C1322] dark:text-[#E8BD6D] bg-[#FAF7F2] dark:bg-[#241A21] px-2.5 py-1 rounded-lg border border-[#E8E2D7] dark:border-[#33242E]">
-                      <Truck className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D]" />
+                    <div className="mt-2 inline-flex items-center gap-1.5 text-xs text-[#E890A8] bg-[#FDF2F5] px-2.5 py-1 rounded-lg border border-[#E890A8]/20 font-mono">
+                      <Truck className="w-3.5 h-3.5 text-[#E890A8]" />
                       <span>Tracking Ref: <strong>{orderData.tracking_number}</strong></span>
                     </div>
                   )}
                 </div>
 
                 <div className="text-right">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#736B63] dark:text-[#9C8E83] block">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#22120C]/60 block font-mono">
                     {isRtl ? 'إجمالي الطلب' : 'Total Amount'}
                   </span>
-                  <span className="font-serif text-2xl font-normal text-[#3C1322] dark:text-[#E8BD6D] mt-0.5 block">
+                  <span className="font-serif text-2xl font-normal text-[#E890A8] mt-0.5 block font-mono">
                     {totalAmount} EGP
                   </span>
                 </div>
@@ -280,7 +280,7 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
 
               {/* 4-Step Dynamic Atelier Timeline */}
               <div className="pt-6">
-                <h3 className="font-serif text-base font-normal text-[#1A1A1A] dark:text-[#F7F3EC] mb-5">
+                <h3 className="font-serif text-base font-normal text-[#22120C] mb-5">
                   {isRtl ? 'مسار الشحن والتسليم المباشر' : 'Live Fulfillment Telemetry'}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -288,15 +288,15 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
                   {/* Step 1: Confirmed */}
                   <div className={`p-4 rounded-2xl border transition-all ${
                     currentStep > 1
-                      ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/40'
+                      ? 'bg-white border-[#6AACE9]/40'
                       : currentStep === 1
-                      ? 'bg-[#3C1322]/5 dark:bg-[#E8BD6D]/10 border-2 border-[#3C1322] dark:border-[#E8BD6D]'
-                      : 'bg-[#FAF7F2] dark:bg-[#241A21] border-[#E8E2D7] dark:border-[#33242E] opacity-60'
+                      ? 'bg-[#FDF2F5] border-2 border-[#E890A8]'
+                      : 'bg-white border-[#22120C]/10 opacity-60'
                   }`}>
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold mb-2.5 shadow-xs ${
                       currentStep > 1
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-[#3C1322] dark:bg-[#E8BD6D] text-[#FAF7F2] dark:text-[#120D11]'
+                        ? 'bg-[#6AACE9] text-white'
+                        : 'bg-[#E890A8] text-white'
                     }`}>
                       {currentStep > 1 ? <Check className="w-4 h-4" /> : '1'}
                     </div>
@@ -312,25 +312,25 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
                   {/* Step 2: In Kitchen */}
                   <div className={`p-4 rounded-2xl border transition-all ${
                     currentStep > 2
-                      ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/40'
+                      ? 'bg-white border-[#6AACE9]/40'
                       : currentStep === 2
-                      ? 'bg-[#3C1322]/5 dark:bg-[#E8BD6D]/10 border-2 border-[#3C1322] dark:border-[#E8BD6D]'
-                      : 'bg-[#FAF7F2] dark:bg-[#241A21] border-[#E8E2D7] dark:border-[#33242E] opacity-60'
+                      ? 'bg-[#FDF2F5] border-2 border-[#E890A8]'
+                      : 'bg-white border-[#22120C]/10 opacity-60'
                   }`}>
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold mb-2.5 ${
                       currentStep > 2
-                        ? 'bg-emerald-600 text-white'
+                        ? 'bg-[#6AACE9] text-white'
                         : currentStep === 2
-                        ? 'bg-[#3C1322] dark:bg-[#E8BD6D] text-[#FAF7F2] dark:text-[#120D11] animate-pulse'
-                        : 'bg-neutral-200 dark:bg-[#33242E] text-[#736B63] dark:text-[#9C8E83]'
+                        ? 'bg-[#E890A8] text-white animate-pulse'
+                        : 'bg-neutral-100 text-[#22120C]/60'
                     }`}>
                       {currentStep > 2 ? <Check className="w-4 h-4" /> : '2'}
                     </div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A] dark:text-[#F7F3EC] flex items-center gap-1.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#22120C] flex items-center gap-1.5 font-mono">
                       <span>2. {isRtl ? 'تجهيز الدفعة' : 'Atelier Batching'}</span>
-                      {currentStep === 2 && <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />}
+                      {currentStep === 2 && <span className="w-2 h-2 rounded-full bg-[#6AACE9] animate-ping" />}
                     </h4>
-                    <p className="text-[11px] text-[#736B63] dark:text-[#C8BEB5] font-light mt-1">
+                    <p className="text-[11px] text-[#22120C]/65 font-light mt-1">
                       {isRtl ? 'سحب التوفي في أواني النحاس بالفاكهة الطبيعية.' : 'Copper kettle pulling and flavor sealing.'}
                     </p>
                   </div>
@@ -338,25 +338,25 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
                   {/* Step 3: Courier Packing */}
                   <div className={`p-4 rounded-2xl border transition-all ${
                     currentStep > 3
-                      ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/40'
+                      ? 'bg-white border-[#6AACE9]/40'
                       : currentStep === 3
-                      ? 'bg-[#3C1322]/5 dark:bg-[#E8BD6D]/10 border-2 border-[#3C1322] dark:border-[#E8BD6D]'
-                      : 'bg-[#FAF7F2] dark:bg-[#241A21] border-[#E8E2D7] dark:border-[#33242E] opacity-60'
+                      ? 'bg-[#FDF2F5] border-2 border-[#E890A8]'
+                      : 'bg-white border-[#22120C]/10 opacity-60'
                   }`}>
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold mb-2.5 ${
                       currentStep > 3
-                        ? 'bg-emerald-600 text-white'
+                        ? 'bg-[#6AACE9] text-white'
                         : currentStep === 3
-                        ? 'bg-[#3C1322] dark:bg-[#E8BD6D] text-[#FAF7F2] dark:text-[#120D11] animate-pulse'
-                        : 'bg-neutral-200 dark:bg-[#33242E] text-[#736B63] dark:text-[#9C8E83]'
+                        ? 'bg-[#E890A8] text-white animate-pulse'
+                        : 'bg-neutral-100 text-[#22120C]/60'
                     }`}>
                       {currentStep > 3 ? <Check className="w-4 h-4" /> : '3'}
                     </div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A] dark:text-[#F7F3EC] flex items-center gap-1.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#22120C] flex items-center gap-1.5 font-mono">
                       <span>3. {isRtl ? 'التغليف المبرد' : 'Climate Packing'}</span>
-                      {currentStep === 3 && <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />}
+                      {currentStep === 3 && <span className="w-2 h-2 rounded-full bg-[#6AACE9] animate-ping" />}
                     </h4>
-                    <p className="text-[11px] text-[#736B63] dark:text-[#C8BEB5] font-light mt-1">
+                    <p className="text-[11px] text-[#22120C]/65 font-light mt-1">
                       {isRtl ? 'عزل حراري لحماية جودة الشحن حتى التسليم.' : 'Thermal protective boxes for delicate texture.'}
                     </p>
                   </div>
@@ -364,26 +364,26 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
                   {/* Step 4: Doorstep Delivery */}
                   <div className={`p-4 rounded-2xl border transition-all ${
                     currentStep === 4
-                      ? 'bg-emerald-50 dark:bg-emerald-950/30 border-2 border-emerald-600 text-emerald-900 dark:text-emerald-200'
-                      : 'bg-[#FAF7F2] dark:bg-[#241A21] border-[#E8E2D7] dark:border-[#33242E] opacity-60'
+                      ? 'bg-[#FDF2F5] border-2 border-[#6AACE9] text-[#22120C]'
+                      : 'bg-white border-[#22120C]/10 opacity-60'
                   }`}>
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold mb-2.5 ${
                       currentStep === 4
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-neutral-200 dark:bg-[#33242E] text-[#736B63] dark:text-[#9C8E83]'
+                        ? 'bg-[#6AACE9] text-white'
+                        : 'bg-neutral-100 text-[#22120C]/60'
                     }`}>
                       {currentStep === 4 ? <Check className="w-4 h-4" /> : '4'}
                     </div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A] dark:text-[#F7F3EC] flex items-center gap-1.5">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#22120C] flex items-center gap-1.5 font-mono">
                       <span>4. {isRtl ? 'التوصيل للباب' : 'Doorstep Courier'}</span>
                       {currentStep === 4 && (
-                        <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold inline-flex items-center gap-1">
+                        <span className="text-xs text-[#6AACE9] font-bold inline-flex items-center gap-1">
                           <Check className="w-3.5 h-3.5" />
                           <span>{isRtl ? 'تم التوصيل' : 'Delivered'}</span>
                         </span>
                       )}
                     </h4>
-                    <p className="text-[11px] text-[#736B63] dark:text-[#C8BEB5] font-light mt-1">
+                    <p className="text-[11px] text-[#22120C]/65 font-light mt-1">
                       {isRtl ? `توصيل سريع لمحافظة ${orderData.governorate || 'Cairo'}.` : `Direct express courier delivery across Egypt.`}
                     </p>
                   </div>
@@ -393,20 +393,20 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
 
               {/* Custom Detailed Timeline Log (if order has timestamped timeline events) */}
               {Array.isArray(orderData.timeline) && orderData.timeline.length > 0 && (
-                <div className="mt-6 pt-6 border-t border-[#E8E2D7] dark:border-[#33242E] space-y-3">
-                  <h4 className="font-serif text-sm font-semibold text-[#1A1A1A] dark:text-[#F7F3EC]">
+                <div className="mt-6 pt-6 border-t border-[#22120C]/10 space-y-3">
+                  <h4 className="font-serif text-sm font-semibold text-[#22120C]">
                     {isRtl ? 'سجل العمليات والتحركات بالتاريخ' : 'Atelier Dispatch Log'}
                   </h4>
                   <div className="space-y-2 text-xs">
                     {orderData.timeline.map((evt: any, i: number) => (
-                      <div key={i} className="flex items-start gap-3 p-2.5 rounded-xl bg-[#FAF7F2] dark:bg-[#241A21] border border-[#E8E2D7] dark:border-[#33242E]">
-                        <Clock className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D] shrink-0 mt-0.5" />
+                      <div key={i} className="flex items-start gap-3 p-2.5 rounded-xl bg-[#FDF2F5] border border-[#E890A8]/20">
+                        <Clock className="w-3.5 h-3.5 text-[#E890A8] shrink-0 mt-0.5" />
                         <div className="flex-1">
-                          <strong className="text-[#1A1A1A] dark:text-[#F7F3EC] block">{evt.title}</strong>
-                          <span className="text-[#736B63] dark:text-[#C8BEB5] text-[11px]">{evt.desc}</span>
+                          <strong className="text-[#22120C] block font-mono">{evt.title}</strong>
+                          <span className="text-[#22120C]/70 text-[11px]">{evt.desc}</span>
                         </div>
                         {evt.time && (
-                          <span className="text-[10px] font-mono text-[#736B63] dark:text-[#9C8E83]">
+                          <span className="text-[10px] font-mono text-[#22120C]/60">
                             {new Date(evt.time).toLocaleDateString()}
                           </span>
                         )}
@@ -418,8 +418,8 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
             </div>
 
             {/* Order Items & Destination Details */}
-            <div className="bg-white dark:bg-[#1B1419] rounded-3xl p-6 sm:p-8 border border-[#E8E2D7] dark:border-[#33242E] shadow-soft space-y-6">
-              <h3 className="font-serif text-lg font-normal text-[#1A1A1A] dark:text-[#F7F3EC] pb-3 border-b border-[#E8E2D7] dark:border-[#33242E]">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#22120C]/10 shadow-soft space-y-6">
+              <h3 className="font-serif text-lg font-normal text-[#22120C] pb-3 border-b border-[#22120C]/10">
                 {isRtl ? 'تفاصيل محتويات الشحنة' : 'Package Contents & Destination'}
               </h3>
 
@@ -429,44 +429,44 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
                   items.map((item, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-between gap-4 pb-4 border-b border-[#E8E2D7] dark:border-[#33242E] last:border-b-0"
+                      className="flex items-center justify-between gap-4 pb-4 border-b border-[#22120C]/10 last:border-b-0"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-[#FAF7F2] dark:bg-[#241A21] border border-[#E8E2D7] dark:border-[#33242E] flex items-center justify-center overflow-hidden shrink-0">
-                          <Package className="w-5 h-5 text-[#3C1322] dark:text-[#E8BD6D]" />
+                        <div className="w-12 h-12 rounded-xl bg-white border border-[#22120C]/10 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                          <Package className="w-5 h-5 text-[#E890A8]" />
                         </div>
                         <div>
-                          <h4 className="text-sm font-medium text-[#1A1A1A] dark:text-[#F7F3EC]">{item.name}</h4>
+                          <h4 className="text-sm font-medium text-[#22120C]">{item.name}</h4>
                           {item.flavor && (
-                            <span className="text-[10px] text-[#3C1322] dark:text-[#E8BD6D] bg-[#FFD147]/20 dark:bg-[#E8BD6D]/20 border border-[#FFD147]/30 dark:border-[#E8BD6D]/30 px-1.5 py-0.2 rounded inline-block mt-0.5 font-medium">
+                            <span className="text-[10px] text-[#E890A8] bg-[#E890A8]/10 border border-[#E890A8]/20 px-2 py-0.5 rounded-full inline-block mt-0.5 font-medium font-mono">
                               {item.flavor}
                             </span>
                           )}
-                          <span className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light block mt-0.5">
+                          <span className="text-xs text-[#22120C]/60 font-light block mt-0.5">
                             Qty: {item.quantity} × EGP {Number(item.unit_price).toFixed(2)}
                           </span>
                         </div>
                       </div>
-                      <span className="font-mono text-sm font-semibold text-[#1A1A1A] dark:text-[#F7F3EC]">
+                      <span className="font-mono text-sm font-semibold text-[#22120C]">
                         EGP {(Number(item.unit_price) * Number(item.quantity)).toFixed(2)}
                       </span>
                     </div>
                   ))
                 ) : (
-                  <p className="text-xs text-[#736B63] dark:text-[#C8BEB5] font-light">
+                  <p className="text-xs text-[#22120C]/60 font-light">
                     {isRtl ? 'مجموعة حلوى التوفي الفاخرة المعبأة يدوياً.' : 'Artisanal hand-crafted toffee collection.'}
                   </p>
                 )}
               </div>
 
               {/* Destination & Contact */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#E8E2D7] dark:border-[#33242E] text-xs text-[#736B63] dark:text-[#C8BEB5]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#22120C]/10 text-xs text-[#22120C]/70">
                 <div className="space-y-2">
-                  <span className="font-bold text-[10px] uppercase tracking-wider text-[#1A1A1A] dark:text-[#F7F3EC] block">
+                  <span className="font-bold text-[10px] uppercase tracking-wider text-[#22120C] block font-mono">
                     {isRtl ? 'عنوان التوصيل' : 'Delivery Destination'}
                   </span>
-                  <p className="flex items-center gap-1.5 text-[#1A1A1A] dark:text-[#F7F3EC]">
-                    <MapPin className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D] shrink-0" />
+                  <p className="flex items-center gap-1.5 text-[#22120C]">
+                    <MapPin className="w-3.5 h-3.5 text-[#E890A8] shrink-0" />
                     <span>
                       {orderData.shipping_address || `${orderData.governorate}, Egypt`}
                       {orderData.building_number ? ` · Bldg ${orderData.building_number}` : ''}
@@ -475,44 +475,44 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
                   </p>
                   {orderData.customer_phone && (
                     <p className="flex items-center gap-1.5">
-                      <Phone className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D] shrink-0" />
+                      <Phone className="w-3.5 h-3.5 text-[#E890A8] shrink-0" />
                       <span>{orderData.customer_phone}</span>
                     </p>
                   )}
                   {orderData.customer_email && (
                     <p className="flex items-center gap-1.5">
-                      <Mail className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D] shrink-0" />
+                      <Mail className="w-3.5 h-3.5 text-[#E890A8] shrink-0" />
                       <span>{orderData.customer_email}</span>
                     </p>
                   )}
                   {orderData.delivery_notes && (
-                    <p className="text-[11px] italic bg-[#FAF7F2] dark:bg-[#241A21] p-2 rounded-lg border border-[#E8E2D7] dark:border-[#33242E] text-[#736B63] dark:text-[#C8BEB5]">
+                    <p className="text-[11px] italic bg-[#FDF2F5] p-2 rounded-lg border border-[#E890A8]/20 text-[#22120C]/70 font-mono">
                       Note: {orderData.delivery_notes}
                     </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <span className="font-bold text-[10px] uppercase tracking-wider text-[#1A1A1A] dark:text-[#F7F3EC] block">
+                  <span className="font-bold text-[10px] uppercase tracking-wider text-[#22120C] block font-mono">
                     {isRtl ? 'الحساب المالي' : 'Financials'}
                   </span>
                   <div className="flex justify-between">
                     <span>{isRtl ? 'المنتجات' : 'Subtotal'}</span>
-                    <span className="font-medium text-[#1A1A1A] dark:text-[#F7F3EC]">EGP {subtotal}</span>
+                    <span className="font-medium text-[#22120C]">EGP {subtotal}</span>
                   </div>
                   {Number(discountAmount) > 0 && (
-                    <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
+                    <div className="flex justify-between text-[#6AACE9] font-medium">
                       <span>{isRtl ? 'الخصم' : 'Discount'}</span>
                       <span>-EGP {discountAmount}</span>
                     </div>
                   )}
                   <div className="flex justify-between">
                     <span>{isRtl ? 'الشحن' : 'Shipping'} ({orderData.governorate || 'Cairo'})</span>
-                    <span className="font-medium text-[#1A1A1A] dark:text-[#F7F3EC]">EGP {shippingFee}</span>
+                    <span className="font-medium text-[#22120C]">EGP {shippingFee}</span>
                   </div>
-                  <div className="flex justify-between text-sm font-serif font-normal text-[#1A1A1A] dark:text-[#F7F3EC] pt-2 border-t border-[#E8E2D7] dark:border-[#33242E]">
+                  <div className="flex justify-between text-sm font-serif font-normal text-[#22120C] pt-2 border-t border-[#22120C]/10">
                     <span>{isRtl ? 'المجموع النهائي' : 'Total Due'}</span>
-                    <span className="font-semibold text-[#3C1322] dark:text-[#E8BD6D]">EGP {totalAmount}</span>
+                    <span className="font-semibold text-[#E890A8] font-mono">EGP {totalAmount}</span>
                   </div>
                 </div>
               </div>
@@ -524,7 +524,7 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto bg-[#25D366] hover:bg-[#20BD5A] text-white text-xs font-semibold py-3.5 px-6 rounded-full flex items-center justify-center gap-2 shadow-sm transition hover:shadow-md cursor-pointer"
+                className="w-full sm:w-auto bg-[#6AACE9] hover:bg-[#E890A8] text-white text-xs font-mono font-semibold py-3.5 px-6 rounded-full flex items-center justify-center gap-2 shadow-sm transition hover:shadow-md cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4 fill-current" />
                 <span>{isRtl ? 'تواصل مع خدمة العملاء على واتساب' : 'WhatsApp Atelier Support'}</span>
@@ -533,7 +533,7 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <button
                   onClick={() => window.print()}
-                  className="btn-secondary flex-1 sm:flex-initial text-xs py-3.5 px-5 flex items-center justify-center gap-2 cursor-pointer"
+                  className="btn-secondary flex-1 sm:flex-initial text-xs font-mono py-3.5 px-5 rounded-full flex items-center justify-center gap-2 cursor-pointer hover:border-[#E890A8] hover:text-[#E890A8]"
                 >
                   <Printer className="w-4 h-4" />
                   <span>{isRtl ? 'طباعة' : 'Print'}</span>
@@ -542,7 +542,7 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
                 {onBackToShop && (
                   <button
                     onClick={onBackToShop}
-                    className="btn-primary flex-1 sm:flex-initial text-xs py-3.5 px-6 flex items-center justify-center gap-2 cursor-pointer shadow-soft"
+                    className="flex-1 sm:flex-initial text-xs font-mono py-3.5 px-6 rounded-full flex items-center justify-center gap-2 cursor-pointer shadow-soft bg-[#E890A8] hover:bg-[#6AACE9] text-white transition-all"
                   >
                     <ShoppingBag className="w-4 h-4" />
                     <span>{isRtl ? 'تصفح المزيد' : 'SHOP COLLECTION'}</span>

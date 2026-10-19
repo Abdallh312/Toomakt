@@ -420,21 +420,21 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
   if (items.length === 0 && !paymentSuccessOrder) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 bg-[#FAF7F2] text-center">
-        <div className="w-16 h-16 rounded-full bg-white border border-[#E8E2D7] flex items-center justify-center mb-4 text-[#1A1A1A] shadow-soft">
-          <ShoppingBag className="w-7 h-7" />
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 bg-white text-center">
+        <div className="w-16 h-16 rounded-full bg-white border border-[#E890A8]/30 flex items-center justify-center mb-4 text-[#22120C] shadow-soft">
+          <ShoppingBag className="w-7 h-7 text-[#E890A8]" />
         </div>
-        <h2 className="text-2xl font-serif font-normal text-[#1A1A1A] mb-2">
+        <h2 className="text-2xl font-serif font-normal text-[#22120C] mb-2">
           {isRtl ? 'حقيبة التسوق فارغة' : 'Your Shopping Bag is Empty'}
         </h2>
-        <p className="text-sm text-[#736B63] max-w-md mb-6 font-light">
+        <p className="text-sm text-[#22120C]/70 max-w-md mb-6 font-light">
           {isRtl
             ? 'تصفح تشكيلة التوفي الفاخرة المطعمة بالفواكه الطبيعية قبل إتمام الشراء.'
             : 'Explore our artisan fruit toffees before proceeding to checkout.'}
         </p>
         <button
           onClick={onBackToShop}
-          className="btn-primary flex items-center gap-2 cursor-pointer"
+          className="btn-primary flex items-center gap-2 cursor-pointer bg-[#E890A8] hover:bg-[#6AACE9] text-white"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>{isRtl ? 'تصفح المجموعة' : 'EXPLORE THE COLLECTION'}</span>
@@ -444,19 +444,19 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] dark:bg-[#120D11] text-[#1A1A1A] dark:text-[#F7F3EC] py-10 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-white text-[#22120C] py-10 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
         {/* Navigation Breadcrumb */}
         <div className="mb-8 flex items-center justify-between">
           <button
             onClick={onBackToShop}
-            className="btn-secondary text-xs flex items-center gap-2 cursor-pointer"
+            className="btn-secondary text-xs flex items-center gap-2 cursor-pointer hover:border-[#E890A8] hover:text-[#E890A8]"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>{isRtl ? 'العودة للمتجر' : 'RETURN TO COLLECTION'}</span>
           </button>
-          <div className="text-xs text-[#736B63] dark:text-[#9C8E83] flex items-center gap-1.5 font-light">
-            <Truck className="w-3.5 h-3.5 text-[#3C1322] dark:text-[#E8BD6D]" />
+          <div className="text-xs text-[#22120C]/70 flex items-center gap-1.5 font-light">
+            <Truck className="w-3.5 h-3.5 text-[#E890A8]" />
             <span>{isRtl ? 'شحن لجميع محافظات جمهورية مصر العربية' : 'Delivering across Cairo & all Egyptian governorates'}</span>
           </div>
         </div>
@@ -467,13 +467,13 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             alt="TooMakt"
             className="h-12 sm:h-14 w-auto object-contain mb-3 filter drop-shadow-xs"
           />
-          <span className="text-[11px] font-semibold text-[#736B63] dark:text-[#9C8E83] uppercase tracking-widest block mb-2">
+          <span className="text-[11px] font-semibold text-[#E890A8] uppercase tracking-widest block mb-2 font-mono">
             TOOMAKT ATELIER · CAIRO
           </span>
-          <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC] tracking-tight">
+          <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#22120C] tracking-tight">
             {isRtl ? 'إتمام الطلب والشحن' : 'Checkout & Delivery'}
           </h1>
-          <p className="mt-2 text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light max-w-md mx-auto">
+          <p className="mt-2 text-xs sm:text-sm text-[#22120C]/70 font-light max-w-md mx-auto">
             {isRtl
               ? 'يتم تجهيز الطلب طازجاً في معملنا ويصلك في صناديق مبردة لحماية النكهة والملمس.'
               : 'Crafted slowly and dispatched directly from our Cairo kitchen in protective climate boxes.'}
@@ -481,14 +481,14 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
         </div>
 
         {apiError && (
-          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-between gap-3 text-xs text-amber-900 shadow-xs">
+          <div className="mb-6 p-4 bg-[#FDF2F5] border border-[#E890A8]/30 rounded-2xl flex items-center justify-between gap-3 text-xs text-[#22120C] shadow-xs">
             <div className="flex items-center gap-3">
-              <AlertCircle className="w-5 h-5 shrink-0 text-amber-600" />
+              <AlertCircle className="w-5 h-5 shrink-0 text-[#E890A8]" />
               <span>{apiError}</span>
             </div>
             <button
               onClick={() => setApiError(null)}
-              className="text-amber-700 hover:text-amber-900 p-1 cursor-pointer"
+              className="text-[#22120C]/70 hover:text-[#E890A8] p-1 cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -499,19 +499,19 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
           {/* Left Column: Customer & Delivery Details */}
           <div className="lg:col-span-7 space-y-6">
             {/* Step 1: Customer Contact Info */}
-            <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#E8E2D7] shadow-soft">
-              <div className="flex items-center gap-3 mb-5 border-b border-[#E8E2D7] pb-3">
-                <div className="w-7 h-7 rounded-full bg-[#1A1A1A] text-[#FAF7F2] flex items-center justify-center font-medium text-xs">
+            <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#22120C]/10 shadow-soft">
+              <div className="flex items-center gap-3 mb-5 border-b border-[#22120C]/10 pb-3">
+                <div className="w-7 h-7 rounded-full bg-[#E890A8] text-white flex items-center justify-center font-medium text-xs">
                   01
                 </div>
-                <h2 className="font-serif text-lg font-normal text-[#1A1A1A]">
+                <h2 className="font-serif text-lg font-normal text-[#22120C]">
                   {isRtl ? 'بيانات العميل' : 'Customer Information'}
                 </h2>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-medium text-[#22120C]/70 uppercase tracking-wider mb-1.5 font-mono">
                     {isRtl ? 'الاسم بالكامل *' : 'Full Name *'}
                   </label>
                   <input
@@ -519,9 +519,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     placeholder={isRtl ? 'مثال: ليلى منصور' : 'e.g. Layla Mansour'}
                     value={fullName}
                     onChange={e => setFullName(e.target.value)}
-                    className={`w-full bg-[#FAF7F2] border ${
-                      formErrors.fullName ? 'border-red-400' : 'border-[#E8E2D7]'
-                    } rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]`}
+                    className={`w-full bg-white border ${
+                      formErrors.fullName ? 'border-red-400' : 'border-[#22120C]/15 focus:border-[#E890A8]'
+                    } rounded-xl px-4 py-2.5 text-sm text-[#22120C] focus:outline-none`}
                   />
                   {formErrors.fullName && (
                     <span className="text-xs text-red-600 mt-1 block">{formErrors.fullName}</span>
@@ -530,7 +530,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-medium text-[#22120C]/70 uppercase tracking-wider mb-1.5 font-mono">
                       {isRtl ? 'رقم الموبايل المصري *' : 'Mobile Number (Egypt) *'}
                     </label>
                     <input
@@ -538,9 +538,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       placeholder="010XXXXXXXX"
                       value={mobileNumber}
                       onChange={e => setMobileNumber(e.target.value)}
-                      className={`w-full bg-[#FAF7F2] border ${
-                        formErrors.mobileNumber ? 'border-red-400' : 'border-[#E8E2D7]'
-                      } rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]`}
+                      className={`w-full bg-white border ${
+                        formErrors.mobileNumber ? 'border-red-400' : 'border-[#22120C]/15 focus:border-[#E890A8]'
+                      } rounded-xl px-4 py-2.5 text-sm text-[#22120C] focus:outline-none`}
                     />
                     {formErrors.mobileNumber && (
                       <span className="text-xs text-red-600 mt-1 block">{formErrors.mobileNumber}</span>
@@ -548,7 +548,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-medium text-[#22120C]/70 uppercase tracking-wider mb-1.5 font-mono">
                       {isRtl ? 'البريد الإلكتروني *' : 'Email Address *'}
                     </label>
                     <input
@@ -556,9 +556,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       placeholder="layla@example.com"
                       value={email}
                       onChange={e => setEmail(e.target.value)}
-                      className={`w-full bg-[#FAF7F2] border ${
-                        formErrors.email ? 'border-red-400' : 'border-[#E8E2D7]'
-                      } rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]`}
+                      className={`w-full bg-white border ${
+                        formErrors.email ? 'border-red-400' : 'border-[#22120C]/15 focus:border-[#E890A8]'
+                      } rounded-xl px-4 py-2.5 text-sm text-[#22120C] focus:outline-none`}
                     />
                     {formErrors.email && (
                       <span className="text-xs text-red-600 mt-1 block">{formErrors.email}</span>
@@ -569,16 +569,16 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             </div>
 
             {/* Step 2: Egypt Shipping Destination */}
-            <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#E8E2D7] shadow-soft">
-              <div className="flex items-center gap-3 mb-5 border-b border-[#E8E2D7] pb-3">
-                <div className="w-7 h-7 rounded-full bg-[#1A1A1A] text-[#FAF7F2] flex items-center justify-center font-medium text-xs">
+            <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#22120C]/10 shadow-soft">
+              <div className="flex items-center gap-3 mb-5 border-b border-[#22120C]/10 pb-3">
+                <div className="w-7 h-7 rounded-full bg-[#E890A8] text-white flex items-center justify-center font-medium text-xs">
                   02
                 </div>
                 <div>
-                  <h2 className="font-serif text-lg font-normal text-[#1A1A1A]">
+                  <h2 className="font-serif text-lg font-normal text-[#22120C]">
                     {isRtl ? 'عنوان التوصيل في مصر' : 'Delivery Destination'}
                   </h2>
-                  <span className="text-xs text-[#736B63] font-light">
+                  <span className="text-xs text-[#22120C]/60 font-light">
                     {isRtl ? 'اختر محافظتك لحساب قيمة الشحن الفعلي' : 'Select your governorate for real-time dispatch calculation'}
                   </span>
                 </div>
@@ -588,13 +588,13 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Governorate Dropdown */}
                   <div>
-                    <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-medium text-[#22120C]/70 uppercase tracking-wider mb-1.5 font-mono">
                       {isRtl ? 'المحافظة *' : 'Governorate *'}
                     </label>
                     <select
                       value={governorate}
                       onChange={e => setGovernorate(e.target.value)}
-                      className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                      className="w-full bg-white border border-[#22120C]/15 focus:border-[#E890A8] rounded-xl px-4 py-2.5 text-sm text-[#22120C] focus:outline-none"
                     >
                       {shippingRates.map(rate => (
                         <option key={rate.id} value={rate.governorate}>
@@ -606,7 +606,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
                   {/* City/District */}
                   <div>
-                    <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-medium text-[#22120C]/70 uppercase tracking-wider mb-1.5 font-mono">
                       {isRtl ? 'المدينة / المنطقة' : 'City / District'}
                     </label>
                     <input
@@ -614,14 +614,14 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       placeholder={isRtl ? 'مثال: الزمالك، المعادي، التجمع' : 'e.g. Zamalek, New Cairo, Maadi'}
                       value={city}
                       onChange={e => setCity(e.target.value)}
-                      className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                      className="w-full bg-white border border-[#22120C]/15 focus:border-[#E890A8] rounded-xl px-4 py-2.5 text-sm text-[#22120C] focus:outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Street Address */}
                 <div>
-                  <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-medium text-[#22120C]/70 uppercase tracking-wider mb-1.5 font-mono">
                     {isRtl ? 'العنوان واسم الشارع *' : 'Street Address *'}
                   </label>
                   <input
@@ -629,9 +629,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     placeholder={isRtl ? 'اسم الشارع، علامة مميزة' : 'Street name, landmark, or square'}
                     value={streetAddress}
                     onChange={e => setStreetAddress(e.target.value)}
-                    className={`w-full bg-[#FAF7F2] border ${
-                      formErrors.streetAddress ? 'border-red-400' : 'border-[#E8E2D7]'
-                    } rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]`}
+                    className={`w-full bg-white border ${
+                      formErrors.streetAddress ? 'border-red-400' : 'border-[#22120C]/15 focus:border-[#E890A8]'
+                    } rounded-xl px-4 py-2.5 text-sm text-[#22120C] focus:outline-none`}
                   />
                   {formErrors.streetAddress && (
                     <span className="text-xs text-red-600 mt-1 block">{formErrors.streetAddress}</span>
@@ -641,7 +641,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                 {/* Building / Apartment */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-medium text-[#22120C]/70 uppercase tracking-wider mb-1.5 font-mono">
                       {isRtl ? 'رقم العمارة' : 'Building No.'}
                     </label>
                     <input
@@ -649,11 +649,11 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       placeholder="e.g. Bldg 14"
                       value={buildingNumber}
                       onChange={e => setBuildingNumber(e.target.value)}
-                      className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                      className="w-full bg-white border border-[#22120C]/15 focus:border-[#E890A8] rounded-xl px-4 py-2.5 text-sm text-[#22120C] focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-medium text-[#22120C]/70 uppercase tracking-wider mb-1.5 font-mono">
                       {isRtl ? 'رقم الشقة / الدور' : 'Apartment / Floor'}
                     </label>
                     <input
@@ -661,14 +661,14 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       placeholder="e.g. Floor 4, Apt 12"
                       value={apartmentFloor}
                       onChange={e => setApartmentFloor(e.target.value)}
-                      className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                      className="w-full bg-white border border-[#22120C]/15 focus:border-[#E890A8] rounded-xl px-4 py-2.5 text-sm text-[#22120C] focus:outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Delivery Notes */}
                 <div>
-                  <label className="block text-xs font-medium text-[#736B63] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-medium text-[#22120C]/70 uppercase tracking-wider mb-1.5 font-mono">
                     {isRtl ? 'ملاحظات خاصة للمندوب (اختياري)' : 'Special Delivery Notes (Optional)'}
                   </label>
                   <textarea
@@ -676,23 +676,23 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     placeholder={isRtl ? 'كود البوابة، موعد مفضل للتوصيل، إلخ' : 'Gate code, landmark, preferred delivery timing, etc.'}
                     value={deliveryNotes}
                     onChange={e => setDeliveryNotes(e.target.value)}
-                    className="w-full bg-[#FAF7F2] border border-[#E8E2D7] rounded-xl px-4 py-2 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                    className="w-full bg-white border border-[#22120C]/15 focus:border-[#E890A8] rounded-xl px-4 py-2 text-sm text-[#22120C] focus:outline-none"
                   />
                 </div>
               </div>
             </div>
 
             {/* Step 3: Payment Method Selection */}
-            <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#E8E2D7] shadow-soft">
-              <div className="flex items-center gap-3 mb-5 border-b border-[#E8E2D7] pb-3">
-                <div className="w-7 h-7 rounded-full bg-[#1A1A1A] text-[#FAF7F2] flex items-center justify-center font-medium text-xs">
+            <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#22120C]/10 shadow-soft">
+              <div className="flex items-center gap-3 mb-5 border-b border-[#22120C]/10 pb-3">
+                <div className="w-7 h-7 rounded-full bg-[#E890A8] text-white flex items-center justify-center font-medium text-xs">
                   03
                 </div>
                 <div>
-                  <h2 className="font-serif text-lg font-normal text-[#1A1A1A]">
+                  <h2 className="font-serif text-lg font-normal text-[#22120C]">
                     {isRtl ? 'طريقة الدفع' : 'Payment Method'}
                   </h2>
-                  <span className="text-xs text-[#736B63] font-light">
+                  <span className="text-xs text-[#22120C]/60 font-light">
                     {isRtl ? 'اختر طريقة الدفع المفضلة لديك' : 'Choose your preferred payment method'}
                   </span>
                 </div>
@@ -704,8 +704,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   onClick={() => setPaymentMethod('card')}
                   className={`p-5 rounded-2xl border-2 cursor-pointer transition-all ${
                     paymentMethod === 'card'
-                      ? 'border-[#3C1322] bg-[#FAF7F2] shadow-sm'
-                      : 'border-[#E8E2D7] hover:border-[#1A1A1A]/30 bg-white'
+                      ? 'border-[#E890A8] bg-[#FDF2F5] shadow-xs'
+                      : 'border-[#22120C]/10 hover:border-[#E890A8]/40 bg-white'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -713,22 +713,22 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       <div
                         className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
                           paymentMethod === 'card'
-                            ? 'bg-[#3C1322] text-[#FAF7F2]'
-                            : 'bg-[#FAF7F2] text-[#736B63] border border-[#E8E2D7]'
+                            ? 'bg-[#E890A8] text-white'
+                            : 'bg-[#FDF2F5] text-[#22120C]/70 border border-[#E890A8]/20'
                         }`}
                       >
                         <CreditCard className="w-5 h-5" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold text-[#1A1A1A]">
+                          <span className="text-sm font-semibold text-[#22120C]">
                             {isRtl ? 'بطاقة بنكية (فيزا وماستركارد وميزة)' : 'Credit / Debit Card (Visa & Mastercard)'}
                           </span>
-                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#3C1322] text-[#FAF7F2]">
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#E890A8] text-white font-mono">
                             Paymob Secure
                           </span>
                         </div>
-                        <div className="text-xs text-[#736B63] font-light mt-0.5">
+                        <div className="text-xs text-[#22120C]/65 font-light mt-0.5">
                           {isRtl
                             ? 'دفع فوري وآمن عبر بوابة بيموب Paymob مع تشفير 3D-Secure.'
                             : 'Instant, seamless card payment secured by Paymob 3D-Secure.'}
@@ -738,7 +738,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
                     <div
                       className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mt-1 shrink-0 ${
-                        paymentMethod === 'card' ? 'border-[#3C1322] bg-[#3C1322]' : 'border-[#C4BCB3]'
+                        paymentMethod === 'card' ? 'border-[#E890A8] bg-[#E890A8]' : 'border-[#22120C]/20'
                       }`}
                     >
                       {paymentMethod === 'card' && <div className="w-2 h-2 rounded-full bg-white" />}
@@ -746,20 +746,20 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   </div>
 
                   {/* Card Network Badges */}
-                  <div className="mt-4 pt-3.5 border-t border-[#E8E2D7] flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <div className="mt-4 pt-3.5 border-t border-[#22120C]/10 flex flex-wrap items-center justify-between gap-2 text-xs">
                     <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-1 bg-white border border-[#E8E2D7] rounded-md text-[11px] font-bold text-[#1A1F71] tracking-wider shadow-2xs">
+                      <span className="px-2.5 py-1 bg-white border border-[#22120C]/10 rounded-md text-[11px] font-bold text-[#1A1F71] tracking-wider shadow-2xs">
                         VISA
                       </span>
-                      <span className="px-2.5 py-1 bg-white border border-[#E8E2D7] rounded-md text-[11px] font-bold text-[#EB001B] tracking-wider shadow-2xs">
+                      <span className="px-2.5 py-1 bg-white border border-[#22120C]/10 rounded-md text-[11px] font-bold text-[#EB001B] tracking-wider shadow-2xs">
                         Mastercard
                       </span>
-                      <span className="px-2.5 py-1 bg-white border border-[#E8E2D7] rounded-md text-[11px] font-bold text-[#006633] tracking-wider shadow-2xs">
+                      <span className="px-2.5 py-1 bg-white border border-[#22120C]/10 rounded-md text-[11px] font-bold text-[#006633] tracking-wider shadow-2xs">
                         Meeza
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-[11px] text-[#736B63]">
-                      <ShieldCheck className="w-3.5 h-3.5 text-[#3C1322]" />
+                    <div className="flex items-center gap-1.5 text-[11px] text-[#22120C]/65">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#E890A8]" />
                       <span>{isRtl ? 'تشفير آمن 256-bit' : '256-bit SSL Encrypted & 3D-Secure'}</span>
                     </div>
                   </div>
@@ -770,8 +770,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   onClick={() => setPaymentMethod('cod')}
                   className={`p-5 rounded-2xl border-2 cursor-pointer transition-all ${
                     paymentMethod === 'cod'
-                      ? 'border-[#3C1322] bg-[#FAF7F2] shadow-sm'
-                      : 'border-[#E8E2D7] hover:border-[#1A1A1A]/30 bg-white'
+                      ? 'border-[#E890A8] bg-[#FDF2F5] shadow-xs'
+                      : 'border-[#22120C]/10 hover:border-[#E890A8]/40 bg-white'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -779,22 +779,22 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       <div
                         className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
                           paymentMethod === 'cod'
-                            ? 'bg-[#3C1322] text-[#FAF7F2]'
-                            : 'bg-[#FAF7F2] text-[#736B63] border border-[#E8E2D7]'
+                            ? 'bg-[#E890A8] text-white'
+                            : 'bg-[#FDF2F5] text-[#22120C]/70 border border-[#E890A8]/20'
                         }`}
                       >
                         <Banknote className="w-5 h-5" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold text-[#1A1A1A]">
+                          <span className="text-sm font-semibold text-[#22120C]">
                             {isRtl ? 'الدفع عند الاستلام (كاش)' : 'Cash on Delivery (COD)'}
                           </span>
-                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-700 text-white">
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#6AACE9] text-white font-mono">
                             {isRtl ? 'بدون رسوم إضافية' : 'Zero Extra Fee'}
                           </span>
                         </div>
-                        <div className="text-xs text-[#736B63] font-light mt-0.5">
+                        <div className="text-xs text-[#22120C]/65 font-light mt-0.5">
                           {isRtl
                             ? 'ادفع نقداً لمندوب الشحن عند استلام صندوق التوفي عند باب منزلك.'
                             : 'Pay in cash directly to our courier when your climate-controlled parcel arrives.'}
@@ -804,19 +804,19 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
                     <div
                       className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mt-1 shrink-0 ${
-                        paymentMethod === 'cod' ? 'border-[#3C1322] bg-[#3C1322]' : 'border-[#C4BCB3]'
+                        paymentMethod === 'cod' ? 'border-[#E890A8] bg-[#E890A8]' : 'border-[#22120C]/20'
                       }`}
                     >
                       {paymentMethod === 'cod' && <div className="w-2 h-2 rounded-full bg-white" />}
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3.5 border-t border-[#E8E2D7] flex items-center justify-between text-xs text-[#736B63]">
+                  <div className="mt-4 pt-3.5 border-t border-[#22120C]/10 flex items-center justify-between text-xs text-[#22120C]/65">
                     <div className="flex items-center gap-1.5 text-[11px]">
-                      <Truck className="w-3.5 h-3.5 text-[#3C1322]" />
+                      <Truck className="w-3.5 h-3.5 text-[#E890A8]" />
                       <span>{isRtl ? 'متاح لجميع محافظات مصر' : 'Available across all Egyptian governorates'}</span>
                     </div>
-                    <span className="text-[11px] font-medium text-[#1A1A1A]">
+                    <span className="text-[11px] font-medium text-[#22120C]">
                       {isRtl ? 'الدفع بالجنيه المصري' : 'Exact cash in EGP requested'}
                     </span>
                   </div>
@@ -827,8 +827,8 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
           {/* Right Column: Order Summary */}
           <div className="lg:col-span-5">
-            <div className="sticky top-6 bg-white rounded-2xl p-6 sm:p-7 border border-[#E8E2D7] shadow-soft space-y-6">
-              <h2 className="font-serif text-xl font-normal text-[#1A1A1A] pb-3 border-b border-[#E8E2D7]">
+            <div className="sticky top-6 bg-white rounded-2xl p-6 sm:p-7 border border-[#22120C]/10 shadow-soft space-y-6">
+              <h2 className="font-serif text-xl font-normal text-[#22120C] pb-3 border-b border-[#22120C]/10">
                 {isRtl ? 'ملخص الطلب' : 'Order Summary'}
               </h2>
 
@@ -838,32 +838,32 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   return (
                     <div
                       key={`${item.product.id}-${item.selected_flavor || ''}`}
-                      className="flex gap-3.5 pb-4 border-b border-[#E8E2D7] last:border-b-0"
+                      className="flex gap-3.5 pb-4 border-b border-[#22120C]/10 last:border-b-0"
                     >
                       <img
                         src={item.product.image || '/images/products/cappuccino_candies_thumb.jpg'}
                         alt={isRtl ? (item.product.name_ar || item.product.name) : (item.product.name_en || item.product.name)}
-                        className="w-16 h-16 rounded-xl object-cover bg-[#FAF7F2] border border-[#E8E2D7] shrink-0"
+                        className="w-16 h-16 rounded-xl object-cover bg-white border border-[#22120C]/10 shrink-0"
                       />
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium text-[#1A1A1A] truncate">
+                        <h4 className="text-sm font-medium text-[#22120C] truncate">
                           {isRtl ? (item.product.name_ar || item.product.name) : (item.product.name_en || item.product.name)}
                         </h4>
                         {item.selected_flavor && (
-                          <span className="text-[11px] font-medium text-[#3C1322] dark:text-[#E8BD6D] bg-[#FFD147]/25 dark:bg-[#E8BD6D]/20 border border-[#FFD147]/40 dark:border-[#E8BD6D]/30 px-2 py-0.5 rounded-full inline-block mt-0.5">
+                          <span className="text-[11px] font-medium text-[#E890A8] bg-[#E890A8]/10 border border-[#E890A8]/20 px-2 py-0.5 rounded-full inline-block mt-0.5">
                             {isRtl ? 'النكهة: ' : 'Flavor: '}{item.selected_flavor}
                           </span>
                         )}
-                        <div className="flex items-center gap-2 mt-0.5 text-xs text-[#736B63] font-light">
+                        <div className="flex items-center gap-2 mt-0.5 text-xs text-[#22120C]/60 font-light">
                           <span>{isRtl ? 'الكمية: ' : 'Qty: '}{item.quantity}</span>
                           <span>•</span>
                           <span>{isRtl ? `${Number(item.product.price).toFixed(0)} ج.م` : `EGP ${Number(item.product.price).toFixed(0)}`}</span>
                         </div>
                         <div className="flex justify-between items-center mt-1">
-                          <span className="text-xs text-[#736B63]">
+                          <span className="text-xs text-[#22120C]/60">
                             {isRtl ? 'الإجمالي' : 'Line Total'}
                           </span>
-                          <span className="text-sm font-medium text-[#1A1A1A]">
+                          <span className="text-sm font-medium text-[#22120C]">
                             {isRtl ? `${(Number(item.product.price) * item.quantity).toFixed(0)} ج.م` : `EGP ${(Number(item.product.price) * item.quantity).toFixed(0)}`}
                           </span>
                         </div>
@@ -874,36 +874,36 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
               </div>
 
               {/* Delivery Zone Indicator */}
-              <div className="bg-[#FAF7F2] rounded-xl p-3.5 border border-[#E8E2D7] text-xs text-[#1A1A1A] flex items-center justify-between">
+              <div className="bg-[#FDF2F5] rounded-xl p-3.5 border border-[#E890A8]/20 text-xs text-[#22120C] flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Truck className="w-4 h-4 text-[#3C1322]" />
+                  <Truck className="w-4 h-4 text-[#E890A8]" />
                   <div>
                     <span className="font-medium">{governorate} {isRtl ? 'شحن' : 'Courier'}</span>
-                    <span className="text-[11px] text-[#736B63] block font-light">Est: {estimatedDelivery}</span>
+                    <span className="text-[11px] text-[#22120C]/60 block font-light">Est: {estimatedDelivery}</span>
                   </div>
                 </div>
-                <span className="font-mono font-medium text-[#1A1A1A]">EGP {shippingFee.toFixed(2)}</span>
+                <span className="font-mono font-medium text-[#22120C]">EGP {shippingFee.toFixed(2)}</span>
               </div>
 
               {/* Price Breakdown */}
-              <div className="space-y-2 text-xs text-[#736B63] pt-2 border-t border-[#E8E2D7]">
+              <div className="space-y-2 text-xs text-[#22120C]/70 pt-2 border-t border-[#22120C]/10">
                 <div className="flex justify-between">
                   <span>{isRtl ? 'قيمة المنتجات' : 'Product Subtotal'}</span>
-                  <span className="font-medium text-[#1A1A1A]">EGP {subtotal.toFixed(2)}</span>
+                  <span className="font-medium text-[#22120C]">EGP {subtotal.toFixed(2)}</span>
                 </div>
                 {promoApplied && discountAmount > 0 && (
-                  <div className="flex justify-between text-[#88C057] font-medium">
+                  <div className="flex justify-between text-[#6AACE9] font-medium">
                     <span>{isRtl ? 'الخصم' : 'Discount'} ({promoCode || '10%'})</span>
                     <span>-EGP {discountAmount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
                   <span>{isRtl ? 'مصاريف الشحن' : 'Egypt Shipping'} ({governorate})</span>
-                  <span className="font-medium text-[#1A1A1A]">EGP {shippingFee.toFixed(2)}</span>
+                  <span className="font-medium text-[#22120C]">EGP {shippingFee.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-base font-serif font-normal text-[#1A1A1A] pt-3 border-t border-[#E8E2D7]">
+                <div className="flex justify-between text-base font-serif font-normal text-[#22120C] pt-3 border-t border-[#22120C]/10">
                   <span>{isRtl ? 'المجموع النهائي' : 'Total Due'}</span>
-                  <span className="font-medium text-[#3C1322]">EGP {orderTotal.toFixed(2)}</span>
+                  <span className="font-medium text-[#E890A8]">EGP {orderTotal.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -911,11 +911,11 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-primary w-full py-4 text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-soft hover:shadow-lg transition-all"
+                className="w-full py-4 text-xs font-mono font-semibold uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-[0_4px_14px_rgba(232,144,168,0.3)] hover:shadow-[0_6px_20px_rgba(106,172,233,0.35)] bg-[#E890A8] hover:bg-[#6AACE9] text-white rounded-full transition-all"
               >
                 {isSubmitting ? (
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-[#FAF7F2] border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     <span>{isRtl ? 'جاري المعالجة...' : 'Processing Order...'}</span>
                   </div>
                 ) : paymentMethod === 'card' ? (
@@ -931,9 +931,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                 )}
               </button>
 
-              <div className="text-[11px] text-center text-[#736B63] space-y-1 font-light">
+              <div className="text-[11px] text-center text-[#22120C]/60 space-y-1 font-light">
                 <p className="flex items-center justify-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-[#3C1322] inline" />
+                  <Lock className="w-3.5 h-3.5 text-[#E890A8] inline" />
                   <span>
                     {paymentMethod === 'card'
                       ? (isRtl ? 'بوابة دفع إلكتروني مشفرة 256-bit عبر Paymob' : '256-Bit SSL Encrypted Checkout Powered by Paymob')
@@ -955,29 +955,29 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
         {/* ======================================================== */}
         {paymobIframeUrl && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md animate-fade-in">
-            <div className="relative w-full max-w-3xl bg-[#FAF7F2] dark:bg-[#1B1419] rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.6)] border border-[#E8BD6D]/40 ring-1 ring-white/10 overflow-hidden flex flex-col h-[92vh] max-h-[850px]">
+            <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.6)] border border-[#E890A8]/40 ring-1 ring-white/10 overflow-hidden flex flex-col h-[92vh] max-h-[850px]">
               
               {/* IF PAYMENT APPROVED: RENDER LUXURIOUS IN-FRAME SUCCESS & TRACKING CELEBRATION */}
               {paymentSuccessOrder ? (
-                <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10 text-center bg-white dark:bg-[#1B1419] space-y-6 animate-fade-in overflow-y-auto">
+                <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10 text-center bg-white space-y-6 animate-fade-in overflow-y-auto">
                   {/* Glowing Animated Success Checkmark */}
                   <div className="relative inline-flex items-center justify-center">
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-xl shadow-emerald-500/25">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#6AACE9] text-white flex items-center justify-center shadow-xl shadow-[#6AACE9]/25">
                       <CheckCircle2 className="w-12 h-12 sm:w-14 sm:h-14" />
                     </div>
-                    <div className="absolute -inset-4 bg-[#E8BD6D]/20 rounded-full blur-2xl -z-10 animate-pulse" />
+                    <div className="absolute -inset-4 bg-[#E890A8]/20 rounded-full blur-2xl -z-10 animate-pulse" />
                   </div>
 
                   {/* Header Title */}
                   <div className="space-y-2 max-w-md">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-widest">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6AACE9]/10 border border-[#6AACE9]/30 text-[#6AACE9] text-[11px] font-bold uppercase tracking-widest font-mono">
                       <ShieldCheck className="w-3.5 h-3.5" />
                       <span>{isRtl ? 'تم قبول الدفع بنجاح عبر Paymob' : 'Payment Approved & Verified'}</span>
                     </span>
-                    <h2 className="font-serif text-2xl sm:text-4xl font-normal text-[#1A1A1A] dark:text-[#F7F3EC]">
+                    <h2 className="font-serif text-2xl sm:text-4xl font-normal text-[#22120C]">
                       {isRtl ? 'تم تأكيد طلبك بنجاح!' : 'Payment Complete & Order Placed!'}
                     </h2>
-                    <p className="text-xs sm:text-sm text-[#736B63] dark:text-[#C8BEB5] font-light">
+                    <p className="text-xs sm:text-sm text-[#22120C]/70 font-light">
                       {isRtl
                         ? `شكراً لك! تم خصم ${orderTotal.toFixed(2)} ج.م بنجاح بالفيزا، ويجري الآن تجهيز دفعة التوفي الطازجة في المعمل.`
                         : `Thank you! Your payment of ${orderTotal.toFixed(2)} EGP was authorized securely. Your batch is now moving into fresh copper kettle preparation.`}
@@ -985,36 +985,36 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   </div>
 
                   {/* Order Metrics Card */}
-                  <div className="w-full max-w-lg p-4 bg-[#FAF7F2] dark:bg-[#241A21] rounded-2xl border border-[#E8E2D7] dark:border-[#33242E] grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-                    <div className="text-center p-2 rounded-xl bg-white dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E]">
-                      <span className="text-[10px] uppercase font-bold text-[#736B63] dark:text-[#9C8E83] block">
+                  <div className="w-full max-w-lg p-4 bg-[#FDF2F5] rounded-2xl border border-[#E890A8]/20 grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                    <div className="text-center p-2 rounded-xl bg-white border border-[#22120C]/10">
+                      <span className="text-[10px] uppercase font-bold text-[#22120C]/60 block font-mono">
                         {isRtl ? 'رقم الطلب' : 'Order No.'}
                       </span>
                       <div className="flex items-center justify-center gap-1 mt-0.5">
-                        <span className="font-mono font-bold text-[#1A1A1A] dark:text-[#F7F3EC]">{paymentSuccessOrder.order_number}</span>
+                        <span className="font-mono font-bold text-[#22120C]">{paymentSuccessOrder.order_number}</span>
                         <button
                           onClick={() => handleCopy(paymentSuccessOrder.order_number, 'modal_ord')}
-                          className="text-[#736B63] dark:text-[#9C8E83] hover:text-[#1A1A1A] dark:hover:text-[#E8BD6D]"
+                          className="text-[#22120C]/60 hover:text-[#E890A8]"
                         >
-                          {copiedKey === 'modal_ord' ? <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                          {copiedKey === 'modal_ord' ? <Check className="w-3 h-3 text-[#6AACE9]" /> : <Copy className="w-3 h-3" />}
                         </button>
                       </div>
                     </div>
 
-                    <div className="text-center p-2 rounded-xl bg-white dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E]">
-                      <span className="text-[10px] uppercase font-bold text-[#736B63] dark:text-[#9C8E83] block">
+                    <div className="text-center p-2 rounded-xl bg-white border border-[#22120C]/10">
+                      <span className="text-[10px] uppercase font-bold text-[#22120C]/60 block font-mono">
                         {isRtl ? 'طريقة الدفع' : 'Payment'}
                       </span>
-                      <span className="font-semibold text-emerald-700 dark:text-emerald-400 mt-0.5 block">
+                      <span className="font-semibold text-[#6AACE9] mt-0.5 block font-mono">
                         Visa (Paid)
                       </span>
                     </div>
 
-                    <div className="text-center p-2 rounded-xl bg-white dark:bg-[#1B1419] border border-[#E8E2D7] dark:border-[#33242E] col-span-2 sm:col-span-1">
-                      <span className="text-[10px] uppercase font-bold text-[#736B63] dark:text-[#9C8E83] block">
+                    <div className="text-center p-2 rounded-xl bg-white border border-[#22120C]/10 col-span-2 sm:col-span-1">
+                      <span className="text-[10px] uppercase font-bold text-[#22120C]/60 block font-mono">
                         {isRtl ? 'المجموع' : 'Total'}
                       </span>
-                      <span className="font-mono font-bold text-[#3C1322] dark:text-[#E8BD6D] mt-0.5 block">
+                      <span className="font-mono font-bold text-[#E890A8] mt-0.5 block">
                         {orderTotal.toFixed(2)} EGP
                       </span>
                     </div>
@@ -1033,9 +1033,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                           onOrderSuccess(paymentSuccessOrder);
                         }
                       }}
-                      className="btn-primary w-full sm:flex-1 py-3 text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-soft hover:shadow-lg"
+                      className="w-full sm:flex-1 py-3 text-xs font-mono font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-soft hover:shadow-lg bg-[#E890A8] hover:bg-[#6AACE9] text-white rounded-full transition-all"
                     >
-                      <Truck className="w-4 h-4 text-[#E8BD6D] dark:text-[#120D11]" />
+                      <Truck className="w-4 h-4 text-white" />
                       <span>{isRtl ? 'تتبع مسار طلبي الآن' : 'Track My Order Now'}</span>
                     </button>
 
@@ -1046,7 +1046,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                         setPaymobIframeUrl(null);
                         onOrderSuccess(paymentSuccessOrder);
                       }}
-                      className="btn-secondary w-full sm:flex-1 py-3 text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
+                      className="btn-secondary w-full sm:flex-1 py-3 text-xs font-mono font-semibold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer hover:border-[#E890A8] hover:text-[#E890A8] rounded-full"
                     >
                       <Receipt className="w-4 h-4" />
                       <span>{isRtl ? 'عرض الفاتورة الرسمية' : 'View Full Receipt'}</span>
@@ -1060,7 +1060,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       setPaymobIframeUrl(null);
                       onBackToShop();
                     }}
-                    className="text-xs text-[#736B63] dark:text-[#9C8E83] hover:text-[#1A1A1A] dark:hover:text-[#E8BD6D] underline font-light cursor-pointer"
+                    className="text-xs text-[#22120C]/60 hover:text-[#E890A8] underline font-light cursor-pointer font-mono"
                   >
                     {isRtl ? 'العودة لتصفح المنتجات' : 'Return to Shop Collection'}
                   </button>
@@ -1069,9 +1069,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                 /* IN-PROGRESS PAYMENT FRAME */
                 <>
                   {/* Top Atelier Header */}
-                  <div className="bg-gradient-to-r from-[#1A1A1A] via-[#2A111C] to-[#1A1A1A] text-white px-5 py-4 flex items-center justify-between border-b border-[#3C1322]">
+                  <div className="bg-[#22120C] text-white px-5 py-4 flex items-center justify-between border-b border-[#22120C]/20">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-[#E8BD6D]/15 border border-[#E8BD6D]/30 flex items-center justify-center text-[#E8BD6D]">
+                      <div className="w-9 h-9 rounded-xl bg-[#E890A8]/20 border border-[#E890A8]/40 flex items-center justify-center text-[#E890A8]">
                         <CreditCard className="w-5 h-5" />
                       </div>
                       <div>
@@ -1079,11 +1079,11 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                           <span className="font-serif text-sm font-semibold tracking-wide">
                             TOOMAKT ATELIER · PAYMOB GATEWAY
                           </span>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#6AACE9]/20 text-[#6AACE9] border border-[#6AACE9]/30 font-mono">
                             3D-Secure
                           </span>
                         </div>
-                        <span className="text-[11px] text-[#E8E2D7]/80 block font-light">
+                        <span className="text-[11px] text-white/80 block font-light font-mono">
                           Order #{activeOrderNumber} • Total Due: <strong className="text-white font-semibold">{orderTotal.toFixed(2)} EGP</strong>
                         </span>
                       </div>
@@ -1100,13 +1100,13 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   </div>
 
                   {/* Real-time Status & Quick Action Bar above iframe */}
-                  <div className="bg-[#FAF7F2] border-b border-[#E8E2D7] px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <div className="bg-white border-b border-[#22120C]/10 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
                     <div className="flex items-center gap-2">
                       <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6AACE9] opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#6AACE9]" />
                       </span>
-                      <span className="text-[11px] text-[#736B63] font-light">
+                      <span className="text-[11px] text-[#22120C]/70 font-light font-mono">
                         {isRtl ? 'متصل بالبوابة · جاري الكشف الفوري عن حالة الدفع...' : 'Live Gateway Active · Detecting payment status in real-time...'}
                       </span>
                     </div>
@@ -1116,7 +1116,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       type="button"
                       onClick={handleVerifyAndFinalizePayment}
                       disabled={isVerifyingPayment}
-                      className="bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-1.5 rounded-xl font-bold text-[11px] flex items-center gap-1.5 cursor-pointer shadow-xs transition hover:shadow-sm"
+                      className="bg-[#6AACE9] hover:bg-[#E890A8] text-white px-3.5 py-1.5 rounded-full font-bold text-[11px] flex items-center gap-1.5 cursor-pointer shadow-xs transition hover:shadow-sm font-mono"
                     >
                       {isVerifyingPayment ? (
                         <>
@@ -1134,12 +1134,12 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   </div>
 
                   {/* Sandbox Test Card Notice Banner */}
-                  <div className="bg-amber-50/90 border-b border-amber-200 px-4 py-2 text-xs text-amber-900 flex flex-wrap items-center justify-between gap-2">
+                  <div className="bg-[#FDF2F5] border-b border-[#E890A8]/20 px-4 py-2 text-xs text-[#22120C] flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <Info className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                      <span className="text-[11px]">
+                      <Info className="w-3.5 h-3.5 text-[#E890A8] shrink-0" />
+                      <span className="text-[11px] font-mono">
                         <strong>Paymob Test Mode:</strong> Use test card:{' '}
-                        <code className="bg-white px-1.5 py-0.5 rounded border border-amber-300 font-mono font-bold text-amber-950">
+                        <code className="bg-white px-1.5 py-0.5 rounded border border-[#E890A8]/30 font-mono font-bold text-[#22120C]">
                           5123 4567 8901 2346
                         </code>{' '}
                         • Exp: <strong>12/28</strong> • CVV: <strong>123</strong> • OTP: <strong>1234</strong>
@@ -1159,7 +1159,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   )}
 
                   {/* Hosted Paymob Iframe */}
-                  <div className="flex-1 w-full bg-[#FAF7F2] relative">
+                  <div className="flex-1 w-full bg-white relative">
                     <iframe
                       src={paymobIframeUrl}
                       title="Paymob Visa Payment Gateway"
@@ -1169,21 +1169,21 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   </div>
 
                   {/* Modal Bottom Actions Footer */}
-                  <div className="p-3.5 border-t border-[#E8E2D7] bg-white flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <div className="p-3.5 border-t border-[#22120C]/10 bg-white flex flex-wrap items-center justify-between gap-3 text-xs">
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={handleCloseModal}
-                        className="px-3.5 py-2 rounded-xl border border-[#E8E2D7] text-[#736B63] hover:text-[#1A1A1A] hover:bg-neutral-50 font-medium cursor-pointer transition text-xs"
+                        className="px-3.5 py-2 rounded-full border border-[#22120C]/15 text-[#22120C]/70 hover:text-[#22120C] hover:bg-neutral-50 font-medium cursor-pointer transition text-xs font-mono"
                       >
                         Cancel & Return
                       </button>
                       <button
                         type="button"
                         onClick={handleSwitchToCodFromModal}
-                        className="px-3.5 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-[#1A1A1A] font-medium cursor-pointer transition flex items-center gap-1.5 text-xs"
+                        className="px-3.5 py-2 rounded-full bg-[#FDF2F5] hover:bg-[#E890A8]/20 text-[#22120C] font-medium cursor-pointer transition flex items-center gap-1.5 text-xs font-mono"
                       >
-                        <Banknote className="w-3.5 h-3.5" />
+                        <Banknote className="w-3.5 h-3.5 text-[#E890A8]" />
                         <span>Switch to Cash on Delivery</span>
                       </button>
                     </div>
@@ -1192,7 +1192,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                       type="button"
                       onClick={handleVerifyAndFinalizePayment}
                       disabled={isVerifyingPayment}
-                      className="btn-primary py-2 px-5 text-xs font-semibold uppercase tracking-wider flex items-center gap-2 cursor-pointer disabled:opacity-50 shadow-soft"
+                      className="py-2.5 px-5 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white font-mono text-xs font-semibold uppercase tracking-wider flex items-center gap-2 cursor-pointer disabled:opacity-50 shadow-md transition-all"
                     >
                       {isVerifyingPayment ? (
                         <>

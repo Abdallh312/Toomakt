@@ -151,26 +151,26 @@ export const CustomCursor: React.FC = () => {
   let ringWidth = 14;
   let ringHeight = 14;
   let ringBg = 'transparent';
-  let ringBorder = '1.5px solid rgba(150, 55, 37, 0.6)';
+  let ringBorder = '1.5px solid rgba(232, 144, 168, 0.7)';
   let ringShadow = 'none';
 
   if (isText) {
     ringWidth = 3;
     ringHeight = 22;
-    ringBg = '#963725';
+    ringBg = '#E890A8';
     ringBorder = 'none';
   } else if (isLabelActive) {
     ringWidth = 78;
     ringHeight = 78;
-    ringBg = 'rgba(150, 55, 37, 0.96)';
-    ringBorder = '2px solid rgba(228, 176, 114, 0.8)';
-    ringShadow = '0 6px 20px rgba(150, 55, 37, 0.35)';
+    ringBg = 'rgba(232, 144, 168, 0.96)';
+    ringBorder = '2px solid rgba(106, 172, 233, 0.9)';
+    ringShadow = '0 6px 20px rgba(232, 144, 168, 0.35)';
   } else if (isPointer) {
     ringWidth = 40;
     ringHeight = 40;
-    ringBg = 'rgba(150, 55, 37, 0.12)';
-    ringBorder = '1.5px solid rgba(150, 55, 37, 0.8)';
-    ringShadow = '0 2px 10px rgba(150, 55, 37, 0.15)';
+    ringBg = 'rgba(232, 144, 168, 0.12)';
+    ringBorder = '1.5px solid rgba(106, 172, 233, 0.8)';
+    ringShadow = '0 2px 10px rgba(106, 172, 233, 0.2)';
   }
 
   return (
@@ -193,7 +193,7 @@ export const CustomCursor: React.FC = () => {
         }}
       >
         {isLabelActive && label && (
-          <span className="text-[10px] font-mono tracking-widest uppercase text-[#FAF5EE] font-bold px-1 animate-in fade-in zoom-in-90 duration-150">
+          <span className="text-[10px] font-mono tracking-widest uppercase text-white font-bold px-1 animate-in fade-in zoom-in-90 duration-150">
             {label}
           </span>
         )}
@@ -210,7 +210,7 @@ export const CustomCursor: React.FC = () => {
             transition: 'opacity 0.12s ease',
           }}
         >
-          <div className="w-1.5 h-1.5 rounded-full bg-[#963725] shadow-xs -translate-x-1/2 -translate-y-1/2" />
+          <div className="w-1.5 h-1.5 rounded-full bg-[#E890A8] shadow-xs -translate-x-1/2 -translate-y-1/2" />
         </div>
       )}
     </>
