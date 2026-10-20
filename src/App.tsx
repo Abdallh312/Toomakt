@@ -603,17 +603,36 @@ export const AppContent: React.FC = () => {
     }
   };
 
+  // Smooth scroll to top on view change
+  useEffect(() => {
+    if ((window as any).lenis) {
+      (window as any).lenis.scrollTo(0, { immediate: false, duration: 0.85 });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentView]);
+
   const handleNavigateSection = (id: string) => {
+    const scrollTarget = (el: HTMLElement) => {
+      if ((window as any).scrollToSmooth) {
+        (window as any).scrollToSmooth(el, -70, 1.15);
+      } else if ((window as any).lenis) {
+        (window as any).lenis.scrollTo(el, { offset: -70, duration: 1.15 });
+      } else {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
     if (currentView !== 'home') {
       setCurrentView('home');
       navigateTo('');
       setTimeout(() => {
         const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+        if (el) scrollTarget(el);
+      }, 120);
     } else {
       const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      if (el) scrollTarget(el);
     }
   };
 
@@ -672,11 +691,20 @@ export const AppContent: React.FC = () => {
           />
         </div>
 
-        {/* Main Dynamic Content Switcher */}
+        {/* Main Dynamic Content Switcher with Silky Smooth Transition */}
         <main className="main-content-layer flex-1 w-full max-w-full overflow-x-hidden">
-          {/* PAGE 1: DEDICATED BRAND INTRODUCTION LANDING PAGE */}
-          {currentView === 'home' && (
-            <LandingPageView
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentView}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full flex-1 flex flex-col"
+            >
+              {/* PAGE 1: DEDICATED BRAND INTRODUCTION LANDING PAGE */}
+              {currentView === 'home' && (
+                <LandingPageView
               onNavigateView={handleNavigateView}
               onSelectProduct={handleSelectProduct}
             />
@@ -806,7 +834,9 @@ export const AppContent: React.FC = () => {
               onOpenSearch={() => handleNavigateView('shop')}
             />
           )}
-        </main>
+        </motion.div>
+      </AnimatePresence>
+    </main>
       </div>
 
       {/* Behind-The-Page Reveal Footer — shows on ALL pages */}
@@ -822,11 +852,15 @@ export const AppContent: React.FC = () => {
 
       {/* Modals: Product Detail Modal ONLY */}
       <div className="no-print">
-        <ProductDetailModal
-          product={selectedProduct}
-          onClose={handleCloseProductModal}
-          onNavigateView={handleNavigateView}
-        />
+        <AnimatePresence>
+          {selectedProduct && (
+            <ProductDetailModal
+              product={selectedProduct}
+              onClose={handleCloseProductModal}
+              onNavigateView={handleNavigateView}
+            />
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Floating Scroll to Top Button (from reference image) */}

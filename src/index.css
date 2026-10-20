@@ -88,6 +88,30 @@
 
   html:not(.lenis) { scroll-behavior: smooth; }
 
+  /* Silky Smooth GPU Acceleration & Micro-Stutter Prevention */
+  .smooth-gpu {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform, opacity;
+  }
+
+  img, svg, picture {
+    backface-visibility: hidden;
+  }
+
+  /* Smooth touch momentum scrolling on mobile & drawer */
+  .smooth-touch-scroll,
+  [data-lenis-prevent] {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Luxury cubic-bezier easing for buttons & links */
+  button, a {
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
   body {
     width: 100%;
     max-width: 100vw;

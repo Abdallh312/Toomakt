@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   X,
   ShoppingBag,
@@ -37,9 +37,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [justAdded, setJustAdded] = useState(false);
 
-  const flavorsList: string[] = product?.available_flavors && product.available_flavors.length > 0
-    ? product.available_flavors
-    : (product?.fruitNotes && product.fruitNotes.length > 0 ? [product.name, ...product.fruitNotes.slice(0, 2)] : [product?.name || 'Original']);
+  // Cache last non-null product so exit animation retains content smoothly
+  const lastProductRef = useRef<Product | null>(null);
+  if (product) {
+    lastProductRef.current = product;
+  }
+  const currentProduct = product || lastProductRef.current;
+
+  const flavorsList: string[] = currentProduct?.available_flavors && currentProduct.available_flavors.length > 0
+    ? currentProduct.available_flavors
+    : (currentProduct?.fruitNotes && currentProduct.fruitNotes.length > 0 ? [currentProduct.name, ...currentProduct.fruitNotes.slice(0, 2)] : [currentProduct?.name || 'Original']);
 
   const [selectedFlavor, setSelectedFlavor] = useState<string>(() => flavorsList[0] || 'Original');
 
@@ -54,6 +61,20 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       setSelectedFlavor(flvs[0] || product.name);
     }
   }, [product?.id]);
+
+  useEffect(() => {
+    if (product) {
+      window.dispatchEvent(new CustomEvent('toomakt:modal-open'));
+      document.body.style.overflow = 'hidden';
+    } else {
+      window.dispatchEvent(new CustomEvent('toomakt:modal-close'));
+      document.body.style.overflow = '';
+    }
+    return () => {
+      window.dispatchEvent(new CustomEvent('toomakt:modal-close'));
+      document.body.style.overflow = '';
+    };
+  }, [product]);
 
   if (!product) return null;
 
@@ -156,11 +177,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   };
 
   return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-[100] overflow-y-auto flex items-center justify-center p-3 sm:p-6">
-        {/* Soft Warm Dim Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
+    <div className="fixed inset-0 z-[100] overflow-y-auto flex items-center justify-center p-3 sm:p-6" data-lenis-prevent>
+      {/* Soft Warm Dim Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
@@ -447,7 +467,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
   );
 };
 

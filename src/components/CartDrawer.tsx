@@ -36,7 +36,20 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
   const [promoError, setPromoError] = useState(false);
   const [orderNote, setOrderNote] = useState('');
 
-  if (!isCartOpen) return null;
+  // Lock body scroll and pause Lenis smoothly when drawer is open
+  React.useEffect(() => {
+    if (isCartOpen) {
+      window.dispatchEvent(new CustomEvent('toomakt:modal-open'));
+      document.body.style.overflow = 'hidden';
+    } else {
+      window.dispatchEvent(new CustomEvent('toomakt:modal-close'));
+      document.body.style.overflow = '';
+    }
+    return () => {
+      window.dispatchEvent(new CustomEvent('toomakt:modal-close'));
+      document.body.style.overflow = '';
+    };
+  }, [isCartOpen]);
 
   const handleApplyPromo = (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,12 +84,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 overflow-hidden flex justify-end">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+      {isCartOpen && (
+        <div className="fixed inset-0 z-50 overflow-hidden flex justify-end" data-lenis-prevent>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           onClick={() => setIsCartOpen(false)}
           className="fixed inset-0 bg-[#22120C]/60 backdrop-blur-sm transition-opacity"
         />
@@ -327,7 +341,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
           )}
         </motion.div>
       </div>
-    </AnimatePresence>
+    )}
+  </AnimatePresence>
   );
 };
 
