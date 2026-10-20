@@ -14,8 +14,13 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<Theme>(() => {
     try {
-      const saved = localStorage.getItem('toomakt_theme');
-      if (saved === 'dark' || saved === 'light') return saved;
+      // Check if specifically on admin route with saved preference
+      const isAdmin = typeof window !== 'undefined' && 
+        (window.location.pathname.includes('admin') || window.location.hash.includes('admin'));
+      if (isAdmin) {
+        const saved = localStorage.getItem('toomakt_admin_theme');
+        if (saved === 'dark' || saved === 'light') return saved;
+      }
       return 'light';
     } catch {
       return 'light';
@@ -25,16 +30,28 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     try {
       const root = document.documentElement;
-      if (theme === 'dark') {
+      const isAdmin = window.location.pathname.includes('admin') || window.location.hash.includes('admin');
+      
+      if (isAdmin && theme === 'dark') {
         root.classList.add('dark');
         root.classList.remove('light');
         root.style.colorScheme = 'dark';
+        localStorage.setItem('toomakt_admin_theme', 'dark');
       } else {
+        // Enforce pristine Light Mode on storefront for all mobile devices
         root.classList.remove('dark');
         root.classList.add('light');
         root.style.colorScheme = 'light';
+        if (isAdmin) {
+          localStorage.setItem('toomakt_admin_theme', 'light');
+        }
       }
-      localStorage.setItem('toomakt_theme', theme);
+
+      // Keep browser frame & status bar white
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+      if (metaThemeColor) {
+        metaThemeColor.setAttribute('content', '#FFFFFF');
+      }
     } catch {}
   }, [theme]);
 

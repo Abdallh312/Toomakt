@@ -23,6 +23,10 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useLanguage } from '../context/LanguageContext';
+import {
+  getProductDisplayName,
+  getFlavorDisplayName,
+} from '../utils/productLocalization';
 
 interface TrackOrderViewProps {
   initialOrderNumber?: string;
@@ -436,10 +440,12 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({ initialOrderNumb
                           <Package className="w-5 h-5 text-[#E890A8]" />
                         </div>
                         <div>
-                          <h4 className="text-sm font-medium text-[#22120C]">{item.name}</h4>
+                          <h4 className="text-sm font-medium text-[#22120C]">
+                            {getProductDisplayName(item, isRtl) || item.name}
+                          </h4>
                           {item.flavor && (
                             <span className="text-[10px] text-[#E890A8] bg-[#E890A8]/10 border border-[#E890A8]/20 px-2 py-0.5 rounded-full inline-block mt-0.5 font-medium font-mono">
-                              {item.flavor}
+                              {getFlavorDisplayName(item.flavor, isRtl)}
                             </span>
                           )}
                           <span className="text-xs text-[#22120C]/60 font-light block mt-0.5">

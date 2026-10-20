@@ -332,13 +332,23 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Drawer Menu (Floating Frosted Panel) */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.98 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-x-3 top-20 z-40 max-w-lg mx-auto bg-white/98 backdrop-blur-2xl rounded-3xl border border-[#22120C]/12 shadow-[0_20px_50px_rgba(34,18,12,0.18)] p-6 text-[#22120C] lg:hidden"
-          >
+          <>
+            {/* Backdrop click-away overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 z-30 bg-[#22120C]/35 backdrop-blur-xs lg:hidden"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, y: -16, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -16, scale: 0.98 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed inset-x-3 top-20 z-40 max-w-lg mx-auto bg-white/98 backdrop-blur-2xl rounded-3xl border border-[#22120C]/12 shadow-[0_20px_50px_rgba(34,18,12,0.18)] p-6 text-[#22120C] lg:hidden"
+            >
             {/* Mobile Navigation Links */}
             <nav className="space-y-1.5 pt-2">
               {navLinks.map((link) => {
@@ -391,7 +401,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             </div>
           </motion.div>
-        )}
+        </>
+      )}
       </AnimatePresence>
     </>
   );

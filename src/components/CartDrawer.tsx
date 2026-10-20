@@ -4,6 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { navigateTo } from '../utils/navigation';
+import {
+  getProductDisplayName,
+  getFlavorDisplayName,
+  getProductPackQuantity,
+} from '../utils/productLocalization';
 
 interface CartDrawerProps {
   onOrderSuccess?: (order: any) => void;
@@ -21,6 +26,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
     subtotal,
     amountToFreeShipping,
     freeShippingThreshold,
+    defaultShippingFee,
     applyPromoCode,
     promoApplied,
     discountAmount,
@@ -55,7 +61,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
     }
   };
 
-  const shippingCost = amountToFreeShipping <= 0 ? 0 : 65;
+  // Real Egyptian standard shipping rate (Cairo 45 EGP) or 0 if free shipping threshold reached
+  const shippingCost = amountToFreeShipping <= 0 ? 0 : (defaultShippingFee || 45);
   const grandTotal = Math.max(0, subtotal - discountAmount + shippingCost);
   const shippingPercent = Math.min(
     100,
@@ -76,10 +83,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
 
         {/* Drawer Window */}
         <motion.div
-          initial={{ x: isRtl ? -480 : 480 }}
+          initial={{ x: isRtl ? '-100%' : '100%' }}
           animate={{ x: 0 }}
-          exit={{ x: isRtl ? -480 : 480 }}
-          transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+          exit={{ x: isRtl ? '-100%' : '100%' }}
+          transition={{ type: 'spring', damping: 28, stiffness: 280 }}
           className="relative w-full max-w-lg bg-white text-[#22120C] h-full shadow-[0_0_60px_rgba(34,18,12,0.18)] flex flex-col z-10 border-l rtl:border-l-0 rtl:border-r border-[#22120C]/10 overflow-hidden"
         >
           {/* Header */}
@@ -170,21 +177,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                     <div className="w-16 h-16 rounded-xl bg-[#FDF2F5] border border-[#E890A8]/15 p-2 flex items-center justify-center shrink-0">
                       <img
                         src={item.product.image || '/images/products/cappuccino_candies_thumb_isolated.png'}
-                        alt={isRtl ? (item.product.name_ar || item.product.name) : (item.product.name_en || item.product.name)}
+                        alt={getProductDisplayName(item.product, isRtl)}
                         className="w-full h-full object-contain filter drop-shadow-sm"
                       />
                     </div>
                     <div className="min-w-0">
                       <h4 className="font-serif text-base font-normal text-[#22120C] truncate">
-                        {isRtl ? (item.product.name_ar || item.product.name) : (item.product.name_en || item.product.name)}
+                        {getProductDisplayName(item.product, isRtl)}
                       </h4>
                       {item.selected_flavor && (
                         <span className="text-[10px] font-mono text-[#E890A8] bg-[#E890A8]/10 border border-[#E890A8]/25 px-2 py-0.5 rounded-full inline-block mt-0.5 font-semibold">
-                          {item.selected_flavor}
+                          {getFlavorDisplayName(item.selected_flavor, isRtl)}
                         </span>
                       )}
                       <span className="text-xs text-[#22120C]/65 block mt-0.5 font-mono">
-                        {(isRtl ? item.product.pack_quantity_ar : item.product.pack_quantity_en) || item.product.pack_quantity || item.product.weight || '250g'} · {formatPrice(item.product.price)}
+                        {getProductPackQuantity(item.product, isRtl)} · {formatPrice(item.product.price)}
                       </span>
 
                       {/* Quantity Stepper */}
@@ -243,7 +250,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
 
           {/* Footer & Checkout Summary */}
           {items.length > 0 && (
-            <div className="p-6 border-t border-[#E890A8]/15 bg-[#FDF2F5] space-y-4">
+            <div className="p-6 pb-safe border-t border-[#E890A8]/15 bg-[#FDF2F5] space-y-4 shrink-0">
               {/* Promo Code Form */}
               <form onSubmit={handleApplyPromo} className="flex gap-2">
                 <input
@@ -255,7 +262,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                 />
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-[#6AACE9] hover:bg-[#E890A8] text-white rounded-full text-xs font-mono font-bold uppercase tracking-wider transition-colors cursor-pointer shadow-xs"
+                  className="px-5 py-2.5 bg-[#6AACE9] hover:bg-[#E890A8] text-white rounded-full text-xs font-mono font-bold uppercase tracking-wider transition-colors cursor-pointer shadow-xs touch-press"
                 >
                   {isRtl ? 'تطبيق' : 'Apply'}
                 </button>
@@ -299,7 +306,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
               {/* Checkout CTA */}
               <button
                 onClick={handleProceedCheckout}
-                className="w-full py-3.5 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white text-xs font-mono font-bold tracking-wider uppercase flex items-center justify-center gap-2 cursor-pointer shadow-[0_6px_20px_rgba(232,144,168,0.35)] hover:shadow-[0_6px_20px_rgba(106,172,233,0.45)] transition-all"
+                className="w-full py-3.5 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white text-xs font-mono font-bold tracking-wider uppercase flex items-center justify-center gap-2 cursor-pointer shadow-[0_6px_20px_rgba(232,144,168,0.35)] hover:shadow-[0_6px_20px_rgba(106,172,233,0.45)] transition-all touch-press active:scale-[0.98]"
               >
                 <span>{isRtl ? 'المتابعة إلى إتمام الطلب' : 'Continue to Checkout'}</span>
               </button>

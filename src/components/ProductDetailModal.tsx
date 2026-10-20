@@ -14,6 +14,10 @@ import { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { navigateTo } from '../utils/navigation';
+import {
+  getProductDisplayName,
+  getFlavorDisplayName,
+} from '../utils/productLocalization';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -53,9 +57,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   if (!product) return null;
 
-  const displayName = isRtl
-    ? (product.name_ar || product.name)
-    : (product.name_en || product.name);
+  const displayName = getProductDisplayName(product, isRtl);
 
   const displayTagline = isRtl
     ? (product.tagline_ar || product.tagline)
@@ -334,7 +336,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         {isRtl ? 'النكهة' : 'Flavor'}
                       </span>
                       <span className="text-[11px] font-mono text-[#E890A8] bg-[#E890A8]/10 border border-[#E890A8]/25 px-2.5 py-0.5 rounded-full font-semibold">
-                        {selectedFlavor}
+                        {getFlavorDisplayName(selectedFlavor, isRtl)}
                       </span>
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -352,7 +354,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                             }`}
                           >
                             {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white" />}
-                            <span>{flv}</span>
+                            <span>{getFlavorDisplayName(flv, isRtl)}</span>
                           </button>
                         );
                       })}

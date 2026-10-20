@@ -39,7 +39,7 @@ const PRODUCTION_DOMAIN = (
 
 export const seo = {
   productionDomain: PRODUCTION_DOMAIN,
-  defaultImage: '/images/hero/hero_spec.jpg',
+  defaultImage: '/images/og/toomakt_whatsapp_share.jpg',
   siteNameEn: 'toomakt Confectionery Atelier',
   siteNameAr: 'معمل توماكت للحلويات الفاخرة',
 

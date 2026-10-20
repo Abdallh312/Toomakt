@@ -3,6 +3,7 @@ import { ShoppingBag, Star, Eye, Check, Sparkles } from 'lucide-react';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
+import { getProductDisplayName } from '../utils/productLocalization';
 
 interface ProductCardProps {
   product: Product;
@@ -28,9 +29,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const stock = product.stock_quantity ?? (product.in_stock ? 50 : 0);
   const isOutOfStock = stock <= 0 || product.in_stock === false;
 
-  const displayName = isRtl
-    ? (product.name_ar || product.name)
-    : (product.name_en || product.name);
+  const displayName = getProductDisplayName(product, isRtl);
 
   const displayTagline = isRtl
     ? (product.tagline_ar || product.tagline || product.description_ar || product.description)

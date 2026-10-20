@@ -41,7 +41,7 @@ const translations: Record<Language, Record<string, string>> = {
     nav_item_count: 'item',
 
     // Announcement Bar
-    announcement_shipping: 'Free Express Cooler Shipping on orders over 150 EGP in Egypt',
+    announcement_shipping: 'Free Express Cooler Shipping on orders over 500 EGP in Egypt',
     announcement_chew: 'Proprietary 45s Non-Sticky Chew Curve',
     announcement_puree: '100% Real Orchard Puree & Normandy Sweet Butter',
     announcement_track: 'Track Order',
@@ -282,7 +282,7 @@ const translations: Record<Language, Record<string, string>> = {
     nav_item_count: 'قطعة',
 
     // Announcement Bar
-    announcement_shipping: 'شحن مبرد مجاني وسريع للطلبات فوق 150 ج.م في جميع أنحاء مصر',
+    announcement_shipping: 'شحن مبرد مجاني وسريع للطلبات فوق 500 ج.م في جميع أنحاء مصر',
     announcement_chew: 'قوام مضغ ناعم ومميز يدوم 45 ثانية ولا يلتصق بالأسنان',
     announcement_puree: 'بيوريه فواكه طبيعية 100% وزبدة أوروبية فاخرة',
     announcement_track: 'تتبع طلبك',

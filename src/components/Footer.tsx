@@ -90,12 +90,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView, onNavigateSectio
       ],
     },
     {
-      titleEn: 'ACCREDITATION',
-      titleAr: 'الاعتماد وخدمة العملاء',
+      titleEn: 'ACCREDITATION & POLICIES',
+      titleAr: 'الاعتماد والسياسات الرسمية',
       links: [
         { en: 'NFSA White-List #017', ar: 'سلامة الغذاء NFSA #017', fn: () => nav('about') },
-        { en: 'Corporate concierge', ar: 'مكتب كبار العملاء', fn: () => nav('contact') },
-        { en: 'WhatsApp direct', ar: 'واتساب خدمة العملاء', fn: () => window.open('https://wa.me/201024542139', '_blank') },
+        { en: 'Refund & cancellation', ar: 'سياسة الاسترجاع والإلغاء', fn: () => nav('refund-policy') },
+        { en: 'Delivery & shipping', ar: 'سياسة الشحن والتوصيل', fn: () => nav('shipping-policy') },
+        { en: 'Privacy & data protection', ar: 'سياسة الخصوصية وحماية البيانات', fn: () => nav('privacy-policy') },
+        { en: 'WhatsApp concierge', ar: 'واتساب خدمة العملاء', fn: () => window.open('https://wa.me/201024542139', '_blank') },
       ],
     },
   ];
@@ -296,39 +298,57 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateView, onNavigateSectio
 
           {/* Bottom Bar: Legal Registration & Scroll-to-Top */}
           <div className="pt-4 border-t border-[#22120C]/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-sans font-light text-[#22120C]/50">
-            <p>
-              © {new Date().getFullYear()} toomakt — Al-Zahra Confectionery S.A.E.{' '}
-              {isRtl ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}
-            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left rtl:sm:text-right">
+              <p>
+                © {new Date().getFullYear()} toomakt — Al-Zahra Confectionery S.A.E.{' '}
+                {isRtl ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}
+              </p>
+              <span className="hidden sm:inline text-[#22120C]/30">•</span>
+              <p className="text-[11px] text-[#22120C]/60 font-mono">
+                {isRtl ? 'القاهرة، جمهورية مصر العربية' : 'Cairo, Arab Republic of Egypt'}
+              </p>
+            </div>
 
-            <div className="flex items-center gap-5">
-              <div className="flex items-center gap-4 text-xs">
-                <button
-                  type="button"
-                  onClick={() => nav('privacy-policy')}
-                  className="hover:text-[#22120C] transition-colors"
-                >
-                  {isRtl ? 'سياسة الخصوصية' : 'Privacy policy'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => nav('terms-of-service')}
-                  className="hover:text-[#22120C] transition-colors"
-                >
-                  {isRtl ? 'شروط الاستخدام' : 'Terms of use'}
-                </button>
-              </div>
-
+            <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-mono">
               <button
                 type="button"
-                onClick={scrollToTop}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#22120C]/[0.04] border border-[#22120C]/10 text-[#E890A8] hover:text-[#6AACE9] hover:border-[#6AACE9]/25 transition-all cursor-pointer font-mono tracking-wider text-xs"
-                aria-label="Scroll to top"
+                onClick={() => nav('privacy-policy')}
+                className="hover:text-[#E890A8] transition-colors cursor-pointer"
               >
-                <span className="hidden sm:inline">{isRtl ? 'العودة للأعلى' : 'Back to top'}</span>
-                <ArrowUp className="w-3.5 h-3.5" />
+                {isRtl ? 'سياسة الخصوصية' : 'Privacy Policy'}
+              </button>
+              <button
+                type="button"
+                onClick={() => nav('refund-policy')}
+                className="hover:text-[#E890A8] text-[#E890A8] font-bold transition-colors cursor-pointer"
+              >
+                {isRtl ? 'الاسترجاع والإلغاء' : 'Refund & Cancellation'}
+              </button>
+              <button
+                type="button"
+                onClick={() => nav('shipping-policy')}
+                className="hover:text-[#E890A8] transition-colors cursor-pointer"
+              >
+                {isRtl ? 'الشحن والتوصيل' : 'Delivery & Shipping'}
+              </button>
+              <button
+                type="button"
+                onClick={() => nav('terms-of-service')}
+                className="hover:text-[#E890A8] transition-colors cursor-pointer"
+              >
+                {isRtl ? 'الشروط والأحكام' : 'Terms of Sale'}
               </button>
             </div>
+
+            <button
+              type="button"
+              onClick={scrollToTop}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#22120C]/[0.04] border border-[#22120C]/10 text-[#E890A8] hover:text-[#6AACE9] hover:border-[#6AACE9]/25 transition-all cursor-pointer font-mono tracking-wider text-xs"
+              aria-label="Scroll to top"
+            >
+              <span className="hidden sm:inline">{isRtl ? 'العودة للأعلى' : 'Back to top'}</span>
+              <ArrowUp className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       </div>

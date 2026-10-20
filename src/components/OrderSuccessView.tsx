@@ -21,6 +21,10 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import {
+  getProductDisplayName,
+  getFlavorDisplayName,
+} from '../utils/productLocalization';
 
 interface OrderSuccessViewProps {
   order: any;
@@ -351,11 +355,11 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
                     </div>
                     <div>
                       <h4 className="text-sm font-medium text-[#22120C]">
-                        {item.name}
+                        {getProductDisplayName(item, isRtl) || item.name}
                       </h4>
                       {item.flavor && (
                         <span className="text-[11px] font-medium text-[#E890A8] bg-[#E890A8]/10 border border-[#E890A8]/20 px-2 py-0.5 rounded-full inline-block mt-0.5">
-                          {isRtl ? 'النكهة: ' : 'Flavor: '}{item.flavor}
+                          {isRtl ? 'النكهة: ' : 'Flavor: '}{getFlavorDisplayName(item.flavor, isRtl)}
                         </span>
                       )}
                       <span className="text-xs text-[#22120C]/60 font-light block mt-0.5">
@@ -556,10 +560,10 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
                   <tr key={idx} className="border-b border-[#E8E2D7]">
                     <td className="py-2 px-2.5 font-mono text-[#736B63]">{idx + 1}</td>
                     <td className="py-2 px-2.5">
-                      <strong className="text-[#1A1A1A] block">{it.name}</strong>
+                      <strong className="text-[#1A1A1A] block">{getProductDisplayName(it, isRtl) || it.name}</strong>
                       {it.flavor && (
                         <span className="text-[10px] text-[#E890A8] font-medium block">
-                          Flavor: {it.flavor}
+                          Flavor: {getFlavorDisplayName(it.flavor, isRtl)}
                         </span>
                       )}
                     </td>

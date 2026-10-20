@@ -15,14 +15,14 @@ export interface InstaPayInfo {
 
 export const WhatsAppService = {
   defaultConfig: {
-    phone: '201000000000',
+    phone: '201024542139',
     businessName: 'toomakt Atelier',
   },
 
   defaultInstaPay: {
     address: 'toomakt@instapay',
     accountName: 'toomakt Confectionery',
-    phone: '01000000000',
+    phone: '01024542139',
     bankName: 'CIB Egypt',
     instructions: 'Transfer the exact order total via the InstaPay mobile app, then send a screenshot of the transaction receipt.'
   },
@@ -172,7 +172,7 @@ ${itemsSummary || '- Handcrafted Toffee'}
 -----------------------------------------
 Subtotal: ${Number(order.subtotal).toFixed(2)} EGP
 Discount: -${Number(order.discount_amount || 0).toFixed(2)} EGP
-Courier Shipping (${order.governorate || 'Cairo'}): ${Number(order.shipping_fee || 50).toFixed(2)} EGP
+Courier Shipping (${order.governorate || 'Cairo'}): ${Number(order.shipping_fee || 45).toFixed(2)} EGP
 FINAL TOTAL: ${Number(order.total_amount).toFixed(2)} EGP
 Payment Status: PAID (InstaPay / Verified)
 Order Status: PREPARING IN ATELIER

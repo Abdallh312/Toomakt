@@ -5,6 +5,7 @@ import { api } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { BundleItem } from '../types';
+import { Toomakt3DLoader } from './Toomakt3DLoader';
 
 interface BundlesViewProps {
   onNavigateHome?: () => void;
@@ -108,11 +109,14 @@ export const BundlesView: React.FC<BundlesViewProps> = ({ onNavigateHome }) => {
       <section className="py-12 sm:py-16 px-6 sm:px-10 lg:px-14">
         <div className="max-w-7xl mx-auto">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-24 text-[#22120C]/60">
-              <Loader2 className="w-8 h-8 animate-spin text-[#E890A8] mb-3" />
-              <span className="text-sm font-mono font-light">
-                {isRtl ? 'جاري تحميل الباقات...' : 'Loading bundles from atelier...'}
-              </span>
+            <div className="py-16">
+              <Toomakt3DLoader
+                mode="inline"
+                size="md"
+                colorTheme="gold"
+                label={isRtl ? 'جاري تحميل باقات الهدايا الفاخرة...' : 'Loading gift collections from the atelier...'}
+                sublabel={isRtl ? 'تُومَاكْت · بَاقَاتُ الإِهْدَاء' : 'GIFTING COLLECTIONS · TOOMAKT'}
+              />
             </div>
           ) : bundles.length === 0 ? (
             <div className="bg-[#FDF2F5] rounded-3xl border border-[#E890A8]/20 p-12 text-center">

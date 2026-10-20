@@ -6,6 +6,7 @@ import { api } from '../services/api';
 import { ProductCard } from './ProductCard';
 import { useLanguage } from '../context/LanguageContext';
 import { ScrollReveal } from './ScrollReveal';
+import { Toomakt3DLoader } from './Toomakt3DLoader';
 
 interface ShopAllViewProps {
   onSelectProduct: (product: Product) => void;
@@ -195,13 +196,16 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
           </div>
         </div>
 
-        {/* Loading Spinner */}
+        {/* 3D Confectionery Loading Animation */}
         {loading && (
-          <div className="py-24 text-center">
-            <Loader2 className="w-8 h-8 text-[#E890A8] animate-spin mx-auto mb-3" />
-            <p className="text-xs font-sans text-[#22120C]/60">
-              {isRtl ? 'جاري استحضار الحلويات...' : 'Loading confectionery catalog...'}
-            </p>
+          <div className="py-16">
+            <Toomakt3DLoader
+              mode="inline"
+              size="md"
+              colorTheme="rose"
+              label={isRtl ? 'جاري استحضار تشكيلة التوفي الفاخرة...' : 'Summoning confectionery catalog...'}
+              sublabel={isRtl ? 'تُومَاكْت · مَصْنُوعٌ بِعِنَايَة' : 'CRAFTED WITH CARE · TOOMAKT'}
+            />
           </div>
         )}
 

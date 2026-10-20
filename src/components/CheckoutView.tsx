@@ -21,12 +21,20 @@ import {
   Receipt,
   Printer,
   Copy,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
 import { ShippingRate } from '../types';
 import { PaymobService } from '../services/paymob';
+import {
+  getProductDisplayName,
+  getFlavorDisplayName,
+} from '../utils/productLocalization';
+import { Toomakt3DLoader } from './Toomakt3DLoader';
 
 interface CheckoutViewProps {
   onOrderSuccess: (order: any) => void;
@@ -39,7 +47,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   onTrackOrder,
   onBackToShop,
 }) => {
-  const { items, subtotal, promoApplied, promoCode, discountAmount, clearCart } = useCart();
+  const { items, subtotal, promoApplied, promoCode, discountAmount, clearCart, freeShippingThreshold } = useCart();
   const { isRtl } = useLanguage();
 
   // Shipping rates from API
@@ -74,6 +82,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [apiError, setApiError] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false);
 
   // Fetch live Egyptian shipping rates
   useEffect(() => {
@@ -217,9 +226,12 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   const selectedRate = shippingRates.find(
     r => r.governorate.toLowerCase() === governorate.toLowerCase()
   );
-  const shippingFee = selectedRate ? Number(selectedRate.price) : 50.0;
-  const estimatedDelivery = selectedRate?.estimated_delivery || '1–2 Days';
-  const orderTotal = Math.max(0, subtotal + shippingFee);
+  const baseShippingFee = selectedRate ? Number(selectedRate.price) : 45.0;
+  const isFreeShipping = subtotal >= (freeShippingThreshold || 500);
+  const shippingFee = isFreeShipping ? 0 : baseShippingFee;
+  const estimatedDelivery = selectedRate?.estimated_delivery || (governorate.toLowerCase() === 'cairo' || governorate.toLowerCase() === 'giza' ? 'Same Day – 24 Hours' : '1–2 Business Days');
+  const discountVal = promoApplied ? (discountAmount || 0) : 0;
+  const orderTotal = Math.max(0, subtotal - discountVal + shippingFee);
 
   // Copy helper
   const handleCopy = (text: string, key: string) => {
@@ -286,14 +298,18 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
         delivery_notes: deliveryNotes.trim(),
         payment_method: paymentMethod,
         promo_code: promoApplied ? (promoCode || 'TOOMAKT10') : undefined,
-        items: items.map(item => ({
-          item_id: item.product.id,
-          quantity: item.quantity,
-          unit_price: Number(item.product.price),
-          name: item.selected_flavor ? `${item.product.name} (${item.selected_flavor})` : item.product.name,
-          flavor: item.selected_flavor,
-          image: item.product.image,
-        })),
+        items: items.map(item => {
+          const localizedName = getProductDisplayName(item.product, isRtl);
+          const localizedFlavor = getFlavorDisplayName(item.selected_flavor, isRtl);
+          return {
+            item_id: item.product.id,
+            quantity: item.quantity,
+            unit_price: Number(item.product.price),
+            name: localizedFlavor ? `${localizedName} (${localizedFlavor})` : localizedName,
+            flavor: localizedFlavor,
+            image: item.product.image,
+          };
+        }),
       };
 
       if (paymentMethod === 'cod') {
@@ -494,6 +510,91 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             </button>
           </div>
         )}
+
+        {/* Mobile Quick Order Summary Accordion (Visible on Mobile/Tablet < lg) */}
+        <div className="lg:hidden mb-6 bg-[#FDF2F5] border border-[#E890A8]/25 rounded-2xl overflow-hidden shadow-xs">
+          <button
+            type="button"
+            onClick={() => setMobileSummaryOpen(!mobileSummaryOpen)}
+            className="w-full px-5 py-3.5 flex items-center justify-between text-left rtl:text-right cursor-pointer hover:bg-[#E890A8]/5 transition-colors"
+          >
+            <div className="flex items-center gap-2.5">
+              <ShoppingBag className="w-4 h-4 text-[#E890A8]" />
+              <span className="text-xs font-mono font-medium text-[#22120C]">
+                {mobileSummaryOpen
+                  ? (isRtl ? 'إخفاء تفاصيل المنتجات' : 'Hide order summary')
+                  : (isRtl ? `عرض تفاصيل الطلب (${items.reduce((s, i) => s + i.quantity, 0)} قطع)` : `Show order summary (${items.reduce((s, i) => s + i.quantity, 0)} items)`)}
+              </span>
+              {mobileSummaryOpen ? (
+                <ChevronUp className="w-3.5 h-3.5 text-[#E890A8]" />
+              ) : (
+                <ChevronDown className="w-3.5 h-3.5 text-[#E890A8]" />
+              )}
+            </div>
+            <span className="font-mono font-bold text-sm text-[#E890A8]">
+              EGP {orderTotal.toFixed(2)}
+            </span>
+          </button>
+
+          <AnimatePresence>
+            {mobileSummaryOpen && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="px-5 pb-4 pt-1 border-t border-[#E890A8]/15 space-y-3"
+              >
+                <div className="max-h-56 overflow-y-auto divide-y divide-[#E890A8]/10 pr-1">
+                  {items.map((item, idx) => (
+                    <div key={`${item.product.id}-${item.selected_flavor || idx}`} className="py-2.5 flex items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <img
+                          src={item.product.image}
+                          alt={item.product.name}
+                          className="w-9 h-9 object-cover rounded-lg border border-[#22120C]/10 shrink-0"
+                        />
+                        <div className="min-w-0">
+                          <p className="font-serif font-medium text-[#22120C] truncate">
+                            {getProductDisplayName(item.product, isRtl)}
+                          </p>
+                          {item.selected_flavor && (
+                            <span className="text-[10px] text-[#E890A8] block font-mono">
+                              {getFlavorDisplayName(item.selected_flavor, isRtl)}
+                            </span>
+                          )}
+                          <span className="text-[10px] text-[#22120C]/50 font-mono">
+                            Qty: {item.quantity}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="font-mono font-semibold text-[#22120C] shrink-0">
+                        EGP {(item.product.price * item.quantity).toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pt-2 border-t border-[#E890A8]/15 space-y-1 text-xs text-[#22120C]/70 font-mono">
+                  <div className="flex justify-between">
+                    <span>{isRtl ? 'المجموع الفرعي:' : 'Subtotal:'}</span>
+                    <span>EGP {subtotal.toFixed(2)}</span>
+                  </div>
+                  {promoApplied && discountAmount > 0 && (
+                    <div className="flex justify-between text-[#E890A8]">
+                      <span>{isRtl ? 'الخصم:' : 'Discount:'}</span>
+                      <span>-EGP {discountAmount.toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span>{isRtl ? 'الشحن:' : 'Shipping:'}</span>
+                    <span>{shippingFee === 0 ? (isRtl ? 'مجاني' : 'FREE') : `EGP ${shippingFee.toFixed(2)}`}</span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column: Customer & Delivery Details */}
@@ -842,16 +943,16 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     >
                       <img
                         src={item.product.image || '/images/products/cappuccino_candies_thumb.jpg'}
-                        alt={isRtl ? (item.product.name_ar || item.product.name) : (item.product.name_en || item.product.name)}
+                        alt={getProductDisplayName(item.product, isRtl)}
                         className="w-16 h-16 rounded-xl object-cover bg-white border border-[#22120C]/10 shrink-0"
                       />
                       <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-medium text-[#22120C] truncate">
-                          {isRtl ? (item.product.name_ar || item.product.name) : (item.product.name_en || item.product.name)}
+                          {getProductDisplayName(item.product, isRtl)}
                         </h4>
                         {item.selected_flavor && (
                           <span className="text-[11px] font-medium text-[#E890A8] bg-[#E890A8]/10 border border-[#E890A8]/20 px-2 py-0.5 rounded-full inline-block mt-0.5">
-                            {isRtl ? 'النكهة: ' : 'Flavor: '}{item.selected_flavor}
+                            {isRtl ? 'النكهة: ' : 'Flavor: '}{getFlavorDisplayName(item.selected_flavor, isRtl)}
                           </span>
                         )}
                         <div className="flex items-center gap-2 mt-0.5 text-xs text-[#22120C]/60 font-light">
@@ -882,7 +983,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     <span className="text-[11px] text-[#22120C]/60 block font-light">Est: {estimatedDelivery}</span>
                   </div>
                 </div>
-                <span className="font-mono font-medium text-[#22120C]">EGP {shippingFee.toFixed(2)}</span>
+                <span className="font-mono font-medium text-[#22120C]">
+                  {shippingFee === 0 ? (isRtl ? 'مجاني' : 'FREE') : `EGP ${shippingFee.toFixed(2)}`}
+                </span>
               </div>
 
               {/* Price Breakdown */}
@@ -899,7 +1002,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                 )}
                 <div className="flex justify-between">
                   <span>{isRtl ? 'مصاريف الشحن' : 'Egypt Shipping'} ({governorate})</span>
-                  <span className="font-medium text-[#22120C]">EGP {shippingFee.toFixed(2)}</span>
+                  <span className="font-medium text-[#22120C]">
+                    {shippingFee === 0 ? (isRtl ? 'مجاني (عرض الشحن المجاني)' : 'FREE (Complimentary)') : `EGP ${shippingFee.toFixed(2)}`}
+                  </span>
                 </div>
                 <div className="flex justify-between text-base font-serif font-normal text-[#22120C] pt-3 border-t border-[#22120C]/10">
                   <span>{isRtl ? 'المجموع النهائي' : 'Total Due'}</span>
@@ -944,6 +1049,50 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   {isRtl
                     ? 'يتم إرسال إشعار فوري بتأكيد الطلب وتفاصيل المتابعة.'
                     : 'Official order receipt & dispatch updates provided immediately.'}
+                </p>
+
+                <div className="pt-2 border-t border-[#22120C]/10 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-[11px] text-[#22120C]/75 font-mono">
+                  <a
+                    href="/privacy-policy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-[#E890A8] underline transition-colors"
+                  >
+                    {isRtl ? 'سياسة الخصوصية' : 'Privacy Policy'}
+                  </a>
+                  <span>•</span>
+                  <a
+                    href="/refund-policy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-[#E890A8] underline transition-colors font-semibold text-[#E890A8]"
+                  >
+                    {isRtl ? 'الاسترجاع والإلغاء' : 'Refund & Cancellation'}
+                  </a>
+                  <span>•</span>
+                  <a
+                    href="/shipping-policy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-[#E890A8] underline transition-colors"
+                  >
+                    {isRtl ? 'الشحن والتوصيل' : 'Shipping Policy'}
+                  </a>
+                  <span>•</span>
+                  <a
+                    href="/terms-of-service"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-[#E890A8] underline transition-colors"
+                  >
+                    {isRtl ? 'الشروط والأحكام' : 'Terms'}
+                  </a>
+                </div>
+
+                <p className="text-[10px] text-[#22120C]/50 font-mono text-center pt-1">
+                  {isRtl
+                    ? 'شركة توماكت للحلويات والكراميل · القاهرة، مصر · هاتف: 01024542139'
+                    : 'toomakt Confectionery Atelier · Cairo, Egypt · Hotline: 01024542139'}
                 </p>
               </div>
             </div>
@@ -1212,6 +1361,27 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             </div>
           </div>
         )}
+
+        {/* 3D Confection Loading Modal Overlay During Submission */}
+        <AnimatePresence>
+          {isSubmitting && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Toomakt3DLoader
+                mode="overlay"
+                size="lg"
+                colorTheme="rose"
+                label={isRtl ? 'جاري تسجيل وتأكيد الطلب في معمل توماكت...' : 'Registering order at the Toomakt atelier...'}
+                sublabel={isRtl ? 'تُومَاكْت · مَصْنُوعٌ بِعِنَايَة' : 'HANDCRAFTED WITH DEVOTION · TOOMAKT'}
+                showProgressBar={true}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

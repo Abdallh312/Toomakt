@@ -43,6 +43,7 @@ import {
   Camera,
   Image as ImageIcon,
   Gift,
+  Send,
   Database,
   Star,
   Users,
@@ -107,6 +108,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
   const [isNewBundleModalOpen, setIsNewBundleModalOpen] = useState(false);
   const [inspectingReceipt, setInspectingReceipt] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [testingTelegram, setTestingTelegram] = useState(false);
+
+  const handleTestTelegramBot = async () => {
+    setTestingTelegram(true);
+    try {
+      const token = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || '8984704321:AAGDZrlLBD-a407Kj9Sxr7-gpa0EDHnsD94';
+      const chatId = '1686960840';
+      const text = `🍬 <b>Toomakt Admin Live Test | اختبار مباشر</b>\n` +
+        `━━━━━━━━━━━━━━━━━━━\n` +
+        `✅ <b>البوت يعمل بكفاءة كاملة 24/7</b>\n` +
+        `📱 الرقم المعتمد: <b>01024542139</b>\n` +
+        `🚚 شحن القاهرة المعتمد: <b>45.00 EGP</b> (مجاني فوق 500 EGP)\n` +
+        `⏰ التوقيت: ${new Date().toLocaleTimeString('ar-EG')}\n` +
+        `━━━━━━━━━━━━━━━━━━━\n` +
+        `<i>تم الاختبار بنجاح من لوحة تحكم إدارة توماكت.</i>`;
+
+      const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setToastMessage(isRtl ? '✅ تم إرسال إشعار التجربة بنجاح إلى تليجرام (@Abdallahshref)' : '✅ Test alert sent successfully to Telegram (@Abdallahshref)!');
+      } else {
+        setToastMessage(`Telegram API: ${data.description || 'Unknown error'}`);
+      }
+    } catch (err: any) {
+      setToastMessage(`Telegram connection error: ${err.message || 'Error'}`);
+    } finally {
+      setTestingTelegram(false);
+    }
+  };
 
   // Image Upload & Asset Management State
   const [newProductImage, setNewProductImage] = useState('/images/products/mango_sunbeam.jpg');
@@ -543,7 +577,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore, o
             <tbody>${itemsHtml}</tbody>
           </table>
           <div style="text-align: right; margin-top: 20px;">
-            <p style="margin: 4px 0; font-size: 13px;">Shipping: EGP ${order.shipping_fee || (order.total_amount > 2000 ? 0 : 65)}</p>
+            <p style="margin: 4px 0; font-size: 13px;">Shipping: EGP ${order.shipping_fee !== undefined ? order.shipping_fee : (order.total_amount >= 500 ? 0 : 45)}</p>
             <p class="total-row" style="margin-top: 8px;">Total: EGP ${order.total_amount || 0}</p>
           </div>
           <div style="margin-top: 40px; border-top: 1px dashed #ccc; padding-top: 15px; font-size: 11px; color: #888; text-align: center;">
@@ -854,6 +888,16 @@ Thank you for choosing toomakt!`;
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#3C1322]' : ''}`} />
               <span className="hidden sm:inline">{isRtl ? 'مزامنة' : 'Sync'}</span>
+            </button>
+
+            <button
+              onClick={handleTestTelegramBot}
+              disabled={testingTelegram}
+              className="p-2 sm:px-3 sm:py-1.5 rounded-full bg-[#6AACE9]/10 hover:bg-[#6AACE9]/20 border border-[#6AACE9]/30 text-xs font-medium text-[#6AACE9] transition flex items-center gap-1.5 cursor-pointer"
+              title={isRtl ? 'فحص وإرسال إشعار تجريبي لبوت تليجرام' : 'Send real-time test alert to Telegram Bot'}
+            >
+              <Send className={`w-3.5 h-3.5 ${testingTelegram ? 'animate-bounce' : ''}`} />
+              <span className="hidden sm:inline">{isRtl ? 'فحص البوت' : 'Test Bot'}</span>
             </button>
 
             <button

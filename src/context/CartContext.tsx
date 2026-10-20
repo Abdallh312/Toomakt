@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CartItem, Product, BundleItem } from '../types';
 import { navigateTo } from '../utils/navigation';
+import { findCatalogProduct } from '../utils/productLocalization';
+import { api } from '../services/api';
 
 export interface ToastData {
   id?: string;
@@ -24,6 +26,7 @@ interface CartContextType {
   setIsCartOpen: (open: boolean) => void;
   freeShippingThreshold: number;
   amountToFreeShipping: number;
+  defaultShippingFee: number;
   promoApplied: boolean;
   promoCode: string;
   applyPromoCode: (code: string) => boolean;
@@ -38,6 +41,9 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number>(500.00); // Real Egyptian threshold (500 EGP)
+  const defaultShippingFee = 45.00; // Real Egyptian Cairo/Giza standard delivery fee
+
   const [items, setItems] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('toomakt_cart_items');
@@ -51,15 +57,27 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             !localStorage.getItem('toomakt_cart_user_added');
 
           if (!isLegacyStarter) {
-            // Enforce 1-5 limit on loaded items
-            return parsed.map((item: CartItem) => ({
-              ...item,
-              quantity: Math.min(5, Math.max(1, item.quantity || 1)),
-              product: {
-                ...item.product,
-                pieces_per_pack: item.product.pieces_per_pack || 20
-              }
-            }));
+            // Enforce 1-5 limit on loaded items and rehydrate missing localized names
+            return parsed.map((item: CartItem) => {
+              const master = findCatalogProduct(item.product);
+              return {
+                ...item,
+                quantity: Math.min(5, Math.max(1, item.quantity || 1)),
+                product: {
+                  ...item.product,
+                  name_en: item.product.name_en || master?.name_en || item.product.name,
+                  name_ar: item.product.name_ar || master?.name_ar || item.product.name,
+                  pack_quantity_en: item.product.pack_quantity_en || master?.pack_quantity_en || item.product.pack_quantity,
+                  pack_quantity_ar: item.product.pack_quantity_ar || master?.pack_quantity_ar || item.product.pack_quantity,
+                  box_quantity_label_en: item.product.box_quantity_label_en || master?.box_quantity_label_en,
+                  box_quantity_label_ar: item.product.box_quantity_label_ar || master?.box_quantity_label_ar,
+                  badge_en: item.product.badge_en || master?.badge_en,
+                  badge_ar: item.product.badge_ar || master?.badge_ar,
+                  pieces_per_pack: item.product.pieces_per_pack || master?.pieces_per_pack || 50,
+                  available_flavors: item.product.available_flavors || master?.available_flavors,
+                }
+              };
+            });
           } else {
             // Clean legacy mock item from storage
             localStorage.removeItem('toomakt_cart_items');
@@ -79,7 +97,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [cartLimitNotice, setCartLimitNotice] = useState<string | null>(null);
   const [toastNotification, setToastNotification] = useState<ToastData | null>(null);
 
-  const freeShippingThreshold = 2000.00; // EGP matching Figma spec
+  // Sync real store settings from Supabase if available
+  useEffect(() => {
+    let isMounted = true;
+    api.getGlobalSettings().then(settings => {
+      if (isMounted && settings?.free_shipping_threshold) {
+        setFreeShippingThreshold(Number(settings.free_shipping_threshold) || 500.00);
+      }
+    }).catch(() => {});
+    return () => { isMounted = false; };
+  }, []);
 
   useEffect(() => {
     try {
@@ -113,7 +140,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const addToCart = (product: any, quantity = 1, selectedFlavor?: string): boolean => {
     let limitReached = false;
-    const targetFlavor = selectedFlavor || product.selected_flavor || (Array.isArray(product.available_flavors) && product.available_flavors.length > 0 ? product.available_flavors[0] : undefined);
+    const master = findCatalogProduct(product);
+    const targetFlavor = selectedFlavor || product.selected_flavor || (Array.isArray(product.available_flavors) && product.available_flavors.length > 0 ? product.available_flavors[0] : (master?.available_flavors?.[0] || undefined));
 
     try {
       localStorage.setItem('toomakt_cart_user_added', 'true');
@@ -156,14 +184,27 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       const newProduct = {
+        ...product,
         id: product.id,
-        name: 'name' in product ? product.name : (product as BundleItem).title,
+        slug: product.slug || master?.slug,
+        sku: product.sku || master?.sku,
+        name: product.name || master?.name || (product as BundleItem).title,
+        name_en: product.name_en || master?.name_en || product.name || (product as BundleItem).title,
+        name_ar: product.name_ar || master?.name_ar || product.name || (product as BundleItem).title,
         price: Number(product.price),
-        weight: product.weight || '180g Pouch',
-        image: product.image || product.image_url || '/images/canister.jpg',
-        badge: product.badge,
-        pieces_per_pack: product.pieces_per_pack || 20,
-        available_flavors: product.available_flavors
+        weight: product.weight || master?.weight || '236g',
+        pack_quantity: product.pack_quantity || master?.pack_quantity || '236g Bag',
+        pack_quantity_en: product.pack_quantity_en || master?.pack_quantity_en || product.pack_quantity || '236g Bag',
+        pack_quantity_ar: product.pack_quantity_ar || master?.pack_quantity_ar || product.pack_quantity || '236 جم كيس',
+        box_quantity_label: product.box_quantity_label || master?.box_quantity_label,
+        box_quantity_label_en: product.box_quantity_label_en || master?.box_quantity_label_en,
+        box_quantity_label_ar: product.box_quantity_label_ar || master?.box_quantity_label_ar,
+        image: product.image || product.image_url || master?.image || '/images/products/cappuccino_candies_thumb_isolated.png',
+        badge: product.badge || master?.badge,
+        badge_en: product.badge_en || master?.badge_en,
+        badge_ar: product.badge_ar || master?.badge_ar,
+        pieces_per_pack: product.pieces_per_pack || master?.pieces_per_pack || 50,
+        available_flavors: product.available_flavors || master?.available_flavors
       };
 
       return [...prev, { product: newProduct, quantity: safeQty, selected_flavor: targetFlavor }];
@@ -256,6 +297,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsCartOpen,
         freeShippingThreshold,
         amountToFreeShipping,
+        defaultShippingFee,
         promoApplied,
         promoCode,
         applyPromoCode,

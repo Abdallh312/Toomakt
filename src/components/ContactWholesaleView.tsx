@@ -10,6 +10,7 @@ import {
   Building2,
   Gift,
   HelpCircle,
+  Mail,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { api } from '../services/api';
@@ -107,62 +108,63 @@ export const ContactWholesaleView: React.FC<ContactWholesaleViewProps> = ({
 
         {/* Quick Contact Action Pills */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
+          {/* 1. Official Phone / WhatsApp */}
           <a
-            href="https://wa.me/201024542139?text=Hello%20Al-Zahra%20Toomakt!%20I%20have%20an%20inquiry."
+            href="https://wa.me/201024542139?text=Hello%20toomakt%20Atelier!%20I%20have%20an%20inquiry."
             target="_blank"
             rel="noopener noreferrer"
             className="p-5 rounded-2xl bg-[#E890A8] text-white border border-[#E890A8] hover:bg-[#6AACE9] hover:shadow-md transition-all flex items-center gap-3.5 group cursor-pointer"
           >
             <div className="w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center shrink-0">
-              <MessageCircle className="w-5 h-5" />
+              <Phone className="w-5 h-5" />
             </div>
             <div>
               <span className="font-serif text-sm font-semibold text-white block">
-                {isRtl ? 'الرئيسي · واتساب' : 'Main · WhatsApp'}
+                {isRtl ? 'الخط الساخن · واتساب' : 'Hotline & WhatsApp'}
               </span>
-              <span className="text-xs font-mono text-white/90" dir="ltr">
+              <span className="text-xs font-mono text-white/95 font-bold" dir="ltr">
                 01024542139
               </span>
             </div>
           </a>
 
+          {/* 2. Official Email */}
           <a
-            href="tel:+201095288014"
-            className="p-5 rounded-2xl bg-white border border-[#22120C]/10 hover:border-[#6AACE9]/45 hover:shadow-xs transition-all flex items-center gap-3.5 group"
-          >
-            <div className="w-10 h-10 rounded-full bg-[#6AACE9]/15 text-[#6AACE9] flex items-center justify-center shrink-0">
-              <Phone className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="font-serif text-sm font-normal text-[#22120C] block">
-                {isRtl ? 'إدارة المبيعات' : 'Sales Dept'}
-              </span>
-              <span className="text-xs font-mono text-[#22120C]/70" dir="ltr">
-                +20 10 95288014
-              </span>
-            </div>
-          </a>
-
-          <a
-            href="tel:+201277664957"
+            href="mailto:alzahra.company23@gmail.com"
             className="p-5 rounded-2xl bg-white border border-[#22120C]/10 hover:border-[#E890A8]/45 hover:shadow-xs transition-all flex items-center gap-3.5 group"
           >
             <div className="w-10 h-10 rounded-full bg-[#E890A8]/15 text-[#E890A8] flex items-center justify-center shrink-0">
-              <Phone className="w-5 h-5" />
+              <Mail className="w-5 h-5" />
             </div>
-            <div>
+            <div className="min-w-0">
               <span className="font-serif text-sm font-normal text-[#22120C] block">
-                {isRtl ? 'خدمة التوزيع والتصدير' : 'Distribution & Export'}
+                {isRtl ? 'البريد الإلكتروني الرسمي' : 'Official Email'}
               </span>
-              <span className="text-xs font-mono text-[#22120C]/70" dir="ltr">
-                +20 12 77664957
+              <span className="text-xs font-mono text-[#22120C]/80 truncate block" title="alzahra.company23@gmail.com">
+                alzahra.company23@gmail.com
               </span>
             </div>
           </a>
 
+          {/* 3. Registered Head Office & Atelier in Cairo, Egypt */}
           <div className="p-5 rounded-2xl bg-white border border-[#22120C]/10 flex items-center gap-3.5">
             <div className="w-10 h-10 rounded-full bg-[#6AACE9]/15 text-[#6AACE9] flex items-center justify-center shrink-0">
               <MapPin className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="font-serif text-sm font-normal text-[#22120C] block">
+                {isRtl ? 'المقر ومعمل الحلويات' : 'Registered Atelier & HQ'}
+              </span>
+              <span className="text-xs font-mono text-[#22120C]/70">
+                {isRtl ? 'القاهرة، جمهورية مصر العربية' : 'Cairo, Arab Republic of Egypt'}
+              </span>
+            </div>
+          </div>
+
+          {/* 4. Manufacturing Complex */}
+          <div className="p-5 rounded-2xl bg-white border border-[#22120C]/10 flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-full bg-[#6AACE9]/15 text-[#6AACE9] flex items-center justify-center shrink-0">
+              <Building2 className="w-5 h-5" />
             </div>
             <div>
               <span className="font-serif text-sm font-normal text-[#22120C] block">

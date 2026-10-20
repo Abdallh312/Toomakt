@@ -105,7 +105,15 @@ export const api = {
       const data = await res.json();
       if (data && data.length > 0) {
         return data.map((p: any) => {
-          const localMatch = PRODUCTS.find((lp) => lp.id === p.slug || lp.slug === p.slug || lp.name === p.name);
+          const localMatch = PRODUCTS.find((lp) =>
+            lp.id === p.slug ||
+            lp.slug === p.slug ||
+            lp.id === p.id ||
+            (p.sku && lp.sku === p.sku) ||
+            lp.name === p.name ||
+            lp.name_ar === p.name ||
+            (p.name && (lp.name.includes(p.name) || p.name.includes(lp.name)))
+          );
           const defaultFlavors = (PRODUCT_DEFAULT_FLAVORS as Record<string, string[]>)[p.slug] || (PRODUCT_DEFAULT_FLAVORS as Record<string, string[]>)[p.id] || (Array.isArray(p.fruit_notes) && p.fruit_notes.length > 0 ? p.fruit_notes : [p.name]);
           const availableFlavors = p.available_flavors && Array.isArray(p.available_flavors) && p.available_flavors.length > 0
             ? p.available_flavors
@@ -127,6 +135,11 @@ export const api = {
           const rawCat = p.category;
           const catSlug = typeof rawCat === 'object' && rawCat !== null ? (rawCat.slug || rawCat.name) : (rawCat || localMatch?.category || 'all');
           const catName = typeof rawCat === 'object' && rawCat !== null ? (rawCat.name || rawCat.slug) : (localMatch?.category || 'Confectionery');
+
+          const resolvedNameAr = p.name_ar || localMatch?.name_ar || p.name;
+          const resolvedNameEn = (p.name_en && !/[\u0600-\u06FF]/.test(p.name_en))
+            ? p.name_en
+            : (localMatch?.name_en || (p.name_en && !/[\u0600-\u06FF]/.test(p.name_en) ? p.name_en : localMatch?.name_en || p.name));
 
           return {
             ...p,
@@ -150,8 +163,8 @@ export const api = {
             pieces_per_pack: p.pieces_per_pack ?? localMatch?.pieces_per_pack ?? 50,
             image: imagesList[0] || p.image_url || '/images/products/cappuccino_candies_thumb.jpg',
             images: imagesList,
-            name_ar: p.name_ar || localMatch?.name_ar || p.name,
-            name_en: p.name_en || localMatch?.name_en || p.name,
+            name_ar: resolvedNameAr,
+            name_en: resolvedNameEn,
             tagline: p.tagline || localMatch?.tagline || '',
             tagline_ar: p.tagline_ar || localMatch?.tagline_ar || p.tagline || '',
             tagline_en: p.tagline_en || localMatch?.tagline_en || p.tagline || '',
@@ -163,8 +176,8 @@ export const api = {
             badge_en: p.badge_en || localMatch?.badge_en || p.badge,
             box_quantity_label_ar: p.box_quantity_label_ar || localMatch?.box_quantity_label_ar,
             box_quantity_label_en: p.box_quantity_label_en || localMatch?.box_quantity_label_en,
-            pack_quantity_ar: p.pack_quantity_ar || localMatch?.pack_quantity_ar,
-            pack_quantity_en: p.pack_quantity_en || localMatch?.pack_quantity_en,
+            pack_quantity_ar: p.pack_quantity_ar || localMatch?.pack_quantity_ar || `${weightStr} كيس`,
+            pack_quantity_en: p.pack_quantity_en || localMatch?.pack_quantity_en || `${weightStr} Bag`,
             flavor_ar: p.flavor_ar || localMatch?.flavor_ar,
             flavor_en: p.flavor_en || localMatch?.flavor_en,
             tasting_notes_ar: p.tasting_notes_ar || localMatch?.tasting_notes_ar,
@@ -1178,13 +1191,13 @@ export const api = {
           };
         }
 
-        const tgToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+        const tgToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || '8984704321:AAGDZrlLBD-a407Kj9Sxr7-gpa0EDHnsD94';
         if (tgToken) {
           fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(tgPayload)
-          }).catch(() => {});
+          }).catch((err) => console.warn('Telegram fetch error:', err));
         }
       } catch (tgErr) {
         console.warn('Telegram alert error:', tgErr);

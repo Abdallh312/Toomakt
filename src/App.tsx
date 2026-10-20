@@ -18,6 +18,7 @@ import { ShopAllView } from './components/ShopAllView';
 import { BundlesView } from './components/BundlesView';
 import { TrackOrderView } from './components/TrackOrderView';
 import { CMSPageView } from './components/CMSPageView';
+import { LegalPoliciesView } from './components/LegalPoliciesView';
 import { NotFoundPage } from './components/NotFoundPage';
 import { CheckoutView } from './components/CheckoutView';
 import { OrderSuccessView } from './components/OrderSuccessView';
@@ -223,6 +224,69 @@ export const AppContent: React.FC = () => {
           ? 'شحن مبرد ومعزول حرارياً مع عبوات جل تبريد يغطي جميع المحافظات المصرية. توصيل سريع والدفع عند الاستلام.'
           : 'Fast, temperature-protected delivery across all 27 Egyptian governorates. Cash on delivery and InstaPay supported.',
         path: 'shipping',
+      },
+      'shipping-policy': {
+        title: isRtl
+          ? 'سياسة الشحن والتوصيل المبرد لـ 27 محافظة — توماكت'
+          : 'Delivery & Shipping Policy — toomakt Confectionery Egypt',
+        desc: isRtl
+          ? 'سياسة الشحن والتوصيل المبرد مع أسعار الشحن ومواعيد التوصيل لجميع محافظات جمهورية مصر العربية.'
+          : 'Official shipping and climate-controlled delivery terms and rates across Egypt.',
+        path: 'shipping-policy',
+      },
+      privacy: {
+        title: isRtl
+          ? 'سياسة الخصوصية وحماية البيانات — شركة توماكت'
+          : 'Privacy & Data Protection Policy — toomakt Egypt',
+        desc: isRtl
+          ? 'سياسة خصوصية البيانات وأمان المدفوعات الإلكترونية عبر Paymob لشركة توماكت للحلويات والكراميل.'
+          : 'Privacy policy and secure transaction protection by toomakt Confectionery Atelier.',
+        path: 'privacy',
+      },
+      'privacy-policy': {
+        title: isRtl
+          ? 'سياسة الخصوصية وحماية البيانات — شركة توماكت'
+          : 'Privacy & Data Protection Policy — toomakt Egypt',
+        desc: isRtl
+          ? 'سياسة خصوصية البيانات وأمان المدفوعات الإلكترونية عبر Paymob لشركة توماكت للحلويات والكراميل.'
+          : 'Privacy policy and secure transaction protection by toomakt Confectionery Atelier.',
+        path: 'privacy-policy',
+      },
+      refund: {
+        title: isRtl
+          ? 'سياسة الاسترجاع والاستبدال وإلغاء الطلب — توماكت'
+          : 'Refund, Return & Cancellation Policy — toomakt Egypt',
+        desc: isRtl
+          ? 'سياسة استرجاع واستبدال المنتجات الغذائية وإلغاء الطلبات المتوافقة مع قانون حماية المستهلك المصري.'
+          : 'Official 14-day refund and order cancellation terms under Egyptian Consumer Protection Law.',
+        path: 'refund',
+      },
+      'refund-policy': {
+        title: isRtl
+          ? 'سياسة الاسترجاع والاستبدال وإلغاء الطلب — توماكت'
+          : 'Refund, Return & Cancellation Policy — toomakt Egypt',
+        desc: isRtl
+          ? 'سياسة استرجاع واستبدال المنتجات الغذائية وإلغاء الطلبات المتوافقة مع قانون حماية المستهلك المصري.'
+          : 'Official 14-day refund and order cancellation terms under Egyptian Consumer Protection Law.',
+        path: 'refund-policy',
+      },
+      terms: {
+        title: isRtl
+          ? 'الشروط والأحكام وسياسة البيع — شركة توماكت'
+          : 'Terms & Conditions of Sale — toomakt Egypt',
+        desc: isRtl
+          ? 'شروط الاستخدام وأحكام البيع والدفع الإلكتروني لشركة توماكت للحلويات والكراميل.'
+          : 'Official terms and conditions governing purchases and electronic payments.',
+        path: 'terms',
+      },
+      'terms-of-service': {
+        title: isRtl
+          ? 'الشروط والأحكام وسياسة البيع — شركة توماكت'
+          : 'Terms & Conditions of Sale — toomakt Egypt',
+        desc: isRtl
+          ? 'شروط الاستخدام وأحكام البيع والدفع الإلكتروني لشركة توماكت للحلويات والكراميل.'
+          : 'Official terms and conditions governing purchases and electronic payments.',
+        path: 'terms-of-service',
       },
       track: {
         title: isRtl
@@ -451,6 +515,16 @@ export const AppContent: React.FC = () => {
         'ingredients',
         'faq',
         'shipping',
+        'shipping-policy',
+        'delivery',
+        'privacy',
+        'privacy-policy',
+        'terms',
+        'terms-of-service',
+        'refund',
+        'refund-policy',
+        'cancellation',
+        'legal',
         'alerts',
         'announcements',
       ];
@@ -577,8 +651,8 @@ export const AppContent: React.FC = () => {
 
   return (
     <div className="w-full min-h-screen bg-white font-sans selection:bg-[#E890A8] selection:text-white flex flex-col">
-      {/* Brand Luxury Initial & Refresh Preloader with Smooth Animated Transition */}
-      <BrandPreloader minDurationMs={240} />
+      {/* Brand Luxury Initial & Refresh Preloader with Smooth 3D Animated Transition */}
+      <BrandPreloader minDurationMs={850} />
 
       {/* Desktop custom cursor */}
       <CustomCursor />
@@ -646,8 +720,29 @@ export const AppContent: React.FC = () => {
             <BundlesView onNavigateHome={() => handleNavigateView('home')} />
           )}
 
+          {/* LEGAL & COMPLIANCE POLICIES (PAYMOB VERIFIED) */}
+          {[
+            'privacy',
+            'privacy-policy',
+            'terms',
+            'terms-of-service',
+            'shipping',
+            'shipping-policy',
+            'delivery',
+            'refund',
+            'refund-policy',
+            'cancellation',
+            'legal',
+          ].includes(currentView) && (
+            <LegalPoliciesView
+              initialTab={currentView}
+              onBackHome={() => handleNavigateView('home')}
+              onNavigateView={handleNavigateView}
+            />
+          )}
+
           {/* CMS UTILITY PAGES */}
-          {['ingredients', 'faq', 'shipping', 'privacy', 'terms'].includes(currentView) && (
+          {['ingredients', 'faq'].includes(currentView) && (
             <CMSPageView
               slug={currentView}
               onBackHome={() => handleNavigateView('home')}
