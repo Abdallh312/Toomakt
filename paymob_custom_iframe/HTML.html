@@ -1,0 +1,115 @@
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+
+    <div class="toomakt-atelier-wrapper">
+        <!-- Atelier Header -->
+        <header class="atelier-header">
+            <div class="header-badge">
+                <span class="gold-dot"></span>
+                <span>TOOMAKT ATELIER · PAYMOB 3D-SECURE</span>
+            </div>
+            <h1 class="header-title">Payment Information · بيانات البطاقة البنكية</h1>
+            <p class="header-subtitle">256-Bit Encrypted High-Security Checkout Powered by Paymob</p>
+        </header>
+
+        <div class="containers">
+            <div class="row formRowContainer">
+                <!-- Left Column: Interactive Luxury Card Preview -->
+                <div class="col-md-6 col-sm-12 card-col">
+                    <section class="cards">
+                        <div class="card-wrapper"></div>
+                    </section>
+                    <div class="accepted-cards-row">
+                        <span class="accepted-text">Accepted Cards:</span>
+                        <span class="card-chip">Visa</span>
+                        <span class="card-chip">Mastercard</span>
+                        <span class="card-chip">Meeza</span>
+                    </div>
+                </div>
+
+                <!-- Right Column: Card Input Form -->
+                <div class="col-md-6 col-sm-12 form-col">
+                    <section class="card-inputs">
+                        <form id="paymob_checkout">
+                            <!-- Paymob Core Hidden Fields -->
+                            <input type="hidden" value="CARD" paymob_field="card_number" id="card_number">
+                            <input type="hidden" value="CARD" paymob_field="card_expiry_mm" id="mm">
+                            <input type="hidden" value="CARD" paymob_field="card_expiry_yy" id="yy">
+                            <input type="hidden" value="" name="tenure" paymob_field="tenure" id="tenureHiddenInput">
+                            <input type="hidden" value="CARD" paymob_field="subtype">
+                            <input type="hidden" value="{{ payment.slug }}" name="slug" />
+
+                            <!-- Card Number Field -->
+                            <div class="form-group">
+                                <label for="number">Card Number · رقم البطاقة</label>
+                                <div class="card-num-input input-icon-wrapper">
+                                    <input placeholder="0000 0000 0000 0000" onchange="update_two_hidden_fields();" oninput="update_two_hidden_fields();" type="tel" name="number" id="number" class="card-num" autocomplete="cc-number">
+                                    <i class="fa fa-credit-card input-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- Cardholder Name Field -->
+                            <div class="form-group">
+                                <label for="card_holdername">Cardholder Name · اسم حامل البطاقة</label>
+                                <div class="card-num-input input-icon-wrapper">
+                                    <input placeholder="NAME AS SHOWN ON CARD" type="text" name="name" id="card_holdername" paymob_field="card_holdername" autocomplete="cc-name">
+                                    <i class="fa fa-user input-icon"></i>
+                                </div>
+                            </div>
+
+                            <!-- Expiry & CVV Row -->
+                            <div class="input-containers">
+                                <div class="form-group col-half">
+                                    <label for="mmyy">Expiry · الشهر / السنة</label>
+                                    <div class="input-icon-wrapper">
+                                        <input placeholder="MM / YY" onchange="update_two_hidden_fields();" oninput="update_two_hidden_fields();" type="tel" name="expiry" id="mmyy" autocomplete="cc-exp">
+                                        <i class="fa fa-calendar input-icon"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group col-half">
+                                    <label for="cvc">CVV · الرمز السري</label>
+                                    <div class="input-icon-wrapper">
+                                        <input placeholder="123" type="tel" name="cvc" id="cvc" paymob_field="card_cvn" autocomplete="cc-csc">
+                                        <i class="fa fa-lock input-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Save Card Checkbox & Footer Actions -->
+                            <div class="card-footer">
+                                <div class="saveCardText">
+                                    <label class="custom-checkbox-label">
+                                        <input type="checkbox" value="tokenize" name="save card">
+                                        <span class="checkbox-text">Save card securely for future atelier orders</span>
+                                    </label>
+                                </div>
+
+                                <div id="discountMessgae"></div>
+
+                                <!-- Pay Buttons -->
+                                <button id="submitButtonWaiting" class="submit submit-waiting" style="display: block;" disabled>
+                                    <i class="fa fa-spinner fa-pulse fa-fw"></i>
+                                    <span>Verifying Gateway...</span>
+                                </button>
+
+                                <input id="submitButton" type="submit" value="CONFIRM PAYMENT · تأكيد الدفع" class="submit submit-active" style="display: none;">
+
+                                <!-- Trust & Security Seal -->
+                                <div class="security-seal">
+                                    <span><i class="fa fa-shield" aria-hidden="true"></i> 256-Bit Bank Level Encryption · PCI DSS Certified</span>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>

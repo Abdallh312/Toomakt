@@ -1,0 +1,413 @@
+import React, { useState } from 'react';
+import {
+  ArrowLeft,
+  Sparkles,
+  Truck,
+  HelpCircle,
+  Apple,
+  ChevronDown,
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../context/LanguageContext';
+import { AUTHENTIC_FAQS } from '../data/toomaktData';
+
+interface CMSPageViewProps {
+  slug: string;
+  onBackHome: () => void;
+  onNavigateView?: (view: string) => void;
+}
+
+export const CMSPageView: React.FC<CMSPageViewProps> = ({
+  slug,
+  onBackHome,
+  onNavigateView
+}) => {
+  const { isRtl } = useLanguage();
+  const [activeTab, setActiveTab] = useState<string>(slug || 'our-story');
+  const [activeAccordion, setActiveAccordion] = useState<number | null>(0);
+
+  // Sync tab with slug if slug changes externally
+  React.useEffect(() => {
+    if (slug) setActiveTab(slug === 'about' ? 'our-story' : slug);
+  }, [slug]);
+
+  const tabs = [
+    { id: 'our-story', label: isRtl ? 'قصتنا وحرفتنا' : 'Our Story & Craft', icon: Sparkles },
+    { id: 'ingredients', label: isRtl ? 'المكونات والنقاء' : 'Pure Ingredients', icon: Apple },
+    { id: 'shipping', label: isRtl ? 'الشحن المبرد المعزول' : 'Cold-Chain Delivery', icon: Truck },
+    { id: 'faq', label: isRtl ? 'الأسئلة الشائعة' : 'Frequently Asked', icon: HelpCircle }
+  ];
+
+  const handleTabClick = (tabId: string) => {
+    setActiveTab(tabId);
+    if (onNavigateView) {
+      onNavigateView(tabId);
+    }
+  };
+
+  const chewStages = [
+    {
+      sec: '00 - 10s',
+      title: isRtl ? 'اللمسة الأولى وانفجار الفاكهة' : 'FIRST TOUCH & ACID BURST',
+      desc: isRtl
+        ? 'انفجار فوري من طعم بيوريه الفاكهة الطبيعية. البكتين الطبيعي العالي يمنح حموضة أصيلة دون أي لدغة كيميائية.'
+        : 'Immediate explosion of pure sun-ripened orchard fruit. High natural fruit pectin delivers an authentic brightness with zero artificial sharpness.'
+    },
+    {
+      sec: '10 - 25s',
+      title: isRtl ? 'ذوبان الزبدة الأوروبية المحمصة' : 'BROWNED BUTTER MELT',
+      desc: isRtl
+        ? 'يلين التوفي بلطف عند حرارة الفم. تنتشر زبدة النورماندي بنسبة دسم 84% عبر لسانك في موجة دافئة وناعمة.'
+        : 'The chew gently yields at human body temperature. European sweet butter diffuses across your palate in a rich, nutty butterscotch wave.'
+    },
+    {
+      sec: '25 - 40s',
+      title: isRtl ? 'الكراميل الذهبي وزهرة الملح' : 'TOASTED CARAMEL & FLEUR DE SEL',
+      desc: isRtl
+        ? 'حبيبات رقيقة من زهرة الملح البحري تكسر حلاوة الكراميل، لتطلق نغمات توفي محمصة ودافئة.'
+        : 'Delicate flakes of hand-harvested sea salt slice through the caramel sweetness, unlocking deep toasted undertones.'
+    },
+    {
+      sec: '40 - 45s',
+      title: isRtl ? 'نهاية نظيفة • لا التصاق بالأسنان' : 'CLEAN FINISH • ZERO RESIDUE',
+      desc: isRtl
+        ? 'يذوب التوفي تماماً دون أن يلتصق بالأسنان، تاركاً إحساساً منعشاً بطعم الفاكهة الطبيعية.'
+        : 'The toffee dissolves completely without sticking to enamel or dental work, leaving a refreshed fruit aftertaste.'
+    }
+  ];
+
+  const ingredientsList = [
+    {
+      name: isRtl ? 'فواكه البساتين الطبيعية' : 'Real Orchard Fruits',
+      source: isRtl ? 'بيوريه فاكهة كاملة 100%' : 'Cold-Pressed Whole Purées',
+      badge: '100% PURE',
+      desc: isRtl
+        ? 'مانجو ألفونسو راتناجيري، فراولة ألبية برية، برتقال دموي صقلي، وليمون متوسطي. لا مستخلصات ولا ملونات صناعية.'
+        : 'Ratnagiri Alphonso mangoes, wild alpine strawberries, Sicilian blood oranges, and sun-warmed limes. Zero artificial extracts.'
+    },
+    {
+      name: isRtl ? 'الزبدة الأوروبية الفاخرة' : 'European Cultured Butter',
+      source: isRtl ? 'زبدة نورماندي 84% دسم' : 'Normandy 84% Butterfat',
+      badge: 'ARTISANAL',
+      desc: isRtl
+        ? 'مخضوضة ببطء من قشطة مزارع فرنسية طبيعية. تمنح التوفي قواماً حريراً ونكهة كراميل جوزية غنية.'
+        : 'Churned slowly from European natural cream. Imparts an impossibly silk chew and deep toasted butterscotch undertones.'
+    },
+    {
+      name: isRtl ? 'شوكولاتة الحليب والكاكاو النقي' : 'Fine European Cocoa',
+      source: isRtl ? 'شوكولاتة بلجيكية فاخرة' : 'Single-Origin Cocoa Beans',
+      badge: 'NO PALM OIL',
+      desc: isRtl
+        ? 'شوكولاتة طبيعية كاملة دون أي زيوت نباتية بديلة، تصهر لتغليف قطع الإكلير والبونبون الفاخر.'
+        : 'Crafted with genuine cocoa butter and whole dairy — zero palm shortening substitutes.'
+    },
+    {
+      name: isRtl ? 'زهرة الملح الطبيعي' : 'Natural Sea Salt Flakes',
+      source: isRtl ? 'مستخرجة يدوياً' : 'Solar-Evaporated Mineral Crystals',
+      badge: 'MINERAL RICH',
+      desc: isRtl
+        ? 'بلورات ملح طبيعية رقيقة توازن تركيز السكر الطبيعي وتبرز نغمات الزبدة العميقة.'
+        : 'Hand-skimmed solar salt flakes providing delicate mineral crispness that elevates toffee finish.'
+    }
+  ];
+
+  const faqs = AUTHENTIC_FAQS.map(f => ({
+    q: isRtl ? f.q_ar : f.q_en,
+    a: isRtl ? f.a_ar : f.a_en
+  }));
+
+  return (
+    <div className="bg-white text-[#22120C] min-h-screen py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto">
+        
+        {/* Navigation Breadcrumb */}
+        <div className="mb-6 flex items-center justify-between">
+          <button
+            onClick={onBackHome}
+            className="text-xs flex items-center gap-2 cursor-pointer border border-[#22120C]/15 hover:border-[#E890A8] hover:text-[#E890A8] px-4 py-2 rounded-full font-mono transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 rtl:rotate-180" />
+            <span>{isRtl ? 'العودة للرئيسية' : 'RETURN TO ATELIER'}</span>
+          </button>
+          
+          <span className="text-xs text-[#22120C]/60 font-light font-mono">
+            {isRtl ? 'معمل توماكت · القاهرة' : 'toomakt Confectionery Atelier · Cairo'}
+          </span>
+        </div>
+
+        {/* Page Editorial Header */}
+        <div className="text-center mb-12 sm:mb-16">
+          <span className="text-[11px] font-semibold text-[#E890A8] uppercase tracking-widest block mb-2 font-mono">
+            {isRtl ? 'عن توماكت' : 'ABOUT TOOMAKT'}
+          </span>
+          <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal text-[#22120C] tracking-tight mb-4">
+            {isRtl ? 'حلاوة أهدأ، صُنعت ببطء.' : 'A quieter kind of sweet.'}
+          </h1>
+          <p className="text-sm sm:text-base md:text-lg text-[#22120C]/75 font-light max-w-2xl mx-auto leading-relaxed">
+            {isRtl
+              ? 'تأسست توماكت في القاهرة انطلاقاً من رغبة واحدة: إعادة ابتكار حلوى التوفي باستخدام الفواكه الطبيعية والزبدة النقية دون أي اختصارات صناعية.'
+              : 'Born in Cairo from a singular obsession: to slow down confectionery, replacing corn syrup and artificial dyes with real fruit purée and European butter.'}
+          </p>
+        </div>
+
+        {/* Responsive Tab Bar */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-12 sm:mb-16 p-1.5 rounded-full bg-[#FDF2F5] border border-[#E890A8]/20 max-w-2xl mx-auto">
+          {tabs.map(tab => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+
+            return (
+              <button
+                key={tab.id}
+                onClick={() => handleTabClick(tab.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-[#E890A8] text-white shadow-sm font-semibold'
+                    : 'text-[#22120C]/70 hover:text-[#22120C] hover:bg-white'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* TAB 1: OUR STORY & CRAFT */}
+        {activeTab === 'our-story' && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-12 sm:space-y-16"
+          >
+            {/* Story Narrative Box */}
+            <div className="bg-white rounded-2xl sm:rounded-[32px] p-6 sm:p-10 border border-[#22120C]/10 shadow-[0_16px_40px_rgba(34,18,12,0.06)]">
+              <span className="text-[11px] font-mono tracking-widest uppercase text-[#E890A8] font-semibold block mb-2">
+                {isRtl ? 'الفلسفة التأسيسية' : 'FOUNDING PHILOSOPHY'}
+              </span>
+              <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#22120C] mb-6 font-normal">
+                {isRtl ? 'لماذا رفضنا الطريقة السهلة؟' : 'Why we rejected the shortcuts.'}
+              </h2>
+              <div className="space-y-4 text-sm sm:text-base text-[#22120C]/75 font-light leading-relaxed">
+                <p>
+                  {isRtl
+                    ? 'في عالم امتلأت فيه الحلوى بشراب الذرة عالي الفركتوز، وزيت النخيل المهدرج، والنكهات الاصطناعية التي تلتصق بالأسنان، بدأنا في معملنا بالقاهرة برؤية مغايرة: العودة إلى قدور النحاس الثقيلة، والفاكهة الطبيعية الكاملة، وزبدة النورماندي ذات النسبة العالية من الدسم.'
+                    : 'In an industry dominated by glucose syrups, hydrogenated palm oils, and tooth-sticking synthetic colorants, toomakt was created to prove that confectionery can be quiet, thoughtful, and deeply satisfying.'}
+                </p>
+                <p>
+                  {isRtl
+                    ? 'كل دفعة تُطهى على نار هادئة حتى تصل لدرجة الحرارة الدقيقة التي تحافظ على حموضة الفواكه الطبيعية وتطلق نغمات الكراميل الدافئة. لا تعجل في التبريد، ولا إضافات تخفي طعم المكونات الأصلية.'
+                    : 'Each small batch is slow-simmered at exactly 245°F in genuine French copper cauldrons, allowing whole fruit purées to caramelize alongside cultured European butter. We let the toffee rest and cool slowly so each piece yields tenderly with zero tooth-stickiness.'}
+                </p>
+              </div>
+            </div>
+
+            {/* The 4-Stage Tasting Evolution */}
+            <div className="bg-[#FDF2F5] rounded-2xl sm:rounded-[32px] p-6 sm:p-10 border border-[#E890A8]/20">
+              <div className="max-w-2xl mb-8">
+                <span className="text-[11px] font-mono tracking-widest uppercase text-[#E890A8] font-semibold block mb-2">
+                  {isRtl ? 'علم التذوق' : 'THE 45-SECOND TASTING EVOLUTION'}
+                </span>
+                <h3 className="font-serif text-2xl sm:text-3xl text-[#22120C] font-normal">
+                  {isRtl ? 'كيف تتفتح النكهة في فمك' : 'How the chew unfolds.'}
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                {chewStages.map((stg) => (
+                  <div key={stg.sec} className="bg-white rounded-2xl p-5 border border-[#22120C]/10 shadow-xs flex flex-col justify-between">
+                    <div>
+                      <span className="font-mono text-xs font-semibold text-[#E890A8] block mb-2">
+                        {stg.sec}
+                      </span>
+                      <h4 className="font-serif text-sm font-medium text-[#22120C] mb-2">
+                        {stg.title}
+                      </h4>
+                      <p className="text-xs text-[#22120C]/70 font-light leading-relaxed">
+                        {stg.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* TAB 2: PURE INGREDIENTS */}
+        {activeTab === 'ingredients' && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-8"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {ingredientsList.map((ing) => (
+                <div key={ing.name} className="bg-white rounded-2xl p-6 sm:p-8 border border-[#22120C]/10 shadow-[0_12px_30px_rgba(34,18,12,0.05)] flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className="text-xs font-mono font-medium text-[#22120C]/60 uppercase">
+                        {ing.source}
+                      </span>
+                      <span className="text-[10px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-[#E890A8]/10 text-[#E890A8] border border-[#E890A8]/20 font-mono">
+                        {ing.badge}
+                      </span>
+                    </div>
+                    <h3 className="font-serif text-xl text-[#22120C] mb-2 font-normal">
+                      {ing.name}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#22120C]/70 font-light leading-relaxed">
+                      {ing.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Zero Promise Banner */}
+            <div className="bg-[#FDF2F5] rounded-2xl p-6 sm:p-8 border border-[#E890A8]/20 text-center max-w-2xl mx-auto">
+              <h4 className="font-serif text-lg text-[#22120C] mb-3 font-normal">
+                {isRtl ? 'عهد النقاء من معمل توماكت' : 'Our Clean Label Promise'}
+              </h4>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs text-[#22120C]/70 font-light">
+                <div className="p-3 bg-white rounded-xl border border-[#22120C]/10 shadow-xs">
+                  <span className="block font-medium text-[#E890A8] mb-0.5 font-mono">0%</span>
+                  <span>{isRtl ? 'شراب ذرة' : 'Corn Syrup'}</span>
+                </div>
+                <div className="p-3 bg-white rounded-xl border border-[#22120C]/10 shadow-xs">
+                  <span className="block font-medium text-[#E890A8] mb-0.5 font-mono">0%</span>
+                  <span>{isRtl ? 'زيت نخيل' : 'Palm Oil'}</span>
+                </div>
+                <div className="p-3 bg-white rounded-xl border border-[#22120C]/10 shadow-xs">
+                  <span className="block font-medium text-[#E890A8] mb-0.5 font-mono">0%</span>
+                  <span>{isRtl ? 'ملونات صناعية' : 'Artificial Dyes'}</span>
+                </div>
+                <div className="p-3 bg-white rounded-xl border border-[#22120C]/10 shadow-xs">
+                  <span className="block font-medium text-[#E890A8] mb-0.5 font-mono">0%</span>
+                  <span>{isRtl ? 'مواد حافظة' : 'Preservatives'}</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* TAB 3: COLD-CHAIN DELIVERY */}
+        {activeTab === 'shipping' && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-8"
+          >
+            <div className="bg-white rounded-2xl sm:rounded-[32px] p-6 sm:p-10 border border-[#22120C]/10 shadow-[0_16px_40px_rgba(34,18,12,0.06)]">
+              <span className="text-[11px] font-mono tracking-widest uppercase text-[#E890A8] font-semibold block mb-2">
+                {isRtl ? 'الشحن المبرد المعزول' : 'CLIMATE-PROTECTED LOGISTICS'}
+              </span>
+              <h2 className="font-serif text-2xl sm:text-3xl text-[#22120C] mb-4 font-normal">
+                {isRtl ? 'نصلك بحالة مثالية في أي مكان بمصر.' : 'Pristine delivery to all 27 governorates.'}
+              </h2>
+              <p className="text-sm sm:text-base text-[#22120C]/75 font-light leading-relaxed mb-8 max-w-2xl">
+                {isRtl
+                  ? 'بسبب احتوائها على زبدة نقية وفواكه طبيعية، نضع كل عبوة داخل صناديق شحن حرارية معزولة مع عبوات تبريد آمنة لضمان وصول التوفي بالقوام الأصلي نفسه حتى في أشد أيام الصيف حرارة.'
+                  : 'Because our confections are rich in genuine butter and fruit purée, every shipment leaves our Cairo kitchen in insulated thermal boxes with food-safe cooling packs, ensuring factory-fresh texture upon arrival.'}
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-[#22120C]/10">
+                <div>
+                  <h4 className="font-serif text-base text-[#22120C] mb-1 font-normal">
+                    {isRtl ? 'القاهرة والجيزة' : 'Cairo & Giza'}
+                  </h4>
+                  <p className="text-xs text-[#22120C]/65 font-light">
+                    {isRtl ? 'توصيل خلال 24 - 48 ساعة بواسطة مندوب المعمل' : '24-48h direct courier delivery.'}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-serif text-base text-[#22120C] mb-1 font-normal">
+                    {isRtl ? 'الإسكندرية والدلتا' : 'Alexandria & Delta'}
+                  </h4>
+                  <p className="text-xs text-[#22120C]/65 font-light">
+                    {isRtl ? 'توصيل خلال 48 ساعة في صناديق معزولة' : '48h express climate shipping.'}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-serif text-base text-[#22120C] mb-1 font-normal">
+                    {isRtl ? 'الصعيد والقناة وسيناء' : 'Upper Egypt, Canal & Sinai'}
+                  </h4>
+                  <p className="text-xs text-[#22120C]/65 font-light">
+                    {isRtl ? 'توصيل خلال 2-3 أيام مع ضمان الجودة' : '2-3 business days guaranteed.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* TAB 4: FREQUENTLY ASKED QUESTIONS */}
+        {activeTab === 'faq' && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-4 max-w-3xl mx-auto"
+          >
+            {faqs.map((faq, idx) => {
+              const isOpen = activeAccordion === idx;
+
+              return (
+                <div
+                  key={idx}
+                  className="bg-white rounded-2xl border border-[#22120C]/10 overflow-hidden transition-all shadow-xs"
+                >
+                  <button
+                    onClick={() => setActiveAccordion(isOpen ? null : idx)}
+                    className="w-full p-5 sm:p-6 text-left rtl:text-right flex items-center justify-between gap-4 cursor-pointer hover:bg-[#FDF2F5] transition-colors"
+                  >
+                    <span className="font-serif text-base sm:text-lg font-normal text-[#22120C]">
+                      {faq.q}
+                    </span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-[#22120C]/60 shrink-0 transition-transform duration-200 ${
+                        isOpen ? 'rotate-180 text-[#E890A8]' : ''
+                      }`}
+                    />
+                  </button>
+
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="px-5 pb-5 sm:px-6 sm:pb-6 text-xs sm:text-sm text-[#22120C]/75 font-light leading-relaxed border-t border-[#22120C]/10 pt-4"
+                      >
+                        {faq.a}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </motion.div>
+        )}
+
+        {/* Bottom CTA to Shop */}
+        <div className="mt-16 text-center pt-8 border-t border-[#22120C]/10">
+          <p className="text-xs text-[#22120C]/60 mb-4 font-light">
+            {isRtl ? 'هل ترغب في تذوق حلوى توماكت بنفسك؟' : 'Ready to taste the slow craft difference?'}
+          </p>
+          <button
+            onClick={() => onNavigateView && onNavigateView('shop')}
+            className="px-7 py-3 rounded-full bg-[#E890A8] hover:bg-[#6AACE9] text-white text-xs font-mono font-semibold tracking-wider uppercase shadow-[0_4px_14px_rgba(232,144,168,0.3)] hover:shadow-[0_6px_20px_rgba(106,172,233,0.35)] cursor-pointer transition-all"
+          >
+            <span>{isRtl ? 'استكشف تشكيلة المتجر' : 'Explore The Collection'}</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+export default CMSPageView;
