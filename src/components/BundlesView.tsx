@@ -144,7 +144,7 @@ export const BundlesView: React.FC<BundlesViewProps> = ({ onNavigateHome }) => {
                       <img
                         src={featured.image || featured.image_url}
                         alt={featured.title}
-                        className="w-full h-full object-contain filter drop-shadow-md"
+                        className="w-full h-full object-contain mix-blend-multiply"
                       />
                     </div>
                     <div>
@@ -228,7 +228,7 @@ export const BundlesView: React.FC<BundlesViewProps> = ({ onNavigateHome }) => {
                           <img
                             src={item.image || item.image_url}
                             alt={item.title}
-                            className="w-full h-full object-contain filter drop-shadow-sm hover:scale-105 transition-transform duration-500"
+                            className="w-full h-full object-contain mix-blend-multiply hover:scale-105 transition-transform duration-500"
                           />
                         </div>
                         <div className="p-6 flex flex-col flex-1 justify-between">

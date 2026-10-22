@@ -32,6 +32,8 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
   const imageX = useTransform(progress, [0, 1], [0, 32]);
   const glowX = useTransform(progress, [0, 1], [0, -80]);
   const cueOpacity = useTransform(progress, [0, 0.16], [1, 0]);
+  const heroDrive1Opacity = useTransform(progress, [0, 0.45], [1, 0]);
+  const heroDrive2Opacity = useTransform(progress, [0.35, 0.85], [0, 1]);
 
   const scrollToCollection = () => onNavigateSection('meet-your-sweet-side');
 
@@ -75,13 +77,12 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-3xl font-serif text-[clamp(3.4rem,7vw,7.4rem)] font-normal leading-[0.88] tracking-[-0.055em]"
+            className={`max-w-3xl ${isRtl ? 'font-sans font-bold leading-[1.06] tracking-tight' : 'font-serif leading-[0.88] tracking-[-0.055em]'} text-[clamp(3.4rem,7vw,7.4rem)] font-normal`}
           >
             {isRtl ? (
               <>
-                حلاوةٌ
-                <br />
-                <span className="pr-8 italic text-[#E890A8] sm:pr-14">تُورَّث.</span>
+                <span className="block font-bold">حلاوةٌ</span>
+                <span className="block pr-8 font-normal italic text-[#E890A8] sm:pr-14">تُورَّث.</span>
               </>
             ) : (
               <>
@@ -152,11 +153,20 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
           style={{ y: imageY }}
           className="relative min-h-[54svh] overflow-hidden lg:min-h-0"
         >
+          {/* Real Google Drive Shoot: Hand picking Golden Eclairs confections */}
           <motion.img
-            src="/images/figma/c736dc6cdbf982bcd40416b1b8b770e8459665ca.jpg"
-            alt="TOOMAKT artisan confectionery"
+            src="/images/drive/toomakt_eclairs_gold_bowl.webp"
+            alt="TOOMAKT golden eclair confections"
             loading="eager"
-            style={{ x: imageX, scale: imageScale }}
+            style={{ x: imageX, scale: imageScale, opacity: heroDrive1Opacity }}
+            className="absolute inset-[-4%] h-[108%] w-[108%] object-cover will-change-transform"
+          />
+          {/* Real Google Drive Shoot: Tumbling Toomakt Sweets revealed on scroll */}
+          <motion.img
+            src="/images/drive/toomakt_fruit_jar_tumble.webp"
+            alt="TOOMAKT authentic confectionery selection"
+            loading="lazy"
+            style={{ x: imageX, scale: imageScale, opacity: heroDrive2Opacity }}
             className="absolute inset-[-4%] h-[108%] w-[108%] object-cover will-change-transform"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#22120C]/60 via-transparent to-[#22120C]/10" />

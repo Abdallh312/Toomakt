@@ -188,11 +188,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigateView }) => {
                   className="bg-white border border-[#E890A8]/20 rounded-2xl p-4 flex gap-4 items-center justify-between transition-colors hover:border-[#6AACE9]/50 shadow-xs"
                 >
                   <div className="flex items-center gap-3.5 min-w-0">
-                    <div className="w-16 h-16 rounded-xl bg-[#FDF2F5] border border-[#E890A8]/15 p-2 flex items-center justify-center shrink-0">
+                    <div className="w-16 h-16 rounded-xl bg-white border border-[#E890A8]/20 p-1.5 flex items-center justify-center shrink-0 shadow-xs">
                       <img
                         src={item.product.image || '/images/products/cappuccino_candies_thumb_isolated.png'}
                         alt={getProductDisplayName(item.product, isRtl)}
-                        className="w-full h-full object-contain filter drop-shadow-sm"
+                        className="w-full h-full object-contain mix-blend-multiply"
                       />
                     </div>
                     <div className="min-w-0">

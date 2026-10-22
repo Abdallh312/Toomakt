@@ -68,7 +68,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const secondaryImage =
     jarImage ||
     (product.images || []).find(
-      (img) => img && img !== product.image && !/piece|3d|spec|card/i.test(img)
+      (img) => img && img !== product.image && !/piece|3d|spec|card|_thumb\.jpg/i.test(img)
     ) ||
     (product.altImage && !product.altImage.includes('spec') ? product.altImage : undefined);
 
@@ -103,10 +103,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     >
       {/* ─── TOP SECTION: IMAGE + LABELS + TITLE ─── */}
       <div className="flex flex-col space-y-3.5">
-        {/* ─── IMAGE STAGE: Clean, Neutral, Harmonious Pedestal on Light Background ─── */}
-        <div className="relative aspect-[4/3.8] w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#FAF8F5] border border-[#22120C]/[0.04] p-5 sm:p-7 flex items-center justify-center transition-colors group-hover:bg-[#FFF9FB]">
+        {/* ─── IMAGE STAGE: Borderless Floating Confection (No Inner Square Box) ─── */}
+        <div className="relative aspect-[4/3.8] w-full flex items-center justify-center p-2 sm:p-4 transition-colors">
           {/* Subtle Natural Ground Shadow */}
-          <div className="absolute inset-x-12 bottom-4 h-6 bg-radial from-[#22120C]/[0.08] to-transparent rounded-full blur-md pointer-events-none transition-transform duration-500 group-hover:scale-110" />
+          <div className="absolute inset-x-10 bottom-2.5 h-5 bg-radial from-[#22120C]/[0.10] to-transparent rounded-full blur-md pointer-events-none transition-transform duration-500 group-hover:scale-110" />
 
           {/* Product Packaging Hero Image */}
           <picture className="w-full h-full flex items-center justify-center relative z-10 transition-transform duration-500 ease-out group-hover:scale-105 group-hover:-translate-y-1">
@@ -118,7 +118,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               height="500"
               decoding="async"
               loading="lazy"
-              className="w-[85%] h-[85%] object-contain filter drop-shadow-[0_10px_22px_rgba(34,18,12,0.10)] transition-all duration-300"
+              className="w-[90%] h-[90%] object-contain mix-blend-multiply transition-all duration-300"
             />
           </picture>
 

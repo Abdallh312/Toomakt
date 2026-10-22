@@ -209,9 +209,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <div className="md:col-span-6 bg-[#FDF2F5] p-6 sm:p-8 flex flex-col justify-center border-b md:border-b-0 md:border-r border-[#22120C]/10">
               <div className="space-y-4">
                 {/* Main Showcase Image Stage */}
-                <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-white border border-[#22120C]/8 group flex items-center justify-center p-7">
+                <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-transparent group flex items-center justify-center p-4 sm:p-7">
                   {/* Subtle ambient spotlight behind the product */}
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(232,144,168,0.2),transparent_70%)] pointer-events-none" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(232,144,168,0.15),transparent_70%)] pointer-events-none" />
+
+                  {/* Soft ground contact shadow */}
+                  <div className="absolute inset-x-12 bottom-4 h-6 bg-radial from-[#22120C]/[0.12] to-transparent rounded-full blur-md pointer-events-none" />
 
                   <AnimatePresence mode="wait">
                     <motion.img
@@ -222,7 +225,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0.2 }}
                       transition={{ duration: 0.22 }}
-                      className="w-full h-full object-contain filter drop-shadow-[0_16px_32px_rgba(34,18,12,0.18)] relative z-10"
+                      className="w-full h-full object-contain mix-blend-multiply relative z-10"
                     />
                   </AnimatePresence>
 
@@ -274,7 +277,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                               : 'border-[#22120C]/10 opacity-70 hover:opacity-100 hover:border-[#E890A8]/40'
                           }`}
                         >
-                          <img src={img} alt={`${displayName} view ${idx + 1}`} className="w-full h-full object-contain" />
+                          <img src={img} alt={`${displayName} view ${idx + 1}`} className="w-full h-full object-contain mix-blend-multiply" />
                         </button>
                       );
                     })}

@@ -43,7 +43,7 @@ export const LandingFigmaSweetSide: React.FC<LandingFigmaSweetSideProps> = ({
                 <span>{isRtl ? 'وصفات فرنسية أصلية' : 'Authentic French Recipes'}</span>
               </span>
             </div>
-            <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-[#22120C]">
+            <h2 className={`${isRtl ? 'font-sans font-bold' : 'font-serif font-normal'} text-4xl sm:text-5xl lg:text-6xl tracking-tight text-[#22120C]`}>
               {isRtl ? 'تَعَرَّفْ عَلَى جَانِبِكَ الحُلْو.' : 'Meet your sweet side.'}
             </h2>
             <p className="text-sm sm:text-base text-[#22120C]/70 font-light max-w-xl leading-relaxed">
