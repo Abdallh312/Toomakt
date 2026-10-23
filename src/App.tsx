@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { CartProvider } from './context/CartContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -912,6 +913,7 @@ export const App: React.FC = () => {
           </SmoothScroll>
         </CartProvider>
       </LanguageProvider>
+      <Analytics />
     </ThemeProvider>
   );
 };
