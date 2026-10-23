@@ -887,13 +887,15 @@ export const AppContent: React.FC = () => {
         rel="noopener noreferrer"
         whileHover={{ scale: 1.04 }}
         whileTap={{ scale: 0.96 }}
-        className="no-print fixed bottom-6 left-6 rtl:left-auto rtl:right-6 z-40 bg-[#E890A8] hover:bg-[#6AACE9] text-white p-3 sm:px-4 sm:py-2.5 rounded-full shadow-[0_6px_20px_rgba(232,144,168,0.35)] hover:shadow-[0_6px_20px_rgba(106,172,233,0.4)] flex items-center gap-2 transition-all cursor-pointer group select-none border border-white/20 font-mono text-xs uppercase tracking-wider"
-        title="Chat with toomakt Concierge"
+        className={`no-print fixed bottom-6 left-6 rtl:left-auto rtl:right-6 z-40 bg-[#E890A8] hover:bg-[#6AACE9] text-white p-3 sm:px-4 sm:py-2.5 rounded-full shadow-[0_6px_20px_rgba(232,144,168,0.35)] hover:shadow-[0_6px_20px_rgba(106,172,233,0.4)] flex items-center gap-2 transition-all cursor-pointer group select-none border border-white/20 ${
+          isRtl ? 'font-sans text-xs' : 'font-mono text-xs uppercase tracking-wider'
+        }`}
+        title={isRtl ? 'تحدث مع خدمة عملاء توماكت' : 'Chat with toomakt Concierge'}
         aria-label="WhatsApp Concierge"
       >
         <MessageCircle className="w-4 h-4" />
-        <span className="hidden sm:inline font-medium text-[11px]">
-          Concierge
+        <span className="hidden sm:inline font-medium text-[11.5px]">
+          {isRtl ? 'خدمة العملاء' : 'Concierge'}
         </span>
       </motion.a>
     </div>
