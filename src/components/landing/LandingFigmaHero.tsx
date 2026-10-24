@@ -77,12 +77,16 @@ export const LandingFigmaHero: React.FC<LandingFigmaHeroProps> = ({
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-            className={`max-w-3xl ${isRtl ? 'font-sans font-bold leading-[1.06] tracking-tight' : 'font-serif leading-[0.88] tracking-[-0.055em]'} text-[clamp(3.4rem,7vw,7.4rem)] font-normal`}
+            className={`max-w-3xl ${
+              isRtl
+                ? 'font-sans font-bold text-[clamp(2.4rem,5.5vw,4.5rem)] leading-[1.28] tracking-tight'
+                : 'font-serif leading-[0.88] tracking-[-0.055em] text-[clamp(3.4rem,7vw,7.4rem)] font-normal'
+            }`}
           >
             {isRtl ? (
               <>
                 <span className="block font-bold">حلاوةٌ</span>
-                <span className="block pr-8 font-normal italic text-[#E890A8] sm:pr-14">تُورَّث.</span>
+                <span className="block pr-6 sm:pr-10 mt-1.5 sm:mt-2.5 font-normal italic text-[#E890A8]">تُورَّث.</span>
               </>
             ) : (
               <>

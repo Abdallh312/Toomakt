@@ -124,12 +124,16 @@ export const LandingFigmaGifting: React.FC<LandingFigmaGiftingProps> = ({
           {/* Heading with Arabic Tashkeel using unified Alexandria font */}
           <h2
             dir={isRtl ? 'rtl' : 'ltr'}
-            className="font-sans text-3xl sm:text-5xl lg:text-[3.6rem] font-bold leading-[1.15] tracking-tight text-[#22120C]"
+            className={`${
+              isRtl
+                ? 'font-sans text-2xl sm:text-4xl lg:text-[2.6rem] font-bold leading-[1.35]'
+                : 'font-sans text-3xl sm:text-5xl lg:text-[3.6rem] font-bold leading-[1.15]'
+            } tracking-tight text-[#22120C]`}
           >
             {isRtl ? (
-              <span className="flex flex-col gap-1 sm:gap-2">
+              <span className="flex flex-col gap-2 sm:gap-3">
                 <span className="block font-bold">عَلَاقَاتٌ طَوِيلَةُ الأَمَد:</span>
-                <span className="block font-normal italic text-[#E890A8] text-[clamp(2.3rem,4.8vw,3.9rem)] leading-[1.15]">
+                <span className="block font-normal italic text-[#E890A8] text-[clamp(1.8rem,3.8vw,2.5rem)] leading-[1.35]">
                   مَعَ شُرَكَاءِ النَّجَاحِ حَوْلَ العَالَم.
                 </span>
               </span>

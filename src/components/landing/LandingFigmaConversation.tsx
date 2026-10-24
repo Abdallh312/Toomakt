@@ -89,13 +89,15 @@ export const LandingFigmaConversation: React.FC<LandingFigmaConversationProps> =
             {/* Main Headline (Alexandria bold in Arabic, Zero Font Mismatch) */}
             <h2
               className={`${
-                isRtl ? 'font-sans font-extrabold tracking-tight' : 'font-serif font-normal tracking-tight'
-              } text-3xl sm:text-5xl lg:text-[3.5rem] text-[#22120C] leading-[1.12]`}
+                isRtl
+                  ? 'font-sans font-extrabold text-2xl sm:text-4xl lg:text-[2.6rem] leading-[1.35]'
+                  : 'font-serif font-normal text-3xl sm:text-5xl lg:text-[3.5rem] leading-[1.12]'
+              } text-[#22120C] tracking-tight`}
             >
               {isRtl ? (
                 <>
                   كُلُّ نَجَاحٍ يَبْدَأُ بِتَوَاصُل:
-                  <span className="block mt-1.5 text-[#E890A8]">
+                  <span className="block mt-2.5 sm:mt-3 text-[#E890A8]">
                     تَسْعَدُنَا خِدْمَتُكُمْ دَائِماً.
                   </span>
                 </>
@@ -110,7 +112,7 @@ export const LandingFigmaConversation: React.FC<LandingFigmaConversationProps> =
             </h2>
 
             {/* Editorial Description */}
-            <p className="text-base sm:text-lg text-[#22120C]/75 font-light leading-relaxed max-w-xl">
+            <p className="text-sm sm:text-base text-[#22120C]/75 font-light leading-relaxed max-w-xl pt-1">
               {isRtl
                 ? 'استفسارات المنتجات، طلبيات الجملة والتوريد، عقود التصدير الدولي، أو زيارة مجمعنا ومصنعنا بالعاشر من رمضان؛ فريق شركة الزهرة وتوماكت جاهز للإجابة وتنسيق عينات التذوق.'
                 : 'Product enquiries, wholesale distribution orders, international export contracts, or visiting our 10th of Ramadan complex; the Al-Zahra & TOOMAKT team is ready to assist.'}

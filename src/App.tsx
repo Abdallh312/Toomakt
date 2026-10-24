@@ -34,6 +34,8 @@ import { api } from './services/api';
 import { PaymobService } from './services/paymob';
 import { useLanguage } from './context/LanguageContext';
 import { PRODUCTS, AUTHENTIC_FAQS } from './data/toomaktData';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 export const AppContent: React.FC = () => {
   const { language, isRtl } = useLanguage();
@@ -912,6 +914,8 @@ export const App: React.FC = () => {
           </SmoothScroll>
         </CartProvider>
       </LanguageProvider>
+      <Analytics />
+      <SpeedInsights />
     </ThemeProvider>
   );
 };

@@ -64,16 +64,16 @@ export const LandingFigmaOutlook: React.FC = () => {
 
         {/* Right Column: Company Story & Manifesto */}
         <div className="lg:col-span-7 space-y-6 sm:space-y-7">
-          <div className="space-y-2">
-            <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#E890A8] font-semibold block">
+          <div className="space-y-3.5 sm:space-y-4">
+            <span className={`text-[11px] sm:text-xs font-mono uppercase text-[#E890A8] font-semibold block ${isRtl ? 'tracking-normal' : 'tracking-[0.2em]'}`}>
               {isRtl ? 'مَنْ نَحْنُ · شَرِكَةُ الزَّهْرَةِ لِلصِّنَاعَاتِ الغِذَائِيَّة' : 'WHO WE ARE · AL-ZAHRA FOOD INDUSTRIES'}
             </span>
 
-            <h2 className="font-serif text-3xl sm:text-5xl lg:text-[3.75rem] font-normal tracking-tight text-[#22120C] leading-[1.1]">
+            <h2 className={`${isRtl ? 'font-sans font-bold text-2xl sm:text-4xl lg:text-[2.6rem] leading-[1.35]' : 'font-serif font-normal text-3xl sm:text-5xl lg:text-[3.75rem] leading-[1.1]'} tracking-tight text-[#22120C]`}>
               {isRtl ? (
                 <>
                   تَارِيخُ الأَجْدَادِ{' '}
-                  <span className="italic font-light text-[#E890A8]">
+                  <span className="italic font-normal text-[#E890A8]">
                     يَتَوَارَثُهُ الأَبْنَاء.
                   </span>
                 </>
@@ -110,7 +110,7 @@ export const LandingFigmaOutlook: React.FC = () => {
 
           {/* Slogan Signature */}
           <div className="pt-2 border-t border-[#22120C]/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <span className="font-serif italic text-xl sm:text-2xl text-[#E890A8] tracking-wide block">
+            <span className={`${isRtl ? 'font-sans font-bold text-lg sm:text-xl' : 'font-serif italic text-xl sm:text-2xl'} text-[#E890A8] tracking-wide block`}>
               {isRtl ? 'الزهرة – تاريخ الأجداد يتوارثه الأبناء.' : 'Al-Zahra – Heritage of Ancestors, Inherited by Generations.'}
             </span>
 

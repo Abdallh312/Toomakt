@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   CheckCircle2,
   Printer,
@@ -25,6 +25,7 @@ import {
   getProductDisplayName,
   getFlavorDisplayName,
 } from '../utils/productLocalization';
+import { api } from '../services/api';
 
 interface OrderSuccessViewProps {
   order: any;
@@ -94,7 +95,40 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
 
   // Payment Method: 'card' (Visa / Mastercard via Paymob) or 'cod' (Cash on Delivery)
   const isCard = order.payment_method === 'card' || order.payment_method === 'visa' || order.payment_method === 'paymob' || order.payment_status === 'paid';
-  const items: any[] = order.items || [];
+
+  const [fetchedItems, setFetchedItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    // If order has no items, attempt to fetch from backend by order_number
+    const existingItems = Array.isArray(order?.items) ? order.items : [];
+    if (existingItems.length === 0 && order?.order_number) {
+      api.trackOrder(order.order_number).then((res) => {
+        if (res && res.items && res.items.length > 0) {
+          setFetchedItems(res.items);
+        }
+      }).catch((e) => console.warn('Could not fetch order items:', e));
+    }
+  }, [order?.order_number, order?.items]);
+
+  const rawItems: any[] = (Array.isArray(order?.items) && order.items.length > 0)
+    ? order.items
+    : (fetchedItems.length > 0 ? fetchedItems : []);
+
+  const items = rawItems.map((it: any) => {
+    const qty = Number(it.quantity || it.qty || 1);
+    const unitPrice = Number(it.unit_price || it.price || (it.total_price ? it.total_price / qty : 0));
+    const totalPrice = Number(it.total_price || (unitPrice * qty));
+    const name = getProductDisplayName(it, isRtl) || it.name || it.item_name || it.product_name || it.title || 'Artisanal Toffee';
+    const flavor = it.flavor || it.selected_flavor || '';
+    return {
+      ...it,
+      name,
+      flavor,
+      quantity: qty,
+      unit_price: unitPrice,
+      total_price: totalPrice,
+    };
+  });
 
   // Copy helper
   const handleCopy = (text: string, key: string) => {
@@ -556,24 +590,32 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {items.map((it, idx) => (
-                  <tr key={idx} className="border-b border-[#E8E2D7]">
-                    <td className="py-2 px-2.5 font-mono text-[#736B63]">{idx + 1}</td>
-                    <td className="py-2 px-2.5">
-                      <strong className="text-[#1A1A1A] block">{getProductDisplayName(it, isRtl) || it.name}</strong>
-                      {it.flavor && (
-                        <span className="text-[10px] text-[#E890A8] font-medium block">
-                          Flavor: {getFlavorDisplayName(it.flavor, isRtl)}
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-2 px-2.5 text-center font-semibold">{it.quantity}</td>
-                    <td className="py-2 px-2.5 text-right font-mono">EGP {Number(it.unit_price).toFixed(2)}</td>
-                    <td className="py-2 px-2.5 text-right font-mono font-bold">
-                      EGP {(Number(it.unit_price) * Number(it.quantity)).toFixed(2)}
+                {items.length > 0 ? (
+                  items.map((it, idx) => (
+                    <tr key={idx} className="border-b border-[#E8E2D7]">
+                      <td className="py-2 px-2.5 font-mono text-[#736B63]">{idx + 1}</td>
+                      <td className="py-2 px-2.5">
+                        <strong className="text-[#1A1A1A] block">{it.name}</strong>
+                        {it.flavor && (
+                          <span className="text-[10px] text-[#E890A8] font-medium block">
+                            {isRtl ? 'النكهة:' : 'Flavor:'} {getFlavorDisplayName(it.flavor, isRtl)}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-2 px-2.5 text-center font-semibold">{it.quantity}</td>
+                      <td className="py-2 px-2.5 text-right font-mono">EGP {Number(it.unit_price).toFixed(2)}</td>
+                      <td className="py-2 px-2.5 text-right font-mono font-bold">
+                        EGP {Number(it.total_price).toFixed(2)}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr className="border-b border-[#E8E2D7]">
+                    <td colSpan={5} className="py-4 text-center text-xs text-[#736B63] italic">
+                      {isRtl ? 'جاري تحميل تفاصيل الأصناف...' : 'Loading confections batch details...'}
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -725,19 +767,31 @@ export const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {items.map((it, idx) => (
-                      <tr key={idx} className="border-b border-[#22120C]/10">
-                        <td className="py-2 px-2">
-                          <strong>{it.name}</strong>
-                          {it.flavor && <div className="text-[10px] text-[#E890A8]">Flavor: {it.flavor}</div>}
-                        </td>
-                        <td className="py-2 px-2 text-center">{it.quantity}</td>
-                        <td className="py-2 px-2 text-right font-mono">EGP {Number(it.unit_price).toFixed(2)}</td>
-                        <td className="py-2 px-2 text-right font-mono font-bold">
-                          EGP {(Number(it.unit_price) * Number(it.quantity)).toFixed(2)}
+                    {items.length > 0 ? (
+                      items.map((it, idx) => (
+                        <tr key={idx} className="border-b border-[#22120C]/10">
+                          <td className="py-2 px-2">
+                            <strong>{it.name}</strong>
+                            {it.flavor && (
+                              <div className="text-[10px] text-[#E890A8]">
+                                {isRtl ? 'النكهة:' : 'Flavor:'} {getFlavorDisplayName(it.flavor, isRtl)}
+                              </div>
+                            )}
+                          </td>
+                          <td className="py-2 px-2 text-center font-semibold">{it.quantity}</td>
+                          <td className="py-2 px-2 text-right font-mono">EGP {Number(it.unit_price).toFixed(2)}</td>
+                          <td className="py-2 px-2 text-right font-mono font-bold">
+                            EGP {Number(it.total_price).toFixed(2)}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr className="border-b border-[#22120C]/10">
+                        <td colSpan={4} className="py-4 text-center text-xs text-[#22120C]/60 italic">
+                          {isRtl ? 'جاري تحميل تفاصيل الأصناف...' : 'Loading confections batch details...'}
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
 

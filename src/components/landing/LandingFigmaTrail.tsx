@@ -41,9 +41,9 @@ export const LandingFigmaTrail: React.FC<LandingFigmaTrailProps> = ({
       <div className="max-w-7xl mx-auto space-y-12 sm:space-y-16">
         {/* Section Header */}
         <motion.div style={{ y: headerY }} className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[#22120C]/10">
-          <div className="space-y-2">
+          <div className="space-y-3.5 sm:space-y-4">
             <div className="flex items-center gap-2">
-              <span className="text-[11px] sm:text-xs font-mono tracking-[0.25em] uppercase text-[#E890A8] font-semibold block">
+              <span className={`text-[11px] sm:text-xs font-mono uppercase text-[#E890A8] font-semibold block ${isRtl ? 'tracking-normal' : 'tracking-[0.25em]'}`}>
                 {isRtl ? 'فُرُوعُ وَمَرَافِقُ تُومَاكْت' : 'TOOMAKT BRANCHES & ATELIER'}
               </span>
               <span className="inline-flex items-center gap-1 text-[10px] font-mono text-[#E890A8] bg-[#E890A8]/20 border border-[#E890A8]/40 px-2.5 py-0.5 rounded-full font-medium">
@@ -52,10 +52,10 @@ export const LandingFigmaTrail: React.FC<LandingFigmaTrailProps> = ({
               </span>
             </div>
 
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight text-[#22120C]">
+            <h2 className={`${isRtl ? 'font-sans font-bold text-2xl sm:text-3xl lg:text-4xl leading-[1.35]' : 'font-serif font-normal text-3xl sm:text-4xl lg:text-5xl leading-[1.15]'} tracking-tight text-[#22120C]`}>
               {isRtl ? 'فَرْعُنَا الحَالِي.. وَقَرِيباً فَرْعُنَا الثَّانِي.' : 'Our Flagship Branch.. And Coming Soon.'}
             </h2>
-            <p className="text-xs sm:text-sm text-[#736B63] font-light max-w-xl">
+            <p className="text-xs sm:text-sm text-[#736B63] font-light max-w-xl pt-1">
               {isRtl
                 ? 'نرحب بكم في فرعنا ومصنعنا الرئيسي بمدينة العاشر من رمضان، وترقبوا افتتاح فرعنا الثاني في القاهرة قريباً.'
                 : 'Serving you at our flagship 10th of Ramadan plant, with our second Cairo branch opening soon.'}

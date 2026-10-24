@@ -33,9 +33,9 @@ export const LandingFigmaSweetSide: React.FC<LandingFigmaSweetSideProps> = ({
       <div className="max-w-7xl mx-auto">
         {/* Header Row */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 sm:mb-20">
-          <div className="space-y-3">
+          <div className="space-y-3.5 sm:space-y-4">
             <div className="flex items-center gap-2">
-              <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#E890A8] font-semibold block">
+              <span className={`text-[11px] sm:text-xs font-mono uppercase text-[#E890A8] font-semibold block ${isRtl ? 'tracking-normal' : 'tracking-[0.2em]'}`}>
                 {isRtl ? 'تَشْكِيلَةُ الحَلْوَيَاتِ الحِرَفِيَّة' : 'THE ARTISAN SELECTION'}
               </span>
               <span className="inline-flex items-center gap-1 text-[10px] font-mono text-[#E890A8] bg-[#E890A8]/20 border border-[#E890A8]/45 px-2.5 py-0.5 rounded-full font-medium">
@@ -43,10 +43,10 @@ export const LandingFigmaSweetSide: React.FC<LandingFigmaSweetSideProps> = ({
                 <span>{isRtl ? 'وصفات فرنسية أصلية' : 'Authentic French Recipes'}</span>
               </span>
             </div>
-            <h2 className={`${isRtl ? 'font-sans font-bold' : 'font-serif font-normal'} text-4xl sm:text-5xl lg:text-6xl tracking-tight text-[#22120C]`}>
+            <h2 className={`${isRtl ? 'font-sans font-bold text-2xl sm:text-4xl lg:text-[2.6rem] leading-[1.35]' : 'font-serif font-normal text-4xl sm:text-5xl lg:text-6xl leading-[1.1]'} tracking-tight text-[#22120C]`}>
               {isRtl ? 'تَعَرَّفْ عَلَى جَانِبِكَ الحُلْو.' : 'Meet your sweet side.'}
             </h2>
-            <p className="text-sm sm:text-base text-[#22120C]/70 font-light max-w-xl leading-relaxed">
+            <p className="text-sm sm:text-base text-[#22120C]/70 font-light max-w-xl leading-relaxed pt-1">
               {isRtl
                 ? 'حلوى توفي وبونبون مصنوعة ببطء من زبدة أوروبية فاخرة وسوائل حشوات غنية لا تُنسى.'
                 : 'Slow-crafted with pure European butter, natural fruit purées, and rich liquid centers.'}

@@ -157,9 +157,23 @@
   }
   html[dir="rtl"] h1,
   html[dir="rtl"] h2,
-  html[dir="rtl"] h3 {
+  html[dir="rtl"] h3,
+  html[dir="rtl"] h4,
+  html[dir="rtl"] h5,
+  html[dir="rtl"] h6 {
     font-family: 'Alexandria', 'Amiri', system-ui, sans-serif !important;
-    letter-spacing: -0.01em !important;
+    letter-spacing: normal !important;
+    line-height: 1.38 !important;
+  }
+  /* Prevent Arabic cursive letters from disconnecting or breaking with tracking classes */
+  html[dir="rtl"] [class*="tracking-"] {
+    letter-spacing: normal !important;
+  }
+  /* Ensure spans inside Arabic headings maintain proper line-height */
+  html[dir="rtl"] h1 span,
+  html[dir="rtl"] h2 span,
+  html[dir="rtl"] h3 span {
+    line-height: inherit;
   }
   .font-calligraphy {
     font-family: 'Amiri', 'Cormorant Garamond', serif !important;
@@ -622,10 +636,87 @@ html.lenis, html.lenis body {
 /* ============================================================
    PRINT STYLES
    ============================================================ */
+/* Hide dedicated printable elements on screen */
+.print-only {
+  display: none !important;
+}
+
 @media print {
-  .no-print { display: none !important; }
-  .site-frame { padding: 0; }
-  .site-frame-inner { border-radius: 0; box-shadow: none; }
+  /* Hide all on-screen elements, navbar, footer, buttons, modals, and drawers */
+  .no-print,
+  .screen-only,
+  header,
+  nav,
+  footer,
+  aside,
+  #toomakt-navbar,
+  .site-navbar,
+  .site-footer,
+  .custom-cursor,
+  [data-lenis-prevent] {
+    display: none !important;
+  }
+
+  /* Show only the dedicated printable invoice */
+  .print-only {
+    display: block !important;
+  }
+
+  /* Clean up page geometry for exactly 1 crisp A4 sheet */
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  html,
+  body {
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #FFFFFF !important;
+    color: #1A1A1A !important;
+    overflow: visible !important;
+    font-size: 10pt !important;
+  }
+
+  .site-frame,
+  .site-frame-inner,
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #FFFFFF !important;
+    overflow: visible !important;
+  }
+
+  .printable-invoice {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    background: #FFFFFF !important;
+    color: #1A1A1A !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .printable-invoice * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .printable-invoice tr,
+  .printable-invoice table,
+  .printable-invoice .avoid-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
 }
 
 /* ============================================================

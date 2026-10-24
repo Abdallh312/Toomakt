@@ -80,7 +80,7 @@ export const AboutView: React.FC<AboutViewProps> = ({
           <p className="font-serif italic text-[#E890A8] text-lg sm:text-xl mb-3">
             {isRtl ? 'شركة الزهرة للصناعات الغذائية · فخر الصناعة المصرية' : 'Al-Zahra Food Industries · Pride of Egyptian Industry'}
           </p>
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-[#22120C] leading-[1.08] mb-6">
+          <h1 className={`${isRtl ? 'font-sans font-bold text-2xl sm:text-4xl lg:text-[2.6rem] leading-[1.35]' : 'font-serif font-normal text-4xl sm:text-5xl lg:text-6xl leading-[1.08]'} tracking-tight text-[#22120C] mb-6`}>
             {isRtl
               ? 'تَارِيخُ الأَجْدَادِ يَتَوَارَثُهُ الأَبْنَاء: حِكَايَةُ عِشْقٍ لِلحَلْوَى بَدَأَتْ مُنْذُ عَامِ ١٩٧٠.'
               : 'Ancestral heritage passed down through generations: confectionery passion since 1970.'}

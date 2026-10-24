@@ -181,9 +181,13 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
       if (res.success && res.order) {
         clearCart();
-        setPaymentSuccessOrder(res.order);
+        const fullOrder = {
+          ...res.order,
+          items: (res.order.items && res.order.items.length > 0) ? res.order.items : pendingOrderPayload.items,
+        };
+        setPaymentSuccessOrder(fullOrder);
         setPaymentDeclinedError(null);
-        return res.order;
+        return fullOrder;
       }
 
       // Check if order already exists in Supabase
@@ -251,9 +255,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
         ? 'يرجى إدخال رقم موبايل مصري صحيح (مثال: 01012345678).'
         : 'Please enter a valid Egyptian mobile number (e.g. 01012345678).';
     }
-    if (!email.trim()) {
-      errors.email = isRtl ? 'البريد الإلكتروني مطلوب.' : 'Email address is required for order confirmation.';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    if (email.trim() && !/\S+@\S+\.\S+/.test(email)) {
       errors.email = isRtl ? 'يرجى إدخال بريد إلكتروني صحيح.' : 'Please enter a valid email address.';
     }
     if (!governorate) errors.governorate = isRtl ? 'يرجى اختيار المحافظة.' : 'Please select your Egyptian governorate.';
@@ -322,7 +324,10 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
         if (res.success && res.order) {
           clearCart();
-          onOrderSuccess(res.order);
+          onOrderSuccess({
+            ...res.order,
+            items: (res.order.items && res.order.items.length > 0) ? res.order.items : orderPayload.items,
+          });
         } else {
           setApiError(res.message || res.error || 'Failed to place Cash on Delivery order. Please try again.');
         }
@@ -334,7 +339,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
           orderNumber: generatedOrderNumber,
           amountEgp: orderTotal,
           customerName: fullName.trim(),
-          customerEmail: email.trim(),
+          customerEmail: email.trim() || 'orders@toomakt.com',
           customerPhone: mobileNumber.trim(),
           shippingAddress: streetAddress.trim(),
           shippingCity: city.trim() || governorate,
@@ -650,7 +655,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
                   <div>
                     <label className="block text-xs font-medium text-[#22120C]/70 uppercase tracking-wider mb-1.5 font-mono">
-                      {isRtl ? 'البريد الإلكتروني *' : 'Email Address *'}
+                      {isRtl ? 'البريد الإلكتروني (اختياري)' : 'Email Address (Optional)'}
                     </label>
                     <input
                       type="email"

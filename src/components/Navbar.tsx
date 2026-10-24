@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingBag, Menu, X, Search, ChevronRight, ArrowUpRight, Sparkles } from 'lucide-react';
+import { ShoppingBag, Menu, X, Search, ChevronRight, ArrowUpRight, Sparkles, Truck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -140,6 +140,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const navLinks = [
     { id: 'shop',      labelAr: 'المُنتجات',       labelEn: 'Products',      target: 'shop' },
     { id: 'bundles',   labelAr: 'الباقات المختارة', labelEn: 'Bundles',       target: 'bundles' },
+    { id: 'track',     labelAr: 'تَتَبُّعُ الطَّلَب', labelEn: 'Track order',  target: 'track' },
     { id: 'about',     labelAr: 'حِكَايَتُنَا',     labelEn: 'Our story',     target: 'about' },
     { id: 'contact',   labelAr: 'فُرُوعُنَا',       labelEn: 'Our branches',  target: 'contact' },
   ];
@@ -152,7 +153,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       currentView === target ||
       (target === 'about'   && currentView === 'our-story') ||
       (target === 'shop'    && currentView === 'products') ||
-      (target === 'contact' && currentView === 'wholesale')
+      (target === 'contact' && currentView === 'wholesale') ||
+      (target === 'track'   && currentView === 'track')
     );
   };
 
@@ -279,6 +281,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                 )}
               </AnimatePresence>
             </div>
+
+            {/* Quick Track Order Button */}
+            <button
+              type="button"
+              onClick={() => handleLinkClick('track')}
+              className={`h-9 px-3 rounded-full border text-xs font-mono font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+                isActive('track')
+                  ? 'bg-[#E890A8]/15 border-[#E890A8] text-[#E890A8]'
+                  : 'border-[#22120C]/15 hover:border-[#E890A8]/40 hover:bg-[#22120C]/[0.04] text-[#22120C]/80 hover:text-[#E890A8]'
+              }`}
+              title={isRtl ? 'تتبع مسار طلبك' : 'Track Your Order'}
+              aria-label="Track your order"
+            >
+              <Truck className="w-3.5 h-3.5" />
+              <span className="hidden xl:inline">{isRtl ? 'تَتَبُّعُ الطلب' : 'Track'}</span>
+            </button>
 
             {/* Language Switcher Pill */}
             <button

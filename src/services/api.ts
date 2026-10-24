@@ -1023,7 +1023,7 @@ export const api = {
   async checkout(orderData: {
     order_number?: string;
     customer_name: string;
-    customer_email: string;
+    customer_email?: string;
     customer_phone?: string;
     governorate?: string;
     shipping_city?: string;
@@ -1164,7 +1164,7 @@ export const api = {
           `<b>Order Number:</b> <code>#${orderNumber}</code>\n` +
           `<b>Customer:</b> <b>${orderData.customer_name}</b>\n` +
           `<b>Phone:</b> <code>${rawPhone}</code>\n` +
-          `<b>Email:</b> <code>${orderData.customer_email}</code>\n\n` +
+          `<b>Email:</b> <code>${orderData.customer_email || 'Not Provided'}</code>\n\n` +
           `<b>ORDER ITEMS:</b>\n${itemsText || '  - Order Confections'}\n\n` +
           `<b>FINANCIALS:</b>\n` +
           `  • Subtotal: <code>${subtotal.toFixed(2)} EGP</code>\n` +
@@ -1207,6 +1207,7 @@ export const api = {
         success: true,
         order: {
           ...createdOrder,
+          items: orderData.items,
           governorate: orderData.governorate || 'Cairo',
           payment_method: orderData.payment_method || 'cod'
         }

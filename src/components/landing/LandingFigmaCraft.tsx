@@ -65,11 +65,11 @@ export const LandingFigmaCraft: React.FC = () => {
       <div className="max-w-7xl mx-auto space-y-16 sm:space-y-24">
         {/* Top Split: Vision & Mission Cards */}
         <div>
-          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-3">
-            <span className="text-[11px] sm:text-xs font-mono tracking-[0.2em] uppercase text-[#E890A8] font-semibold block">
+          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-3.5 sm:space-y-4">
+            <span className={`text-[11px] sm:text-xs font-mono uppercase text-[#E890A8] font-semibold block ${isRtl ? 'tracking-normal' : 'tracking-[0.2em]'}`}>
               {isRtl ? 'رُؤْيَتُنَا وَرِسَالَتُنَا' : 'OUR VISION & MISSION'}
             </span>
-            <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-[#22120C]">
+            <h2 className={`${isRtl ? 'font-sans font-bold text-2xl sm:text-4xl lg:text-[2.6rem] leading-[1.35]' : 'font-serif font-normal text-3xl sm:text-5xl lg:text-6xl leading-[1.1]'} tracking-tight text-[#22120C]`}>
               {isRtl ? 'مَبَادِئُنَا الرَّاسِخَة، وَأُفُقُنَا المُسْتَقْبَلِيّ.' : 'Guiding Principles, Global Ambition.'}
             </h2>
           </div>

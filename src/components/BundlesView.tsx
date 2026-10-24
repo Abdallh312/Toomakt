@@ -84,7 +84,7 @@ export const BundlesView: React.FC<BundlesViewProps> = ({ onNavigateHome }) => {
               <p className="font-serif italic text-[#E890A8] text-lg mb-2">
                 {isRtl ? 'علب هدايا مختارة' : 'Curated Gift Boxes & Tins'}
               </p>
-              <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-normal text-[#22120C] tracking-tight mb-3">
+              <h1 className={`${isRtl ? 'font-sans font-bold text-2xl sm:text-4xl leading-[1.35]' : 'font-serif font-normal text-4xl sm:text-5xl md:text-6xl'} text-[#22120C] tracking-tight mb-3`}>
                 {isRtl ? 'الباقات المختارة' : 'The Bundles'}
               </h1>
               <p className="text-sm sm:text-base text-[#22120C]/75 font-light max-w-xl leading-relaxed">

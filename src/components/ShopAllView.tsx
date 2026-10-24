@@ -122,10 +122,10 @@ export const ShopAllView: React.FC<ShopAllViewProps> = ({
               <span className="inline-block px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest text-[#E890A8] bg-[#E890A8]/08 border border-[#E890A8]/20 mb-3">
                 {isRtl ? 'التشكيلة الكاملة · مصنع العاشر' : 'The Complete Confectionery Collection'}
               </span>
-              <h1 className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#22120C]">
+              <h1 className={`${isRtl ? 'font-sans font-bold text-2xl sm:text-4xl leading-[1.35]' : 'font-serif font-normal text-3xl sm:text-5xl'} tracking-tight text-[#22120C]`}>
                 {isRtl ? 'توفي وبونبون حرفي فاخر' : 'Handcrafted Toffees & Bonbons'}
               </h1>
-              <p className="mt-2 text-sm text-[#22120C]/65 font-light max-w-lg leading-relaxed font-sans">
+              <p className="mt-3 text-sm text-[#22120C]/65 font-light max-w-lg leading-relaxed font-sans">
                 {isRtl
                   ? 'فاكهة طبيعية، زبدة أوروبية، طهي بطيء في مراجل النحاس.'
                   : 'Real orchard fruit, European butter, slow-cooked in copper cauldrons.'}

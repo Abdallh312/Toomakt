@@ -166,13 +166,17 @@ export const LandingFigmaLoveLetter: React.FC<LandingFigmaLoveLetterProps> = ({
             {/* Display Headline using unified Alexandria font */}
             <h2
               dir={isRtl ? 'rtl' : 'ltr'}
-              className="font-sans text-4xl sm:text-6xl lg:text-[4.2rem] font-bold leading-[1.1] tracking-tight text-[#22120C]"
+              className={`${
+                isRtl
+                  ? 'font-sans text-2xl sm:text-4xl lg:text-[2.6rem] font-bold leading-[1.35]'
+                  : 'font-sans text-4xl sm:text-6xl lg:text-[4.2rem] font-bold leading-[1.1]'
+              } tracking-tight text-[#22120C]`}
             >
               {isRtl ? (
                 <>
                   <span className="block font-bold">من مصر إلى</span>
                   <span className="block font-bold">العالم،</span>
-                  <span className="block font-normal italic text-[#E890A8] text-[clamp(2.4rem,5vw,4.2rem)] leading-[1.1] mt-1">
+                  <span className="block font-normal italic text-[#E890A8] text-[clamp(1.8rem,3.8vw,2.5rem)] leading-[1.35] mt-2">
                     قطعة حلوة كل مرة.
                   </span>
                 </>
